@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="App" extends="Scene">
+    <interface>
+        <field id="launchArgs" type="assocArray" />
+    </interface>
+    <children>
+        <Label id="title" text="Hello World!" />
+    </children>
+    <script type="text/brightscript" uri="App.bs" />
+</component>

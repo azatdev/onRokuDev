@@ -1,0 +1,8 @@
+sub init()
+    m.indexLabel = m.top.findNode("index")
+end sub
+
+sub itemContentChanged(event)
+    ?m.top.index
+    m.indexLabel.text = m.top.index
+end sub

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="MagicList" extends="Rectangle">
+    <interface>
+        <field id="advanceKey" type="string" value="right" />
+        <field id="content" type="node" />
+        <field id="focused" type="boolean" />
+        <field id="focusedContentIndex" type="integer" />
+        <field id="focusedTargetSetIndex" type="integer" />
+        <field id="itemFocused" type="integer" alwaysNotify="true" />
+        <field id="itemSelected" type="integer" alwaysNotify="true" />
+        <field id="itemUnfocused" type="integer" alwaysNotify="true" />
+        <field id="lastvisibleindex" type="integer" />
+        <field id="rectConfig" type="assocarray" />
+        <field id="rects" type="array" />
+        <field id="rectSizes" type="array" />
+        <field id="reverseKey" type="string" value="left" />
+        <field id="reversing" type="boolean" />
+    </interface>
+    <children>
+        <TargetGroup id="list" />
+        <Timer id="focusTimer" />
+    </children>
+    <script type="text/brightscript" uri="MagicList.bs" />
+</component>

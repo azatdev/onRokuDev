@@ -1,0 +1,17 @@
+{
+    "createPackage": false,
+    "diagnosticLevel": "error",
+    "diagnosticFilters": [
+        "**/TrackerTask.xml"
+    ],
+    "files": [
+        "components/**/*",
+        "manifest",
+        "source/**/*"
+    ],
+    "lintConfig": "config/bslint.jsonc",
+    "plugins": [ "@rokucommunity/bslint" ],
+    "rootDir": "app/",
+    "sourceMap": true,
+    "stagingDir": "transpiled/build"
+}

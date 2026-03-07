@@ -1,0 +1,49 @@
+import "pkg:/source/helpers/appUtils.bs"
+
+sub init()
+    ? "Azat says: " + `${false ? "yes" : "no"}`
+
+    rectConfig = {
+        "autoclip": true,
+        "bigSquare": [251, 321],
+        "defaultVisibleIndex": 1,
+        "direction": "horizontal",
+        "duration": 0.5,
+        "flushFocus": false,
+        "focusType": "floating",
+        "gutterWidth": 0,
+        "itemComponentName": "TestItem",
+        "margin": [9, 0],
+        "smallSquare": [212, 273],
+        "visibleTiles": 4,
+        "wrap": true
+    }
+
+    list = createObject("roSGNode", "MagicList")
+    m.top.appendChild(list)
+
+    testModel = createObject("roSGNode", "ContentNode")
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+
+    list.content = testModel
+
+    ?m.top.getChildren(-1,0)
+
+    list.rectConfig = rectconfig
+    list.color = "#FFFFFF00"
+    list.translation = [399,399]
+
+    list.setFocus(true)
+
+
+    ' setInterval(sub(args = {})
+    '     ?"ASDADASD "
+    ' end sub, {}, 1000)
+end sub

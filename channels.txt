@@ -1,0 +1,56 @@
+Go through the following content for the "Panorama History" channel: `The Fall of the Berlin Wall; Conquest of the Americas; Civil War 360; Slavery and the Making of America; Pompeii: Secrets of the Dead; 13th; Moon Machines: Saturn V; Ghosts of Rwanda; The Wright Brothers: First in Flight; The Cuban Missile Crisis: Three Men at the Brink; The Partition of India; Angkor Wat: Secrets of the Empire` Create a 24 hour block of programming as though this was on live TV.  Use the duration (seconds) field to see what the runtime of each content is.  The content can be found in the entitites_00001.jsonl file.  The fit and timing of the content is not important.  If the final content needed to create a 24h block is too long, trunkate the duration time to fit it in.  Use this template for each program in the block: `{"type":"api::content.content","data":{"copyrightYear":"","description":"","language":"","playlistUrl":null,"title":"","type":"MOVIE","createdAt":null,"updatedAt":null,"publishedAt":null,"locale":null,"rating":"","duration":null,"seasonsCount":null,"episodesCount":null,"seasonNumber":null,"episodeNumber":null,"extraType":null,"seriesId":null, "startDate": "2026-01-13T15:00:00.000Z", "endDate": "2026-01-13T16:30:00.000Z"}}`.  Have the startDate and endDate be all on 2026-01-13, but adjust the timestamp according to the content runtime.  Start the programming from 2am and end at 1:59:59am the next day.  Ignore content that is longer than 3 hours long.
+
+DeepDive Docs: Planet Earth; Blue Planet II; Breaking Boundaries: The Science of Our Planet; Earth at Night in Color; Seven Worlds, One Planet; Oceans; Chasing Ice; An Inconvenient Truth; Before the Flood; Mission Blue; 2040; The Dust Bowl; Chernobyl: Inside the Disaster; They Shall Not Grow Old; Mankind: The Story of All of Us
+
+Do the same for "Apex True Crime" channel with content: `Making a Murderer; The Jinx: The Life and Deaths of Robert Durst; The Staircase; Paradise Lost: The Child Murders at Robin Hood Hills; West of Memphis; The Imposter; The Thin Blue Line; Don’t F**k with Cats; Killer Inside: The Mind of Aaron Hernandez; The Keepers; Amanda Knox; The Confession Tapes; Night Stalker; The Central Park Five; The Innocence Files; American Murder: The Family Next Door; Abducted in Plain Sight; Wild Wild Country`.
+
+Apex True Crime: Making a Murderer; The Jinx: The Life and Deaths of Robert Durst; The Staircase; Paradise Lost: The Child Murders at Robin Hood Hills; West of Memphis; The Imposter; The Thin Blue Line; Don’t F**k with Cats; Killer Inside: The Mind of Aaron Hernandez; The Keepers; Amanda Knox; The Confession Tapes; Night Stalker; The Central Park Five; The Innocence Files; American Murder: The Family Next Door; Abducted in Plain Sight; Wild Wild Country
+
+Panorama History: 1989: The Fall of the Berlin Wall; Conquest of the Americas; Civil War 360; Slavery and the Making of America; Pompeii: Secrets of the Dead; 13th; Moon Machines: Saturn V; Ghosts of Rwanda; The Wright Brothers: First in Flight; The Cuban Missile Crisis: Three Men at the Brink; The Partition of India; Angkor Wat: Secrets of the Empire
+
+Green Planet HD: Fantastic Fungi; The Ivory Game; Chasing Coral; Nature’s Great Events: Predators; Pandas: The Journey Home; Wild Arctic; The Secret Life of Bees; The Wild in the City; Jaguars: Brazil’s Super Cats; Rivers of Life: Africa; A Plastic Ocean; Seaspiracy; Racing Extinction; Gasland; Virunga; DamNation; Kiss the Ground; The True Cost; Arctic Tale
+
+; Pulse Medical: Grey’s Anatomy; ER; House; Scrubs; The Good Doctor; Chicago Med; Code Black; The Resident; Call the Midwife; Nurses; Pulse; For the People (legal/medical crossover)
+
+Rocket Science: Moon Machines: Saturn V; Armstrong; Space Oddity: Chris Hadfield; The Expanse; The Ark; Silo; Alien: Earth; The Matrix; The Fifth Element
+
+; CrunchTime Anime: One-Punch Man; One Piece; My Hero Academia; Naruto: Shippūden; Dragon Ball Super; Death Note; Fire Force; Kaguya-sama: Love is War; Kingdom; Battle Through the Heavens; Delicious in Dungeon; Pokemon
+
+LaughTrack Sitcoms: Seinfeld; Malcolm In The Middle; Frasier; The Office; Parks and Recreation; Bob’s Burgers; King of the Hill; Family Guy; South Park; It’s Always Sunny in Philadelphia; Futurama; Rick and Morty; Curb Your Enthusiasm; Black Mirror (dark anthology slot)
+
+; Noir Nights: Breaking Bad; Better Call Saul; The Wire; The Sopranos; Fargo; True Crime docs (The Jinx, The Staircase) as late-night blocks
+
+; HeroHub: The Mandalorian; House of the Dragon; Stranger Things; Terminator Zero; The Bourne Ultimatum; Batman Begins; V for Vendetta; Stargate SG-1; The X-Files
+
+; Wander & Feast: Somebody Feed Phil; Anthony Bourdain: No Reservations; Anthony Bourdain: Parts Unknown; Diners, Drive-Ins and Dives; Guy’s Grocery Games; Bon Appétit; Street Food Nations; Market Hustle: Lagos; House Hunters International; Long Way Up; The Amazing Race Canada
+
+GameDay Stories: The Last Dance; Hoop Dreams; Senna; O.J.: Made in America; Icarus; Bethany Hamilton: Unstoppable; Diego Maradona; You Don’t Know Bo; Drive to Survive; 2:00:00 - Kipchoge’s Impossible Run; The Dawn Wall; Peloton: Inside the Tour; Splash: Tom Daley’s Edge; Rise of the Vikings: Iceland’s Miracle Team; The Long Snap
+
+; Maritime Reality: Below Deck; Below Deck Mediterranean; Edge of the Earth; Oceans (doc)
+
+City Limits: We Are the Town; The Moaning of Life; Paris Is Still Burning; Black Lens; Raving Iran; Rolling Country; Cut/Style
+
+; Frontier Sci‑Fi: Lost; The Expanse; Silo; Under the Dome; The Ark; Invasion; Dune: Prophecy; Stargate SG-1; The Orville; Alien: Earth
+
+; Myth & Magic: House of the Dragon; Outlander; Crouching Tiger, Hidden Dragon; The Fifth Element; The Matrix; The Chronicles of Riddick; Conan O’Brien Must Go (travel whimsy slot)
+
+Policy & Power: Knock Down the House; The Great Hack; Citizenfour; The Fog of War; Fahrenheit 9/11; 13th; Run for President; Watergate: Blueprint for a Scandal; Inside Job Revisited; Panama Papers; Umbrella City; Europe: The New Nationalists; Promises in Translation
+
+Build & Break: Mysteries of the Abandoned; Angkor Wat: Secrets of the Empire; DamNation; Mysteries of the Abandoned; The Ivory Game (infrastructure angle)
+
+Courtside Classics: Law & Order: SVU; Suits; The Lincoln Lawyer; Matlock; Perry Mason; Boston Legal; Better Call Saul; Presumed Innocent; Accused; Goliath; The Good Wife; Judge Judy; Night Court
+
+Survival Edge: Trainspotting; Sunshine; Terminator Salvation; Total Recall; Waterworld; The Chronicles of Riddick; Mission To Mars; The Island
+
+Heart & Humor: The 40-Year-Old Virgin; Shaun of the Dead; Hot Fuzz; The Big Lebowski; Step Up; Office Space; The Jerk; Yoko/other Home Movies episodes for shorts block
+
+Global Voices: Parasite; Das Leben der Anderen; Schindler’s List; Malala: One Child, One Teacher; I Am Greta; RBG; I Am Not Your Negro; The Billionaire Rebel; The White Helmets
+
+; Kitchen Forge: Top Chef; Hell’s Kitchen; MasterChef; Kitchen Nightmares; Beat Bobby Flay; Next Level Baker; Your Majesty; Chef’s Table; Best Medicine (food/health special)
+
+; Time Capsule: Classic arcs like ER early seasons; Lost reruns; Seinfeld, Frasier, Matlock, and vintage docs like The War Room
+
+Midnight Mystery: The Sixth Sense; The Shining; Death Note; Ghost Dog: Way of the Samurai; Night Stalker; The Wicker Man; The X-Files; Rick and Morty weird hours
+
+
+DeepDive Docs, GameDay Stories, Global Voices, Green Planet HD, Panorama History, Policy & Power

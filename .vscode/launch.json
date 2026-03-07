@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "brightscript",
+            "request": "launch",
+            "name": "Deploy and Debug",
+            "host": "${env:ROKU_IP}",
+            "injectRdbOnDeviceComponent": true,
+            "password": "${env:ROKU_PASS}",
+            "envFile": "${workspaceFolder}/.env",
+            "preLaunchTask": "transpile",
+            "rootDir": "${workspaceFolder}/transpiled/build",
+            "sourceDirs": [
+                "${workspaceFolder}/app"
+            ],
+            "files": [
+                "components/**/*.*",
+                "manifest",
+                "source/**/*.*"
+            ]
+        }
+    ],
+    "version": "0.2.0"
+}

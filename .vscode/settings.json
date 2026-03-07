@@ -1,0 +1,18 @@
+{
+    "brightscript.debug.enableDebugProtocol": false,
+    "brightscript.deviceDiscovery.enabled": false,
+    "editor.insertSpaces": true,
+    "editor.renderWhitespace": "all",
+    "editor.tabSize": 4,
+    "editor.wordWrap": "on",
+    "files.exclude": {
+        "**/.git": true,
+        "**/node_modules": true,
+        "**/.DS_Store": true,
+        "**/package-lock.json": true,
+        "**/yarn.lock": true,
+        "**/out/**": true,
+        "**/transpiled/**": true,
+    },
+    "files.trimTrailingWhitespace": true,
+}

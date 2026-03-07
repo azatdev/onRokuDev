@@ -1,0 +1,15 @@
+http://192.168.88.31/vod/sample.mp4/index.m3u8
+
+rtmp://192.168.88.31/fallback/streamname
+
+http://192.168.88.31/live/streamname.m3u8
+
+pactl load-module module-tunnel-sink server=tcp:192.168.88.21:4656
+
+sudo docker run -it --rm --name nginx -p 1935:1935 -p 80:80 -p 443:443 -v /home/azat/Media/background videos/streamserver-assets:/vod  gdomod/nginx-vod-live-hls:latest
+
+
+docker run -it --rm --name nginx -p 1935:1935 -p 80:80 gdomod/nginx-vod-live-hls:latest
+
+npm run strapi import -- -f Archive.tar
+npm run strapi export -- --no-compress --no-encrypt --file export_data

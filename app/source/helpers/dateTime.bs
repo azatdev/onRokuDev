@@ -1,0 +1,543 @@
+import "pkg:/source/helpers/commonUtils.bs"
+
+function DateTime_formatDuration(durationSeconds as integer, continueWatchingFlag = false) as string
+    duration = ""
+
+    if durationSeconds > 0
+        date = createObject("roDateTime")
+        date.fromSeconds(durationSeconds)
+
+        hours = date.getHours()
+        minutes = date.getMinutes()
+        seconds = date.getSeconds()
+
+        if continueWatchingFlag
+            if hours <> 0
+                duration = tr("TKEY_FINAL_CW_TIME_LABEL")
+            else
+                duration = tr("TKEY_FINAL_CW_TIME_LABEL_MINUTES")
+            end if
+        end if
+
+        hoursStr = ""
+        minutesStr = ""
+
+        if hours > 0
+            if continueWatchingFlag
+                hoursStr = `${hours.toStr()} ${DateTime_pluralize("hours", hours)}`
+            else
+                duration = hours.Tostr() + " " + tr("TKEY_H")
+            end if
+        end if
+
+        if minutes > 0
+            if TypeGuard_isStringNotEmpty(duration)
+                duration = duration + " "
+            end if
+            if continueWatchingFlag
+                minutesStr = `${minutes.toStr()} ${DateTime_pluralize("minutes", minutes)}`
+            else
+                minutesStr = minutes.Tostr() + " " + tr("TKEY_M")
+                duration = duration + minutesStr
+            end if
+        end if
+
+        if hours = 0 and minutes < 10
+            if TypeGuard_isStringNotEmpty(duration)
+                duration = duration + " "
+            end if
+            if not continueWatchingFlag
+                if seconds <> 0
+                    duration = duration + seconds.Tostr() + tr("TKEY_S")
+                end if
+            end if
+        end if
+
+        if continueWatchingFlag
+            if TypeGuard_isStringNotEmpty(hoursStr) and TypeGuard_isStringNotEmpty(minutesStr)
+                duration = duration.replace("{{HOURS}}", hoursStr).replace("{{MINUTES}}", minutesStr)
+            else if TypeGuard_isStringNotEmpty(minutesStr) and TypeGuard_isStringEmpty(hoursStr)
+                duration = duration.replace("{{MINUTES}}", minutesStr)
+            else
+                duration = ""
+            end if
+        end if
+    end if
+
+    return duration
+end function
+
+
+'''''''''
+' DateTime_pluralize: returns epoch time down to ms
+' @return string - epoch time
+'''''''''
+function DateTime_pluralize(stringType, integerValue) as string
+    returnStr = ""
+
+    if TypeGuard_isStringEmpty(stringType) or not TypeGuard_isNumber(integerValue) then return returnStr
+
+    if stringType = "minutes"
+        returnStr = integerValue = 1 ? tr("TKEY_MINUTE") : tr("TKEY_MINUTES")
+    else if stringType = "hours"
+        returnStr = integerValue = 1 ? tr("TKEY_HOUR") : tr("TKEY_HOURS")
+    end if
+
+    return returnStr
+end function
+
+
+'''''''''
+' DateTime_convertTime: return a hh:mm:ss format time string from seconds
+'
+' @param {lenght} quantity of seconds
+' @return {string} string with the correspondent time format
+'''''''''
+function DateTime_convertTime(length as float, reserveHour = false as boolean) as string
+    fullTime = ""
+    minutes = (length \ 60)
+    hours = (minutes \ 60)
+    if hours > 0
+        minutes = minutes mod 60
+    end if
+
+    seconds = length mod 60
+    if seconds < 10
+        seconds = "0" + seconds.toStr()
+    else
+        seconds = seconds.toStr()
+    end if
+    if minutes < 10
+        minutes = "0" + minutes.toStr()
+    else
+        minutes = minutes.toStr()
+    end if
+
+    if hours > 0
+        hours = hours.toStr()
+        fullTime = hours + ":" + minutes + ":" + seconds
+    else
+        if reserveHour
+            fullTime = "0:" + minutes + ":" + seconds
+        else
+            fullTime = minutes + ":" + seconds
+        end if
+    end if
+
+    return fullTime
+end function
+
+
+'''''''''
+' DateTime_strftime:  strftime util
+' @param {date} as object - roDateTime instance
+' @param {format} as string - standard strftime format
+' @return {format} as string - final date string
+'''''''''
+function DateTime_strftime(date as dynamic, format as string) as string
+
+    if not TypeGuard_isDatetime(date) or TypeGuard_isStringEmpty(format) then return ""
+
+    help = {
+        addLeadingCharacter: function(int, character)
+            str = int.toStr()
+            if int < 10
+                str = character+str
+            end if
+            return str
+        end function
+        getHourNumber: function(int, twelveHour = false)
+            hour = int
+            if twelveHour
+                if int > 12
+                    hour = int - 12
+                else if int = 0
+                    hour = 12
+                end if
+            end if
+            return hour.toStr()
+        end function
+        getMeridian: function(int)
+            meridian = tr("TKEY_AM_TIMESTAMP")
+            if int >= 12
+                meridian = tr("TKEY_PM_TIMESTAMP")
+            end if
+            return meridian
+        end function
+        getDayOfWeekAlt: function(int)
+            if int = 0 then int = 7
+            return int.toStr()
+        end function
+    }
+
+    formats = {
+        "97": function(date, help)
+            return date.AsDateString("short-weekday").split(" ")[0]
+        end function ' a
+        "65": function(date, help)
+            return date.getWeekday()
+        end function ' A
+        "98": function(date, help)
+            return date.AsDateString("short-month").split(" ")[1]
+        end function 'b
+        "66": function(date, help)
+            return date.AsDateString("long-date").split(" ")[1]
+        end function 'B
+        "99": function(date, help)
+            return DateTime_strftime(date, "%a %b %e %H:%M:%S")
+        end function 'c
+        "100": function(date, help)
+            return help.addLeadingCharacter(date.getDayOfMonth(), "0")
+        end function 'd
+        "68": function(date, help)
+            return date.AsDateString("short-date")
+        end function 'D
+        "101": function(date, help)
+            return help.addLeadingCharacter(date.getDayOfMonth(), chr(32))
+        end function 'e
+        "70": function(date, help)
+            return DateTime_strftime(date, "%Y-%m-%d")
+        end function 'F
+        "72": function(date, help)
+            return help.addLeadingCharacter(date.getHours(), "0")
+        end function 'H
+        "73": function(date, help)
+            return help.addLeadingCharacter(help.getHourNumber(date.getHours(), true).toInt(), "0")
+        end function 'I
+        "108": function(date, help)
+            return help.getHourNumber(date.getHours(), true)
+        end function 'l
+        "109": function(date, help)
+            return help.addLeadingCharacter(date.getMonth(), "0")
+        end function 'm
+        "77": function(date, help)
+            return help.addLeadingCharacter(date.getMinutes(), "0")
+        end function 'M
+        "110": function(date, help)
+            return chr(10)
+        end function 'n
+        "112": function(date, help)
+            return ucase(help.getMeridian(date.getHours()))
+        end function 'p
+        "80": function(date, help)
+            return help.getMeridian(date.getHours())
+        end function 'P
+        "114": function(date, help)
+            return help.getMeridian(date.getHours()).split("").join(".")
+        end function 'r
+        "82": function(date, help)
+            return DateTime_strftime(date, "%H:%M")
+        end function 'R
+        "115": function(date, help)
+            return date.asSeconds().toStr()
+        end function 's
+        "83": function(date, help)
+            return help.addLeadingCharacter(date.getSeconds(), "0")
+        end function 'S
+        "84": function(date, help)
+            return DateTime_strftime(date, "%H:%M:%S")
+        end function 'T
+        "117": function(date, help)
+            return help.getDayOfWeekAlt(date.getDayOfWeek())
+        end function 'u
+        "119": function(date, help)
+            return date.getDayOfWeek().toStr()
+        end function 'w
+        "121": function(date, help)
+            return right(date.getYear().toStr(), 2)
+        end function 'y
+        "89": function(date, help)
+            return date.getYear().toStr()
+        end function 'Y
+        "122": function(date, help)
+            return date.getTimeZoneOffset().toStr()
+        end function 'z
+    }
+
+    regEx = createObject("roRegex", "%.", "i")
+    matches = regEx.MatchAll(format)
+
+    if matches.count() > 0
+        for each match in matches
+            key = match[0]
+            lookupKey = key.split("")[1]
+            asciiNum = asc(lookupKey).toStr()
+            if formats.doesExist(asciiNum)
+                replacement = formats[asciiNum](date, help)
+                replaceMatch = createObject("roRegex", key, "i")
+                format = replaceMatch.replaceAll(format, replacement)
+            end if
+        end for
+    end if
+
+    return format
+
+end function
+
+
+'''''''''
+' DateTime_strftime:  strftime util
+' @param {ISODate} as string - ISO8601 date that comes from the server
+' @param {localTimezone} as boolean - whether or not to convert time to local timezone
+' @param {createNew} as boolean - if ISODate is empty, create roDateTime with current datetime
+' @return {date} as object - roDateTime
+'''''''''
+function DateTime_newDate(ISODate as string, localTimezone = true as boolean, createNew = false as boolean) as dynamic
+
+    if TypeGuard_isStringEmpty(ISODate) and createNew = false then return ""
+
+    date = createObject("roDateTime")
+
+    if TypeGuard_isStringNotEmpty(ISODate)
+        date.fromISO8601String(ISODate)
+    end if
+
+    if localTimezone
+        epochSeconds = date.asSeconds()
+        offset = date.getTimeZoneOffset()
+        timezoneAdjustedSeconds = epochSeconds - (offset * 60)
+        date.fromSeconds(timezoneAdjustedSeconds)
+    end if
+
+    return date
+
+end function
+
+
+'''''''''
+' DateTime_difference:  difference between 2 dates
+' @param {date1} as object - roDateTime object
+' @param {date2} as object - roDateTime object
+' @param {interval} as string - time interval to calculate
+' @return {payload} as float - time difference as float in specified interval
+'''''''''
+function DateTime_difference(date1 as object, date2 as object, interval as string) as float
+    if not TypeGuard_isDatetime(date1) or not TypeGuard_isDatetime(date2) then return 0
+
+    seconds1 = date1.asSeconds()
+    seconds2 = date2.asSeconds()
+
+    diff = seconds1 - seconds2
+    payload = 0
+
+    if interval = "seconds"
+        payload = diff
+    else if interval = "minutes"
+        payload = diff / 60
+    else if interval = "hours"
+        payload = diff / 3600
+    else if interval = "days"
+        payload = diff / 86400
+    end if
+
+    return payload
+
+end function
+
+'''''''''
+' DateTime_makeISOString:  constructing ISO date string
+' @param {year} as string - string representing year
+' @param {month} as string - string representing month
+' @param {day} as string - string representing day
+' @param {hour} as string - string representing hour
+' @param {minute} as string - string representing minute
+' @param {seconds} as string - string representing seconds
+' @return string - constructed ISO date string
+'''''''''
+function DateTime_makeISOString(year = "" as string, month = "" as string, day = "" as string, hour = "" as string, minute = "" as string,  seconds = "" as string ) as string
+    dateNow = DateTime_newDate("", true, true)
+
+    targetYear = year
+    if targetYear = "" then targetYear = DateTime_strftime(dateNow, "%Y")
+
+    if month = ""
+        targetMonth = DateTime_strftime(dateNow, "%m")
+    else
+        targetMonth = right("0" + month, 2)
+    end if
+
+    if day = ""
+        targetDay = DateTime_strftime(dateNow, "%d")
+    else
+        targetDay = right("0" + day, 2)
+    end if
+
+    if hour = ""
+        targetHour = DateTime_strftime(dateNow, "%H")
+    else
+        targetHour = right("0" + hour, 2)
+    end if
+
+    if minute = ""
+        targetMinute = DateTime_strftime(dateNow, "%M")
+    else
+        targetMinute = right("0" + minute, 2)
+    end if
+
+    if seconds = ""
+        targetSeconds = DateTime_strftime(dateNow, "%S") + ".000"
+    else
+        targetSeconds = right("0" + seconds, 2) + ".000"
+    end if
+
+    date = [targetYear, targetMonth, targetDay].join("-")
+    time = [targetHour, targetMinute, targetSeconds].join(":")
+
+    return [date, time].join("T")
+end function
+
+'''''''''
+' DateTime_toSeconds: getting a number of seconds
+' @param {interval} as string - string representing year
+' @param {multiplier} as integer - string representing month
+' @return integer - number of seconds
+'''''''''
+function DateTime_toSeconds(interval as string, multiplier as integer) as integer
+
+    seconds = {
+        hour: 3600
+        day: 86400
+        week: 604800
+        month: 2629743
+        year: 31556926
+    }
+
+    if seconds[interval] = invalid then return 0
+
+    return seconds[interval] * multiplier
+end function
+
+'''''''''
+' DateTime_convertPosition: converting position between ssai position to actual
+' @param {position} as float - position of actual or ssai
+' @param {toType} as string - to "actual" position or "ssai"
+' @param {adSlots} as object - array of ad slot info
+' @return float - converted position
+'''''''''
+function DateTime_convertPosition(position as float, toType as string, adSlots as object) as float
+    delta = 0
+    for each slot in adSlots
+        if toType = "ssai" and position > slot.start
+            position += slot.duration
+        else if toType = "actual" and position > slot.end
+            delta += slot.duration
+        else if toType = "actual" and position > slot.start and position < slot.end
+            delta += position - slot.start
+        end if
+    end for
+    return position - delta
+end function
+
+''''''''
+' DateTime_convertActualToSSAIPosition: converting actual time to SSAI time
+' @param {position} as float - position of actual or ssai
+' @param {adSlots} as object - array of ad slot info
+' @return float - converted position
+'''''''''
+function DateTime_convertActualToSSAIPosition(position as float, adSlots as object) as float
+    if adSlots.count() = 0 or position <= adSlots[0].start
+        return position
+    else
+        delta = 0
+        lastSlotEnd = 0
+        timeToAdd = 0
+        for each slot in adSlots
+            delta += slot.start - lastSlotEnd
+            lastSlotEnd = slot.end
+            if position >= delta
+                timeToAdd += slot.duration
+            else
+                exit for
+            end if
+        end for
+    end if
+
+    return position + timeToAdd
+end function
+
+
+'''''''''
+' DateTime_getTimestamp: returns epoch time down to ms
+' @return string - epoch time
+'''''''''
+function DateTime_getTimestamp(returnStr = false, returnMil = true) as dynamic
+    date = CreateObject("roDateTime")
+    seconds& = date.AsSeconds()
+    milliseconds& = seconds& * 1000
+    datetime = returnMil ? milliseconds& + date.GetMilliseconds() : seconds&
+
+    return returnStr ? datetime.toStr() : datetime
+end function
+
+
+'''''''''
+' DateTime_getCWSectionYear: returns epoch time down to ms
+' @param {sectionDate} as string - 4 digit representation of month and day ex: "0116"
+' @return string - 4 digit representation of the section year
+'''''''''
+function DateTime_getCWSectionYear(sectionDate as string) as string
+    dateNow = DateTime_newDate("", true, true)
+    nowMonth = DateTime_strftime(dateNow, "%m")
+    nowYear = DateTime_strftime(dateNow, "%Y")
+    sectionMonth = left(sectionDate, 2)
+
+    if not len(sectionDate) = 4 then return nowYear
+
+    if nowMonth.toInt() - sectionMonth.toInt() < 0
+        sectionYear = nowYear.toInt() - 1
+        return sectionYear.toStr()
+    else
+        return nowYear
+    end if
+end function
+
+
+'''''''''
+' DateTime_getFakeInteractionTime: timestamp to be used for CW data that we don't have last interaction time for
+' @return string - ISO timestamp of today's day, a couple of minutes from midnight
+'''''''''
+function DateTime_getFakeInteractionTime(order = "", section = "") as string
+
+    if TypeGuard_isStringEmpty(section)
+        dateNow = DateTime_newDate("", true, true)
+        nowMonth = DateTime_strftime(dateNow, "%m")
+        nowDay = DateTime_strftime(dateNow, "%d")
+
+        section = `${nowMonth}${nowDay}`
+    end if
+
+    watchYear = DateTime_getCWSectionYear(section)
+    watchMonth  = left(section, 2)
+    watchDay = right(section, 2)
+    watchHour = "0"
+    ' Using the order saved in registry as the 'minute'
+    watchMinute = CommonUtils_getIntToString(order)
+    watchSecond = "0"
+
+    watchMinuteInt = CommonUtils_getInteger(watchMinute)
+
+    ' in case there is a situation with more than 60 items
+    if watchMinuteInt > 60
+        watchMonth = (fix(watchMinuteInt / 60)).toStr()
+        watchMinute = (watchMinuteInt mod 60).toStr()
+    end if
+
+    return DateTime_makeISOString(watchYear, watchMonth, watchDay, watchHour, watchMinute, watchSecond)
+end function
+
+'''''''''
+' DateTime_localToUTC: converts local time to UTC by adding the time difference
+' @return {date} as object - roDateTime
+'''''''''
+function DateTime_correctLocalToUTC(localTime as object) as object
+    resultingDate = createObject("roDateTime")
+
+    ' localTime is local time, expressed in UTC
+    epochSeconds = localTime.AsSeconds()
+    offset = localTime.getTimeZoneOffset()
+    ' multiply by two because
+    timezoneAdjustedSeconds = epochSeconds + (offset * 60)
+    resultingDate.fromSeconds(timezoneAdjustedSeconds)
+
+    return resultingDate
+end function
