@@ -2,6 +2,7 @@
 <component name="App" extends="Scene">
     <interface>
         <field id="launchArgs" type="assocArray" />
+        <field id="testFunctions" type="assocarray" />
     </interface>
     <children>
         <Label id="title" text="Hello World!" />

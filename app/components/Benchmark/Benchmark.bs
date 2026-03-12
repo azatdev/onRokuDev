@@ -1,0 +1,44 @@
+import "pkg:/source/helpers/typeGuard.bs"
+import "tests/AAvsRef.bs"
+import "tests/DataRetrieval.bs"
+import "tests/MtopVsM.bs"
+import "tests/NodeInitiation.bs"
+
+
+sub init()
+    m.top.observeFieldScoped("run", "onRun")
+    m.benchmarks = {
+        "AAvsRef": AAvsRef
+        "DataRetrieval": DataRetrieval
+        "MtopVsM": MtopVsM
+        "NodeInitiation": NodeInitiation
+    }
+end sub
+
+
+sub onRun(event = {})
+    if not TypeGuard_isEvent(event) then return
+
+    devMode = true
+
+    if devMode
+        doRun(event)
+    else
+        try
+            doRun(event)
+        catch e
+            ?"Error: " e
+        end try
+    end if
+end sub
+
+
+sub doRun(event)
+    data = event.getData()
+    funcName = data[0] ?? ""
+    funcOptions = data[1] ?? {}
+
+    benchClass = m.benchmarks[funcName]
+    benchmark = new benchClass()
+    benchmark.start(funcOptions)
+end sub

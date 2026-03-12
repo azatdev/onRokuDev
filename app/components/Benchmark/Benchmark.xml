@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="Benchmark" extends="Group">
+    <interface>
+        <field id="run" type="array" />
+    </interface>
+    <children>
+
+    </children>
+    <script type="text/brightscript" uri="Benchmark.bs" />
+</component>

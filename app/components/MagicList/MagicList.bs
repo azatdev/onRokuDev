@@ -1,15 +1,14 @@
 import "pkg:/source/helpers/dateTime.bs"
 import "pkg:/source/helpers/commonUtils.bs"
 import "pkg:/source/helpers/typeGuard.bs"
+import "pkg:/source/helpers/safeFunction.bs"
 
 sub init()
     m.list = m.top.findNode("list")
 
-    m.list.id = `${DateTime_getTimestamp()}-list`
     m.list.update({ focusPercent: 0.0 }, true)
     m.list.update({ childRect: {} }, true)
     m.list.showTargetRects = true
-
     m.list.observeFieldScoped("itemSelected", "onItemSelected")
     m.list.observeFieldScoped("itemFocused", "onItemFocused")
     m.list.observeFieldScoped("itemUnfocused", "onItemUnfocused")
@@ -60,9 +59,8 @@ sub init()
     m.totalRects = 0
     m.processedForRects = -1
     m.top.rectSizes = []
-
-    m.top.enableRenderTracking = true
 end sub
+
 
 function createTargetset(options = {})
     targetSet = createObject("roSGNode", "TargetSet")

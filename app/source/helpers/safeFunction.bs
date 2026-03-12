@@ -1,0 +1,37 @@
+sub initSafeFunctions(options = {})
+    try
+        if TypeGuard_isEmptyAssocArray(options) then return
+
+        m.top.addField("run", "array", true)
+        m.top.observeFieldScoped("run", "safeRun")
+
+        m.safeFunctions = options.safeFunctions
+    catch e
+        ?"Error: " e
+    end try
+end sub
+
+
+sub safeRun(event = {})
+    devMode = true
+
+    if devMode
+        doRun(event)
+    else
+        try
+            doRun(event)
+        catch e
+            ?"Error: " e
+        end try
+    end if
+end sub
+
+
+sub doRun(event)
+    data = TypeGuard_isEvent(event) ? event.getData() : event ?? {}
+
+    funcName = data[0] ?? ""
+    funcOptions = data[1] ?? {}
+
+    m.safeFunctions[funcName](funcOptions)
+end sub

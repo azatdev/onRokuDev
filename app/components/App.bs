@@ -1,8 +1,35 @@
 import "pkg:/source/helpers/appUtils.bs"
+import "pkg:/source/helpers/timestamps.bs"
+import "pkg:/source/plugins/stateable.bs"
+import "pkg:/source/plugins/safeable.bs"
+import "pkg:/source/roBoilerplate.bs"
 
 sub init()
-    ? "Azat says: " + `${false ? "yes" : "no"}`
 
+    testFunctions = {
+        add: function(func, options)
+            func(options)
+        end function
+    }
+
+    m.top.setRef("testFunctions", testFunctions)
+
+    ' benchmark = createObject("roSGNode", "Benchmark")
+    ' benchmark.run = ["DataRetrieval", { top: m.top }]
+
+    initFramework()
+
+    ' loadList()
+    ' loadPlugin()
+end sub
+
+
+function add()
+    return "add"
+end function
+
+
+sub loadList()
     rectConfig = {
         "autoclip": true,
         "bigSquare": [251, 321],
@@ -38,12 +65,7 @@ sub init()
 
     list.rectConfig = rectconfig
     list.color = "#FFFFFF00"
-    list.translation = [399,399]
+    list.translation = [399,198]
 
     list.setFocus(true)
-
-
-    ' setInterval(sub(args = {})
-    '     ?"ASDADASD "
-    ' end sub, {}, 1000)
 end sub

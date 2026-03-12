@@ -1,0 +1,5 @@
+class Stateable
+    sub new(params)
+
+    end sub
+end class

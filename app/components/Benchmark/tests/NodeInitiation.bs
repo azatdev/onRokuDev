@@ -1,0 +1,43 @@
+class NodeInitiation
+    sub new()
+        m.benchTimer = CreateObject("roTimespan")
+    end sub
+
+
+    sub start(options = {})
+        for each item in options.items()
+            m[item.key] = item.value
+        end for
+
+        m.benchmark1()
+    end sub
+
+
+    sub end(options = {})
+    end sub
+
+
+    sub benchmark1()
+        m.benchTimer.mark()
+
+        for ix = 0 to 999
+            m.top.createChild("NodeXML")
+        end for
+
+        ?"benchmark1 " + m.benchTimer.totalMilliseconds().toStr()
+        m.benchmark2()
+    end sub
+
+
+    sub benchmark2()
+        m.benchTimer.mark()
+
+        for ix = 0 to 999
+            m.top.createChild("NodeBRS")
+        end for
+
+        ?"benchmark2 " + m.benchTimer.totalMilliseconds().toStr()
+        m.end()
+    end sub
+
+end class

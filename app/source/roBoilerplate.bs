@@ -1,0 +1,9 @@
+sub initFramework()
+    m.scene = m.top.getScene()
+    ?"initFramework ", m.scene
+
+    m.scene.addField("privateFunctions", "assocarray", false)
+    m.scene.addField("state", "assocarray", false)
+
+
+end sub

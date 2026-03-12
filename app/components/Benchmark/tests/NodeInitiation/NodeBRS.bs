@@ -1,0 +1,18 @@
+sub init()
+
+    m.top.addField("advanceKey", "string", false)
+    m.top.addField("content", "node", false)
+    m.top.addField("focused", "boolean", false)
+    m.top.addField("focusedContentIndex", "integer", false)
+    m.top.addField("focusedTargetSetIndex", "integer", false)
+    m.top.addField("itemFocused", "integer", true)
+    m.top.addField("itemSelected", "integer", true)
+    m.top.addField("itemUnfocused", "integer", true)
+    m.top.addField("lastvisibleindex", "integer", false)
+    m.top.addField("rectConfig", "assocarray", false)
+    m.top.addField("rects", "array", false)
+    m.top.addField("rectSizes", "array", false)
+    m.top.addField("reverseKey", "string", false)
+    m.top.addField("reversing", "boolean", false)
+
+end sub

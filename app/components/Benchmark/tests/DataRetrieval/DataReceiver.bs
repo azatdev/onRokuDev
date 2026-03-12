@@ -1,0 +1,22 @@
+sub init()
+    m.top.observeFieldScoped("data", "onDataChange")
+    m.top.observeFieldScoped("dataRef", "onDataRefChange")
+end sub
+
+sub onDataChange()
+    data = m.top.data
+end sub
+
+
+sub getData(data)
+end sub
+
+
+sub getRef()
+    data = m.top.getRef("dataRef")
+end sub
+
+
+sub onDataRefChange(event)
+    data = event.getData()
+end sub
