@@ -1,0 +1,30 @@
+sub init()
+    m.top.observeFieldScoped("fieldData", "onFieldDataChange")
+    m.top.observeFieldScoped("dataArray", "onDataArrayChange")
+    m.top.observeFieldScoped("dataRef", "onDataRefChange")
+end sub
+
+
+function dataFunc(options = {})
+    data = options.data
+end function
+
+
+function onDataArrayChange(event)
+    data = event.getData()
+end function
+
+
+function onFieldDataChange(event)
+    data = event.getData()
+end function
+
+
+sub refFunc()
+    data = m.top.getRef("dataRef")
+end sub
+
+
+function onDataRefChange()
+    ?"onDataRefChange "
+end function

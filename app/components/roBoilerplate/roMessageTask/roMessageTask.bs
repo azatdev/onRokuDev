@@ -1,0 +1,14 @@
+import "pkg:/source/wrapperFunctions.bs"
+
+
+sub init()
+    m.top.functionName = "sendMessage"
+end sub
+
+
+function sendMessage()
+    publish("TEST_EVENT", {
+        name: "Azat4"
+    })
+    return true
+end function

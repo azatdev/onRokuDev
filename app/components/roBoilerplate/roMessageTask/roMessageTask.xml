@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="roMessageTask" extends="Task" >
+    <interface>
+    </interface>
+    <script type="text/brightscript" uri="roMessageTask.bs"/>
+</component>

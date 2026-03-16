@@ -1,7 +1,7 @@
-namespace Timestamp
-    function start()
-        m.timestampDeltas = []
-        m.timestampDate = createObject("roDateTime")
+' namespace Timestamp
+'     function start()
+'         m.timestampDeltas = []
+'         m.timestampDate = createObject("roDateTime")
 
-    end function
-end namespace
+'     end function
+' end namespace

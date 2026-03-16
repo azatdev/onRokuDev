@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="NodeTwo" extends="Group">
+    <interface>
+        <field id="fieldData" type="assocarray" alwaysNotify="true" />
+        <field id="dataArray" type="array" />
+        <field id="dataRef" type="assocarray" />
+        <function name="dataFunc" />
+        <function name="refFunc" />
+    </interface>
+    <children>
+
+    </children>
+    <script type="text/brightscript" uri="NodeTwo.bs" />
+</component>

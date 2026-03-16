@@ -12,7 +12,7 @@ class DataRetrieval
             m[item.key] = item.value
         end for
 
-        m.scene = m.top.getScene()
+        m.scene = m.global.getScene()
         m.benchmark1()
     end sub
 

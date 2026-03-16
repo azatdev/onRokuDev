@@ -1,0 +1,44 @@
+import "pkg:/source/roku_modules/rodash/rodash.brs"
+
+function app()
+    return m.global.getScene()
+end function
+
+
+function messageQueue()
+    if m.messageQueue = invalid
+        ' bs:disable-next-line
+        m.messageQueue = createObject("roRenderThreadQueue")
+    end if
+
+    return m.messageQueue
+end function
+
+
+function subscribe(options = {})
+    for each event in options.items()
+        messageQueue().addMessageHandler(event.key, event.value)
+    end for
+end function
+
+
+function publish(name = "", options = {})
+    messageQueue().postMessage(name, options)
+end function
+
+
+function exec(name = "", options = {}, node = m.top)
+    ?"EXEC TSET"
+    if rodash.isNonEmptyAA(options) then node.setRef("azSafeFuncPayload", options)
+
+    node.azTriggerSafeFunc = name
+
+    returnObj = node.getRef("azSafeFuncReturnObj")
+
+    if rodash.isNonEmptyAA(returnObj)
+        node.setRef("azSafeFuncReturnObj", {})
+        return returnObj
+    end if
+
+    return invalid
+end function

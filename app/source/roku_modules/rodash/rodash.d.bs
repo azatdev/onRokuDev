@@ -1,0 +1,2315 @@
+' Adds two numbers.
+' @since 0.0.21
+' @category Math
+' @param {Dynamic} augend - The first number in an addition
+' @param {Dynamic} addend - The second number in an addition
+' @returns {Dynamic} Returns the total
+' @example
+' rodash.add(1, 2) // => 3
+namespace rodash
+function add(augend, addend)
+end function
+end namespace
+
+' Returns a formatted version of the current time/date.
+' @since 0.0.21
+' @category Date
+' @param {String} format - The date format
+' @param {Boolean} asLocal - Whether to get the local date. Default is false.
+' @returns {String} value - Returns a formatted version of the current time/date
+
+namespace rodash
+function asDateString(format = "long-date" as String, asLocal = false as Boolean) as String
+end function
+end namespace
+
+' Returns the current time in seconds.
+' @since 0.0.21
+' @category Date
+' @param {Boolean} asLocal - Whether to get the local time. Default is false.
+' @returns {Integer} value - Returns the current time in seconds
+
+namespace rodash
+function asSeconds(asLocal = false as Boolean) as Integer
+end function
+end namespace
+
+' Assigns own enumerable string keyed properties of source objects to the destination object. Source objects are applied from left to right. Subsequent sources overwrite property assignments of previous sources.
+' This method mutates object and is loosely based on lodash Object.assign.
+' @since 0.0.21
+' @category Object
+' @param {Dynamic} baseAA - The destination object
+' @params {Object} sources - The source objects
+' @params {Dynamic} Mutaded baseAA
+' @returns {Dynamic} Returns the destination object
+' @example
+' rodash.assign({ 'a': 0 }, { 'b': 1 }, { 'a': 2 }) // => { 'a': 2, 'b': 1 }
+namespace rodash
+function assign(baseAA as Dynamic, sources = Invalid as Dynamic) as Dynamic
+end function
+end namespace
+
+' Creates an array of values corresponding to paths of object.
+' @since 0.0.21
+' @category Object
+' @param {AssocArray} obj - The object to iterate over.
+' @param {Array} paths - The property paths to pick.
+' @returns {Array} Returns the picked values.
+' @example
+' rodash.at({a: {b: 2}}, ["a.b"])
+' // [2]
+' rodash.at({a: {b: 2}}, ["a.b", "a.c"])
+' // [2, invalid]
+namespace rodash
+function at(obj as Object, paths as Object)
+end function
+end namespace
+
+' Converts a string to camel case. Removes special characters and spaces.
+' @since 0.0.21
+' @category String
+' @param {String} value - The string to convert.
+' @returns {String} The camel case string.
+' @example
+' rodash.camelCase("Foo Bar") // => "fooBar"
+' rodash.camelCase("foo/bar") // => "fooBar"
+namespace rodash
+function camelCase(value = "" as String)
+end function
+end namespace
+
+' Capitalizes the first letter of a string.
+' @since 0.0.21
+' @category String
+' @param {String} value - The string to capitalize.
+' @returns {String} The capitalized string.
+' @example
+' rodash.capitalize("foo bar") // => "Foo bar"
+namespace rodash
+function capitalize(value = "" as String)
+end function
+end namespace
+
+' Computes number rounded up to precision.
+' @since 0.0.21
+' @category Math
+' @param {Integer} number - The number to round up
+' @param {Integer} precision - The precision to round up to
+' @returns {Integer} Returns the rounded up number
+' @example
+' rodash.ceil(4.006) // => 5
+' rodash.ceil(0.056789, 4) // => 0.0568
+namespace rodash
+function ceil(number = 0, precision = 0 as Dynamic) as Dynamic
+end function
+end namespace
+
+' Creates an array of elements split into groups the length of size. If array can't be split evenly, the final chunk will be the remaining elements.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to process
+' @param {Integer} chunkSize - The length of each chunk
+' @returns {Array} Returns the new array of chunks
+' @example
+' rodash.chunk([1, 2, 3, 4, 5], 2) // => [[1, 2], [3, 4], [5]]
+' rodash.chunk([1, 2, 3, 4, 5], 3) // => [[1, 2, 3], [4, 5]]
+namespace rodash
+function chunk(array as Object, chunkSize = 1 as Integer) as Object
+end function
+end namespace
+
+' Clamps number within the inclusive lower and upper bounds.
+' @since 0.0.21
+' @category Number
+' @param {Integer} number - The number to clamp
+' @param {Integer} lower - The lower bound
+' @param {Integer} upper - The upper bound
+' @returns {Integer} Returns the clamped number
+' @example
+' rodash.clamp(-10, -5, 5) // => -5
+' rodash.clamp(10, -5, 5) // => 5
+
+namespace rodash
+function clamp(number, lower, upper) as Dynamic
+end function
+end namespace
+
+' Creates a shallow clone of value.
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value - The value to be cloned
+' @returns {Dynamic} The cloned value
+namespace rodash
+function clone(value = Invalid as Dynamic) as Dynamic
+end function
+end namespace
+
+' Creates an array with all falsey values removed. The values false, 0, "", and invalid are falsey.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to compact
+' @returns {Array} Returns the new array of filtered values
+' @example
+' rodash.compact([0, 1, false, 2, '', 3]) // => [1, 2, 3]
+namespace rodash
+function compact(array as Object) as Object
+end function
+end namespace
+
+' Creates a new array concatenating array with any additional arrays and/or values.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to concatenate
+' @param {Array} values - The values to concatenate
+' @returns {Array} Returns the new concatenated array
+' @example
+' rodash.concat([1], [2, [3], [[4]]]) // => [1, 2, [3], [[4]]]
+namespace rodash
+function concat(array as Object, values as Object) as Object
+end function
+end namespace
+
+' Creates a new roSGNode object with the specified nodeType and fields. Passed fields are set after the node is created and init() method is called.
+' @since 0.0.32
+' @category Node
+' @param {String} nodeType - The type of node to create
+' @param {Object} fields - The fields to set on the node
+' @returns {Object} Returns the new roSGNode object
+' @example
+' rodash.createNode("Rectangle", { id: "myRectangle" }) // => <Rectangle: roSGNode>
+' rodash.createNode("Label", { id: "myLabel" }) // => <Label: roSGNode>
+namespace rodash
+function createNode(nodeType = "Node" as String, fields = {} as Dynamic) as Object
+end function
+end namespace
+
+' Invokes func after wait milliseconds. Any additional arguments are provided to func when it's invoked.
+' @since 0.0.22
+' @category Function
+' @param {Sub} callback - The function sub to be called after a set delay
+' @param {Float} [wait] - The number of milliseconds to delay
+' @param {Object} options - The options object
+' @param {Dynamic} options[context] - The context to be used when calling the callback
+' @param {Float} options[maxWait] - The maximum time the sub is allowed to be delayed before it's invoked.
+namespace rodash
+sub debounce(callback as Function, wait = 0 as Dynamic, options = {
+maxWait: -1
+} as Object)
+end sub
+end namespace
+' Deburrs string by converting Latin-1 Supplement and Latin Extended-A letters to basic Latin letters and removing combining diacritical marks.
+' @since 0.0.30
+' @category String
+' @param {String} input - The string to deburr
+' @returns {String} Returns the deburred string
+' @example
+' deburr("déjà vu") ' => "deja vu"
+namespace rodash
+function deburr(input = "" as String)
+end function
+end namespace
+
+' Invokes sub after wait milliseconds. Any additional arguments are provided to sub when it's invoked.
+' @since 0.0.22
+' @category Function
+' @param {Sub} callback - The sub to be called after a set delay
+' @param {Float} [wait] - The number of milliseconds to delay invocation
+' @param {Dynamic} context - A single item of data to be passed into the callback when invoked
+namespace rodash
+sub delay(callback as Function, wait = 0 as Float, context = Invalid as Dynamic)
+end sub
+end namespace
+' Creates an array of array values not included in the other given arrays using SameValueZero for equality comparisons. The order and references of result values are determined by the first array.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to inspect
+' @param {Array} values - The values to exclude
+' @returns {Array} Returns the new array of filtered values
+' @example
+' rodash.difference([2, 1], [2, 3]) // => [1]
+namespace rodash
+function difference(array = CreateObject("roArray", 0, true) as Object, values = CreateObject("roArray", 0, true) as Object) as Object
+end function
+end namespace
+
+' This method is like rodash.difference except that it accepts iteratee which is invoked for each element of array and values
+' to generate the criterion by which they're compared. The order and references of result values are determined by the first array.
+' The iteratee is invoked with one argument: (value).
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to inspect
+' @param {Array} values - The values to exclude
+' @param {Dynamic} iteratee - The iteratee invoked per element
+' @returns {Array} Returns the new array of filtered values
+' @example
+' rodash.differenceBy([2.1, 1.2], [2.3, 3.4], rodash.floor) // => [1.2]
+' rodash.differenceBy([{ "x": 2 }, { "x": 1 }], [{ "x": 1 }], "x") // => [{ "x": 2 }]
+namespace rodash
+function differenceBy(array = CreateObject("roArray", 0, true) as Object, values = CreateObject("roArray", 0, true) as Object, iteratee = Invalid as Dynamic) as Object
+end function
+end namespace
+
+' This method is like rodash.difference except that it accepts comparator which is invoked to compare elements of array to values. The order and references of result values are determined by the first array. The comparator is invoked with two arguments: (arrVal, othVal).
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to inspect
+' @param {Array} values - The values to exclude
+' @param {Dynamic} iteratee - The iteratee invoked per element
+' @returns {Array} Returns the new array of filtered values
+' @example
+' objects = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }]
+' rodash.differenceWith(objects, [{ 'x': 1, 'y': 2 }], rodash.isEqual)
+' // => [{ 'x': 2, 'y': 1 }]
+namespace rodash
+function differenceWith(array = CreateObject("roArray", 0, true) as Object, values = CreateObject("roArray", 0, true) as Object, comparator = Invalid) as Object
+end function
+end namespace
+
+' Divides two numbers
+' @since 0.0.21
+' @category Math
+' @param {Dynamic} dividend - The first number in a division
+' @param {Dynamic} divisor - The second number in a division
+' @returns {Integer} Returns the quotient
+' @example
+' rodash.divide(6, 4) // => 1.5
+namespace rodash
+function divide(dividend as Dynamic, divisor as Dynamic) as Dynamic
+end function
+end namespace
+
+' Creates a slice of array with n elements dropped from the beginning.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to query
+' @param {Integer} n - The number of elements to drop
+' @returns {Array} Returns the slice of array
+' @example
+' rodash.drop([1, 2, 3], 1) // => [2, 3]
+namespace rodash
+function drop(array = CreateObject("roAssociativeArray") as Object, n = 1 as Integer)
+end function
+end namespace
+
+' Creates a slice of array with n elements dropped from the end.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to query
+' @param {Integer} n - The number of elements to drop
+' @returns {Array} Returns the slice of array
+' @example
+' rodash.dropRight([1, 2, 3], 1) // => [1, 2]
+namespace rodash
+function dropRight(array = CreateObject("roAssociativeArray") as Object, n = 1 as Integer)
+end function
+end namespace
+
+' Creates a slice of array excluding elements dropped from the end. Elements are dropped until predicate returns falsey. The predicate is invoked with three arguments: (value, index, array).
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to query
+' @param {Dynamic} predicate - The function invoked per iteration
+' @returns {Array} Returns the slice of array
+namespace rodash
+function dropRightWhile(array = CreateObject("roAssociativeArray") as Object, predicate = Invalid)
+end function
+end namespace
+
+' Creates a slice of array excluding elements dropped from the beginning. Elements are dropped until predicate returns falsey. The predicate is invoked with three arguments: (value, index, array).
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to query
+' @param {Dynamic} predicate - The function invoked per iteration
+' @returns {Array} Returns the slice of array
+namespace rodash
+function dropWhile(array = CreateObject("roArray", 0, true) as Object, predicate = Invalid)
+end function
+end namespace
+
+' Checks if `string` ends with the given target string.
+' @since 0.0.21
+' @category String
+' @param {String} source - The string to search.
+' @param {String} target - The string to search for.
+' @param {Number} position - The position to search up to.
+' @returns {Boolean} Returns `true` if `string` ends with `target`, else `false`.
+' @example
+' rodash.endsWith("abc", "c") // => true
+' rodash.endsWith("abc", "b") // => false
+namespace rodash
+function endsWith(source = "" as String, target = "" as String, position = Invalid as Dynamic)
+end function
+end namespace
+
+' Checks if two values are equivalent.
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value - The value to compare.
+' @param {Dynamic} other - The other value to compare.
+' @returns {Boolean} Returns `true` if the values are equivalent, else `false`.
+' @example
+' rodash.eq(1, 1) // => true
+' rodash.eq(1, 2) // => false
+namespace rodash
+function eq(value as Dynamic, other as Dynamic)
+end function
+end namespace
+
+' Escapes a string for insertion into HTML, replacing &, <, >, ", `, and ' characters.
+' @since 0.0.21
+' @category String
+' @param {String} source - The string to escape.
+' @returns {String} The escaped string.
+' @example
+' rodash.escape("fred, barney, & pebbles") // => 'fred, barney, &amp; pebbles'
+namespace rodash
+function escape(source = "" as String)
+end function
+end namespace
+
+' Escapes a string for insertion into a regular expression.
+' @since 0.0.21
+' @category String
+' @param {String} source - The string to escape.
+' @returns {String} The escaped string.
+namespace rodash
+function escapeRegExp(source = "" as String)
+end function
+end namespace
+
+' Fills elements of array with value from start up to, but not including, end.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to fill
+' @param {Dynamic} value - The value to fill array with
+' @param {Integer} startPos - The start position
+' @param {Integer} endPos - The end position
+' @returns {Array} Returns the mutated array
+' @example
+' rodash.fill([1, 2, 3], "a", 1, 2) // => [1, "a", 3]
+' rodash.fill([1, 2, 3], "a") // => ["a", "a", "a"]
+' rodash.fill([1, 2, 3], "a", 1) // => [1, "a", "a"]
+namespace rodash
+function fill(array = CreateObject("roArray", 0, true) as Object, value = "" as Dynamic, startPos = Invalid, endPos = Invalid)
+end function
+end namespace
+
+' Iterates over elements of collection, returning an array of all elements predicate returns truthy for.
+' @since 0.0.35
+' @category Collection
+' @param {Array} sourceArray - The array to inspect
+' @param {Function} predicate - The function invoked per iteration
+' @returns {Array} Returns the matched elements
+' @example
+' users = [
+'   { "user": "barney", "active": false, "age": 50 },
+'   { "user": "fred", "active": false, "age": 40 },
+'   { "user": "pebbles", "active": true, "age": 10 }
+' ]
+'
+' rodash.filter(users, function(o)
+'   return o.active
+' end function)
+' // => [{ "user": "pebbles", "active": true, "age": 10 }]
+'
+' rodash.filter(users, { "age": 40 })
+' // => [{ "user": "fred", "active": false, "age": 40 }]
+namespace rodash
+function filter(sourceArray as Object, predicate as Dynamic) as Object
+end function
+end namespace
+
+' Iterates over elements of collection, returning the first element predicate returns truthy for. The predicate is invoked with three arguments: (value, index|key, collection).
+' @since 0.0.22
+' @category Collection
+' @param {Array} array - The array to inspect
+' @param {Dynamic} predicate - The function invoked per iteration
+' @param {Integer} fromIndex - The index to search from
+' @returns {Dymanic} Returns the matched element, else invalid.
+' @example
+' users = [
+'   { "user": "barney", "active": false },
+'   { "user": "fred", "active": false },
+'   { "user": "pebbles", "active": true }
+' ]
+'
+' rodash.find(users, function(o)
+'   return o.user = "barney"
+' end function)
+' // => { "user": "barney", "active": false }
+namespace rodash
+function find(array, predicate = Invalid as Dynamic, fromIndex = 0 as Integer) as Dynamic
+end function
+end namespace
+
+' This method is like rodash.find except that it returns the index of the first element predicate returns truthy for instead of the element itself.
+' By default, when comparing arrays and associative arrays the function will compare the values on the elements. If the strict parameter is set to true, the function will compare the references of the AA and Array elements.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to inspect
+' @param {Dynamic} predicate - The function invoked per iteration
+' @param {Integer} fromIndex - The index to search from
+' @param {Boolean} strict - If true, the function will compare the references of the AA and Array elements
+' @returns {Integer} Returns the index of the found element, else -1
+namespace rodash
+function findIndex(array, predicate = Invalid as Dynamic, fromIndex = 0 as Integer, strict = false as Boolean) as Integer
+end function
+end namespace
+
+' This method is like rodash.findIndex except that it iterates over elements of collection from right to left.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to inspect
+' @param {Dynamic} predicate - The function invoked per iteration
+' @param {Integer} fromIndex - The index to search from
+' @returns {Integer} Returns the index of the found element, else -1
+namespace rodash
+function findLastIndex(array, predicate = Invalid, fromIndex = 0 as Integer)
+end function
+end namespace
+
+' An alias to the head function.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to query
+' @returns {Dynamic} Returns the first element of array
+' @example
+' rodash.first([1, 2, 3]) // => 1
+' rodash.first([]) // => Invalid
+namespace rodash
+function first(array = CreateObject("roArray", 0, true))
+end function
+end namespace
+
+' Flattens array a single level deep.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to flatten
+' @returns {Dynamic} Returns the new flattened array
+' @example
+' rodash.flatten([1, [2, [3, [4]], 5]]) // => [1, 2, [3, [4]], 5]
+namespace rodash
+function flatten(array = CreateObject("roArray", 0, true) as Object) as Object
+end function
+end namespace
+
+' Recursively flattens array.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to flatten
+' @returns {Dynamic} Returns the new flattened array
+' @example
+' rodash.flattenDeep([1, [2, [3, [4]], 5]]) ' => [1, 2, 3, 4, 5]
+' rodash.flattenDeep([1, [2, [3, [4]], 5], 6]) ' => [1, 2, 3, 4, 5, 6]
+namespace rodash
+function flattenDeep(array = CreateObject("roArray", 0, true))
+end function
+end namespace
+
+' Recursively flatten array up to depth times.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to flatten
+' @param {Integer} depth - The maximum recursion depth
+' @returns {Dynamic} Returns the new flattened array
+namespace rodash
+function flattenDepth(array = Invalid, depth = 1 as Integer)
+end function
+end namespace
+
+' Computes number rounded down to precision
+' @since 0.0.21
+' @category Math
+' @param {Integer} number - The number to round down
+' @param {Integer} precision - The precision to round down to
+' @returns {Integer} Returns the rounded down number
+' @example
+' rodash.floor(4.006) // => 4
+' rodash.floor(0.046, 2) // => 0.04
+' rodash.floor(4060, -2) // => 4000
+namespace rodash
+function floor(number = 0, precision = 0 as Dynamic) as Dynamic
+end function
+end namespace
+
+' Iterates over elements of collection and invokes iteratee for each element. The iteratee is invoked with three arguments: (value, index|key, collection). Iteratee functions may exit iteration early by explicitly returning false.
+' Note: As with other "Collections" methods, objects with a "length" property are iterated like arrays. To avoid this behavior use rodash.forIn or rodash.forOwn for object iteration.
+' @since 0.0.21
+' @category Collection
+' @param {Dynamic} collection - The collection to iterate over
+' @param {Dynamic} iteratee - The function invoked per iteration
+' @returns {Dynamic} Returns collection
+' @example
+' rodash.forEach([1, 2], function(value)
+'   print value
+' end function)
+' // => Logs `1` then `2`
+namespace rodash
+function forEach(collection = Invalid as Dynamic, iteratee = Invalid as Dynamic)
+end function
+end namespace
+
+' This method is like rodash.forEach except that it iterates over elements of collection from right to left.
+' @since 0.0.21
+' @category Collection
+' @param {Dynamic} collection - The collection to iterate over
+' @param {Dynamic} iteratee - The function invoked per iteration
+' @returns {Dynamic} Returns collection
+' @example
+' rodash.forEachRight([1, 2], function(value)
+'   print value
+' end function)
+' // => Logs `2` then `1`
+namespace rodash
+function forEachRight(collection = Invalid as Dynamic, iteratee = Invalid as Dynamic)
+end function
+end namespace
+
+' Iterates over own and inherited enumerable string keyed properties of an object and invokes iteratee for each property. The iteratee is invoked with three arguments: (value, key, object). Iteratee functions may exit iteration early by explicitly returning false.
+' @since 0.0.21
+' @category Object
+' @param {Dynamic} obj - The object to iterate over
+' @param {Dynamic} iteratee - The function invoked per iteration
+' @returns {Object} Returns object
+namespace rodash
+function forIn(obj = CreateObject("roAssociativeArray") as Object, iteratee = Invalid as Dynamic)
+end function
+end namespace
+
+' This method is like rodash.forIn except that it iterates over properties of object in the opposite order.
+' @since 0.0.21
+' @category Object
+' @param {Dynamic} obj - The object to iterate over
+' @param {Dynamic} iteratee - The function invoked per iteration
+' @returns {Object} Returns object
+' @example
+' rodash.forInRight({ 'a': 1, 'b': 2 }, function(value, key)
+'   print key
+' end function)
+' // => Logs `b` then `a`
+namespace rodash
+function forInRight(obj = CreateObject("roAssociativeArray") as Object, iteratee = Invalid as Dynamic)
+end function
+end namespace
+
+' Iterates over own enumerable string keyed properties of an object and invokes iteratee for each property. The iteratee is invoked with three arguments: (value, key, object). Iteratee functions may exit iteration early by explicitly returning false.
+' @since 0.0.21
+' @category Object
+' @param {Dynamic} obj - The object to iterate over
+' @param {Dynamic} iteratee - The function invoked per iteration
+' @returns {Object} Returns object
+namespace rodash
+function forOwn(obj = CreateObject("roAssociativeArray") as Object, iteratee = Invalid as Dynamic)
+end function
+end namespace
+
+' This method is like rodash.forOwn except that it iterates over properties of object in the opposite order.
+' @since 0.0.21
+' @category Object
+' @param {Dynamic} obj - The object to iterate over
+' @param {Dynamic} iteratee - The function invoked per iteration
+' @returns {Object} Returns object
+namespace rodash
+function forOwnRight(obj = CreateObject("roAssociativeArray") as Object, iteratee = Invalid as Dynamic)
+end function
+end namespace
+
+' Converts an ISO 8601 string to a date object.
+' @since 0.0.21
+' @category Date
+' @param {String} dateString - The date string to convert.
+' @param {Boolean} asLocal - Whether to get the local date. Default is false.
+' @returns {Object} The date object.
+
+namespace rodash
+function fromISO8601String(dateString = "" as String, asLocal = false as Boolean) as Integer
+end function
+end namespace
+
+' The inverse of rodash.toPairs; this method returns an object composed from key-value pairs.
+' @since 0.0.24
+' @category Array
+' @param {Array} pairs - And array of arrays to be converted to an object
+' @returns {Object} Returns the new object
+namespace rodash
+function fromPairs(pairs = CreateObject("roArray", 0, true) as Object) as Object
+end function
+end namespace
+
+' Converts a number of seconds to a date object.
+' @since 0.0.21
+' @category Date
+' @param {Number} numSeconds - The number of seconds to convert.
+' @param {Boolean} asLocal - Whether to get the local date. Default is false.
+' @returns {Object} The date object.
+
+namespace rodash
+function fromSeconds(numSeconds = 0 as Integer, asLocal = false as Boolean) as Integer
+end function
+end namespace
+
+
+' TODO: Rewrite this due to scoping issue
+' @ignore
+' Creates an array of function property names from own enumerable properties of object.
+' @category Object
+' @param {Dynamic} obj - The object to iterate over
+' @returns {Object} Returns object
+namespace rodash
+function functions(obj = CreateObject("roAssociativeArray") as Object)
+end function
+end namespace
+
+
+' TODO: Rewrite this due to scoping issue
+' @ignore
+' Creates an array of function property names from own and inherited enumerable properties of object.
+' @param {Dynamic} obj - The object to iterate over
+' @returns {Object} Returns object
+namespace rodash
+function functionsIn(obj = CreateObject("roAssociativeArray") as Object)
+end function
+end namespace
+
+' Gets the value at path of object. If the resolved value is undefined, the defaultValue is returned in its place.
+' @since 0.0.21
+' @category Object
+' @param {Object} aa - Object to drill down into.
+' @param {String} keyPath - A dot notation based string to the expected value.
+' @param {Dynamic} fallback - A return fallback value if the requested field could not be found or did not pass the validator function.
+' @param {Function} validator - A function used to validate the output value matches what you expected.
+' @returns {Dynamic} The result of the drill down process
+' @example
+' rodash.get({a: {b: {c: 3}}}, 'a.b.c') ' => 3
+' rodash.get({a: {b: {c: 3}}}, 'a.b.d') ' => invalid
+' rodash.get({a: {b: {c: 3}}}, 'a.b.d', 'default') ' => 'default'
+' rodash.get({a: {b: {c: 3}}}, 'a.b.c', -1, rodash.isNumber) ' => 3
+' rodash.get({a: {b: {c: 3}}}, 'a.b.d', -1, rodash.isNumber) ' => -1
+namespace rodash
+function get(aa as Object, keyPath as String, fallback = Invalid as Dynamic, validator = rodash.isNotInvalid as Function) as Dynamic
+end function
+end namespace
+
+' Gets the AA value at path of object. Calls rodash.get with the isAA validator function.
+' @since 0.0.25
+' @category Object
+' @param {Object} aa - Object to drill down into.
+' @param {String} keyPath - A dot notation based string to the expected value.
+' @param {Assocarray} fallback - A return fallback value if the requested field could not be found or did not pass the validator function.
+' @returns {Assocarray} The result of the drill down process
+' @example
+' rodash.getAA({a: {b: {c: 3}}}, 'a.b') ' => {c: 3}
+' rodash.getAA({a: {b: {c: 3}}}, 'a.b.d') ' => {}
+' rodash.getAA({a: {b: {c: 3}}}, 'a.b.c') ' => {}
+' rodash.getAA({a: {b: {c: 3}}}, 'a.b.d', {d: 4}) ' => {d: 4}
+
+namespace rodash
+function getAA(aa as Object, keyPath as String, fallback = CreateObject("roAssociativeArray") as Object) as Object
+end function
+end namespace
+
+' Gets the Array value at path of object. Calls rodash.get with the isArray validator function.
+' @since 0.0.25
+' @category Object
+' @param {Object} aa - Object to drill down into.
+' @param {String} keyPath - A dot notation based string to the expected value.
+' @param {Array} fallback - A return fallback value if the requested field could not be found or did not pass the validator function.
+' @returns {Array} The result of the drill down process
+' @example
+' rodash.getArray({a: {b: {c: [1, 2, 3]}}}, 'a.b.c') ' => [1, 2, 3]
+' rodash.getArray({a: {b: {c: 3}}}, 'a.b.d') ' => []
+' rodash.getArray({a: {b: {c: 3}}}, 'a.b.c') ' => []
+' rodash.getArray({a: {b: {c: 3}}}, 'a.b.d', [1, 2, 3]) ' => [1, 2, 3]
+
+namespace rodash
+function getArray(aa as Object, keyPath as String, fallback = CreateObject("roArray", 0, true) as Object) as Object
+end function
+end namespace
+
+' Gets the boolean value at path of object. Calls rodash.get with the isBoolean validator function.
+' @since 0.0.25
+' @category Object
+' @param {Object} aa - Object to drill down into.
+' @param {String} keyPath - A dot notation based string to the expected value.
+' @param {Boolean} fallback - A return fallback value if the requested field could not be found or did not pass the validator function.
+' @returns {Boolean} The result of the drill down process
+' @example
+' rodash.getBoolean({a: {b: {c: true}}}, 'a.b.c') ' => true
+' rodash.getBoolean({a: {b: {c: 3}}}, 'a.b.d') ' => false
+' rodash.getBoolean({a: {b: {c: 3}}}, 'a.b.c') ' => false
+' rodash.getBoolean({a: {b: {c: 3}}}, 'a.b.d', true) ' => true
+
+namespace rodash
+function getBoolean(aa as Object, keyPath as String, fallback = false as Boolean) as Boolean
+end function
+end namespace
+
+' Gets the day of the month.
+' @since 0.0.21
+' @category Date
+' @param {Boolean} asLocal - Whether to get the local day of the month. Default is false.
+' @returns {Integer} The day of the month.
+
+namespace rodash
+function getDayOfMonth(asLocal = false as Boolean) as Integer
+end function
+end namespace
+
+' Gets the day of the week.
+' @since 0.0.21
+' @category Date
+' @param {Boolean} asLocal - Whether to get the local day of the week. Default is false.
+' @returns {Integer} The day of the week.
+
+namespace rodash
+function getDayOfWeek(asLocal = false as Boolean) as Integer
+end function
+end namespace
+
+' Gets the function name from a function object.
+' @since 0.0.26
+' @category Lang
+' @param {Object} call - function
+' @returns {String} The function string name
+namespace rodash
+function getFunctionName(call as Object) as String
+end function
+end namespace
+
+' Gets the hours.
+' @since 0.0.21
+' @category Date
+' @param {Boolean} asLocal - Whether to get the local hours. Default is false.
+' @Returns {Integer} The hours.
+
+namespace rodash
+function getHours(asLocal = false as Boolean) as Integer
+end function
+end namespace
+
+' Gets the last day of the month.
+' @since 0.0.21
+' @category Date
+' @param {Boolean} asLocal - Whether to get the local last day of the month. Default is false.
+' @returns {Integer} The last day of the month.
+
+namespace rodash
+function getLastDayOfMonth(asLocal = false as Boolean) as Integer
+end function
+end namespace
+
+' Gets the milliseconds.
+' @since 0.0.21
+' @category Date
+' @param {Boolean} asLocal - Whether to get the local milliseconds. Default is false.
+' @returns {Integer} The milliseconds.
+namespace rodash
+function getMilliseconds(asLocal = false as Boolean) as Integer
+end function
+end namespace
+
+' Gets the minutes.
+' @since 0.0.21
+' @category Date
+' @param {Boolean} asLocal - Whether to get the local minutes. Default is false.
+' @returns {Integer} The minutes.
+namespace rodash
+function getMinutes(asLocal = false as Boolean) as Integer
+end function
+end namespace
+
+' Gets the month.
+' @since 0.0.21
+' @category Date
+' @param {Boolean} asLocal - Whether to get the local month. Default is false.
+' @returns {Integer} The month.
+namespace rodash
+function getMonth(asLocal = false as Boolean) as Integer
+end function
+end namespace
+
+' Gets the children of a node.
+' @since 0.0.32
+' @category Node
+' @param {Object} node - The node to get the children of
+' @returns {Object} Returns the children of the node
+namespace rodash
+function getNodeChildren(node as Object) as Object
+end function
+end namespace
+
+' Gets the last child of a node.
+' @since 0.0.32
+' @category Node
+' @param {Object} node - The node to get the last child of
+' @returns {Object} Returns the last child of the node
+namespace rodash
+function getNodeLastChild(node as Object) as Object
+end function
+end namespace
+
+' Gets the number value at path of object. Calls rodash.get with the isNumber validator function.
+' @since 0.0.25
+' @category Object
+' @param {Object} aa - Object to drill down into.
+' @param {String} keyPath - A dot notation based string to the expected value.
+' @param {Number} fallback - A return fallback value if the requested field could not be found or did not pass the validator function.
+' @returns {Number} The result of the drill down process
+' @example
+' rodash.getNumber({a: {b: {c: 3}}}, 'a.b.c') ' => 3
+' rodash.getNumber({a: {b: {c: 3}}}, 'a.b.d') ' => 0
+' rodash.getNumber({a: {b: {c: 3}}}, 'a.b.c') ' => 3
+' rodash.getNumber({a: {b: {c: 3}}}, 'a.b.d', 25) ' => 25
+
+namespace rodash
+function getNumber(aa as Object, keyPath as String, fallback = 0 as Dynamic) as Dynamic
+end function
+end namespace
+
+' Gets the seconds.
+' @since 0.0.21
+' @category Date
+' @param {Boolean} asLocal - Whether to get the local seconds. Default is false.
+' @returns {Integer} The seconds.
+
+namespace rodash
+function getSeconds(asLocal = false as Boolean) as Integer
+end function
+end namespace
+
+' Gets the String value at path of object. Calls rodash.get with the isString validator function.
+' @since 0.0.25
+' @category Object
+' @param {Object} aa - Object to drill down into.
+' @param {String} keyPath - A dot notation based string to the expected value.
+' @param {String} fallback - A return fallback value if the requested field could not be found or did not pass the validator function.
+' @returns {String} The result of the drill down process
+' @example
+' rodash.getString({a: {b: {c: 'hello'}}}, 'a.b.c') ' => 'hello'
+' rodash.getString({a: {b: {c: 3}}}, 'a.b.d') ' => ''
+' rodash.getString({a: {b: {c: 3}}}, 'a.b.c') ' => ''
+' rodash.getString({a: {b: {c: 3}}}, 'a.b.d', 'fallback') ' => 'fallback'
+
+namespace rodash
+function getString(aa as Object, keyPath as String, fallback = "" as String) as String
+end function
+end namespace
+
+' Gets the year.
+' @since 0.0.21
+' @category Date
+' @param {Boolean} asLocal - Whether to get the local year. Default is false.
+' @returns {Integer} The year.
+
+namespace rodash
+function getYear(asLocal = false as Boolean) as Integer
+end function
+end namespace
+
+' Creates an object composed of keys generated from the results of running each element of collection thru iteratee. The order of grouped values is determined by the order they occur in collection. The corresponding value of each key is an array of elements responsible for generating the key. The iteratee is invoked with one argument: (value).
+' @since 0.0.23
+' @category Collection
+' @param {Object} collection - The collection to iterate over.
+' @param {Function|String} iteratee - The iteratee to transform keys.
+' @returns {Object} Returns the composed aggregate object.
+namespace rodash
+function groupBy(collection as Object, iteratee = Invalid as Dynamic) as Object
+end function
+end namespace
+
+' Checks if value is greater than other.
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value - The value to compare.
+' @param {Dynamic} other - The other value to compare.
+' @returns {Boolean} - Returns `true` if value is greater than other, else `false`.
+' @example
+' rodash.gt(3, 1) ' => true
+' rodash.gt(3, 3) ' => false
+' rodash.gt(1, 3) ' => false
+
+namespace rodash
+function gt(value as Dynamic, other as Dynamic)
+end function
+end namespace
+
+' Checks if value is greater than or equal to other.
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value - The value to compare.
+' @param {Dynamic} other - The other value to compare.
+' @returns {Boolean} - Returns `true` if value is greater than or equal to other, else `false`.
+' @example
+' rodash.gte(3, 1) ' => true
+' rodash.gte(3, 3) ' => true
+' rodash.gte(1, 3) ' => false
+
+namespace rodash
+function gte(value as Dynamic, other as Dynamic)
+end function
+end namespace
+
+' Checks if first level of the supplied AssociativeArray contains the Array of key strings.
+' @since 0.0.21
+' @category Object
+' @param {Dynamic} aaValue - AssociativeArray to be checked
+' @param {Array} keys - Array of key strings
+' @returns {Boolean} - Returns `true` if first level of the supplied AssociativeArray contains the Array of key strings, else `false`.
+' @example
+' rodash.hasKeys({a: 1, b: 2, c: 3}, ["a", "b"]) ' => true
+' rodash.hasKeys({a: 1, b: 2, c: 3}, ["a", "d"]) ' => false
+' rodash.hasKeys({a: 1, b: 2, c: 3}, ["a", "b", "c"]) ' => true
+' rodash.hasKeys([1,2,3], ["a", "b", "d"]) ' => false
+namespace rodash
+function hasKeys(aaValue as Dynamic, keys as Dynamic) as Boolean
+end function
+end namespace
+
+' Gets the first element of array.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to query
+' @returns {Dynamic} Returns the first element of array
+' @example
+' rodash.head([1, 2, 3]) // => 1
+namespace rodash
+function head(array = CreateObject("roArray", 0, true) as Object) as Dynamic
+end function
+end namespace
+
+' Checks if number is between start and up to, but not including, end. If end is not specified, it's set to start with start then set to 0.
+' @since 0.0.21
+' @category Number
+' @param {Number} number - The number to check.
+' @param {Number} [startPos=0] - The start of the range.
+' @param {Number} [endPos=startPos] - The end of the range.
+' @returns {Boolean} - Returns `true` if number is in the range, else `false`.
+namespace rodash
+function inRange(number as dynamic, startPos = 0 as dynamic, endPos = invalid as dynamic)
+end function
+end namespace
+
+' Gets the index at which the first occurrence of value is found in array using SameValueZero for equality comparisons. If fromIndex is negative, it's used as the offset from the end of array.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to inspect
+' @param {Dynamic} value - The value to search for
+' @param {Integer} fromIndex - The index to search from
+' @returns {Integer} Returns the index of the matched value, else -1
+namespace rodash
+function indexOf(array = CreateObject("roArray", 0, true) as Object, value = Invalid, fromIndex = Invalid)
+end function
+end namespace
+
+' Gets all but the last element of array.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to query
+' @returns {Array} Returns the slice of array
+namespace rodash
+function initial(array = CreateObject("roArray", 0, true) as Object)
+end function
+end namespace
+
+' @ignore
+' Attempts to convert the supplied value to a string.
+' @since 0.0.21
+' @category Internal
+' @param {Dynamic} value - The value to convert.
+' @returns {String} Results of the conversion.
+namespace rodash
+function aaToString(aa as Object) as String
+end function
+end namespace
+
+' @ignore
+' Attempts to convert the supplied value to a string.
+' @since 0.0.21
+' @category Internal
+' @param {Dynamic} value The value to convert.
+' @returns {String} Results of the conversion.
+namespace rodash
+function arrayToString(array as Object) as String
+end function
+end namespace
+
+' @ignore
+' The base implementation of `forEach`.
+' @since 0.0.21
+' @category Internal
+' @param {Array|Object} - collection The collection to iterate over
+' @param {Function} iteratee The function invoked per iteration
+' @param {String} direction - the direction to traverse the collection
+' @param {String} funcValueRule - Filters functions from collection. `allow`, `omit`, `only`.
+' @returns {Array|Object} Returns `collection`
+namespace rodash
+function baseForEach(collection = Invalid as Dynamic, iteratee = Invalid as Dynamic, direction = "left", funcValueRule = "allow" as String)
+end function
+end namespace
+
+' @ignore
+' Attempts to convert the supplied value to a string.
+' @since 0.0.21
+' @category Internal
+' @param {Dynamic} value The value to convert.
+' @returns {String} Results of the conversion.
+namespace rodash
+function booleanToString(bool as Boolean) as String
+end function
+end namespace
+
+' @ignore
+' Checks if the supplied values can be compared in a if statement.
+' @since 0.0.21
+' @category Internal
+' @param {Dynamic} valueOne - First value
+' @param {Dynamic} valueTwo - Second value
+' @returns {Boolean} True if the values can be compared in a if statement
+namespace rodash
+function canBeCompared(valueOne as Dynamic, valueTwo as Dynamic) as Boolean
+end function
+end namespace
+
+' @ignore
+namespace rodash
+function getConstants()
+end function
+end namespace
+
+' @ignore
+namespace rodash
+function getDateObject(asLocal = false as Boolean) as Object
+end function
+end namespace
+
+' @ignore
+' Checks if the supplied value allows for key field access
+' @since 0.0.21
+' @category Internal
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isKeyedValueType(value as Dynamic) as Boolean
+end function
+end namespace
+
+' @ignore
+' Attempts to converts a nodes top level fields to an AssociativeArray.
+' @since 0.0.21
+' @category Internal
+' @param {Dynamic} value - The variable to be converted.
+' @param {Boolean} removeId - If set to true the nodes ID will also be stripped.
+' @param {Object} removeFields - List of keys that need to be removed from the node.
+' @returns {Dynamic} Results of the conversion.
+namespace rodash
+function nodeToAA(value as Object, removeId = false as Boolean, removeFields = Invalid as Dynamic) as Object
+end function
+end namespace
+
+' @ignore
+' Attempts to convert the supplied value to a string.
+' @since 0.0.21
+' @category Internal
+' @param {Dynamic} value The value to convert.
+' @returns {String} Results of the conversion.
+namespace rodash
+function nodeToString(node as Object) as String
+end function
+end namespace
+
+' @ignore
+' Attempts to convert the supplied value to a string.
+' @param {Dynamic} value The value to convert.
+' @returns {String} Results of the conversion.
+
+namespace rodash
+function numberToString(value as Dynamic) as String
+end function
+end namespace
+
+' @ignore
+namespace rodash
+function orderByCompare(item1 as Object, item2 as Object, keys as Object, orders as Object) as Boolean
+end function
+end namespace
+
+' @ignore
+namespace rodash
+function sanitizeKeyPath(value = "" as String)
+end function
+end namespace
+
+' Creates an array of unique values that are included in all given arrays using SameValueZero for equality comparisons. The order and references of result values are determined by the first array.
+' @since 0.0.21
+' @category Array
+' @param {Array} mainArray - The main array to inspect
+' @param {Array} inspect - The array to find matches
+' @returns {Array} Returns the new array of intersecting values
+namespace rodash
+function intersection(mainArray = CreateObject("roArray", 0, true) as Object, inspectArray = CreateObject("roArray", 0, true) as Object) as Object
+end function
+end namespace
+
+' This method is like rodash.intersection except that it accepts iteratee which is invoked for each element of each arrays to generate the criterion by which they're compared. The order and references of result values are determined by the first array. The iteratee is invoked with one argument:(value).
+' @since 0.0.21
+' @category Array
+' @param {Array} mainArray - The main array to inspect
+' @param {Array} inspect - The array to find matches
+' @param {Dynamic} iteratee - The iteratee invoked per element
+' @returns {Array} Returns the new array of intersecting values
+namespace rodash
+function intersectionBy(mainArray = CreateObject("roArray", 0, true) as Object, inspectArray = CreateObject("roArray", 0, true) as Object, iteratee = Invalid) as Object
+end function
+end namespace
+
+' This method is like rodash.intersection except that it accepts comparator which is invoked to compare elements of arrays. The order and references of result values are determined by the first array. The comparator is invoked with two arguments: (arrVal, othVal).
+' @since 0.0.21
+' @category Array
+' @param {Array} mainArray - The main array to inspect
+' @param {Array} inspect - The array to find matches
+' @param {Dynamic} comparator - The comparator invoked per element
+' @returns {Array} Returns the new array of intersecting values
+namespace rodash
+function intersectionWith(mainArray = CreateObject("roArray", 0, true) as Object, inspectArray = CreateObject("roArray", 0, true) as Object, comparator = Invalid) as Object
+end function
+end namespace
+
+' Creates an object composed of the inverted keys and values of `object`.
+' If `object` contains duplicate values, subsequent values overwrite property assignments of previous values.
+' As AssocArrays are sorted, the order of the aa keys is not preserved.
+' @since 0.0.22
+' @category Object
+' @param {Object} object The object to invert.
+' @returns {Object} Returns the new inverted object.
+' @example
+' *
+' const object = { 'a': 1, 'b': 2, 'c': 1 }
+' rodash.invert(object)
+' // { '1': 'c', '2': 'b' }
+namespace rodash
+function invert(originalAA as Object) as Dynamic
+end function
+end namespace
+
+' Checks if the supplied value is a valid AssociativeArray type
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+' @example
+' rodash.isAA({}) // => true
+' rodash.isAA([]) // => false
+
+namespace rodash
+function isAA(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a roAppMemoryMonitorEvent type
+' @since 0.0.26
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+namespace rodash
+function isAppMemoryMonitorEvent(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid Array type
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+' @example
+' rodash.isArray([]) // => true
+' rodash.isArray({}) // => false
+' rodash.isArray("") // => false
+
+namespace rodash
+function isArray(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if value is array-like. A value is considered array-like if it is an array, roList, roByteArray, or roXMLList
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+' @example
+' rodash.isArrayLike([]) // => true
+' rodash.isArrayLike(CreateObject("roList")) // => true
+' rodash.isArrayLike(CreateObject("roByteArray")) // => true
+' rodash.isArrayLike(CreateObject("roXMLList")) // => true
+' rodash.isArrayLike({}) // => false
+' rodash.isArrayLike("example string") // => false
+
+namespace rodash
+function isArrayLike(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid Boolean type
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+' @example
+' rodash.isBoolean(true) // => true
+' rodash.isBoolean(false) // => true
+' rodash.isBoolean(1) // => false
+' rodash.isBoolean("true") // => false
+namespace rodash
+function isBoolean(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid ByteArray type
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isByteArray(value as Dynamic)
+end function
+end namespace
+
+' Alias to isDate function
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isDate(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid date time type
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isDateTime(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a roDeviceInfo type
+' @since 0.0.26
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isDeviceInfoEvent(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid Double type
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+' @example
+' rodash.isDouble(1) // => false
+' rodash.isDouble(1.0#) // => true
+' rodash.isDouble(1.0!) // => false
+namespace rodash
+function isDouble(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Alias to isNode function
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @param {String} subType An optional subType parameter to further refine the check
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isElement(value as Dynamic, subType = "" as String) as Boolean
+end function
+end namespace
+
+' Checks if a value is empty.
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+' @example
+' rodash.isEmpty("") // => true
+' rodash.isEmpty([]) // => true
+' rodash.isEmpty({}) // => true
+' rodash.isEmpty(0) // => true
+' rodash.isEmpty(false) // => true
+' rodash.isEmpty(invalid) // => true
+' rodash.isEmpty("Hello") // => false
+namespace rodash
+function isEmpty(value as Dynamic)
+end function
+end namespace
+
+' Checks if the supplied value is a valid String type and is not empty
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+' @example
+' rodash.isEmptyString("") // => true
+' rodash.isEmptyString(" ") // => false
+' rodash.isEmptyString("Hello") // => false
+
+namespace rodash
+function isEmptyString(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied values are the same.
+' By default, when comparing arrays and associative arrays the function will compare the values on the elements. If the strict parameter is set to true, the function will compare the references of the elements.
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} valueOne - First value.
+' @param {Dynamic} valueTwo - Second value.
+' @returns {Boolean} True if the values are the same and false if not or if any of the values are a type that could not be compared.
+' @example
+' rodash.isEqual(1, 1) // => true
+' rodash.isEqual(1, 2) // => false
+' rodash.isEqual([], []) // => true
+' rodash.isEqual({}, {}) // => true
+' rodash.isEqual({a: 1}, {a: 1}) // => true
+' rodash.isEqual({a: 1}, {a: 2}) // => false
+' rodash.isEqual("Hello", "Hello") // => true
+' rodash.isEqual("Hello", "World") // => false
+namespace rodash
+function isEqual(valueOne as Dynamic, valueTwo as Dynamic, strict = false as Boolean) as Boolean
+end function
+end namespace
+
+' Checks if the supplied values are the same.
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} valueOne - First value.
+' @param {Dynamic} valueTwo - Second value.
+' @returns {Boolean} True if the values are the same and false if not or if any of the values are a type that could not be compared.
+namespace rodash
+function isEqualWith(valueOne as Dynamic, valueTwo as Dynamic, customizer = Invalid) as Boolean
+end function
+end namespace
+
+' Assesses the passed object to determine if it is an Error Object.
+' TODO: MORE SUPPORT - TRY/CATCH?
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value - the object to assess
+' @returns {Boolean} True if the object represents and error.
+namespace rodash
+function isError(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if `value` is a finite primitive number.
+' @since 0.0.21
+' @category Lang
+namespace rodash
+function isFinite(value as dynamic) as boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid Float type
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+' @example
+' rodash.isFloat(1) // => false
+' rodash.isFloat(1.0!) // => true
+' rodash.isFloat(1.0#) // => false
+namespace rodash
+function isFloat(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid Function type
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+namespace rodash
+function isFunction(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a roInputEvent type
+' @since 0.0.26
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+namespace rodash
+function isInputEvent(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid Integer type
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+namespace rodash
+function isInteger(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is Invalid
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+' @example
+' rodash.isInvalid(Invalid) // => true
+' rodash.isInvalid(undefined) // => true
+' rodash.isInvalid("") // => false
+
+namespace rodash
+function isInvalid(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if value is a valid array-like length
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+namespace rodash
+function isLength(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid roList type
+' @since 0.0.36
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+' @example
+' rodash.isList(CreateObject("roList")) // => true
+' rodash.isList([]) // => false
+' rodash.isList({}) // => false
+' rodash.isList("") // => false
+
+namespace rodash
+function isList(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Alias to isArray function
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+' @example
+' rodash.isMap([]) // => true
+' rodash.isMap({}) // => false
+
+namespace rodash
+function isMap(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a roMessagePort type
+' @since 0.0.26
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isMessagePort(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Method determines whether the passed value is NaN and its type is a valid number
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value - The variable to be checked
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isNaN(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid Node type
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @param {String} subType An optional subType parameter to further refine the check
+' @returns {Boolean} Results of the check
+namespace rodash
+function isNode(value as Dynamic, subType = "" as String) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid roSGNodeEvent type
+' @since 0.0.26
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isNodeEvent(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid roUrlEvent type
+' @since 0.0.26
+' @category Lang
+' @param {Dynamic} value - The variable to be checked
+' @param {String} subType - An optional subType parameter to further refine the check
+' @returns Results of the check
+namespace rodash
+function isNodeWithChildren(value as Dynamic, subType = "" as String) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid and populated AssociativeArray type
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isNonEmptyAA(value as Dynamic)
+end function
+end namespace
+
+' Checks if the supplied value is a valid Array type and not empty
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isNonEmptyArray(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid String type and is not empty
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isNonEmptyString(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is not Invalid or uninitialized
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isNotInvalid(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Alias to isInvalid function
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isNull(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid number type
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+namespace rodash
+function isNumber(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid String type
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+namespace rodash
+function isString(value as Dynamic)
+end function
+end namespace
+
+' Checks if the supplied value is a valid roUrlEvent type
+' @since 0.0.26
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isUrlEvent(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Checks if the supplied value is a valid url transfer type
+' @since 0.0.26
+' @category Lang
+' @param {Dynamic} value The variable to be checked
+' @returns {Boolean} Results of the check
+
+namespace rodash
+function isUrlTransfer(value as Dynamic) as Boolean
+end function
+end namespace
+
+' Converts all elements in array into a string separated by separator.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to convert
+' @param {String} separator - The element separator
+' @returns {Array} Returns the joined string
+
+namespace rodash
+function join(array = CreateObject("roArray", 0, true) as Object, separator = "" as String)
+end function
+end namespace
+
+' Converts a string to kebab case.
+' @since 0.0.21
+' @category String
+namespace rodash
+function kebabCase(value = "" as string)
+end function
+end namespace
+
+' Creates an object composed of keys generated from the results of running each element of collection thru iteratee. The corresponding value of each key is the last element responsible for generating the key. The iteratee is invoked with one argument: (value).
+' @since 0.0.24
+' @category Collection
+' @param {Dynamic} collection - The collection to sample
+' @param {String} key - The iteratee to transform keys.
+' @returns {Dynamic} - Returns the composed aggregate object.
+namespace rodash
+function keyBy(collection = invalid as dynamic, key = "" as string) as object
+end function
+end namespace
+
+' Gets the last element of array.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to query
+' @returns {Dynamic} Returns the last element of array
+
+namespace rodash
+function last(array = CreateObject("roArray", 0, true)) as Dynamic
+end function
+end namespace
+
+' This method is like rodash.indexOf except that it iterates over elements of array from right to left.
+' @since 0.0.23
+' @category Array
+' @param {Array} array - The array to query
+' @param {Dynamic} value - The value to search for
+' @param {Integer} fromIndex - The index to search from
+' @returns {Dynamic} Returns the index of the matched value, else -1
+namespace rodash
+function lastIndexOf(array = CreateObject("roArray", 0, true) as Object, value = Invalid as Dynamic, fromIndex = Invalid as Dynamic) as Dynamic
+end function
+end namespace
+
+' Converts a string to lower case.
+' @since 0.0.21
+' @category String
+namespace rodash
+function lowerCase(value = "" as string)
+end function
+end namespace
+
+' Converts the first character of string to lower case.
+' @since 0.0.21
+' @category String
+namespace rodash
+function lowerFirst(value = "" as string)
+end function
+end namespace
+
+' Checks if value is less than other.
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value - The value to compare.
+' @param {Dynamic} other - The other value to compare.
+' @returns {Boolean} - Returns `true` if the value is less than other, else `false`.
+
+namespace rodash
+function lt(value as dynamic, other as dynamic)
+end function
+end namespace
+
+' Checks if value is less than or equal to other.
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value - The value to compare.
+' @param {Dynamic} other - The other value to compare.
+' @returns {Boolean} - Returns `true` if the value is less than or equal to other, else `false`.
+
+namespace rodash
+function lte(value as dynamic, other as dynamic)
+end function
+end namespace
+
+' Creates an array of values by running each element in collection thru iteratee. The iteratee is invoked with three arguments:(value, index|key, collection)
+' @since 0.0.21
+' @category Collection
+' @param {Dynamic} collection - The collection to iterate over
+' @param {Dynamic} iteratee - The function invoked per iteration
+' @returns {Array} Returns the new mapped array
+' @example
+' rodash.map([4, 8], rodash.square) // => [16, 64]
+namespace rodash
+function map(collection = CreateObject("roAssociativeArray") as Dynamic, iteratee = Invalid as Dynamic)
+end function
+end namespace
+
+' Computes the maximum value of array. If array is empty or falsey, invalid is returned.
+' @since 0.0.21
+' @category Math
+' @param {Array} array - The array to iterate over
+' @returns {Dynamic} Returns the maximum value
+' @example
+' rodash.max([4, 2, 8, 6]) // => 8
+
+namespace rodash
+function max(array = CreateObject("roArray", 0, true) as Object) as Dynamic
+end function
+end namespace
+
+' Computes the maximum value of array. If array is empty or falsey, invalid is returned.
+' @since 0.0.21
+' @category Math
+' @param {Array} array - The array to iterate over
+' @returns {Dynamic} Returns the maximum value
+namespace rodash
+function maxBy(array = CreateObject("roArray", 0, true) as Object, iteratee = Invalid) as Dynamic
+end function
+end namespace
+
+' Computes the mean of the values in array.
+' @since 0.0.21
+' @category Math
+' @param {Array} array - The array to iterate over
+' @returns {Dynamic} Returns the mean value
+' @example
+' rodash.mean([4, 2, 8, 6]) // => 5
+
+namespace rodash
+function mean(array)
+end function
+end namespace
+
+' This method is like `rodash.mean` except that it accepts `iteratee` which is invoked for each element in array to generate the value to be averaged. The iteratee is invoked with one argument: (value).
+' @since 0.0.21
+' @category Math
+' @param {Array} array - The array to iterate over
+' @param {Function} iteratee - The iteratee invoked per element
+' @returns {Dynamic} Returns the mean value
+namespace rodash
+function meanBy(array, iteratee = Invalid)
+end function
+end namespace
+
+' This method is like rodash.assign except that it recursively merges own and inherited enumerable string keyed properties of source objects into the destination object. Source properties that resolve to undefined are skipped if a destination value exists. Array and plain object properties are merged recursively. Other objects and value types are overridden by assignment. Source objects are applied from left to right. Subsequent sources overwrite property assignments of previous sources.
+' @since 0.0.33
+' @category Collection
+' @param {Dynamic} target - The target object to merge into
+' @param {Dynamic} source - The source object to merge from
+' @returns {Object} Returns the merged object
+' @example
+' rodash.merge({a:1}, {b:2}) // => {a:1, b:2}
+' rodash.merge({a:1}, {a:2}) // => {a:2}
+' rodash.merge({a:1}, {a:{b:2}}) // => {a:{b:2}}
+' rodash.merge({a:{b:1}}, {a:{c:2}}) // => {a:{b:1, c:2}}
+' rodash.merge({a:{b:1}}, [{a:{b:2}}, {a:{c:3}}]) // => {a:{b:2, c:3}}
+namespace rodash
+function merge(target as Object, sources as Object) as Object
+end function
+end namespace
+
+' Computes the minimum value of array. If array is empty or falsey, invalid is returned.
+' @since 0.0.21
+' @category Math
+' @param {Array} array - The array to iterate over
+' @returns {Dynamic} Returns the minumum value
+
+namespace rodash
+function min(array = CreateObject("roArray", 0, true) as Object) as Dynamic
+end function
+end namespace
+
+' Computes the minimum value of array. If array is empty or falsey, invalid is returned.
+' @since 0.0.21
+' @category Math
+' @param {Array} array - The array to iterate over
+' @returns {Dynamic} Returns the maximum value
+namespace rodash
+function minBy(array = CreateObject("roArray", 0, true) as Object, iteratee = Invalid) as Dynamic
+end function
+end namespace
+
+' Multiplies two numbers.
+' @since 0.0.21
+' @category Math
+' @param {Dynamic} multiplier - The first number in a multiplication.
+' @param {Dynamic} multiplicand - The second number in a multiplication.
+' @returns {Dynamic} - Returns the product of the two numbers.
+namespace rodash
+function multiply(multiplier as dynamic, multiplicand as dynamic) as dynamic
+end function
+end namespace
+
+' Gets the number of milliseconds that have elapsed since the Unix epoch (1 January 1970 00:00:00 UTC).
+' @since 0.0.21
+' @category Date
+' @returns {Integer} The number of milliseconds that have elapsed since the Unix epoch.
+namespace rodash
+function now() as Integer
+end function
+end namespace
+
+' The opposite of rodash.pick; this method creates an object composed of the own and inherited enumerable property paths of object that are not omitted.
+' @since 0.0.23
+' @category Object
+' @param {Object} object - The source object.
+' @param {Array} paths - The property paths to omit.
+' @returns {Dynamic} - Returns the new object.
+namespace rodash
+function omit(object as Object, paths = CreateObject("roArray", 0, true) as Object) as Dynamic
+end function
+end namespace
+
+' This method is like `sortBy` except that it allows specifying the sort
+' orders of the iteratees to sort by. If `orders` is unspecified, all values
+' are sorted in ascending order. Otherwise, specify an order of "desc" for
+' descending or "asc" for ascending sort order of corresponding values.
+' You may also specify a compare function for an order.
+' @since 0.0.21
+' @category Array
+' @param {Dynamic} collection - The collection to shuffle
+' @param {Dynamic} [iteratee] - The iteratees to sort by
+' @param {Dynamic} [orders] - The sort orders of `iteratees`.
+' @returns {Array} Returns the new ordered array
+namespace rodash
+function orderBy(collection, iteratees, orders) as Object
+end function
+end namespace
+
+' Add padding to the supplied value after converting to a string. For example "1" to "01".
+' @since 0.0.22
+' @category String
+' @param {String} value The value to add padding to.
+' @param {Integer} padLength The minimum output string length.
+' @param {String} paddingCharacter The string to use as padding.
+' @returns {String} Resulting padded string.
+namespace rodash
+function padString(value as Dynamic, padLength = 2 as Integer, paddingCharacter = "0" as Dynamic) as String
+end function
+end namespace
+
+' Alias to `rodsah.padString`
+' @since 0.0.21
+' @category String
+
+namespace rodash
+function paddString(value as Dynamic, padLength = 2 as Integer, paddingCharacter = "0" as Dynamic) as String
+end function
+end namespace
+
+' Creates an object composed of the picked object properties.
+' @since 0.0.23
+' @category Object
+' @param {Object} object - The object to pick from.
+' @param {Array} paths - The property paths to pick.
+' @returns {Dynamic} - Returns the picked value.
+namespace rodash
+function pick(object as Object, paths = CreateObject("roArray", 0, true) as Object) as Dynamic
+end function
+end namespace
+
+' Generates a random number between the lower and upper bounds.
+' @since 0.0.21
+' @category Number
+namespace rodash
+function random(lower = 0 as dynamic, upper = 1 as dynamic, floating = false as boolean) as dynamic
+end function
+end namespace
+
+' Reduces collection to a value which is the accumulated result of running each element in collection thru iteratee, where each successive invocation is supplied the return value of the previous. If accumulator is not given, the first element of collection is used as the initial value. The iteratee is invoked with four arguments:(accumulator, value, index|key, collection).
+' @since 0.0.21
+' @category Collection
+' @param {Dynamic} collection - The collection to iterate over
+' @param {Dynamic} iteratee - The function invoked per iteration
+' @param {Integer} accumulator - The initial value
+' @returns {Array} Returns the accumulated value
+namespace rodash
+function reduce(collection = Invalid as Dynamic, iteratee = Invalid as Dynamic, accumulator = Invalid as Dynamic)
+end function
+end namespace
+
+' Removes the supplied node from it's parent. Can be set as an observer callback.
+' @since 0.0.32
+' @category Node
+' @param {roSGNode|roSGNodeEvent} nodeOrEvent - The node or node event to be removed.
+namespace rodash
+sub removeNode(nodeOrEvent as Dynamic)
+end sub
+end namespace
+' Removes all children of a node.
+' @since 0.0.32
+' @category Node
+' @param {Object} node - The node to remove the children of
+namespace rodash
+sub removeNodeChildren(node as Object)
+end sub
+end namespace
+' Computes number rounded up to precision.
+' @since 0.0.21
+' @category Math
+' @param {Float} num - The number to round.
+' @param {Dynamic} precision - The precision to round to.
+' @returns {Dynamic} - Returns the rounded number.
+namespace rodash
+function round(num as Float, precision = 0 as Integer) as Float
+end function
+end namespace
+
+' Gets a random element from collection.
+' @since 0.0.23
+' @category Collection
+' @param {Dynamic} collection - The collection to sample
+' @returns {Dynamic} - Returns the random element
+namespace rodash
+function sample(collection = invalid as dynamic)
+end function
+end namespace
+
+' Gets n random elements at unique keys from collection up to the size of collection.
+' @since 0.0.23
+' @category Collection
+' @param {Dynamic} collection - The collection to sample
+' @param {Integer} n - The number of elements to sample
+' @returns {Dynamic} - Returns the random elements.
+namespace rodash
+function sampleSize(collection as Object, n as Integer) as Object
+end function
+end namespace
+
+' Used to set a nested String value in the supplied object
+' @since 0.0.21
+' @category Object
+' @param {Object} aa - Object to drill down into.
+' @param {String} keyPath - A dot notation based string to the expected value.
+' @param {Dynamic} value - The value to be set.
+' @returns {Boolean} True if set successfully.
+namespace rodash
+function set(aa as Object, keyPath as String, value as Dynamic) as Boolean
+end function
+end namespace
+
+' Creates an array of shuffled values, using a version of the Fisher-Yates shuffle.
+' @since 0.0.21
+' @category Collection
+' @param {Dynamic} collection - The collection to shuffle
+' @returns {Array} Returns the new shuffled array
+
+namespace rodash
+function shuffle(collection = CreateObject("roArray", 0, true) as Object)
+end function
+end namespace
+
+' Gets the size of collection by returning its length for array-like values or the number of own enumerable string keyed properties for objects.
+' @since 0.0.21
+' @category Collection
+' @param {Dynamic} collection - The collection to inspect
+' @returns {Integer} Returns the collection size.
+namespace rodash
+function size(collection = Invalid as Dynamic)
+end function
+end namespace
+
+' Creates a slice of array from start up to, but not including, end.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to slice
+' @param {Integer} startPos - The start position
+' @param {Integer} endPos - The end position
+' @returns {Dynamic} Returns the slice of array
+namespace rodash
+function slice(array = CreateObject("roArray", 0, true) as Object, startPos = 0 as Integer, endPos = -1 as Integer) as Object
+end function
+end namespace
+
+' Creates an array of elements, sorted in ascending order by the results of running each element in a collection thru each iteratee. This method performs a stable sort, that is, it preserves the original sort order of equal elements. The iteratees are invoked with one argument: (value).
+' @since 0.0.21
+' @category Collection
+' @param {Dynamic} collection - The collection to sort
+' @param {Dynamic} iteratee - The iteratees to sort by
+' @returns {Array} Returns the new sorted array
+namespace rodash
+function sortBy(collection = Invalid as Dynamic, iteratee = Invalid as Dynamic)
+end function
+end namespace
+
+' Uses a binary search to determine the lowest index at which value should be inserted into array in order to maintain its sort order.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The sorted array to inspect
+' @returns {Object} Returns the index at which value should be inserted into array
+namespace rodash
+function sortedIndex(array = CreateObject("roArray", 0, true) as Object, value = 0 as Integer)
+end function
+end namespace
+
+' Computes the square of the value.
+' @since 0.0.30
+' @category Math
+' @param {Integer} value - The value to multiple by itself
+' @returns {Integer} Returns the square of the value
+namespace rodash
+function square(value as Integer) as Dynamic
+end function
+end namespace
+
+' Check for the existence of a given sub string
+' @since 0.0.21
+' @category String
+' @param {String} value The string to search
+' @param {String} subString The sub string to search for
+' @returns {Boolean} Results of the search
+
+namespace rodash
+function stringIncludes(value as String, subString as String) as Boolean
+end function
+end namespace
+
+' Finds the sub string index position
+' @since 0.0.21
+' @category String
+' @param {String} value The string to search
+' @param {String} subString The sub string to search for
+' @returns {Integer} Results of the search
+
+namespace rodash
+function stringIndexOf(value as String, subString as String) as Integer
+end function
+end namespace
+
+' Subtract two numbers.
+' @since 0.0.21
+' @category Math
+' @param {Integer} minuend - The first number in a subtraction
+' @param {Integer} subtrahend - The second number in a subtraction
+' @returns {Integer} Returns the difference.
+namespace rodash
+function subtract(minuend as Dynamic, subtrahend as Dynamic) as Dynamic
+end function
+end namespace
+
+' Computes the sum of the values in an array.
+' @since 0.0.21
+' @category Math
+' @param {Array} array - The array to sum
+' @returns {Integer} Returns the sum of the values in the array
+namespace rodash
+function sum(array as Object)
+end function
+end namespace
+
+' This method is like `sum` except that it accepts `iteratee` which is invoked for each element in array to generate the value to be summed.
+' The iteratee is invoked with one argument: (value).
+' @since 0.0.21
+' @category Math
+' @param {Array} array - The array to iterate over
+' @param {Function} iteratee - The iteratee invoked per element
+' @returns {Integer} Returns the sum
+namespace rodash
+function sumBy(array = CreateObject("roArray", 0, true) as Object, iteratee = Invalid) as Dynamic
+end function
+end namespace
+
+' Creates a slice of array with n elements taken from the beginning
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The sorted array to query
+' @param {Integer} n - The number of elements to take
+' @returns {Object} Returns the slice of array
+namespace rodash
+function take(array = CreateObject("roArray", 0, true) as Object, n = Invalid as Dynamic) as Object
+end function
+end namespace
+
+' Creates a slice of array with n elements taken from the end
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The sorted array to query
+' @param {Integer} n - The number of elements to take
+' @returns {Object} Returns the slice of array
+namespace rodash
+function takeRight(array = CreateObject("roArray", 0, true) as Object, n = Invalid as Dynamic) as Object
+end function
+end namespace
+
+' Invokes the iteratee n times, returning an array of the results of each invocation. The iteratee is invoked with one argument; (index).
+' @since 0.0.24
+' @category Utils
+' @param {Integer} n - The number of times to invoke iteratee.
+' @param {Function} iteratee - The function invoked per iteration.
+' @returns {Array} Returns the array of results.
+' @example
+' rodash.times(3, rodash.toString) ' => ["0", "1", "2"]
+' rodash.times(4, rodash.isNumber) ' => [true, true, true, true]
+' rodash.times(4, rodash.isString) ' => [false, false, false, false]
+namespace rodash
+function times(n = 0 as Integer, iteratee = Invalid as Dynamic) as Object
+end function
+end namespace
+
+' Attempts to convert the supplied value to a array.
+' @since 0.0.21
+' @category Lang
+' @todo Add more support for other types.
+' @param {Dynamic} value The value to convert.
+' @returns {Object} Results of the conversion.
+namespace rodash
+function toArray(input as Dynamic) as Object
+end function
+end namespace
+
+' Converts a date object to an ISO string
+' @since 0.0.21
+' @category Date
+' @returns {String} Returns the date object as an ISO string
+namespace rodash
+function toISOString(dateObj = Invalid as Dynamic) as String
+end function
+end namespace
+
+' Attempts to convert the supplied value into a valid number
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The variable to be converted
+' @returns {Dynamic} Results of the conversion
+' @example
+' rodash.toNumber("1") // => 1
+' rodash.toNumber("1.0") // => 1.0
+' rodash.toNumber(1) // => 1
+' rodash.toNumber(1.0#) // => 1.0
+' rodash.toNumber(true) // => 1
+' rodash.toNumber(false) // => 0
+namespace rodash
+function toNumber(value as Dynamic) as Dynamic
+end function
+end namespace
+
+' Creates an array of own enumerable string keyed-value pairs for object which can be consumed by rodash.fromPairs. If object is a map or set, its entries are returned.
+' @since 0.0.24
+' @category Array
+' @param {Object} obj - The object to query.
+' @returns {Array} Returns the key-value pairs.
+' @example
+' rodash.toPairs({ 'a': 1, 'b': 2 }) // => [['a', 1], ['b', 2]]
+' rodash.toPairs({ 'a': 1, 'b': 2, 'c': 3 }) // => [['a', 1], ['b', 2], ['c', 3]]
+namespace rodash
+function toPairs(obj = CreateObject("roAssociativeArray") as Object) as Object
+end function
+end namespace
+
+' Attempts to convert the supplied value to a string.
+' @since 0.0.21
+' @category Lang
+' @param {Dynamic} value The value to convert.
+' @returns {String} Results of the conversion.
+' @example
+' rodash.toString(1) // => "1"
+' rodash.toString(1.0#) // => "1.0"
+' rodash.toString(true) // => "true"
+' rodash.toString(false) // => "false"
+namespace rodash
+function toString(value as Dynamic) as String
+end function
+end namespace
+
+' Creates an array of unique values, in order, from all given arrays using SameValueZero for equality comparisons.
+' @since 0.0.21
+' @category Array
+' @param {Array} arrays - The arrays to inspect
+' @returns {Object} Returns the new array of combined values
+' @example
+' rodash.union([[2], [1, 2]]) // => [2, 1]
+' rodash.union([[2], [1, 2], [2, 3]]) // => [2, 1, 3]
+
+namespace rodash
+function union(arrays = CreateObject("roArray", 0, true) as Object) as Object
+end function
+end namespace
+
+' Creates a duplicate-free version of an array, using SameValueZero for equality comparisons, in which only the first occurrence of each element is kept. The order of result values is determined by the order they occur in the array.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The array to inspect
+' @returns {Object} Returns the new duplicate free array
+namespace rodash
+function uniq(array = CreateObject("roArray", 0, true) as Object) as Object
+end function
+end namespace
+
+' Creates a duplicate-free version of an array, in which only the first occurrence of each element is kept. The order of result values is determined by the order they occur in the array.
+' By default, when comparing arrays and associative arrays the function will compare the values on the elements. If the strict parameter is set to true, the function will compare the references of the AA and Array elements.
+' @since 0.0.29
+' @category Array
+' @param {Array[]} array - The arrays to inspect
+' @param {Boolean} strict - If true, the function will compare the references of the AA and Array elements
+' @returns {Array} Returns the new array of filtered values.
+' @example
+' rodash.xor([[2, 1], [2, 3]]) // => [1, 3]
+' rodash.xor([[2, 1], [2, 3], [2, 3]]) // => [1]
+namespace rodash
+function xor(arrays as Object, strict = false as Object) as Object
+end function
+end namespace
+
+' Creates an array of grouped elements, the first of which contains the first elements of the given arrays, the second of which contains the second elements of the given arrays, and so on.
+' @since 0.0.21
+' @category Array
+' @param {Array} arrays - The property identifiers
+' @returns {Object} Returns the new array of grouped elements
+namespace rodash
+function zip(arrays = CreateObject("roArray", 0, true) as Object) as Object
+end function
+end namespace
+
+' This method is like rodash.fromPairs except that it accepts two arrays, one of property identifiers and one of corresponding values.
+' @since 0.0.21
+' @category Array
+' @param {Array} array - The property identifiers
+' @param {Array} values - The property values
+' @returns {Object} Returns the new object
+namespace rodash
+function zipObject(props = CreateObject("roArray", 0, true) as Object, values = CreateObject("roArray", 0, true) as Object) as Object
+end function
+end namespace
+
+' This method is like rodash.zipObject except that it supports property paths.
+' @ignore
+' @category Array
+' @param {Array} array - The property identifiers
+' @param {Array} values - The property values
+' @returns {Object} Returns the new object
+namespace rodash
+function zipObjectDeep(props = CreateObject("roArray", 0, true) as Object, values = CreateObject("roArray", 0, true) as Object) as Object
+end function
+end namespace

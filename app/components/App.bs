@@ -3,24 +3,58 @@ import "pkg:/source/helpers/timestamps.bs"
 import "pkg:/source/plugins/stateable.bs"
 import "pkg:/source/plugins/safeable.bs"
 import "pkg:/source/roBoilerplate.bs"
+import "pkg:/source/wrapperFunctions.bs"
+import "pkg:/components/constants.bs"
+
 
 sub init()
+    initFramework(privateFunctions)
+    exec("onInit")
+end sub
 
-    testFunctions = {
-        add: function(func, options)
-            func(options)
-        end function
-    }
 
-    m.top.setRef("testFunctions", testFunctions)
+sub runBenchmark(name = "")
+    benchmark = createObject("roSGNode", "Benchmark")
+    benchmark.run = [name, { top: benchmark }]
+end sub
 
-    ' benchmark = createObject("roSGNode", "Benchmark")
-    ' benchmark.run = ["DataRetrieval", { top: m.top }]
 
-    initFramework()
+class privateFunctions extends privates
+    function onInit(options = {})
 
-    ' loadList()
-    ' loadPlugin()
+        subscribe({
+            "TEST_EVENT": "onTestEvent"
+        })
+
+        m.top.appendChild(createObject("roSGNode", "NodeTest"))
+
+        m.task = createObject("roSGNode", "TestNode")
+
+        setTimeout(sub(m)
+            m.task.control = "run"
+        end sub, m, 500)
+
+        ' loadList()
+        ' loadPlugin()
+        ' runBenchmark("DataSending")
+    end function
+
+
+    function testFunction(options = {})
+        ?"testFunction " options
+    end function
+
+    function onTheNose(options = {})
+        ?"ALMOST PUNCHED " options.name
+        return { result: "success" }
+    end function
+end class
+
+
+sub onTestEvent(data, msgInfo)
+    ?"onTestEvent2 " data
+    result = exec("onTheNose", { name: "test" })
+    ?"result " result
 end sub
 
 
@@ -60,12 +94,13 @@ sub loadList()
     testModel.appendChild(createObject("roSGNode", "ContentNode"))
 
     list.content = testModel
-
-    ?m.top.getChildren(-1,0)
-
     list.rectConfig = rectconfig
     list.color = "#FFFFFF00"
     list.translation = [399,198]
-
     list.setFocus(true)
+end sub
+
+
+sub fooFunction(options = {})
+    ?"foofFunction " options
 end sub

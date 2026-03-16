@@ -1,15 +1,19 @@
 import "pkg:/source/helpers/typeGuard.bs"
 import "tests/AAvsRef.bs"
 import "tests/DataRetrieval.bs"
+import "tests/DataSending.bs"
 import "tests/MtopVsM.bs"
 import "tests/NodeInitiation.bs"
 
 
 sub init()
     m.top.observeFieldScoped("run", "onRun")
+    m.top.observeFieldScoped("resultsText", "printResults")
+
     m.benchmarks = {
         "AAvsRef": AAvsRef
         "DataRetrieval": DataRetrieval
+        "DataSending": DataSending
         "MtopVsM": MtopVsM
         "NodeInitiation": NodeInitiation
     }
@@ -41,4 +45,21 @@ sub doRun(event)
     benchClass = m.benchmarks[funcName]
     benchmark = new benchClass()
     benchmark.start(funcOptions)
+end sub
+
+sub printResults(event)
+    testMessage = ""
+    testMessage += chr(10)
+    testMessage += "+-+-+-+-+-+-+-+-+-+-+-+-+-+"
+    testMessage += chr(10)
+    testMessage += chr(10)
+    testMessage += "BENCHMARK RESULTS:"
+    testMessage += chr(10)
+    testMessage += chr(10)
+    testMessage += event.getData()
+    testMessage += chr(10)
+    testMessage += chr(10)
+    testMessage += "-+-+-+-+-+-+-+-+-+-+-+-+-+-"
+    testMessage += chr(10)
+    ?testMessage
 end sub

@@ -2,6 +2,7 @@
 <component name="Benchmark" extends="Group">
     <interface>
         <field id="run" type="array" />
+        <field id="resultsText" type="string" />
     </interface>
     <children>
 

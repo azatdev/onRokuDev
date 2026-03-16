@@ -12,7 +12,7 @@ class AAvsRef
             m[item.key] = item.value
         end for
 
-        m.scene = m.top.getScene()
+        m.scene = m.global.getScene()
         m.scene.addField("state", "assocarray", true)
         m.scene.addField("state2", "assocarray", true)
 

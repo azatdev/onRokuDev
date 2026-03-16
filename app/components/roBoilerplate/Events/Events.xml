@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="Events" extends="Node">
+    <interface>
+        <field id="log" type="node" />
+        <field id="mutation" type="assocarray" />
+        <field id="queue" type="node" />
+        <!-- <function name="dispatch" /> -->
+        <function name="process" />
+    </interface>
+    <children>
+    </children>
+    <script type="text/brightscript" uri="Events.bs" />
+</component>
