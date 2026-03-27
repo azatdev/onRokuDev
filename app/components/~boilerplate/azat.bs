@@ -1,0 +1,144 @@
+import "pkg:/source/roku_modules/rodash/rodash.brs"
+' import "pkg:/source/plugins/safeable.bs"
+import "pkg:/source/plugins/stateable.bs"
+import "pkg:/source/plugins/logger.bs"
+
+
+sub init()
+    m.top.addField("interfaces_ref", "assocarray", false)
+    m.top.addField("azSafeFuncPayload", "assocarray", true)
+    m.top.addField("azSafeFuncReturnObj", "assocarray", false)
+
+    interfaceFuncs = {}
+
+    m.interfaces = {
+        "Stateable": Stateable
+    }
+
+    try
+        safeFunctions = new privateFunctions() ?? invalid
+        if rodash.isAA(safeFunctions) then interfaceFuncs.append(safeFunctions)
+    catch e
+        ?"Private functions do not exist in " m.top.subType()
+    end try
+
+    ' ?"privateFunctions " privateFunctions()
+
+
+
+    ' ?"m.testFunctions " m.testFunctions
+
+    ' nodePrivateFunctions = privateFunctions ?? invalid
+
+    ' if not nodePrivateFunctions = invalid
+    '     nodeSafeFunctions = new nodePrivateFunctions()
+    '     ?"safeFunctions " nodeSafeFunctions
+    ' end if
+
+    if not m.top.hasFunc("safeFunc")
+        xmlFilename = `${m.top.subType()}.xml`
+        ?`
+
+        WARNING: Please add
+        <function name="safeFunc" />
+        to ${xmlFilename} file
+
+        `
+    end if
+
+    m.top.setRef("interfaces_ref", interfaceFuncs)
+
+    onInit()
+end sub
+
+
+sub implements(interfaces = [])
+    if rodash.isEmpty(interfaces) then return
+
+    allInterfaceFunctions = {}
+
+    for each interfaceName in interfaces
+        interfaceClass = m.interfaces[interfaceName]
+        interfaceInstance = new interfaceClass()
+        interfaceFunctions = interfaceInstance.getReferences()
+
+        for each interfaceFunction in interfaceFunctions.items()
+            functionArray = allInterfaceFunctions[interfaceFunction.key] ?? []
+            functionArray.push(interfaceFunction.value)
+            allInterfaceFunctions[interfaceFunction.key] = functionArray
+        end for
+    end for
+
+    ?"allInterfaceFunctions " allInterfaceFunctions
+
+    m.top.setRef("interfaces_ref", allInterfaceFunctions)
+end sub
+
+
+function safeFunc(functionName = "")
+    devMode = true
+
+    options = m.top.getRef("azSafeFuncPayload") ?? {}
+
+    funcWrapper = function(functionName)
+        options = m.top.getRef("azSafeFuncPayload")
+        returnObj = azExec(functionName, options)
+
+        if rodash.isNonEmptyAA(returnObj)
+            m.top.setRef("azSafeFuncReturnObj", returnObj)
+        end if
+
+        m.top.setRef("azSafeFuncPayload", {})
+    end function
+
+    if devMode
+        return funcWrapper(functionName)
+    else
+        try
+            return funcWrapper(functionName)
+        catch e
+            ?"Error: " e
+        end try
+    end if
+end function
+
+
+function azExec(functionName = "", options = {}, node = m.top)
+    if not node.isSameNode(m.top)
+        return proxyFunc(functionName, options, node)
+    end if
+
+    devMode = false
+
+    if devMode
+        return doFunc(functionName, options)
+    else
+        try
+            return doFunc(functionName, options)
+        catch e
+            ?"Error: " e
+        end try
+    end if
+end function
+
+
+function doFunc(functionName = "", options = {})
+    interfaceFuncs = m.top.getRef("interfaces_ref")
+
+    targetFunction = interfaceFuncs[functionName]
+    if not rodash.isFunction(targetFunction) then return invalid
+
+    return targetFunction(options)
+end function
+
+
+function proxyFunc(functionName = "", options = {}, node = {})
+    if not rodash.isNode(node) then return invalid
+    if rodash.isNonEmptyAA(options) then node.setRef("azSafeFuncPayload", options)
+
+    node.callFunc("safeFunc", functionName)
+
+    returnObj = node.getRef("azSafeFuncReturnObj")
+    return returnObj ?? invalid
+end function
+

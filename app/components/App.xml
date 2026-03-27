@@ -3,7 +3,7 @@
     <interface>
         <field id="launchArgs" type="assocArray" />
         <field id="testFunctions" type="assocarray" />
-        <function name="fooFunction" />
+        <function name="safeFunc" />
     </interface>
     <children>
         <Label id="title" text="Hello World!" />

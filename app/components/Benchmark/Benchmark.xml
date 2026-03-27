@@ -3,6 +3,7 @@
     <interface>
         <field id="run" type="array" />
         <field id="resultsText" type="string" />
+        <function name="testFunc" />
     </interface>
     <children>
 

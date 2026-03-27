@@ -1,19 +1,26 @@
 import "pkg:/source/helpers/typeGuard.bs"
+import "pkg:/components/~boilerplate/azat.bs"
 import "tests/AAvsRef.bs"
+import "tests/CallFuncVsSafeFunc.bs"
+import "tests/CallfuncObserve.bs"
 import "tests/DataRetrieval.bs"
+import "tests/GroupVsRectangle.bs"
 import "tests/DataSending.bs"
 import "tests/MtopVsM.bs"
 import "tests/NodeInitiation.bs"
 
 
-sub init()
+sub onInit()
     m.top.observeFieldScoped("run", "onRun")
     m.top.observeFieldScoped("resultsText", "printResults")
 
     m.benchmarks = {
         "AAvsRef": AAvsRef
+        "CallfuncObserve": CallfuncObserve
+        "CallFuncVsSafeFunc": CallFuncVsSafeFunc
         "DataRetrieval": DataRetrieval
         "DataSending": DataSending
+        "GroupVsRectangle": GroupVsRectangle
         "MtopVsM": MtopVsM
         "NodeInitiation": NodeInitiation
     }
@@ -24,6 +31,8 @@ sub onRun(event = {})
     if not TypeGuard_isEvent(event) then return
 
     devMode = true
+
+    sleep(1000)
 
     if devMode
         doRun(event)
@@ -43,9 +52,15 @@ sub doRun(event)
     funcOptions = data[1] ?? {}
 
     benchClass = m.benchmarks[funcName]
-    benchmark = new benchClass()
-    benchmark.start(funcOptions)
+    m.benchmark = new benchClass()
+    m.benchmark.start(funcOptions)
 end sub
+
+
+function testFunc()
+    m.benchmark.changeString2()
+end function
+
 
 sub printResults(event)
     testMessage = ""

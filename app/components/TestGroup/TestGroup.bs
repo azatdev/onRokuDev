@@ -1,0 +1,11 @@
+import "pkg:/source/roBoilerplate.bs"
+import "pkg:/source/wrapperFunctions.bs"
+
+
+sub init()
+    initFramework(privateFunctions)
+end sub
+
+
+class privateFunctions extends privates
+end class

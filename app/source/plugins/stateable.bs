@@ -1,5 +1,11 @@
 class Stateable
-    sub new(params)
+    function initPlugin(options = {})
+        ? "Init Safeable " m.top.subType()
+    end function
 
-    end sub
+    function getReferences()
+        return {
+            initPlugin: m.initPlugin
+        }
+    end function
 end class

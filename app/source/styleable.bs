@@ -1,0 +1,24 @@
+function initStyles(options = {})
+    ?"initStyles "
+    m.top.enableRenderTracking = true
+    m.top.addField("class", "string", false)
+    m.top.observeFieldScoped("class", "onClassChange")
+    m.top.observeFieldScoped("renderTracking", "onRenderTrackingChange")
+
+    m.top.observeFieldScoped("change", "onChildChange")
+end function
+
+
+function onChildChange(event)
+    ?"onChildChange " event.getData() event.getRoSGNode().subType()
+end function
+
+
+function onClassChange(event)
+    ?"onClassChange " event.getData()
+end function
+
+
+function onRenderTrackingChange(event)
+    ?"onRenderTrackingChange " m.top.subType() event.getData()
+end function

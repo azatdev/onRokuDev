@@ -28,7 +28,7 @@ end function
 
 
 function exec(name = "", options = {}, node = m.top)
-    ?"EXEC TSET"
+    ?"EXEC TEST " name node.subType()
     if rodash.isNonEmptyAA(options) then node.setRef("azSafeFuncPayload", options)
 
     node.azTriggerSafeFunc = name

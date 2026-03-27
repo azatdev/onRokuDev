@@ -1,0 +1,21 @@
+import "pkg:/components/~boilerplate/azat.bs"
+
+sub onInit()
+    ' implements(["Safeable", "Stateable"])
+end sub
+
+
+function regularFunc(options = {})
+    return { result: "count is: " + options.data.count().toStr() }
+end function
+
+
+class privateFunctions
+    function onTheNose(options = {})
+        return { result: options.name + " failure" }
+    end function
+
+    function regularFunc(options = {})
+        return { result: "safe count is: " + options.data.count().toStr()}
+    end function
+end class

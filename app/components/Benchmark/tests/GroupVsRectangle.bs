@@ -1,0 +1,89 @@
+class GroupVsRectangle
+
+    sub new()
+        m.benchTimer = CreateObject("roTimespan")
+        m.logText = []
+        m.iterations = 999
+    end sub
+
+
+    sub start(options = {})
+
+        for each item in options.items()
+            m[item.key] = item.value
+        end for
+
+        ?chr(10)
+        ?`Starting benchmark "GroupVsRectangle" with ${m.iterations} iterations`
+        ?chr(10)
+
+
+        nodeTypes = ["Group", "Rectangle", "Poster", "Node", "ContentNode", "Label", "MultiStyleLabel", "Task", "Timer", "Animation", "RowList", "TargetGroup", "SecondNode"]
+
+        nodeArray = []
+
+        for each nodeType in nodeTypes
+            m.benchTimer.mark()
+
+            for ix = 0 to m.iterations
+                nodeArray.push(createObject("roSGNode", "Group"))
+            end for
+
+            m.logText.push(`${nodeType} took ${m.benchTimer.totalMilliseconds().toStr()} ms`)
+
+            nodeArray = []
+        end for
+
+        m.end()
+    end sub
+
+
+    sub end()
+        m.top.resultsText = m.logText.join(chr(10))
+    end sub
+
+
+    sub test1()
+        ?"Running Test 1"
+        m.benchTimer.mark()
+
+        groupArray = []
+
+        for ix = 0 to m.iterations
+            groupArray.push(createObject("roSGNode", "Group"))
+        end for
+
+        m.logText.push(`Group took ${m.benchTimer.totalMilliseconds().toStr()} ms`)
+        m.test2()
+    end sub
+
+
+    sub test2()
+        ?"Running Test 2"
+        m.benchTimer.mark()
+
+        groupArray = []
+
+        for ix = 0 to m.iterations
+            groupArray.push(createObject("roSGNode", "Rectangle"))
+        end for
+
+        m.logText.push(`Rectangle took ${m.benchTimer.totalMilliseconds().toStr()} ms`)
+        m.test3()
+    end sub
+
+
+    sub test3()
+        ?"Running Test 3"
+        m.benchTimer.mark()
+
+        groupArray = []
+
+        for ix = 0 to m.iterations
+            groupArray.push(createObject("roSGNode", "Poster"))
+        end for
+
+        m.logText.push(`Poster took ${m.benchTimer.totalMilliseconds().toStr()} ms`)
+        m.end()
+    end sub
+end class

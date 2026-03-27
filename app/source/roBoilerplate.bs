@@ -1,25 +1,27 @@
 import "pkg:/source/roku_modules/rodash/rodash.brs"
+import "styleable.bs"
+import "wrapperFunctions.bs"
 
 
 sub initFramework(options = {})
     m.scene = m.top.getScene()
-    m.scene.addField("safeFunctions", "assocarray", false)
+    m.top.addField("safeFunctions", "assocarray", false)
 
     safeFunctions = {}
+    ' if rodash.isFunction(options) then
     safeFunctions.append(new options({ m: m }))
 
-    m.scene.addField("state", "assocarray", false)
-    m.scene.setRef("safeFunctions", safeFunctions)
+    m.top.addField("state", "assocarray", false)
+    m.top.setRef("safeFunctions", safeFunctions)
 
     initSafeFunctions()
+    initStyles()
 end sub
 
 
 sub initSafeFunctions(options = {})
     try
         m.top.addField("azSafeFuncPayload", "assocarray", true)
-        m.top.addField("azTriggerSafeFunc", "string", true)
-        m.top.observeFieldScoped("azTriggerSafeFunc", "azSafeFunc")
         m.top.addField("azSafeFuncReturnObj", "assocarray", false)
 
         m.safeFunctions = options.safeFunctions
@@ -45,12 +47,12 @@ end sub
 
 
 sub doRun(event)
-    data = TypeGuard_isEvent(event) ? event.getData() : event ?? {}
+    data = rodash.isNodeEvent(event) ? event.getData() : event ?? {}
 
     funcName = m.top.azTriggerSafeFunc ?? ""
     funcOptions = m.top.getRef("azSafeFuncPayload")
 
-    safeFunctions = m.scene.getRef("safeFunctions")
+    safeFunctions = m.top.getRef("safeFunctions")
 
     returnObj = safeFunctions[funcName](funcOptions)
     if rodash.isNonEmptyAA(returnObj) then m.top.setRef("azSafeFuncReturnObj", returnObj)

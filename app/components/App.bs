@@ -1,15 +1,24 @@
 import "pkg:/source/helpers/appUtils.bs"
 import "pkg:/source/helpers/timestamps.bs"
 import "pkg:/source/plugins/stateable.bs"
-import "pkg:/source/plugins/safeable.bs"
-import "pkg:/source/roBoilerplate.bs"
-import "pkg:/source/wrapperFunctions.bs"
+' import "pkg:/source/plugins/safeable.bs"
+' import "pkg:/source/roBoilerplate.bs"
+import "pkg:/components/~boilerplate/azat.bs"
 import "pkg:/components/constants.bs"
 
 
-sub init()
-    initFramework(privateFunctions)
-    exec("onInit")
+sub onInit()
+    ' initFramework(privateFunctions)
+    ' exec("onInit")
+    ' exec("doStyleTest")
+    ' exec("doErrorTest")
+    runBenchmark("GroupVsRectangle")
+    ' implements(["Safeable", "Stateable"])
+    ' azLog([m, m.top], SOURCE_LOCATION)
+
+    m.secondNode = createObject("roSGNode", "SecondNode")
+    ' result = azExec("onTheNose", { name: "Azat" })
+    ' ?"result " result
 end sub
 
 
@@ -19,24 +28,44 @@ sub runBenchmark(name = "")
 end sub
 
 
-class privateFunctions extends privates
+class privateFunctions
     function onInit(options = {})
+        ' subscribe({
+        '     "TEST_EVENT": "onTestEvent"
+        ' })
 
-        subscribe({
-            "TEST_EVENT": "onTestEvent"
-        })
+        ' m.top.appendChild(createObject("roSGNode", "NodeTest"))
 
-        m.top.appendChild(createObject("roSGNode", "NodeTest"))
+        ' m.task = createObject("roSGNode", "TestNode")
 
-        m.task = createObject("roSGNode", "TestNode")
-
-        setTimeout(sub(m)
-            m.task.control = "run"
-        end sub, m, 500)
+        ' setTimeout(sub(m)
+        '     m.task.control = "run"
+        ' end sub, m, 500)
 
         ' loadList()
         ' loadPlugin()
-        ' runBenchmark("DataSending")
+    end function
+
+
+    function doErrorTest(options = {})
+        ?"doErrorTest "
+        ' exec("errorTest2")
+    end function
+
+
+    function errorTest2(options = {})
+        ?"errorTest2 "
+        ?1/0
+    end function
+
+
+    function doStyleTest(options = {})
+        ?"doStyleTest "
+        groupNode = createObject("roSGNode", "TestGroup")
+        m.top.appendChild(groupNode)
+
+        labelNode = createObject("roSGNode", "Label")
+        groupNode.appendChild(labelNode)
     end function
 
 
@@ -44,17 +73,22 @@ class privateFunctions extends privates
         ?"testFunction " options
     end function
 
+
     function onTheNose(options = {})
-        ?"ALMOST PUNCHED " options.name
-        return { result: "success" }
+        return { result: options.name + " success"  }
+    end function
+
+
+    function proxyFunc(options = {})
+        return azExec("onTheNose", options, m.secondNode)
     end function
 end class
 
 
 sub onTestEvent(data, msgInfo)
     ?"onTestEvent2 " data
-    result = exec("onTheNose", { name: "test" })
-    ?"result " result
+    ' result = exec("onTheNose", { name: "test" })
+    ' ?"result " result
 end sub
 
 
@@ -98,9 +132,4 @@ sub loadList()
     list.color = "#FFFFFF00"
     list.translation = [399,198]
     list.setFocus(true)
-end sub
-
-
-sub fooFunction(options = {})
-    ?"foofFunction " options
 end sub

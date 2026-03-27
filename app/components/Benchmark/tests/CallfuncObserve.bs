@@ -1,0 +1,69 @@
+class CallfuncObserve
+    sub new()
+        m.benchTimer = CreateObject("roTimespan")
+        m.logText = []
+    end sub
+
+
+    sub start(options = {})
+        for each item in options.items()
+            m[item.key] = item.value
+        end for
+
+        m.top.addField("testString", "string", true)
+        m.top.observeFieldScoped("testString", m.onTestStringChange.toStr().tokenize(" ").peek())
+
+        m.benchmark1()
+
+    end sub
+
+
+    function onTestStringChange(event)
+        ?"onTestStringChange " event.getData()
+        return m.benchmark.changeString()
+    end function
+
+
+    sub changeString()
+        ?"changeString "
+        m.top.testString = "Test2"
+        m.top.callFunc("testFunc")
+    end sub
+
+
+    sub changeString2()
+        ?"changeString2 "
+        m.top.testString = "Test3"
+    end sub
+
+
+    sub end(options = {})
+    end sub
+
+
+    sub benchmark1()
+        ?"benchmark1 "
+        m.benchTimer.mark()
+
+        ' for ix = 0 to 999
+        ' end for
+
+        m.top.testString = "Test1"
+
+        ' ?"benchmark1 " + m.benchTimer.totalMilliseconds().toStr()
+        ' m.benchmark2()
+    end sub
+
+
+    sub benchmark2()
+        m.benchTimer.mark()
+
+        for ix = 0 to 999
+            m.top.createChild("NodeBRS")
+        end for
+
+        ?"benchmark2 " + m.benchTimer.totalMilliseconds().toStr()
+        m.end()
+    end sub
+
+end class

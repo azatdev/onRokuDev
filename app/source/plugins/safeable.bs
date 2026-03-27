@@ -1,3 +1,20 @@
-sub loadPlugin()
-    ?"Safeable"
-end sub
+
+
+class Safeable
+    function initPlugin(options = {})
+        ? "Init Safeable " m.top.subType()
+    end function
+
+    function getReferences()
+        return {
+            initPlugin: m.initPlugin
+            whoSafe: whoSafe
+        }
+    end function
+
+end class
+
+
+function whoSafe(options = {})
+    ?"WHO SAFE " m.top.subType()
+end function
