@@ -1,0 +1,80 @@
+class Safeable
+    function new(options = {})
+        m.top = options.node
+        m.top.addField("interfaces_ref", "assocarray", false)
+        m.top.addField("azSafeFuncPayload", "assocarray", true)
+        m.top.addField("azSafeFuncReturnObj", "assocarray", false)
+    end function
+
+    function returnInterfaceFunctions(options = {})
+        return m
+    end function
+
+    function exec(functionName, options, node = m.top)
+        devMode = true
+
+        if devMode
+            return m.doFunc(functionName, options, node)
+        else
+            try
+                return m.doFunc(functionName, options, node)
+            catch e
+                ?"Error: " e
+            end try
+        end if
+    end function
+
+
+    function doFunc(functionName, options, node = m.top)
+        if not node.isSameNode(m.top)
+            return m.proxyFunc(functionName, options, node)
+        end if
+
+        interfaceFuncs = m.top.getRef("interfaces_ref")
+
+        targetFunction = interfaceFuncs[functionName]
+        if not rodash.isFunction(targetFunction) then return invalid
+
+        return targetFunction(options)
+    end function
+
+
+    function proxyFunc(functionName = "", options = {}, node = {})
+        if not rodash.isNode(node) then return invalid
+        if rodash.isNonEmptyAA(options) then node.setRef("azSafeFuncPayload", options)
+
+        node.callFunc("safeFunc", functionName)
+
+        returnObj = node.getRef("azSafeFuncReturnObj")
+        return returnObj ?? invalid
+    end function
+
+
+    sub processSafeFunc(functionName)
+        options = m.top.getRef("azSafeFuncPayload")
+        returnObj = m.exec(functionName, options)
+
+        if rodash.isNonEmptyAA(returnObj)
+            m.top.setRef("azSafeFuncReturnObj", returnObj)
+        end if
+
+        m.top.setRef("azSafeFuncPayload", {})
+    end sub
+
+
+    function safeFunc(functionName = "")
+        devMode = true
+
+        options = m.top.getRef("azSafeFuncPayload") ?? {}
+
+        if devMode
+            return m.processSafeFunc(functionName)
+        else
+            try
+                return m.processSafeFunc(functionName)
+            catch e
+                ?"Error: " e
+            end try
+        end if
+    end function
+end class

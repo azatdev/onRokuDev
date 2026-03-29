@@ -56,7 +56,7 @@ class CallFuncVsSafeFunc
             payload = { id: ix }
             payload.append(m.testJSON)
 
-            returnObj = azExec("regularFunc", payload, m.secondNode)
+            returnObj = exec("regularFunc", payload, m.secondNode)
             ?returnObj.result
         end for
 

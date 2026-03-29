@@ -15,6 +15,7 @@ class privateFunctions
         return { result: options.name + " failure" }
     end function
 
+
     function regularFunc(options = {})
         return { result: "safe count is: " + options.data.count().toStr()}
     end function

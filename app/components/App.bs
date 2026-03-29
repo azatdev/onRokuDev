@@ -12,13 +12,13 @@ sub onInit()
     ' exec("onInit")
     ' exec("doStyleTest")
     ' exec("doErrorTest")
-    runBenchmark("GroupVsRectangle")
+    ' runBenchmark("GroupVsRectangle")
     ' implements(["Safeable", "Stateable"])
     ' azLog([m, m.top], SOURCE_LOCATION)
 
     m.secondNode = createObject("roSGNode", "SecondNode")
-    ' result = azExec("onTheNose", { name: "Azat" })
-    ' ?"result " result
+    result = exec("onTheNose", { name: "Azat" }, m.secondNode)
+    ?"result " result
 end sub
 
 
@@ -80,7 +80,7 @@ class privateFunctions
 
 
     function proxyFunc(options = {})
-        return azExec("onTheNose", options, m.secondNode)
+        return exec("onTheNose", options, m.secondNode)
     end function
 end class
 
