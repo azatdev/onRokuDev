@@ -7,6 +7,13 @@ const configPath = path.join(root + "/bsconfig.json");
 
 export async function runBuilder() {
     return new Promise((resolve, reject) => {
+
+        const bsConfig = JSON.parse(fs.readFileSync(configPath).toString());
+
+        [bsConfig.stagingDir, bsConfig.outputDir].forEach(
+            (dir) => fs.rmSync(dir, { recursive: true, force: true })
+        );
+
         const programBuilder = new ProgramBuilder();
         return programBuilder.run({
             project: configPath,
@@ -14,12 +21,16 @@ export async function runBuilder() {
         }).then(() => {
             const buildErrors = programBuilder.program.getDiagnostics().filter((x) => x.severity === DiagnosticSeverity.Error)
 
-            if (buildErrors.length === 0) { resolve(true); }
+            if (buildErrors.length > 0) {
+                let errorString = '\n+-+-+-+-+-+-+-+-+-+-+-+-+-+\n'
 
-            let errorString = '\n+-+-+-+-+-+-+-+-+-+-+-+-+-+\n'
-            errors.forEach(error => errorString += `ERROR: ${error.message} on line ${(error.range.start.line) + 1} in "${error.file.pkgPath}" \n`)
-            errorString += '+-+-+-+-+-+-+-+-+-+-+-+-+-+\n'
-            throw new Error(errorString);
+                buildErrors.forEach(error => errorString += `ERROR: ${error.message} on line ${(error.range.start.line) + 1} in "${error.file.pkgPath}" \n`)
+
+                errorString += '+-+-+-+-+-+-+-+-+-+-+-+-+-+\n'
+                throw new Error(errorString);
+            }
+
+            resolve(true);
         }).catch(e => {
             console.error(e);
             reject(e)
@@ -27,3 +38,5 @@ export async function runBuilder() {
         });
     });
 }
+
+runBuilder()

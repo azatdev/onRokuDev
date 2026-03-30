@@ -8,7 +8,7 @@
   },
   "scripts": {
     "websocket": "node websocket.js",
-    "transpile": "bsc",
+    "transpile": "node build/generate.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

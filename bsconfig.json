@@ -10,8 +10,9 @@
         "source/**/*"
     ],
     "lintConfig": "config/bslint.jsonc",
+    "outputDir": "out",
     "plugins": [ "@rokucommunity/bslint" ],
-    "rootDir": "app/",
+    "rootDir": "app",
     "sourceMap": true,
     "stagingDir": "transpiled/build"
 }
