@@ -16,9 +16,16 @@ sub onInit()
     ' implements(["Safeable", "Stateable"])
     ' azLog([m, m.top], SOURCE_LOCATION)
 
-    m.secondNode = createObject("roSGNode", "SecondNode")
-    result = exec("onTheNose", { name: "Azat" }, m.secondNode)
-    ?"result " result
+    ' m.secondNode = createObject("roSGNode", "SecondNode")
+    ' result = exec("onTheNose", { name: "Azat" }, m.secondNode)
+    ' ?"result " result
+    ?"real time: " DateTime_getTimestamp()
+    a = rodash.now()
+    ?"rodash now " rodash.now()
+    ?len(a.toStr())
+
+    m.socketTest = createObject("roSGNode", "WebsocketTest")
+    m.socketTest.control = "RUN"
 end sub
 
 

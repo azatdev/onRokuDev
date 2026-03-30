@@ -7,7 +7,8 @@
     "rootDir": "app"
   },
   "scripts": {
-    "transpile": "node build/generate.js",
+    "websocket": "node websocket.js",
+    "transpile": "bsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -15,6 +16,7 @@
   "dependencies": {
     "brighterscript": "^0.70.1",
     "dotenv": "^17.2.2",
-    "rodash": "npm:@tkss/rodash@^0.0.36"
+    "rodash": "npm:@tkss/rodash@^0.0.36",
+    "ws": "^8.18.3"
   }
 }

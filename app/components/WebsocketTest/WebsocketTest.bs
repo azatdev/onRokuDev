@@ -1,0 +1,91 @@
+import "pkg:/source/roku_modules/rodash/rodash.brs"
+
+
+sub init()
+    m.top.functionName = "initSocketServer"
+end sub
+
+
+function initSocketServer()
+    serverHost = "192.168.88.31"
+    serverPort = 54320
+    m.errorConnectionInterval = 100
+
+    messagePort = createObject("roMessagePort")
+    sendAddress = createObject("roSocketAddress")
+    sendAddress.setAddress(serverHost + ":" + serverPort.toStr())
+    socket = createObject("roStreamSocket")
+    socket.setMessagePort(messagePort)
+    socket.setSendToAddress(sendAddress)
+    socket.notifyReadable(true)
+    socket.setKeepAlive(true)
+    socket.setNoDelay(true)
+    socket.connect()
+
+    ?"Connected to TCP socket server at"; serverHost + ":" + serverPort.toStr()
+
+    sendMessage(socket, { message: "Azat says hello" })
+    waitForSocketMessages(socket, messagePort)
+    socket.close()
+
+    return invalid
+end function
+
+
+sub waitForSocketMessages(socket as object, messagePort as object)
+
+    lastLoopTime = rodash.now()
+    connectionErrorCount = 0
+
+    while true
+        event = wait(0, messagePort)
+        currentLoopTime = rodash.now()
+
+        if currentLoopTime - lastLoopTime < m.errorConnectionInterval
+            connectionErrorCount += 1
+            if connectionErrorCount > 100
+                ?"Socket server is down or device is being flooded"
+                exit while
+            end if
+            sleep(50)
+        else
+            connectionErrorCount = 0
+        end if
+
+        lastLoopTime = currentLoopTime
+
+        if type(event) <> "roSocketEvent" or event.getSocketID() <> socket.getID() then continue while
+
+        socketMessage = socket.receiveStr(1024) ?? ""
+
+        if not rodash.isNonEmptyString(socketMessage) then continue while
+
+        receiveMessage(socketMessage)
+    end while
+end sub
+
+
+sub sendMessage(socket as object, messageObj as object)
+    rokuDevice = createObject("roDeviceInfo")
+
+    payload = formatJSON({
+        deviceId: rokuDevice.getChannelClientId()
+        deviceName: rokuDevice.getFriendlyName()
+        message: messageObj
+        type: "device-message"
+    })
+
+    ?"Sent TCP socket message " payload
+
+    socket.sendStr(payload + chr(10))
+end sub
+
+
+sub receiveMessage(socketMessage as string)
+    if len(socketMessage) = 0 then return
+
+    ?"Received TCP socket message " socketMessage
+
+    parsedMessage = parseJSON(socketMessage)
+    ?"parsedMessage " parsedMessage
+end sub
