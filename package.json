@@ -7,11 +7,11 @@
     "rootDir": "app"
   },
   "scripts": {
-    "websocket": "node websocket.js",
+    "websocket": "node build/websocket.js",
     "build:styles": "node build/generate-styles.cjs",
     "watch:styles": "node build/watch-styles.js",
     "pretranspile": "npm run build:styles",
-    "transpile": "node build/generate.js",
+    "transpile": "node build/generate-brs.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

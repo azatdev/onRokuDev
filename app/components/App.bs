@@ -20,10 +20,10 @@ sub onInit()
     ' result = exec("onTheNose", { name: "Azat" }, m.secondNode)``
     ' ?"result " result
 
-    ' m.socketTest = createObject("roSGNode", "WebsocketTest")
-    ' m.socketTest.control = "RUN"
+    m.socketTest = createObject("roSGNode", "WebsocketTest")
+    m.socketTest.control = "RUN"
 
-    ' styles = ReadAsciiFile("pkg:/source/styles.json")
+    ' styles are now generated on the host at build/styles.json and sent over the socket server
     ' ?"styles " parseJSON(styles)
 end sub
 

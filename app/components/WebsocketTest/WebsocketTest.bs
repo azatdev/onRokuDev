@@ -86,5 +86,6 @@ end function
 sub receiveMessage(socketMessage as string)
     if len(socketMessage) = 0 then return
     parsedMessage = parseJSON(socketMessage)
-    ?"Received TCP socket message " parsedMessage
+    ?"Received TCP socket object " parsedMessage
+    ?"parsed message " parseJSON(parsedMessage.message)
 end sub
