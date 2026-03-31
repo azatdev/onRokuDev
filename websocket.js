@@ -16,7 +16,7 @@ function createPayload(type, message, extra = {}) {
   }) + '\n';
 }
 
-function sendPayload(socket, type, message, extra = {}) {
+function sendMessage(socket, type, message, extra = {}) {
   socket.write(createPayload(type, message, extra));
 }
 
@@ -28,7 +28,7 @@ function broadcastMessage(message) {
       continue;
     }
 
-    sendPayload(client, 'server-message', message);
+    sendMessage(client, 'server-message', message);
     sentCount += 1;
   }
 
@@ -67,7 +67,7 @@ const server = net.createServer((socket) => {
   clients.add(socket);
   console.log(`Roku connected from ${socket.clientLabel}`);
 
-  sendPayload(socket, 'welcome', welcomeMessage, {
+  sendMessage(socket, 'welcome', welcomeMessage, {
     connectedClients: clients.size,
   });
 

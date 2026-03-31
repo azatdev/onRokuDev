@@ -8,6 +8,9 @@
   },
   "scripts": {
     "websocket": "node websocket.js",
+    "build:styles": "node build/generate-styles.cjs",
+    "watch:styles": "node build/watch-styles.js",
+    "pretranspile": "npm run build:styles",
     "transpile": "node build/generate.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,6 +18,7 @@
   "license": "ISC",
   "dependencies": {
     "brighterscript": "^0.70.1",
+    "chokidar": "^4.0.3",
     "dotenv": "^17.2.2",
     "rodash": "npm:@tkss/rodash@^0.0.36",
     "ws": "^8.18.3"
