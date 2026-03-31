@@ -5,7 +5,7 @@ class DataSending
     sub new()
         m.benchTimer = CreateObject("roTimespan")
         m.logText = []
-        m.iterations = 99
+        m.iterations = 29
         m.nodeTwo = createObject("roSGNode", "NodeTwo")
     end sub
 
@@ -17,7 +17,7 @@ class DataSending
         end for
 
         ?chr(10)
-        ?`Starting benchmark "DataSending" with 226.6KB payload ${m.iterations} times`
+        ?`Starting benchmark "DataSending" with 226.6KB payload ${m.iterations + 1} times`
         ?chr(10)
 
         m.test1()

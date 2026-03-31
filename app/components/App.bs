@@ -12,16 +12,19 @@ sub onInit()
     ' exec("onInit")
     ' exec("doStyleTest")
     ' exec("doErrorTest")
-    ' runBenchmark("GroupVsRectangle")
+    ' runBenchmark("DataSending")
     ' implements(["Safeable", "Stateable"])
     ' azLog([m, m.top], SOURCE_LOCATION)
 
     ' m.secondNode = createObject("roSGNode", "SecondNode")
-    ' result = exec("onTheNose", { name: "Azat" }, m.secondNode)
+    ' result = exec("onTheNose", { name: "Azat" }, m.secondNode)``
     ' ?"result " result
 
-    m.socketTest = createObject("roSGNode", "WebsocketTest")
-    m.socketTest.control = "RUN"
+    ' m.socketTest = createObject("roSGNode", "WebsocketTest")
+    ' m.socketTest.control = "RUN"
+
+    ' styles = ReadAsciiFile("pkg:/source/styles.json")
+    ' ?"styles " parseJSON(styles)
 end sub
 
 
