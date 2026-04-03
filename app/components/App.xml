@@ -3,10 +3,14 @@
     <interface>
         <field id="launchArgs" type="assocArray" />
         <field id="testFunctions" type="assocarray" />
+        <field id="styles" type="assocarray" />
         <function name="safeFunc" />
+        <function name="applyStyles" />
     </interface>
     <children>
-        <Label id="title" text="Hello World!" />
+        <Group id="container">
+            <Label id="title" text="Hello World!" />
+        </Group>
     </children>
     <script type="text/brightscript" uri="App.bs" />
 </component>

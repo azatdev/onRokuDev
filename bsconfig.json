@@ -7,6 +7,7 @@
     "files": [
         "components/**/*",
         "manifest",
+        "static/**/*",
         "source/**/*"
     ],
     "lintConfig": "config/bslint.jsonc",
@@ -14,5 +15,6 @@
     "plugins": [ "@rokucommunity/bslint" ],
     "rootDir": "app",
     "sourceMap": true,
-    "stagingDir": "transpiled/build"
+    "stagingDir": "transpiled/build",
+    "stylesPath": "build/styles.json"
 }

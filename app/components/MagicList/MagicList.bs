@@ -1,6 +1,6 @@
-import "pkg:/source/helpers/dateTime.bs"
-import "pkg:/source/helpers/commonUtils.bs"
 import "pkg:/source/helpers/typeGuard.bs"
+import "pkg:/source/roku_modules/rodash/rodash.brs"
+
 
 sub init()
     m.list = m.top.findNode("list")
@@ -24,14 +24,14 @@ sub init()
 
     m.focusTimer = m.top.findNode("focusTimer")
     m.focusTimer.update({
-        finishTime: DateTime_getTimestamp()
+        finishTime: rodash.now()
         focused: false
-        startTime: DateTime_getTimestamp()
+        startTime: rodash.now()
     }, true)
 
     m.focusTimer.duration = 0.016
     m.focusTimer.repeat = true
-    CommonUtils_observeScoped(m.focusTimer, "fire", "onFocusTimerFired")
+    m.focusTimer.observeFieldScoped("fire", "onFocusTimerFired")
 
     m.totalRectDimensions = {
         height: 0
@@ -360,7 +360,7 @@ sub onFocusedChildChange(event)
 
     m.focusTimer.focused = not unfocused
 
-    currentTime = DateTime_getTimestamp()
+    currentTime = rodash.now()
     durationMs = m.list.duration * 1000
     finishTime = currentTime + durationMs
     m.focusTimer.startTime = currentTime
@@ -390,7 +390,7 @@ end sub
 sub onFocusTimerFired(event)
     finishTime = m.focusTimer.finishTime
     startTime = m.focusTimer.startTime
-    currentTime = DateTime_getTimestamp()
+    currentTime = rodash.now()
 
     totalDuration! = finishTime - startTime
     if totalDuration! <= 0
@@ -732,4 +732,35 @@ end sub
 
 function totalRectDimensions()
     return {}
+end function
+
+
+function CommonUtils_floatMOD(x as dynamic, y as dynamic) as dynamic
+    if y = 0 then return 0
+    a = abs(x)
+    b = abs(y)
+    remainder = a - (int(a/b) * b)
+    return remainder * sgn(x)
+end function
+
+
+function CommonUtils_reduce(arr as object, func as function, args as object, initialValue=invalid as dynamic) as dynamic
+    if not TypeGuard_isArray(arr) then return invalid
+
+    size = arr.count()
+    startAt = 0
+    accumulator = initialValue
+
+    if size = 0 then return accumulator
+
+    if accumulator = invalid
+        accumulator = arr[0]
+        startAt = 1
+    end if
+
+    for i = startAt to size - 1
+        accumulator = func(accumulator, arr[i], i, arr, args)
+    end for
+
+    return accumulator
 end function

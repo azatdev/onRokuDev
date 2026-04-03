@@ -1,14 +1,39 @@
 const fs = require('node:fs');
 const net = require('node:net');
 const path = require('node:path');
-const readline = require('node:readline');
 require('dotenv').config();
 
-const bindHost = process.env.SOCKET_SERVER_BIND || '0.0.0.0';
-const port = Number(process.env.SOCKET_SERVER_PORT || 54320);
+const socketBindHost = process.env.SOCKET_SERVER_BIND || '0.0.0.0';
+const socketPort = Number(process.env.SOCKET_SERVER_PORT || 54320);
 const welcomeMessage = process.env.SOCKET_MESSAGE || 'Hello from the Node socket server';
 const stylesPath = path.resolve(__dirname, 'styles.json');
 const clients = new Set();
+
+function readStylesPayload() {
+  let stylesMessage = '';
+
+  try {
+    stylesMessage = fs.readFileSync(stylesPath, 'utf8').trim();
+  } catch (error) {
+    return {
+      ok: false,
+      error: `Unable to read styles payload from ${stylesPath}: ${error.message}`,
+    };
+  }
+
+  if (stylesMessage.length === 0) {
+    return {
+      ok: false,
+      error: `Styles payload at ${stylesPath} is empty.`,
+    };
+  }
+
+  return {
+    ok: true,
+    stylesMessage,
+    byteLength: Buffer.byteLength(stylesMessage, 'utf8'),
+  };
+}
 
 function createPayload(type, message, extra = {}) {
   return JSON.stringify({
@@ -25,6 +50,7 @@ function sendMessage(socket, type, message, extra = {}) {
 
 function broadcastPayload(type, message, extra = {}, excludeSocket = null) {
   let sentCount = 0;
+
   for (const client of clients) {
     if (client.destroyed) {
       clients.delete(client);
@@ -43,32 +69,20 @@ function broadcastPayload(type, message, extra = {}, excludeSocket = null) {
   return sentCount;
 }
 
-function broadcastMessage(message) {
-  return broadcastPayload('server-message', message);
-}
-
 function broadcastStylesUpdate(excludeSocket = null) {
-  let stylesMessage = '';
-
-  try {
-    stylesMessage = fs.readFileSync(stylesPath, 'utf8').trim();
-  } catch (error) {
-    console.error(`Unable to read styles payload from ${stylesPath}: ${error.message}`);
-    return false;
-  }
-
-  if (stylesMessage.length === 0) {
-    console.error(`Styles payload at ${stylesPath} is empty.`);
+  const stylesPayload = readStylesPayload();
+  if (!stylesPayload.ok) {
+    console.error(stylesPayload.error);
     return false;
   }
 
   broadcastPayload(
     'styles-update',
-    stylesMessage,
+    stylesPayload.stylesMessage,
     {
       filePath: 'build/styles.json',
       messageFormat: 'json-string',
-      byteLength: Buffer.byteLength(stylesMessage, 'utf8'),
+      byteLength: stylesPayload.byteLength,
     },
     excludeSocket
   );
@@ -109,7 +123,7 @@ function processIncomingData(socket, chunk) {
   }
 }
 
-const server = net.createServer((socket) => {
+const socketServer = net.createServer((socket) => {
   socket.setEncoding('utf8');
   socket.setNoDelay(true);
   socket.pendingData = '';
@@ -137,25 +151,10 @@ const server = net.createServer((socket) => {
   });
 });
 
-server.on('error', (error) => {
-  console.error(`Server error: ${error.message}`);
+socketServer.on('error', (error) => {
+  console.error(`Socket server error: ${error.message}`);
 });
 
-server.listen(port, bindHost, () => {
-  console.log(`TCP socket server listening on ${bindHost}:${port}`);
-  console.log('Type a message and press Enter to broadcast it to connected Roku clients.');
-});
-
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-});
-
-rl.on('line', (line) => {
-  const message = line.trim();
-  if (message.length === 0) {
-    return;
-  }
-
-  broadcastMessage(message);
+socketServer.listen(socketPort, socketBindHost, () => {
+  console.log(`TCP socket server listening on ${socketBindHost}:${socketPort}`);
 });

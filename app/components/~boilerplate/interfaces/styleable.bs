@@ -1,0 +1,6 @@
+class Styleable
+    function new(options = {})
+        m.top = options.node
+        ?"Styleable " m.top.isSubtype("Scene")
+    end function
+end class

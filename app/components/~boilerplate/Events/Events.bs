@@ -1,16 +1,12 @@
-import "pkg:/source/helpers/appUtils.bs"
-
-
 sub init()
     m.queue = createObject("roSGNode", "roMessageTask")
 
     m.queue.observeField("state", "onStateChange")
-    m.allEvents = "{{%- o(EVENT) %}}"
 end sub
 
 
 sub process(eventName, eventData = {} as dynamic)
-    if not TypeGuard_isTruthy(m.allEvents[eventName]) then return
+    ' if not TypeGuard_isTruthy(m.allEvents[eventName]) then return
     processEvent("event", { type: eventName, data: eventData })
 end sub
 

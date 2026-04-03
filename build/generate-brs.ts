@@ -1,6 +1,7 @@
 import fs from "fs-extra";
 import path from "path";
 import { ProgramBuilder, DiagnosticSeverity} from "brighterscript";
+import { ejsParser } from "./ejsParser";
 
 const root = path.resolve('./');
 const configPath = path.join(root + "/bsconfig.json");
@@ -15,11 +16,13 @@ export async function runBuilder() {
         );
 
         const programBuilder = new ProgramBuilder();
+        programBuilder.plugins.add(ejsParser(bsConfig));
+
         return programBuilder.run({
             project: configPath,
             sourceMap: true
         }).then(() => {
-            const buildErrors = programBuilder.program.getDiagnostics().filter((x) => x.severity === DiagnosticSeverity.Error)
+            const buildErrors = programBuilder.getDiagnostics().filter((x) => x.severity === DiagnosticSeverity.Error)
 
             if (buildErrors.length > 0) {
                 let errorString = '\n+-+-+-+-+-+-+-+-+-+-+-+-+-+\n'

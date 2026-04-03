@@ -1,11 +1,13 @@
 import "pkg:/source/roku_modules/rodash/rodash.brs"
 ' import "pkg:/source/plugins/safeable.bs"
 import "interfaces/safeable.bs"
+import "interfaces/styleable.bs"
 import "pkg:/source/plugins/stateable.bs"
 import "pkg:/source/plugins/logger.bs"
 
 
 sub init()
+    m.top.removeChild(m.top.getChild(0))
 
     interfaceFuncs = {}
 
@@ -16,6 +18,7 @@ sub init()
     m.safeable = new Safeable({ node: m.top })
     ?m.safeable.returnInterfaceFunctions()
 
+    m.styleable = new Styleable({ node: m.top })
     m.azHasSafeFuncs = false
 
     try
@@ -65,7 +68,6 @@ sub implements(interfaces = [])
     end for
 
     ?"allInterfaceFunctions " allInterfaceFunctions
-
     m.top.setRef("interfaces_ref", allInterfaceFunctions)
 end sub
 
