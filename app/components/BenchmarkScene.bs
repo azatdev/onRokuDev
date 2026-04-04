@@ -2,4 +2,11 @@ sub init()
     m.top.removeChild(m.top.getChild(0))
     ?"BenchmarkScene"
     m.top.backgroundColor = "#000000"
+    runBenchmark("DataRetrieval")
+end sub
+
+
+sub runBenchmark(name = "")
+    benchmark = createObject("roSGNode", "Benchmark")
+    benchmark.run = [name, { top: benchmark }]
 end sub

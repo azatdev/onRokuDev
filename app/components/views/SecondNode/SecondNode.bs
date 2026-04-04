@@ -1,5 +1,6 @@
 import "pkg:/components/~boilerplate/azat.bs"
 
+
 sub onInit()
     ' implements(["Safeable", "Stateable"])
 end sub

@@ -1,0 +1,75 @@
+class TryCatch
+    sub new()
+        m.benchTimer = CreateObject("roTimespan")
+        m.logText = []
+        m.iterations = 999
+    end sub
+
+
+    sub start(options = {})
+        for each item in options.items()
+            m[item.key] = item.value
+        end for
+
+        m.test1()
+    end sub
+
+
+    sub end()
+        m.top.resultsText = m.logText.join(chr(10))
+    end sub
+
+
+    sub test1()
+        m.benchTimer.mark()
+
+        for ix = 0 to m.iterations
+            m.successfulFunc()
+        end for
+
+        m.logText.push(`No Try Catch took ${m.benchTimer.totalMicroseconds().toStr()} μs`)
+
+        m.test2()
+    end sub
+
+
+    sub test2()
+        m.benchTimer.mark()
+
+        for ix = 0 to m.iterations
+            try
+                m.successfulFunc()
+            catch e
+            end try
+        end for
+
+        m.logText.push(`Successful Try Catch took ${m.benchTimer.totalMicroseconds().toStr()} μs`)
+        m.test3()
+    end sub
+
+
+    sub test3()
+        m.benchTimer.mark()
+
+        for ix = 0 to m.iterations
+            try
+                m.failFunc()
+            catch e
+            end try
+        end for
+
+        m.logText.push(`Fail Try Catch took ${m.benchTimer.totalMilliseconds().toStr()} ms`)
+        m.end()
+    end sub
+
+
+    sub successfulFunc()
+        testString = ""
+    end sub
+
+
+    sub failFunc()
+        testInt = 1 / 0
+    end sub
+
+end class

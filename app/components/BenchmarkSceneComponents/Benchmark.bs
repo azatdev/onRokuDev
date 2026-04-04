@@ -7,6 +7,7 @@ import "tests/DataRetrieval.bs"
 import "tests/GroupVsRectangle.bs"
 import "tests/DataSending.bs"
 import "tests/MtopVsM.bs"
+import "tests/TryCatch.bs"
 import "tests/NodeInitiation.bs"
 
 
@@ -23,6 +24,7 @@ sub onInit()
         "GroupVsRectangle": GroupVsRectangle
         "MtopVsM": MtopVsM
         "NodeInitiation": NodeInitiation
+        "TryCatch": TryCatch
     }
 end sub
 
