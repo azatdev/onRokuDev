@@ -1,9 +1,9 @@
-import "pkg:/source/wrapperFunctions.bs"
-' import "pkg:/source/helpers/appUtils.bs"
+import "pkg:/components/~boilerplate/azat.bs"
 
 
-sub init()
+sub onInit()
     m.top.functionName = "sendMessage"
+    m.top.role = "Task"
 end sub
 
 
@@ -14,3 +14,7 @@ function sendMessage()
 
     return true
 end function
+
+class privateFunctions
+
+end class

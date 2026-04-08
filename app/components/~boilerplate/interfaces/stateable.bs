@@ -1,0 +1,36 @@
+class Stateable extends onRokuDevInterface
+    override sub initInterface(options = {})
+        m.top.addField("ordState", "assocarray", false)
+    end sub
+
+
+    function getStateValue(key = "", node = m.top)
+        if rodash.isEmpty(key) then return invalid
+
+        nodeState = node.getRef("ordState") ?? {}
+        return nodeState[key]
+    end function
+
+
+    function getField(options = {}, node = m.top)
+        if rodash.isString(options)
+            return m.getStateValue(options, node)
+        else if rodash.isArray(options)
+            lookupObj = {}
+            for each key in options
+                lookupObj[key] = m.getStateValue(key, node)
+            end for
+
+            return lookupObj
+        end if
+
+        return invalid
+    end function
+
+
+    sub setField(options = {}, node = m.top)
+        nodeState = node.getRef("ordState") ?? {}
+        nodeState.append(options)
+        node.setRef("ordState", nodeState)
+    end sub
+end class

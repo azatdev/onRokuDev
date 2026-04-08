@@ -1,0 +1,13 @@
+import "pkg:/components/constants.bs"
+
+sub init()
+    ?chr(10)
+    ?chr(10)
+    ?"TEST SCENE " events.TEST_EVENT "{{%- o(STYLES) %}}"
+    ?chr(10)
+    ?chr(10)
+end sub
+
+sub anotherFunc()
+    ?"anotherFunc " events.TEST_EVENT
+end sub

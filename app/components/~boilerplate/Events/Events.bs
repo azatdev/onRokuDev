@@ -1,7 +1,4 @@
 sub init()
-    m.queue = createObject("roSGNode", "roMessageTask")
-
-    m.queue.observeField("state", "onStateChange")
 end sub
 
 
@@ -21,6 +18,7 @@ sub processEvent(key, value)
         key: key,
         value: value
     }
+
     m.queue.control = "RUN"
 end sub
 

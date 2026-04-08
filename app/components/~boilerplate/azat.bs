@@ -1,24 +1,57 @@
 import "pkg:/source/roku_modules/rodash/rodash.brs"
-' import "pkg:/source/plugins/safeable.bs"
-import "interfaces/safeable.bs"
-import "interfaces/styleable.bs"
-import "pkg:/source/plugins/stateable.bs"
 import "pkg:/source/plugins/logger.bs"
+import "pkg:/components/constants.bs"
+
+import "interfaces/eventable.bs"
+import "interfaces/publishable.bs"
+import "interfaces/receivable.bs"
+import "interfaces/safeable.bs"
+import "interfaces/sendable.bs"
+import "interfaces/stateable.bs"
+import "interfaces/styleable.bs"
 
 
 sub init()
     m.top.removeChild(m.top.getChild(0))
+    m.top.addField("role", "string", false)
+    m.top.observeFieldScoped("role", "onRoleset")
 
-    interfaceFuncs = {}
-
-    m.interfaces = {
-        "Stateable": Stateable
+    m.allInterfaces = {
+        "Safeable": Safeable,
+        "Stateable": Stateable,
+        "Styleable": Styleable,
+        "Eventable": Eventable,
+        "Sendable": Sendable,
+        "Receivable": Receivable,
+        "Publishable": Publishable
     }
 
-    m.safeable = new Safeable({ node: m.top })
-    ?m.safeable.returnInterfaceFunctions()
+    m.roleInterfaces = {
+        "Scene": [
+            "Eventable",
+            "Stateable",
+            "Safeable",
+            "Stateable",
+            "Sendable",
+            "Receivable",
+            "Styleable"
+        ],
+        "Controller": [
+            "Safeable",
+            "Stateable",
+            "Sendable",
+            "Receivable",
+        ],
+        "View": [],
+        "Model": [],
+        "Repository": [],
+        "Task": [
+            "Safeable",
+            "Publishable"
+        ],
+    }
 
-    m.styleable = new Styleable({ node: m.top })
+    interfaceFuncs = {}
     m.azHasSafeFuncs = false
 
     try
@@ -31,8 +64,6 @@ sub init()
 
     m.azSafeable = m.top.hasFunc("safeFunc")
 
-    ?"m.azHasSafeFuncs " m.azHasSafeFuncs
-
     if m.azHasSafeFuncs and not m.azSafeable
         xmlFilename = `${m.top.subType()}.xml`
         ?`
@@ -44,37 +75,113 @@ sub init()
         `
     end if
 
-    m.top.setRef("interfaces_ref", interfaceFuncs)
+    m.interfaceFuncs = interfaceFuncs
 
     onInit()
+end sub
+
+
+sub onRoleset(event)
+    if not rodash.isNodeEvent(event) then return
+    role = event.getData()
+    roleInterfaces = m.roleInterfaces[role]
+    implements(roleInterfaces)
+end sub
+
+
+sub registerControllers(controllers = [])
+    if not rodash.isNonEmptyArray(controllers) then return
+    if not m.top.isSubtype("Scene") then return
+
+    m.controllers = []
+
+    for each controllerName in controllers
+        m.controllers.push(createObject("roSGNode", controllerName))
+    end for
 end sub
 
 
 sub implements(interfaces = [])
     if rodash.isEmpty(interfaces) then return
 
-    allInterfaceFunctions = {}
+    allInterfaceFunctions = m.interfaceFuncs ?? {}
 
     for each interfaceName in interfaces
-        interfaceClass = m.interfaces[interfaceName]
-        interfaceInstance = new interfaceClass()
-        interfaceFunctions = interfaceInstance.getReferences()
+        interfaceClass = m.allInterfaces[interfaceName]
+        interfaceInstance = new interfaceClass({ top: m.top, global: m.global })
+        interfaceInstance.initInterface()
+        interfaceFunctions = interfaceInstance.returnInterfaceFunctions()
 
         for each interfaceFunction in interfaceFunctions.items()
-            functionArray = allInterfaceFunctions[interfaceFunction.key] ?? []
-            functionArray.push(interfaceFunction.value)
-            allInterfaceFunctions[interfaceFunction.key] = functionArray
+            allInterfaceFunctions[interfaceFunction.key] = interfaceFunction.value
         end for
     end for
 
-    ?"allInterfaceFunctions " allInterfaceFunctions
-    m.top.setRef("interfaces_ref", allInterfaceFunctions)
+    m.interfaceFuncs = allInterfaceFunctions
 end sub
 
-function exec(functionName = "", options = {}, node = m.top)
-    return m.Safeable.exec(functionName, options, node)
+
+function app()
+    return m.global.getScene()
 end function
 
-function safeFunc(functionName = "")
-    return m.Safeable.safeFunc(functionName)
+
+function exec(func = "", options = {}, node = m.top)
+    if rodash.isFunction(func) then return func(options)
+    if not rodash.isFunction(m.interfaceFuncs["exec"]) then return invalid
+    return m.interfaceFuncs.exec(func, options, node)
 end function
+
+
+function safeFunc(functionName = "")
+    return m.interfaceFuncs.safeFunc(functionName)
+end function
+
+
+function publish(name = "", options = {})
+    return m.interfaceFuncs.publish(name, options)
+end function
+
+
+function subscribe(options = {})
+    return m.interfaceFuncs.subscribe(options)
+end function
+
+
+function get(options, node = m.top)
+    return m.interfaceFuncs.getField(options, node)
+end function
+
+
+function dispatch(event = "", options = {})
+    return m.interfaceFuncs.dispatch(event, options)
+end function
+
+
+function set(options = {}, node = m.top)
+    return m.interfaceFuncs.setField(options, node)
+end function
+
+
+function getQueue()
+    if m.messageQueue <> invalid return m.messageQueue
+    'bs:disable-next-line
+    m.messageQueue = createObject("roRenderThreadQueue")
+    return m.messageQueue
+end function
+
+
+class onRokuDevInterface
+    function new(options = {})
+        for each item in options.items()
+            m[item.key] = item.value
+        end for
+    end function
+
+    sub initInterface()
+    end sub
+
+    function returnInterfaceFunctions(options = {})
+        return m
+    end function
+end class

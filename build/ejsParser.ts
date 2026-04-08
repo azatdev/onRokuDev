@@ -1,7 +1,7 @@
 import fs from "fs-extra";
 import ejs from "ejs";
 import { parse, resolve } from "path";
-import { Plugin, TranspileObj, isXmlFile, isBrsFile } from 'brighterscript';
+import { Plugin, TranspileObj, BscFile, BeforeFileTranspileEvent, SourceObj, isXmlFile, isBrsFile } from 'brighterscript';
 
 type Config = {
     stylesPath: string;
@@ -51,16 +51,16 @@ export function ejsParser(config: Config) {
 
     return {
         name: 'parseEJS',
-        beforeFileTranspile: (entry: TranspileObj) => {
-            if (isXmlFile(entry.file) || isBrsFile(entry.file)) {
-                try {
-                    const compiled = ejs.render(entry.file.fileContents, data);
-
-                    entry.file.parse(compiled);
-                } catch (error) {
-                    console.log(entry.file.pathAbsolute, error);
-                    process.exit(1);
+        beforeFileParse: (sourceObj: SourceObj) => {
+            try {
+                if (!/\.(bs|brs|xml)$/i.test(sourceObj.srcPath)) {
+                    return;
                 }
+
+                sourceObj.source = ejs.render(sourceObj.source, data);
+            } catch (error) {
+                console.log(sourceObj.srcPath, error);
+                process.exit(1);
             }
         }
     } as Plugin;

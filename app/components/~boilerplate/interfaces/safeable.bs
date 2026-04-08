@@ -1,16 +1,12 @@
-class Safeable
-    function new(options = {})
-        m.top = options.node
-        m.top.addField("interfaces_ref", "assocarray", false)
+class Safeable extends onRokuDevInterface
+    override sub initInterface(options = {})
+        ?"initInterface Safeable" m.top
         m.top.addField("azSafeFuncPayload", "assocarray", true)
         m.top.addField("azSafeFuncReturnObj", "assocarray", false)
-    end function
+    end sub
 
-    function returnInterfaceFunctions(options = {})
-        return m
-    end function
 
-    function exec(functionName, options, node = m.top)
+    function exec(functionName, options = {}, node = m.top)
         devMode = true
 
         if devMode
@@ -30,12 +26,10 @@ class Safeable
             return m.proxyFunc(functionName, options, node)
         end if
 
-        interfaceFuncs = m.top.getRef("interfaces_ref")
-
-        targetFunction = interfaceFuncs[functionName]
+        targetFunction = m[functionName]
         if not rodash.isFunction(targetFunction) then return invalid
 
-        return targetFunction(options)
+        return m[functionName](options)
     end function
 
 

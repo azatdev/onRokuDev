@@ -2,5 +2,15 @@ import "pkg:/components/~boilerplate/azat.bs"
 
 
 sub onInit()
-
+    m.top.role = "Controller"
+    subscribe({
+        "TEST_EVENT": "onTestEvent"
+    })
 end sub
+
+
+class privateFunctions
+    sub onTestEvent(options = {}, msgInfo = {})
+        ?"SocketController onTestEvent " options
+    end sub
+end class

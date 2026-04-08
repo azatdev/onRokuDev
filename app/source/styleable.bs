@@ -1,5 +1,4 @@
 function initStyles(options = {})
-    ?"initStyles "
     m.top.enableRenderTracking = true
     m.top.addField("class", "string", false)
     m.top.observeFieldScoped("class", "onClassChange")

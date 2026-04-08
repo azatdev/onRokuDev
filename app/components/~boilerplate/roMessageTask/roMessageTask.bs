@@ -1,14 +1,32 @@
-import "pkg:/source/wrapperFunctions.bs"
+import "pkg:/components/~boilerplate/azat.bs"
 
 
-sub init()
+sub onInit()
     m.top.functionName = "sendMessage"
+    m.top.role = "Task"
 end sub
 
 
 function sendMessage()
-    publish("TEST_EVENT", {
-        name: "Azat4"
-    })
+    ?"sendMessage2 "
+
+    messagePort = createObject("roMessagePort")
+    m.top.observeFieldScoped("eventData", messagePort)
+
+    while true
+        msg = wait(1000, messagePort)
+        if msg = invalid then continue while
+
+        field = msg.getField()
+        messageData = msg.getData()
+        if rodash.isEmpty(messageData) then continue while
+
+        eventId = messageData.id ?? ""
+        eventOptions = messageData.options ?? {}
+
+        if rodash.isEmpty(eventId) then continue while
+        publish(eventId, eventOptions)
+    end while
+
     return true
 end function

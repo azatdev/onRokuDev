@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Open Source Roku Development Tools</title>
+  <style>
+    :root {
+      --paper: #f7f1e6;
+      --sand: #eadfc9;
+      --ink: #17212b;
+      --muted: #5b6a75;
+      --accent: #d15b29;
+      --accent-deep: #9a3412;
+      --olive: #4e6840;
+      --card: rgba(255, 252, 245, 0.84);
+      --line: rgba(23, 33, 43, 0.14);
+      --shadow: 0 22px 48px rgba(23, 33, 43, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      font-family: "Avenir Next", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(209, 91, 41, 0.22), transparent 30%),
+        radial-gradient(circle at top right, rgba(78, 104, 64, 0.18), transparent 28%),
+        linear-gradient(180deg, #f4ead6 0%, #f7f1e6 42%, #efe5d2 100%);
+    }
+
+    a {
+      color: var(--accent-deep);
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 64px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 28px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.7), rgba(255, 248, 238, 0.86)),
+        linear-gradient(135deg, rgba(209, 91, 41, 0.16), rgba(78, 104, 64, 0.12));
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: -40px;
+      top: -50px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(209, 91, 41, 0.22), transparent 68%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      color: var(--accent-deep);
+      font-weight: 700;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: "Iowan Old Style", "Palatino Linotype", serif;
+      line-height: 1.02;
+      margin: 0;
+    }
+
+    h1 {
+      max-width: 12ch;
+      font-size: clamp(2.4rem, 5vw, 4.8rem);
+      letter-spacing: -0.04em;
+    }
+
+    .hero p {
+      max-width: 62ch;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.65;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .stat {
+      padding: 16px 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(23, 33, 43, 0.08);
+      background: rgba(255, 255, 255, 0.56);
+      backdrop-filter: blur(10px);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.8rem;
+      letter-spacing: -0.03em;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .section {
+      margin-top: 28px;
+      padding: 28px;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(8px);
+    }
+
+    .section-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px 20px;
+      margin-bottom: 18px;
+    }
+
+    .section-header p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+    }
+
+    .tool-card {
+      padding: 18px;
+      border-radius: 20px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.8), rgba(248, 242, 230, 0.9));
+      border: 1px solid rgba(23, 33, 43, 0.08);
+    }
+
+    .tool-card h3 {
+      font-size: 1.38rem;
+      margin-bottom: 8px;
+    }
+
+    .tool-card p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(78, 104, 64, 0.12);
+      color: var(--olive);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .tool-card a {
+      font-weight: 700;
+      text-decoration-thickness: 2px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 18px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.58);
+    }
+
+    th,
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-deep);
+      background: rgba(209, 91, 41, 0.08);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .notes,
+    .sources {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    ul {
+      margin: 12px 0 0;
+      padding-left: 20px;
+    }
+
+    li + li {
+      margin-top: 8px;
+    }
+
+    footer {
+      margin-top: 22px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 720px) {
+      .page {
+        width: min(100% - 18px, 1120px);
+        padding-top: 18px;
+      }
+
+      .hero,
+      .section {
+        padding: 20px;
+        border-radius: 20px;
+      }
+
+      table,
+      thead,
+      tbody,
+      th,
+      td,
+      tr {
+        display: block;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tr {
+        padding: 14px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      td {
+        padding: 6px 0;
+        border: 0;
+      }
+
+      td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 0.76rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent-deep);
+        margin-bottom: 3px;
+        font-weight: 700;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">Roku Tool Survey</p>
+      <h1>Open source Roku development tools</h1>
+      <p>
+        A current ecosystem snapshot based on RokuCommunity, Roku Developers, and a few widely used
+        community repos. This page focuses on tools that directly help with Roku app development,
+        debugging, testing, packaging, simulation, or performance work.
+      </p>
+      <div class="stats">
+        <div class="stat">
+          <strong>13</strong>
+          <span>development tools in the main list</span>
+        </div>
+        <div class="stat">
+          <strong>4</strong>
+          <span>major categories</span>
+        </div>
+        <div class="stat">
+          <strong>2026-04-03</strong>
+          <span>last checked date</span>
+        </div>
+        <div class="stat">
+          <strong>RokuCommunity</strong>
+          <span>dominant open-source toolchain maintainer</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Category 1</p>
+          <h2>Core Dev Tools</h2>
+        </div>
+        <p>Editing, compilation, deployment, debugging, linting, formatting, and package management.</p>
+      </div>
+      <div class="grid">
+        <article class="tool-card">
+          <h3>vscode-brightscript-language</h3>
+          <div class="meta">
+            <span class="chip">VS Code</span>
+            <span class="chip">RokuCommunity</span>
+          </div>
+          <p>Primary editor extension for BrightScript and BrighterScript with deploy, debug, logs, remote control, and device integration.</p>
+          <a href="https://github.com/rokucommunity/vscode-brightscript-language">Repository</a>
+        </article>
+        <article class="tool-card">
+          <h3>brighterscript</h3>
+          <div class="meta">
+            <span class="chip">Compiler</span>
+            <span class="chip">Language</span>
+          </div>
+          <p>Superset of BrightScript with a compiler and tooling layer used heavily across the modern Roku ecosystem.</p>
+          <a href="https://github.com/rokucommunity/brighterscript">Repository</a>
+        </article>
+        <article class="tool-card">
+          <h3>bslint</h3>
+          <div class="meta">
+            <span class="chip">Linting</span>
+            <span class="chip">Static analysis</span>
+          </div>
+          <p>Linter for BrightScript and BrighterScript projects, typically used in editor workflows and CI.</p>
+          <a href="https://github.com/rokucommunity/bslint">Repository</a>
+        </article>
+        <article class="tool-card">
+          <h3>brighterscript-formatter</h3>
+          <div class="meta">
+            <span class="chip">Formatting</span>
+            <span class="chip">Code style</span>
+          </div>
+          <p>Formatter for BrightScript and BrighterScript codebases.</p>
+          <a href="https://github.com/rokucommunity/brighterscript-formatter">Repository</a>
+        </article>
+        <article class="tool-card">
+          <h3>roku-deploy</h3>
+          <div class="meta">
+            <span class="chip">Deploy</span>
+            <span class="chip">Packaging</span>
+          </div>
+          <p>Node-based tool for zipping and deploying Roku apps to devices.</p>
+          <a href="https://github.com/rokucommunity/roku-deploy">Repository</a>
+        </article>
+        <article class="tool-card">
+          <h3>roku-debug</h3>
+          <div class="meta">
+            <span class="chip">Debugging</span>
+            <span class="chip">DAP</span>
+          </div>
+          <p>Debug adapter and protocol wrapper around Roku's BrightScript debugger.</p>
+          <a href="https://github.com/rokucommunity/roku-debug">Repository</a>
+        </article>
+        <article class="tool-card">
+          <h3>ropm</h3>
+          <div class="meta">
+            <span class="chip">Package manager</span>
+            <span class="chip">Dependencies</span>
+          </div>
+          <p>Package manager for the Roku platform and a common dependency workflow in community projects.</p>
+          <a href="https://github.com/rokucommunity/ropm">Repository</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Category 2</p>
+          <h2>Testing And Automation</h2>
+        </div>
+        <p>Unit tests, UI automation, and device-driving tools.</p>
+      </div>
+      <div class="grid">
+        <article class="tool-card">
+          <h3>rooibos</h3>
+          <div class="meta">
+            <span class="chip">Testing</span>
+            <span class="chip">SceneGraph</span>
+          </div>
+          <p>Well-known BrightScript test framework for Roku SceneGraph applications.</p>
+          <a href="https://github.com/rokucommunity/rooibos">Repository</a>
+        </article>
+        <article class="tool-card">
+          <h3>automated-channel-testing</h3>
+          <div class="meta">
+            <span class="chip">UI automation</span>
+            <span class="chip">RokuDev</span>
+          </div>
+          <p>Roku's open-source test automation bundle around Roku WebDriver, Robot Framework, and JavaScript examples.</p>
+          <a href="https://github.com/rokudev/automated-channel-testing">Repository</a>
+        </article>
+        <article class="tool-card">
+          <h3>appium-roku-driver</h3>
+          <div class="meta">
+            <span class="chip">Appium</span>
+            <span class="chip">Automation</span>
+          </div>
+          <p>Appium 2 driver for automating Roku channels, useful if your organization already runs Appium-based suites.</p>
+          <a href="https://github.com/headspinio/appium-roku-driver">Repository</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Category 3</p>
+          <h2>Simulation And Emulation</h2>
+        </div>
+        <p>Options for running or simulating Roku apps outside physical hardware.</p>
+      </div>
+      <div class="grid">
+        <article class="tool-card">
+          <h3>brs-engine</h3>
+          <div class="meta">
+            <span class="chip">Interpreter</span>
+            <span class="chip">Node.js</span>
+          </div>
+          <p>BrightScript simulation engine for browser and Node.js environments.</p>
+          <a href="https://github.com/lvcabral/brs-engine">Repository</a>
+        </article>
+        <article class="tool-card">
+          <h3>brs-desktop</h3>
+          <div class="meta">
+            <span class="chip">Simulator</span>
+            <span class="chip">Desktop app</span>
+          </div>
+          <p>Desktop Roku simulator built on top of <code>brs-engine</code>, with ECP, remote console, app installer, and editor integration.</p>
+          <a href="https://github.com/lvcabral/brs-desktop">Repository</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Category 4</p>
+          <h2>Performance And Benchmarking</h2>
+        </div>
+        <p>Tooling for runtime measurement rather than app authoring.</p>
+      </div>
+      <div class="grid">
+        <article class="tool-card">
+          <h3>bsbench</h3>
+          <div class="meta">
+            <span class="chip">Benchmarking</span>
+            <span class="chip">Runtime analysis</span>
+          </div>
+          <p>Benchmark suite for Roku's BrightScript runtime, aimed at measurement and comparison work.</p>
+          <a href="https://github.com/rokucommunity/bsbench">Repository</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Reference Table</p>
+          <h2>Compact Summary</h2>
+        </div>
+        <p>A scan-friendly version of the same list.</p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Tool</th>
+            <th>Category</th>
+            <th>Maintainer</th>
+            <th>Primary use</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="Tool"><a href="https://github.com/rokucommunity/vscode-brightscript-language">vscode-brightscript-language</a></td>
+            <td data-label="Category">Core</td>
+            <td data-label="Maintainer">RokuCommunity</td>
+            <td data-label="Primary use">Editor extension, deploy, debug, remote tooling</td>
+          </tr>
+          <tr>
+            <td data-label="Tool"><a href="https://github.com/rokucommunity/brighterscript">brighterscript</a></td>
+            <td data-label="Category">Core</td>
+            <td data-label="Maintainer">RokuCommunity</td>
+            <td data-label="Primary use">Language superset and compiler</td>
+          </tr>
+          <tr>
+            <td data-label="Tool"><a href="https://github.com/rokucommunity/bslint">bslint</a></td>
+            <td data-label="Category">Core</td>
+            <td data-label="Maintainer">RokuCommunity</td>
+            <td data-label="Primary use">Linting</td>
+          </tr>
+          <tr>
+            <td data-label="Tool"><a href="https://github.com/rokucommunity/brighterscript-formatter">brighterscript-formatter</a></td>
+            <td data-label="Category">Core</td>
+            <td data-label="Maintainer">RokuCommunity</td>
+            <td data-label="Primary use">Code formatting</td>
+          </tr>
+          <tr>
+            <td data-label="Tool"><a href="https://github.com/rokucommunity/roku-deploy">roku-deploy</a></td>
+            <td data-label="Category">Core</td>
+            <td data-label="Maintainer">RokuCommunity</td>
+            <td data-label="Primary use">Packaging and deployment</td>
+          </tr>
+          <tr>
+            <td data-label="Tool"><a href="https://github.com/rokucommunity/roku-debug">roku-debug</a></td>
+            <td data-label="Category">Core</td>
+            <td data-label="Maintainer">RokuCommunity</td>
+            <td data-label="Primary use">Debug adapter and protocol wrapper</td>
+          </tr>
+          <tr>
+            <td data-label="Tool"><a href="https://github.com/rokucommunity/ropm">ropm</a></td>
+            <td data-label="Category">Core</td>
+            <td data-label="Maintainer">RokuCommunity</td>
+            <td data-label="Primary use">Dependency management</td>
+          </tr>
+          <tr>
+            <td data-label="Tool"><a href="https://github.com/rokucommunity/rooibos">rooibos</a></td>
+            <td data-label="Category">Testing</td>
+            <td data-label="Maintainer">RokuCommunity</td>
+            <td data-label="Primary use">Unit and integration testing</td>
+          </tr>
+          <tr>
+            <td data-label="Tool"><a href="https://github.com/rokudev/automated-channel-testing">automated-channel-testing</a></td>
+            <td data-label="Category">Testing</td>
+            <td data-label="Maintainer">Roku Developers</td>
+            <td data-label="Primary use">UI automation through Roku WebDriver</td>
+          </tr>
+          <tr>
+            <td data-label="Tool"><a href="https://github.com/headspinio/appium-roku-driver">appium-roku-driver</a></td>
+            <td data-label="Category">Testing</td>
+            <td data-label="Maintainer">HeadSpin</td>
+            <td data-label="Primary use">Appium-based Roku automation</td>
+          </tr>
+          <tr>
+            <td data-label="Tool"><a href="https://github.com/lvcabral/brs-engine">brs-engine</a></td>
+            <td data-label="Category">Simulation</td>
+            <td data-label="Maintainer">Marcelo Cabral</td>
+            <td data-label="Primary use">BrightScript interpreter and simulator engine</td>
+          </tr>
+          <tr>
+            <td data-label="Tool"><a href="https://github.com/lvcabral/brs-desktop">brs-desktop</a></td>
+            <td data-label="Category">Simulation</td>
+            <td data-label="Maintainer">Marcelo Cabral</td>
+            <td data-label="Primary use">Desktop Roku simulator</td>
+          </tr>
+          <tr>
+            <td data-label="Tool"><a href="https://github.com/rokucommunity/bsbench">bsbench</a></td>
+            <td data-label="Category">Benchmarking</td>
+            <td data-label="Maintainer">RokuCommunity</td>
+            <td data-label="Primary use">Runtime benchmarking</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section notes">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Notes</p>
+          <h2>Scope And Caveats</h2>
+        </div>
+      </div>
+      <ul>
+        <li>This is a practical list of development-relevant open-source Roku tools, not a claim that every abandoned or niche repo on GitHub has been enumerated.</li>
+        <li>The most active and cohesive ecosystem is clearly the RokuCommunity stack.</li>
+        <li>Support repositories such as sample apps and example configs were intentionally excluded from the main count because they are not primary tools.</li>
+        <li>If you want stricter filtering, the next useful split would be: actively maintained, production-ready, experimental, and archived.</li>
+      </ul>
+    </section>
+
+    <section class="section sources">
+      <div class="section-header">
+        <div>
+          <p class="eyebrow">Sources</p>
+          <h2>Where This List Came From</h2>
+        </div>
+      </div>
+      <ul>
+        <li><a href="https://rokucommunity.github.io/">RokuCommunity website</a></li>
+        <li><a href="https://github.com/rokucommunity">RokuCommunity GitHub organization</a></li>
+        <li><a href="https://github.com/rokudev">Roku Developers GitHub organization</a></li>
+        <li>Individual repositories linked throughout this page for confirmation and classification.</li>
+      </ul>
+    </section>
+
+    <footer>
+      Open source Roku development tools snapshot, assembled on April 3, 2026.
+    </footer>
+  </main>
+</body>
+</html>

@@ -2,7 +2,7 @@ import "pkg:/components/~boilerplate/azat.bs"
 
 
 sub onInit()
-    ' implements(["Safeable", "Stateable"])
+    m.top.role = "Controller"
 end sub
 
 

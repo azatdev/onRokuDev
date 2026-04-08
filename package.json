@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "packageManager": "npm@10.9.3",
   "ropm": {
     "rootDir": "app"
   },
   "scripts": {
+    "dev": "concurrently --kill-others-on-fail --names socket,web,styles --prefix-colors yellow,blue,green \"npm run socketserver\" \"npm run webserver\" \"npm run watch:styles\"",
     "webserver": "node build/webserver.js",
     "socketserver": "node build/socketserver.js",
     "build:styles": "node build/generate-styles.cjs",
@@ -28,6 +30,7 @@
   "devDependencies": {
     "@types/ejs": "^3.1.5",
     "@types/fs-extra": "^11.0.4",
+    "concurrently": "^9.2.1",
     "fs-extra": "^11.3.4",
     "ts-node": "^10.9.2"
   }

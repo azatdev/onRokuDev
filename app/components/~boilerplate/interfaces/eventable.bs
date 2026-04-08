@@ -1,0 +1,38 @@
+class Eventable extends onRokuDevInterface
+    override sub initInterface()
+        m.messageTask = createObject("roSGNode", "roMessageTask")
+        m.messageTask.observeField("state", m.onStateChange)
+        m.messageTask.control = "RUN"
+        ?"MESSAGE TASK RUNNING "
+    end sub
+
+
+    sub dispatch(eventId, options = {})
+        if rodash.isEmpty(eventId) then return
+        payload = {
+            id: eventId
+            options: options
+        }
+        ?"dispatch " eventId options
+        m.messageTask.eventData = payload
+    end sub
+
+
+    sub onStateChange(event)
+        queueState = event.getData()
+        if queueState = "stop" or queueState = "done"
+
+            m.queue.mutation = invalid
+
+            ' if m.queue.queue.count() > 0
+            '     queueArray = m.queue.queue
+            '     if queueArray = invalid then queueArray = []
+            '     data = queueArray.shift()
+            '     if data = invalid then return
+
+            '     m.queue.queue = queueArray
+            '     ' processEvent(data.key, data.value)
+            ' end if
+        end if
+    end sub
+end class

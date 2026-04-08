@@ -1,41 +1,100 @@
 import "pkg:/source/helpers/timestamps.bs"
-import "pkg:/source/plugins/stateable.bs"
-' import "pkg:/source/plugins/safeable.bs"
-' import "pkg:/source/roBoilerplate.bs"
 import "pkg:/components/~boilerplate/azat.bs"
-import "pkg:/components/constants.bs"
-
+import "testdata.bs"
 
 sub onInit()
-    ' initFramework(privateFunctions)
-    ' exec("onInit")
-    ' exec("doStyleTest")
-    ' exec("doErrorTest")
-    ' runBenchmark("DataSending")
-    ' implements(["Safeable", "Stateable"])
-    ' azLog([m, m.top], SOURCE_LOCATION)
+    m.top.role = "Scene"
 
-    m.secondNode = createObject("roSGNode", "SecondNode")
-    ' result = exec("onTheNose", { name: "Azat" }, m.secondNode)
-    ' ?"result " result
+    asd = events.TEST_EVENT
+    registerControllers([
+        "SocketController"
+    ])
 
-    m.socketTest = createObject("roSGNode", "WebsocketTest")
-    m.socketTest.control = "RUN"
+    rodash.delay(sub(args)
+        dispatch(events.TEST_EVENT, { test: true })
+    end sub, 20, [])
 
-    appStyles = "{{%- o(STYLES) %}}"
-    ?"appStyles " appStyles
-    m.top.setRef("styles", appStyles)
-    applyStyles(appStyles)
+    m.top.setFocus(true)
+end sub
 
-    ' styles are now generated on the host at build/styles.json and sent over the socket server
-    ' ?"styles " parseJSON(styles)
+sub onStateChange(event)
+    queueState = event.getData()
+
+    ?"onstatechange " queueState
+    if queueState = "run"
+        rodash.delay(sub(args)
+            ?"args " args
+            m = args[0]
+            payload = args[1]
+            ?"payload " payload
+            for i = 0 to 999
+                payload.index = i
+                m.messageTask.eventData = payload
+            end for
+        end sub, 50, [m, testData._6KB])
+    end if
 end sub
 
 
-sub runBenchmark(name = "")
-    benchmark = createObject("roSGNode", "Benchmark")
-    benchmark.run = [name, { top: benchmark }]
-end sub
+function onKeyEvent(key as string, press as boolean) as boolean
+    if not press then return false
+    handled = false
+
+    ?"onKeyEvent " key
+    m.messageTask.eventData = testData._123KB
+
+    if key = "down"
+        m.messageTask.control = "STOP"
+    else if key = "up"
+        m.messageTask.control = "RUN"
+    end if
+
+    return handled
+end function
+
+
+' sub onInit()
+'     ' initFramework(privateFunctions)
+'     ' exec("onInit")
+'     ' exec("doStyleTest")
+'     ' exec("doErrorTest")
+'     ' implements(["Safeable", "Stateable"])
+'     ' azLog([m, m.top], SOURCE_LOCATION)
+
+'     m.top.role = "Scene"
+
+'     registerControllers([
+'         "SocketController"
+'     ])
+
+'     m.secondNode = createObject("roSGNode", "SecondNode")
+'     result = exec("onTheNose", { name: "Azat" }, m.secondNode)
+'     ?"result " result
+
+'     m.socketTest = createObject("roSGNode", "WebsocketTest")
+'     m.socketTest.control = "RUN"
+
+'     appStyles = "{{%- o(STYLES) %}}"
+'     ' ?"appStyles " appStyles
+
+'     m.top.setRef("styles", appStyles)
+'     applyStyles(appStyles)
+
+'     m.task = createObject("roSGNode", "TestNode")
+'     m.task.control = "run"
+
+
+'     set({ status: "Stateable Azat Test" })
+'     set({ code: 1212123 })
+
+'     getTest = get(["code", "status"])
+
+'     ?"getTest " getTest
+
+
+'     ' styles are now generated on the host at build/styles.json and sent over the socket server
+'     ' ?"styles " parseJSON(styles)
+' end sub
 
 
 class privateFunctions
@@ -88,10 +147,6 @@ class privateFunctions
         return { result: options.name + " success"  }
     end function
 
-
-    function proxyFunc(options = {})
-        return exec("onTheNose", options, m.secondNode)
-    end function
 end class
 
 
@@ -146,8 +201,7 @@ end sub
 
 
 sub applyStyles(appStyles)
-    ?"applyStyles " formatJSON(appStyles)
-    setStyles(m.top, appStyles.App)
+    exec("setStyles", appStyles.App)
 end sub
 
 
@@ -170,47 +224,3 @@ function returnHandles(options = {})
 
     return allNodeHandles
 end function
-
-
-' Progammatically attach styles to the node's children and its grandchildren
-sub setStyles(node, stylesheet)
-    styleField(node, stylesheet)
-
-    children = node.getChildren(-1, 0)
-    if children.count() = 0 then return
-    if not rodash.isNonEmptyAA(stylesheet) then return
-
-    for each child in children
-        elementhandles = returnHandles({ node: child })
-        combinedNodeStyles = {}
-
-        for each handle in elementhandles
-            if rodash.isAA(stylesheet[handle]) then combinedNodeStyles.append(stylesheet[handle])
-        end for
-
-        if rodash.isEmpty(combinedNodeStyles) then continue for
-
-        childId = child.id.split("_")[0]
-
-        setStyles(child, combinedNodeStyles)
-    end for
-end sub
-
-
-sub styleField(node, styles)
-    for each attribute in styles.items()
-        attributeValue = attribute.value ?? ""
-        if rodash.isString(attributeValue) and attributeValue.instr("TKEY") <> -1
-            attributeValue = substitute(tr(attributeValue).trim(), chr(10))
-        end if
-
-        if node.hasField(attribute.key)
-            node.setField(attribute.key, attributeValue)
-        else if rodash.indexOf(["margin", "padding", "minWidth"], attribute.key) <> -1
-            updateObject = {}
-            updateObject[attribute.key] = attribute.value
-            node.update(updateObject, true)
-        end if
-    end for
-end sub
-

@@ -1,7 +1,7 @@
-import "pkg:/source/wrapperFunctions.bs"
+import "pkg:/components/~boilerplate/azat.bs"
 
 
-sub init()
+sub onInit()
     subscribe({
         "TEST_EVENT": "onTestEvent"
     })
@@ -11,5 +11,5 @@ end sub
 sub onTestEvent(data, msgInfo)
     ?"onTestEventasdfasdf " data msgInfo.timespan.totalMilliseconds()
 
-    exec("testFunction", { demand: "MOAR PIZZA" }, app())
+    ' exec("testFunction", { demand: "MOAR PIZZA" }, app())
 end sub
