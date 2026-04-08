@@ -1,0 +1,81 @@
+class NodeRefFuncVsLocal
+
+    sub new()
+        m.benchTimer = CreateObject("roTimespan")
+        m.logText = []
+        m.iterations = 999
+    end sub
+
+
+    sub start(options = {})
+
+        for each item in options.items()
+            m[item.key] = item.value
+        end for
+
+        m.helperNode = createObject("roSGNode", "HelperNode")
+        m.helperNode.addField("functions", "assocarray", false)
+        m.helperNode.setRef("functions", {
+            remoteFunction: sub()
+                variable = ""
+            end sub
+        })
+
+        ?chr(10)
+        ?`Starting benchmark "NodeRefFuncVsLocal" with ${m.iterations + 1} iterations`
+        ?chr(10)
+
+        m.test1()
+    end sub
+
+
+    sub end()
+        m.top.resultsText = m.logText.join(chr(10))
+    end sub
+
+
+    sub test1()
+        ?"Running Test 1"
+        m.benchTimer.mark()
+
+        for ix = 0 to m.iterations
+            m.localFunction()
+        end for
+
+        m.logText.push(`localFunction took ${m.benchTimer.totalMilliseconds().toStr()} ms`)
+        m.test2()
+    end sub
+
+
+    sub test2()
+        ?"Running Test 2"
+        m.benchTimer.mark()
+
+        helperNodeFunctions = m.helperNode.getRef("functions")
+
+        for ix = 0 to m.iterations
+            helperNodeFunctions.remoteFunction()
+        end for
+
+        m.logText.push(`remoteFunction took ${m.benchTimer.totalMilliseconds().toStr()} ms`)
+        m.test3()
+    end sub
+
+
+    sub test3()
+        ?"Running Test 3"
+        m.benchTimer.mark()
+
+        for ix = 0 to m.iterations
+            helperNodeFunctions = m.helperNode.getRef("functions")
+            helperNodeFunctions.remoteFunction()
+        end for
+
+        m.logText.push(`remoteFunction with getRef took ${m.benchTimer.totalMilliseconds().toStr()} ms`)
+        m.end()
+    end sub
+
+    sub localFunction()
+        variable = ""
+    end sub
+end class

@@ -5,8 +5,10 @@ import "tests/CallFuncVsSafeFunc.bs"
 import "tests/CallfuncObserve.bs"
 import "tests/DataRetrieval.bs"
 import "tests/GroupVsRectangle.bs"
+import "tests/ImportsVsNoImports.bs"
 import "tests/DataSending.bs"
 import "tests/MtopVsM.bs"
+import "tests/NodeRefFuncVsLocal.bs"
 import "tests/TryCatch.bs"
 import "tests/NodeInitiation.bs"
 
@@ -22,8 +24,10 @@ sub onInit()
         "DataRetrieval": DataRetrieval
         "DataSending": DataSending
         "GroupVsRectangle": GroupVsRectangle
+        "ImportsVsNoImports": ImportsVsNoImports
         "MtopVsM": MtopVsM
         "NodeInitiation": NodeInitiation
+        "NodeRefFuncVsLocal": NodeRefFuncVsLocal
         "TryCatch": TryCatch
     }
 end sub
