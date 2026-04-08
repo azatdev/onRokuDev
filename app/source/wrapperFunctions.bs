@@ -1,5 +1,0 @@
-import "pkg:/source/roku_modules/rodash/rodash.brs"
-
-function app()
-    return m.global.getScene()
-end function

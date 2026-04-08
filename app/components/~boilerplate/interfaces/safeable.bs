@@ -1,6 +1,5 @@
 class Safeable extends onRokuDevInterface
     override sub initInterface(options = {})
-        ?"initInterface Safeable" m.top
         m.top.addField("azSafeFuncPayload", "assocarray", true)
         m.top.addField("azSafeFuncReturnObj", "assocarray", false)
     end sub

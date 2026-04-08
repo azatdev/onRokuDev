@@ -17,30 +17,11 @@ sub onInit()
     m.top.setFocus(true)
 end sub
 
-sub onStateChange(event)
-    queueState = event.getData()
-
-    ?"onstatechange " queueState
-    if queueState = "run"
-        rodash.delay(sub(args)
-            ?"args " args
-            m = args[0]
-            payload = args[1]
-            ?"payload " payload
-            for i = 0 to 999
-                payload.index = i
-                m.messageTask.eventData = payload
-            end for
-        end sub, 50, [m, testData._6KB])
-    end if
-end sub
-
 
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
     handled = false
 
-    ?"onKeyEvent " key
     m.messageTask.eventData = testData._123KB
 
     if key = "down"

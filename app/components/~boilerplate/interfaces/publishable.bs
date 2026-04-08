@@ -1,10 +1,7 @@
 class Publishable extends onRokuDevInterface
     sub publish(name = "", options = {})
-        ?"publish "
         messageQueue = getQueue()
         if messageQueue = invalid then return
-
-        ?"ASDASASASDDSADAS " messageQueue
         messageQueue.postMessage(name, options)
     end sub
 end class
