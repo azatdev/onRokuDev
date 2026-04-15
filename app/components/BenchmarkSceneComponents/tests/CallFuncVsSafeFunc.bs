@@ -56,8 +56,8 @@ class CallFuncVsSafeFunc
             payload = { id: ix }
             payload.append(m.testJSON)
 
-            returnObj = exec("regularFunc", payload, m.secondNode)
-            ?returnObj.result
+            ' returnObj = exec("regularFunc", payload, m.secondNode)
+            ' ?returnObj.result
         end for
 
         m.logText.push(`safeFunc took ${m.benchTimer.totalMilliseconds().toStr()} ms`)

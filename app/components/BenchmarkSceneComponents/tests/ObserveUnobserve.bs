@@ -1,0 +1,59 @@
+class ObserveUnobserve
+
+    sub new()
+        m.benchTimer = CreateObject("roTimespan")
+        m.logText = []
+        m.iterations = 999
+        m.secondNode = createObject("roSGNode", "SecondNode")
+    end sub
+
+
+    sub start(options = {})
+
+        for each item in options.items()
+            m[item.key] = item.value
+        end for
+
+        m.helperNode = createObject("roSGNode", "HelperNode")
+
+        ?chr(10)
+        ?`Starting benchmark "ObserveUnobserve" with ${m.iterations} iterations`
+        ?chr(10)
+
+        m.test1()
+    end sub
+
+
+    sub end()
+        m.top.resultsText = m.logText.join(chr(10))
+    end sub
+
+
+    sub test1()
+        ?"Running Test 1"
+        m.benchTimer.mark()
+
+        for ix = 0 to m.iterations
+            m.helperNode.observeFieldScoped("data", "observeHelper")
+        end for
+
+        m.logText.push(`observeFieldScoped took ${m.benchTimer.totalMilliseconds().toStr()} ms`)
+        m.test2()
+    end sub
+
+
+    sub test2()
+        ?"Running Test 2"
+        m.benchTimer.mark()
+
+
+        for ix = 0 to m.iterations
+            m.helperNode.unobserveFieldScoped("data")
+            m.helperNode.observeFieldScoped("data", "observeHelper")
+        end for
+
+        m.logText.push(`un/observeFieldScoped took ${m.benchTimer.totalMilliseconds().toStr()} ms`)
+        m.end()
+    end sub
+
+end class

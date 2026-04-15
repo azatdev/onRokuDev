@@ -1,5 +1,5 @@
 import "pkg:/source/helpers/typeGuard.bs"
-import "pkg:/components/~boilerplate/azat.bs"
+' import "pkg:/components/~boilerplate/azat.bs"
 import "tests/AAvsRef.bs"
 import "tests/CallFuncVsSafeFunc.bs"
 import "tests/CallfuncObserve.bs"
@@ -11,9 +11,10 @@ import "tests/MtopVsM.bs"
 import "tests/NodeRefFuncVsLocal.bs"
 import "tests/TryCatch.bs"
 import "tests/NodeInitiation.bs"
+import "tests/ObserveUnobserve.bs"
 
 
-sub onInit()
+sub init(options = {})
     m.top.observeFieldScoped("run", "onRun")
     m.top.observeFieldScoped("resultsText", "printResults")
 
@@ -28,10 +29,15 @@ sub onInit()
         "MtopVsM": MtopVsM
         "NodeInitiation": NodeInitiation
         "NodeRefFuncVsLocal": NodeRefFuncVsLocal
+        "ObserveUnobserve": ObserveUnobserve
         "TryCatch": TryCatch
     }
 end sub
 
+
+sub observeHelper(event)
+    ?"event " event
+end sub
 
 sub onRun(event = {})
     if not TypeGuard_isEvent(event) then return
