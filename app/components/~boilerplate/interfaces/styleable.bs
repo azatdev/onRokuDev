@@ -1,7 +1,25 @@
-class Styleable extends onRokuDevInterface
-    override sub initInterface(options = {})
-        ?"Styleable " m.top.isSubtype("Scene")
+class Styleable
+    publicFunctions = {}
+
+    sub new(options = {})
+        if not rodash.isNode(options.top) then return
+        m.top = options.top
+
+        componentRole = options.role ?? ""
+        if rodash.isEmptyString(componentRole) then return
+
+        ' m.setExportFunctions(componentRole)
     end sub
+
+
+    ' sub setExportFunctions(role)
+    '     if rodash.isEmptyString(role) then return
+
+    '     if rodash.findIndex(["Scene", "View"], role) = -1 then return
+    '     m.publicFunctions.append({
+    '         _setStyles: m.setStyles
+    '     })
+    ' end sub
 
 
     function returnHandles(options = {})

@@ -27,7 +27,7 @@ export async function runBuilder() {
             if (buildErrors.length > 0) {
                 let errorString = '\n+-+-+-+-+-+-+-+-+-+-+-+-+-+\n'
 
-                buildErrors.forEach(error => errorString += `ERROR: ${error.message} on line ${(error.range.start.line) + 1} in "${error.file.pkgPath}" \n`)
+                buildErrors.forEach(error => errorString += `${error.message} on line ${(error.range.start.line) + 1} in "${error.file.pkgPath}" \n`)
 
                 errorString += '+-+-+-+-+-+-+-+-+-+-+-+-+-+\n'
                 throw new Error(errorString);

@@ -1,91 +1,42 @@
 import "pkg:/source/roku_modules/rodash/rodash.brs"
+import "pkg:/source/roku_modules/rokurequests/Requests.brs"
+
 import "pkg:/source/plugins/logger.bs"
 import "pkg:/components/constants.bs"
 
-import "interfaces/eventable.bs"
-import "interfaces/publishable.bs"
-import "interfaces/receivable.bs"
 import "interfaces/safeable.bs"
-import "interfaces/sendable.bs"
+import "interfaces/eventable.bs"
 import "interfaces/stateable.bs"
 import "interfaces/styleable.bs"
 
-
 sub init()
-    m.top.removeChild(m.top.getChild(0))
-    m.top.addField("role", "string", false)
-    m.top.observeFieldScoped("role", "onRoleset")
+    interfaces = [Safeable, Stateable]
 
-    m.allInterfaces = {
-        "Safeable": Safeable,
-        "Stateable": Stateable,
-        "Styleable": Styleable,
-        "Eventable": Eventable,
-        "Sendable": Sendable,
-        "Receivable": Receivable,
-        "Publishable": Publishable
-    }
+    allFunctions = {}
+    interfaceFunctions = {}
 
-    m.roleInterfaces = {
-        "Scene": [
-            "Eventable",
-            "Stateable",
-            "Safeable",
-            "Stateable",
-            "Sendable",
-            "Receivable",
-            "Styleable"
-        ],
-        "Controller": [
-            "Safeable",
-            "Stateable",
-            "Sendable",
-            "Receivable",
-        ],
-        "View": [],
-        "Model": [],
-        "Repository": [],
-        "Task": [
-            "Safeable",
-            "Publishable"
-        ],
-    }
+    for each interface in interfaces
+        interfaceInstance = new interface()
+        ' if rodash.isNonEmptyAA(interfaceInstance) then allFunctions.append(interfaceInstance)
 
-    interfaceFuncs = {}
-    m.azHasSafeFuncs = false
+        interfacePublicFunctions = interfaceInstance.publicFunctions ?? []
+        for each functionName in interfacePublicFunctions
+            interfaceFunctions[functionName] = interfaceInstance
+        end for
+    end for
 
-    try
-        safeFunctions = new privateFunctions() ?? invalid
-        if rodash.isAA(safeFunctions) then interfaceFuncs.append(safeFunctions)
-        m.azHasSafeFuncs = true
-    catch e
-        ?"Private functions do not exist in " m.top.subType()
-    end try
+    ' ?"allFunctions " allFunctions
 
-    m.azSafeable = m.top.hasFunc("safeFunc")
+    m.allFunctions = allFunctions
+    m.interfaceFunctions = interfaceFunctions
 
-    if m.azHasSafeFuncs and not m.azSafeable
-        xmlFilename = `${m.top.subType()}.xml`
-        ?`
+    ' if componentRole = "Scene" then m.top.removeChild(m.top.getChild(0))
 
-        WARNING: Please add
-        <function name="safeFunc" />
-        to ${xmlFilename} file
+    '[Safeable, Eventable, Stateable, Styleable]
 
-        `
-    end if
+    m.interfaceFuncs = allFunctions
 
-    m.interfaceFuncs = interfaceFuncs
-
-    onInit()
-end sub
-
-
-sub onRoleset(event)
-    if not rodash.isNodeEvent(event) then return
-    role = event.getData()
-    roleInterfaces = m.roleInterfaces[role]
-    implements(roleInterfaces)
+    exec("onInit")
 end sub
 
 
@@ -101,40 +52,43 @@ sub registerControllers(controllers = [])
 end sub
 
 
-sub implements(interfaces = [])
-    if rodash.isEmpty(interfaces) then return
-
-    allInterfaceFunctions = m.interfaceFuncs ?? {}
-
-    for each interfaceName in interfaces
-        interfaceClass = m.allInterfaces[interfaceName]
-        interfaceInstance = new interfaceClass({ top: m.top, global: m.global })
-        interfaceInstance.initInterface()
-        interfaceFunctions = interfaceInstance.returnInterfaceFunctions()
-
-        for each interfaceFunction in interfaceFunctions.items()
-            allInterfaceFunctions[interfaceFunction.key] = interfaceFunction.value
-        end for
-    end for
-
-    m.interfaceFuncs = allInterfaceFunctions
-end sub
-
-
 function app()
     return m.global.getScene()
 end function
 
 
-function exec(func = "", options = {}, node = m.top)
-    if rodash.isFunction(func) then return func(options)
-    if not rodash.isFunction(m.interfaceFuncs["exec"]) then return invalid
-    return m.interfaceFuncs.exec(func, options, node)
+function exec(func = "", options = {}, node = m.top, externalInterface = {})
+    interface = m.interfaceFunctions["exec"]
+    if interface = invalid then return invalid
+    return interface.exec(func, options, node, externalInterface)
 end function
 
 
 function safeFunc(functionName = "")
-    return m.interfaceFuncs.safeFunc(functionName)
+    interface = m.interfaceFunctions["safeFunc"]
+    if interface = invalid then return invalid
+    return interface.safeFunc(functionName)
+end function
+
+
+function safeObserve(fieldName = "", callbackFunc = "", node = m.top, infoFields = [])
+    interface = m.interfaceFunctions["safeObserve"]
+    if interface = invalid then return invalid
+    return interface.safeObserve(fieldName, callbackFunc, node,infoFields)
+end function
+
+
+function get(options, node = m.top)
+    interface = m.interfaceFunctions["get"]
+    if interface = invalid then return invalid
+    return exec("get", options, node, interface)
+end function
+
+
+function set(options = {}, node = m.top)
+    interface = m.interfaceFunctions["set"]
+    if interface = invalid then return invalid
+    return exec("set", options, node, interface)
 end function
 
 
@@ -148,18 +102,8 @@ function subscribe(options = {})
 end function
 
 
-function get(options, node = m.top)
-    return m.interfaceFuncs.getField(options, node)
-end function
-
-
 function dispatch(event = "", options = {})
     return m.interfaceFuncs.dispatch(event, options)
-end function
-
-
-function set(options = {}, node = m.top)
-    return m.interfaceFuncs.setField(options, node)
 end function
 
 
@@ -170,18 +114,33 @@ function getQueue()
     return m.messageQueue
 end function
 
+function top()
+    return getGlobalAA().top
+end function
 
-class onRokuDevInterface
-    function new(options = {})
-        for each item in options.items()
-            m[item.key] = item.value
-        end for
-    end function
+function global()
+    return getGlobalAA().global
+end function
 
-    sub initInterface()
-    end sub
+function role()
+    componentRole = "Controller"
 
-    function returnInterfaceFunctions(options = {})
-        return m
-    end function
-end class
+    if m.top.isSubtype("Group")
+        componentRole = m.top.isSubtype("Scene") ? "Scene" : "View"
+    else if m.top.isSubtype("Task")
+        componentRole = "Task"
+    else if m.top.isSubtype("ContentNode")
+        componentRole = "Model"
+    end if
+
+    return componentRole
+end function
+
+
+function timer()
+    if m.timer = invalid
+        m.timer = createObject("roTimespan")
+    end if
+
+    return m.timer
+end function

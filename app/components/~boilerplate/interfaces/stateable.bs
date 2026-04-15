@@ -1,22 +1,37 @@
-class Stateable extends onRokuDevInterface
-    override sub initInterface(options = {})
-        m.top.addField("ordState", "assocarray", false)
+class Stateable
+    publicFunctions = []
+
+    sub new(options = {})
+        top().addField("_ord_State", "assocarray", false)
+
+        m.setExportFunctions(role())
+    end sub
+
+    sub setExportFunctions(componentRole = "")
+        if rodash.isEmptyString(componentRole) then return
+
+        if rodash.findIndex(["Scene", "View", "Model", "Controller"], componentRole) = -1 then return
+
+        m.publicFunctions.push("get")
+        m.publicFunctions.push("set")
     end sub
 
 
-    function getStateValue(key = "", node = m.top)
+    function getStateValue(key = "", node = getGlobalAA().top)
         if rodash.isEmpty(key) then return invalid
+        if not rodash.isEmpty(node[key]) then return node[key]
 
-        nodeState = node.getRef("ordState") ?? {}
+        nodeState = node.getRef("_ord_State") ?? {}
         return nodeState[key]
     end function
 
 
-    function getField(options = {}, node = m.top)
+    function get(options = {}, node = getGlobalAA().top)
         if rodash.isString(options)
             return m.getStateValue(options, node)
         else if rodash.isArray(options)
             lookupObj = {}
+
             for each key in options
                 lookupObj[key] = m.getStateValue(key, node)
             end for
@@ -28,9 +43,25 @@ class Stateable extends onRokuDevInterface
     end function
 
 
-    sub setField(options = {}, node = m.top)
-        nodeState = node.getRef("ordState") ?? {}
-        nodeState.append(options)
-        node.setRef("ordState", nodeState)
+    sub set(options = {}, node = top())
+        if not rodash.isNonEmptyAA(options) then return
+
+        nodeState = node.getRef("_ord_State") ?? {}
+
+        for each item in options.items()
+            key = item.key ?? ""
+            value = item.value
+            if rodash.isEmptyString(key) then continue for
+
+            if node.hasField(key)
+                node[key] = value
+            else
+                itemObj = {}
+                itemObj[key] = value
+                nodestate.append(itemObj)
+            end if
+        end for
+
+        node.setRef("_ord_State", nodeState)
     end sub
 end class

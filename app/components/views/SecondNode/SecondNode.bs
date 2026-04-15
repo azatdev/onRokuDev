@@ -1,17 +1,16 @@
 import "pkg:/components/~boilerplate/azat.bs"
 
-
-sub onInit()
-    m.top.role = "Controller"
-end sub
-
-
-function regularFunc(options = {})
-    return { result: "count is: " + options.data.count().toStr() }
+function asdFunc()
+    ?"ASADASDASDADASDAD"
 end function
 
 
-class privateFunctions
+class NodeFunctions
+    sub onInit(options = {})
+        top().someArray = ["one", "two"]
+    end sub
+
+
     function onTheNose(options = {})
         return { result: options.name + " failure" }
     end function

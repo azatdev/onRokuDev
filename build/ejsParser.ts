@@ -12,8 +12,8 @@ type PageData = {
 }
 
 
-ejs.openDelimiter = "\"{{";
-ejs.closeDelimiter = "}}\"";
+ejs.openDelimiter = "\"<";
+ejs.closeDelimiter = ">\"";
 
 import ejsHelpers from "./ejsHelpers";
 
@@ -32,7 +32,7 @@ function hydrateFile(fileData:string, additionalData:object = {}) {
             ...ejsHelpers
         });
 
-        const found = compiled.match(/(?<=\"{{)(.*)(?=}}\")/g);
+        const found = compiled.match(/(?<=\"<)(.*)(?=>\")/g);
 
         if (!found) done = true;
         fileData = compiled

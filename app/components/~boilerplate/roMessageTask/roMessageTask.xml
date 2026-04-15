@@ -2,7 +2,6 @@
 <component name="roMessageTask" extends="Task" >
     <interface>
         <field id="eventData" type="assocarray" />
-        <field id="queue" type="array" />
     </interface>
     <script type="text/brightscript" uri="roMessageTask.bs"/>
 </component>

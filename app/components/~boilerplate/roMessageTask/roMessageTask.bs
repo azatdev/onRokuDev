@@ -1,15 +1,13 @@
 import "pkg:/components/~boilerplate/azat.bs"
 
 
-sub onInit()
+sub onInit(options = {})
     m.top.functionName = "sendMessage"
     m.top.role = "Task"
 end sub
 
 
 function sendMessage()
-    ?"sendMessage2 "
-
     messagePort = createObject("roMessagePort")
     m.top.observeFieldScoped("eventData", messagePort)
 

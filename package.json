@@ -20,11 +20,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "brighterscript": "^0.70.1",
+    "brighterscript": "^0.71.0",
     "chokidar": "^4.0.3",
     "dotenv": "^17.2.2",
     "ejs": "^5.0.1",
     "rodash": "npm:@tkss/rodash@^0.0.36",
+    "roku-requests": "^1.2.0",
     "ws": "^8.18.3"
   },
   "devDependencies": {

@@ -14,7 +14,7 @@ module.exports = {
                     width: 0
                 },
                 "Label#title": {
-                    color: "#0b7652ff"
+                    color: "#b9a73fff"
                 },
                 "test": []
             }

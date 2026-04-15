@@ -1,18 +1,54 @@
-class Safeable extends onRokuDevInterface
-    override sub initInterface(options = {})
-        m.top.addField("azSafeFuncPayload", "assocarray", true)
-        m.top.addField("azSafeFuncReturnObj", "assocarray", false)
+class Safeable
+    publicFunctions = []
+
+    sub new(options = {})
+        top().addField("_ord_proxyData", "assocarray", true)
+        top().addField("_ord_callbacks", "assocarray", false)
+        top().setRef("_ord_proxyData", {})
+
+        m.nodeFunctions = {}
+
+        try
+            nodeFuncs = new NodeFunctions() ?? invalid
+            if rodash.isAA(nodeFuncs) then m.nodeFunctions.append(nodeFuncs)
+        catch e
+            ?"Private functions do not exist in " getGlobalAA().top.subType()
+        end try
+
+        m.setExportFunctions(role())
     end sub
 
 
-    function exec(functionName, options = {}, node = m.top)
-        devMode = true
+    sub setExportFunctions(componentRole = "")
+        if rodash.isEmptyString(componentRole) then return
+
+        m.publicFunctions.push("exec")
+        m.publicFunctions.push("safeObserve")
+
+        if rodash.findIndex(["Scene", "View", "Model"], componentRole) = -1 then return
+
+        if rodash.findIndex(m.publicFunctions, "safeFunc") <> -1 and not top().hasFunc("safeFunc")
+            ?`
+
+            WARNING: Please add
+            <function name="safeFunc" />
+            to ${top().subType()}.xml file
+
+            `
+        else
+            m.publicFunctions.push("safeFunc")
+        end if
+    end sub
+
+
+    function exec(func = "", options = {}, node = top(), externalInterface = {})
+        devMode = false
 
         if devMode
-            return m.doFunc(functionName, options, node)
+            return m.runFunc(func, options, node, externalInterface)
         else
             try
-                return m.doFunc(functionName, options, node)
+                return m.runFunc(func, options, node, externalInterface)
             catch e
                 ?"Error: " e
             end try
@@ -20,45 +56,84 @@ class Safeable extends onRokuDevInterface
     end function
 
 
-    function doFunc(functionName, options, node = m.top)
-        if not node.isSameNode(m.top)
-            return m.proxyFunc(functionName, options, node)
+    function runFunc(func = "", options = {}, node = top(), externalInterface = {})
+        if rodash.isFunction(func) then return func(options)
+
+        if not node.isSameNode(top())
+            return m.proxyFunc(func, options, node)
         end if
 
-        targetFunction = m[functionName]
-        if not rodash.isFunction(targetFunction) then return invalid
+        if not rodash.isEmpty(externalInterface) and rodash.isFunction(externalInterface[func])
+            return externalInterface[func](options)
+        end if
 
-        return m[functionName](options)
+        if not rodash.isFunction(m.nodeFunctions[func]) then return invalid
+
+        return m.nodeFunctions[func](options)
     end function
 
 
     function proxyFunc(functionName = "", options = {}, node = {})
         if not rodash.isNode(node) then return invalid
-        if rodash.isNonEmptyAA(options) then node.setRef("azSafeFuncPayload", options)
+
+        proxyData = node.getRef("_ord_proxyData") ?? {}
+
+        if not rodash.isEmpty(options)
+            proxyData.input = options
+        end if
 
         node.callFunc("safeFunc", functionName)
 
-        returnObj = node.getRef("azSafeFuncReturnObj")
-        return returnObj ?? invalid
+        return proxyData.output ?? invalid
     end function
 
 
     sub processSafeFunc(functionName)
-        options = m.top.getRef("azSafeFuncPayload")
-        returnObj = m.exec(functionName, options)
+        proxyData = top().getRef("_ord_proxyData") ?? {}
+        options = proxyData.input
+        returnData = exec(functionName, options, top(), getGlobalAA().interfaceFunctions[functionName])
+        proxyData.input = invalid
+        proxyData.output = rodash.isEmpty(returnData) ? invalid : returnData
+    end sub
 
-        if rodash.isNonEmptyAA(returnObj)
-            m.top.setRef("azSafeFuncReturnObj", returnObj)
+
+    sub safeObserve(fieldName = "", callbackFunc = "", node = getGlobalAA().top, infoFields = [])
+        if rodash.isEmptyString(fieldName) then return
+
+        if role() = "Task" and rodash.isMessagePort(callbackFunc)
+            node.observeFieldScopedEx(fieldName, callbackFunc, infoFields)
+            return
         end if
 
-        m.top.setRef("azSafeFuncPayload", {})
+        if rodash.isEmptyString(callbackFunc) then return
+
+        m.storeCallback({ field: fieldName, callback: callbackFunc })
+
+        node.unObserveFieldScoped(fieldName)
+        node.observeFieldScoped(fieldName, rodash.getFunctionName(m.safeCallback), infoFields)
+    end sub
+
+
+    sub safeCallback(event)
+        fieldName = event.getField() ?? ""
+        callbacks = top().getRef("_ord_callbacks") ?? {}
+        functionName = callbacks[fieldName] ?? ""
+
+        if rodash.isEmptyString(functionName) then return
+
+        payload = {
+            data: event.getData()
+            info: event.getInfo()
+            node: event.getRoSGNode()
+            nodeId: event.getNode()
+        }
+
+        exec(functionName, payload)
     end sub
 
 
     function safeFunc(functionName = "")
-        devMode = true
-
-        options = m.top.getRef("azSafeFuncPayload") ?? {}
+        devMode = false
 
         if devMode
             return m.processSafeFunc(functionName)
@@ -70,4 +145,20 @@ class Safeable extends onRokuDevInterface
             end try
         end if
     end function
+
+
+    sub storeCallback(options = {})
+        callbacks = top().getRef("_ord_callbacks") ?? {}
+
+        field = options.field
+        callback = options.callback
+
+        callbacks[field] = callback
+        top().setRef("_ord_callbacks", callbacks)
+    end sub
 end class
+
+
+class SafeFunctions
+end class
+

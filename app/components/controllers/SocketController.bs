@@ -1,15 +1,18 @@
 import "pkg:/components/~boilerplate/azat.bs"
 
 
-sub onInit()
-    m.top.role = "Controller"
-    subscribe({
-        "TEST_EVENT": "onTestEvent"
-    })
-end sub
+class NodeFunctions
+    sub onInit(options = {})
+        m.top.role = "Controller"
 
+        m.socketTest = createObject("roSGNode", "WebsocketTest")
+        m.socketTest.control = "RUN"
 
-class privateFunctions
+        subscribe({
+            [events.TEST_EVENT]: "onTestEvent"
+        })
+    end sub
+
     sub onTestEvent(options = {}, msgInfo = {})
         ?"SocketController onTestEvent " options
     end sub

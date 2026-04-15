@@ -1,3 +1,4 @@
 namespace events
     const TEST_EVENT = "TEST_EVENT"
+    const STYLES_UPDATE = "STYLES_UPDATE"
 end namespace

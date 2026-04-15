@@ -1,0 +1,27 @@
+import "pkg:/components/~boilerplate/azat.bs"
+
+
+class NodeFunctions
+    sub onInit(options = {})
+        m.top.role = "Controller"
+
+        m.stylesTask = createObject("roSGNode", "StyleTask")
+
+        subscribe({
+            "STYLES_UPDATE": "onStylesUpdate"
+            "REQUEST_STYLES": "requestStyles"
+        })
+    end sub
+
+    sub onStylesUpdate(options = {})
+        ?"onStylesUpdate " options
+    end sub
+
+    sub requestStyles(options = {})
+        ?"requestStyles "
+        m.stylesTask.control = "RUN"
+    end sub
+end class
+
+
+

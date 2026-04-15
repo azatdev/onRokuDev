@@ -1,8 +1,0 @@
-class Sendable extends onRokuDevInterface
-    override sub initInterface(options = {})
-        if not m.top.isSubtype("Scene") then return
-        ?"Sendable " m.top.isSubtype("Scene")
-        ?"m.global " m.global
-        if not rodash.isNode(m.global) then return
-    end sub
-end class

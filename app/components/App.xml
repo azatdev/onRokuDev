@@ -3,6 +3,7 @@
     <interface>
         <field id="launchArgs" type="assocArray" />
         <field id="testFunctions" type="assocarray" />
+        <field id="drink" type="string" />
         <field id="styles" type="assocarray" />
         <function name="safeFunc" />
         <function name="applyStyles" />

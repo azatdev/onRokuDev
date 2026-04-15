@@ -1,9 +1,15 @@
-import "pkg:/source/roku_modules/rodash/rodash.brs"
+import "pkg:/components/~boilerplate/azat.bs"
 
 
-sub init()
+sub onInit(options = {})
+    m.top.role = "Task"
     m.top.functionName = "initSocketServer"
 end sub
+
+
+class NodeFunctions
+
+end class
 
 
 function initSocketServer()
@@ -91,13 +97,12 @@ sub receiveMessage(socketMessage as string)
     if rodash.isInvalid(messageObj) then return
 
     ?"rodash.isString(messageObj.message) " rodash.isString(messageObj.message)
-    parsedMessage = parseJSON(messageObj.message)
-    ?"parsed message " type(parsedMessage) parsedMessage
-    if messageObj.type = "styles-update"
-        scene = m.global.getScene()
-        appStyles = parsedMessage["STYLES"]
-        ?"task appStyles " appStyles
-        scene.setRef("styles", appStyles)
-        scene.callFunc("applyStyles", appStyles)
+    if messageObj.type = "STYLES_UPDATE"
+        ' scene = m.global.getScene()
+        ' appStyles = parsedMessage["STYLES"]
+        ' ?"task appStyles " appStyles
+        ' scene.setRef("styles", appStyles)
+        ' scene.callFunc("applyStyles", appStyles)
+        publish("REQUEST_STYLES")
     end if
 end sub

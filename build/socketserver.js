@@ -9,32 +9,6 @@ const welcomeMessage = process.env.SOCKET_MESSAGE || 'Hello from the Node socket
 const stylesPath = path.resolve(__dirname, 'styles.json');
 const clients = new Set();
 
-function readStylesPayload() {
-  let stylesMessage = '';
-
-  try {
-    stylesMessage = fs.readFileSync(stylesPath, 'utf8').trim();
-  } catch (error) {
-    return {
-      ok: false,
-      error: `Unable to read styles payload from ${stylesPath}: ${error.message}`,
-    };
-  }
-
-  if (stylesMessage.length === 0) {
-    return {
-      ok: false,
-      error: `Styles payload at ${stylesPath} is empty.`,
-    };
-  }
-
-  return {
-    ok: true,
-    stylesMessage,
-    byteLength: Buffer.byteLength(stylesMessage, 'utf8'),
-  };
-}
-
 function createPayload(type, message, extra = {}) {
   return JSON.stringify({
     type,
@@ -70,19 +44,12 @@ function broadcastPayload(type, message, extra = {}, excludeSocket = null) {
 }
 
 function broadcastStylesUpdate(excludeSocket = null) {
-  const stylesPayload = readStylesPayload();
-  if (!stylesPayload.ok) {
-    console.error(stylesPayload.error);
-    return false;
-  }
-
   broadcastPayload(
-    'styles-update',
-    stylesPayload.stylesMessage,
+    'STYLES_UPDATE',
+    "",
     {
       filePath: 'build/styles.json',
       messageFormat: 'json-string',
-      byteLength: stylesPayload.byteLength,
     },
     excludeSocket
   );

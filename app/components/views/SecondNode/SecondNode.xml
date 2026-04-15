@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="SecondNode" extends="Group">
     <interface>
-        <function name="regularFunc" />
+        <field id="funcs" type="assocarray" />
+        <field id="someArray" type="array" />
+        <field id="data" type="assocarray" />
+        <field id="data2" type="assocarray" />
         <function name="safeFunc" />
     </interface>
     <children>

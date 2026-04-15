@@ -2,42 +2,24 @@ import "pkg:/source/helpers/timestamps.bs"
 import "pkg:/components/~boilerplate/azat.bs"
 import "testdata.bs"
 
-sub onInit()
-    m.top.role = "Scene"
-
-    asd = events.TEST_EVENT
-    registerControllers([
-        "SocketController"
-    ])
-
-    rodash.delay(sub(args)
-        dispatch(events.TEST_EVENT, { test: true })
-    end sub, 20, [])
-
-    m.top.setFocus(true)
-end sub
-
 
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
     handled = false
 
-    m.messageTask.eventData = testData._123KB
+    ' m.messageTask.eventData = testData._123KB
 
     if key = "down"
-        m.messageTask.control = "STOP"
     else if key = "up"
-        m.messageTask.control = "RUN"
     end if
 
     return handled
 end function
 
 
-' sub onInit()
-'     ' initFramework(privateFunctions)
+' sub onInit(options = {})
+'     ' initFramework(NodeFunctions)
 '     ' exec("onInit")
-'     ' exec("doStyleTest")
 '     ' exec("doErrorTest")
 '     ' implements(["Safeable", "Stateable"])
 '     ' azLog([m, m.top], SOURCE_LOCATION)
@@ -48,21 +30,6 @@ end function
 '         "SocketController"
 '     ])
 
-'     m.secondNode = createObject("roSGNode", "SecondNode")
-'     result = exec("onTheNose", { name: "Azat" }, m.secondNode)
-'     ?"result " result
-
-'     m.socketTest = createObject("roSGNode", "WebsocketTest")
-'     m.socketTest.control = "RUN"
-
-'     appStyles = "{{%- o(STYLES) %}}"
-'     ' ?"appStyles " appStyles
-
-'     m.top.setRef("styles", appStyles)
-'     applyStyles(appStyles)
-
-'     m.task = createObject("roSGNode", "TestNode")
-'     m.task.control = "run"
 
 
 '     set({ status: "Stateable Azat Test" })
@@ -78,13 +45,59 @@ end function
 ' end sub
 
 
-class privateFunctions
-    function onInit(options = {})
+class NodeFunctions extends SafeFunctions
+
+    sub onInit(options = {})
+        ' m.top.role = "Scene"
+
+        ?"onInit"
+
+        m.secondNode = createObject("roSGNode", "SecondNode")
+        ' localResult = exec("onTheNose", { name: "Azat" })
+        ' remoteResult = exec("onTheNose", { name: "Azat" }, m.secondNode)
+        ' ?"localResult " localResult
+        ' ?"remoteResult " remoteResult
+
+        ' styleTask = createObject("roSGNode", "StyleTask")
+        ' remoteResult2 = exec("onTheNose", { name: "Azat" }, styleTask)
+        ' ?"remoteResult2 " remoteResult2
+
+        ' safeObserve("data", "onDataChange", m.secondNode)
+        ' m.secondNode.data = { test: "azat test" }
+
+        set({
+            "food": "burrito"
+            "drink": "diet dr pepper"
+        })
+
+        ?"get self " get("food")
+        ?"get self 2" get(["food", "drink"])
+        ?"get self 3 " top().drink
+
+        set({
+            "food": "pizza"
+        }, m.secondNode)
+
+        ?"get remote " get("food", m.secondNode)
+        res2 = get(["food", "someArray"], m.secondNode)
+        ?"get remote 2 " res2 res2.someArray
+
+        ' registerControllers([
+        '     "SocketController"
+        '     "StylesController"
+        ' ])
+
+        ' appStyles = "<%- o(STYLES) %>"
+        ' m.top.setRef("styles", appStyles)
+        ' applyStyles(appStyles)
+
+        top().setFocus(true)
+    end sub
+
+    ' function onInit(options = {})
         ' subscribe({
         '     "TEST_EVENT": "onTestEvent"
         ' })
-
-        ' m.top.appendChild(createObject("roSGNode", "NodeTest"))
 
         ' m.task = createObject("roSGNode", "TestNode")
 
@@ -94,8 +107,12 @@ class privateFunctions
 
         ' loadList()
         ' loadPlugin()
-    end function
+    ' end function
 
+    sub onDataChange(options = {})
+        ?"onDataChange data " options.data
+        ?"onDataChange info " options.info
+    end sub
 
     function doErrorTest(options = {})
         ?"doErrorTest "
@@ -109,16 +126,6 @@ class privateFunctions
     end function
 
 
-    function doStyleTest(options = {})
-        ?"doStyleTest "
-        groupNode = createObject("roSGNode", "TestGroup")
-        m.top.appendChild(groupNode)
-
-        labelNode = createObject("roSGNode", "Label")
-        groupNode.appendChild(labelNode)
-    end function
-
-
     function testFunction(options = {})
         ?"testFunction " options
     end function
@@ -127,7 +134,6 @@ class privateFunctions
     function onTheNose(options = {})
         return { result: options.name + " success"  }
     end function
-
 end class
 
 
@@ -181,7 +187,7 @@ sub loadList()
 end sub
 
 
-sub applyStyles(appStyles)
+sub applyStyles(appStyles = {})
     exec("setStyles", appStyles.App)
 end sub
 

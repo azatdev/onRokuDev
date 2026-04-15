@@ -1,0 +1,18 @@
+import "pkg:/components/~boilerplate/azat.bs"
+
+class NodeFunctions
+    sub onInit(options = {})
+        top().functionName = "getStyles"
+
+    end sub
+
+
+    function getStyles()
+        response = rokurequests_Requests().get("http://192.168.88.31:54323/styles.json")
+        if not rodash.isEmpty(response.text)
+            publish(events.STYLES_UPDATE, parseJSON(response.text))
+        end if
+
+        return true
+    end function
+end class

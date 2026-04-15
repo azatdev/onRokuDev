@@ -15,4 +15,5 @@
         "**/transpiled/**": true,
     },
     "files.trimTrailingWhitespace": true,
+    "brightscript.bsdk": "node_modules/brighterscript",
 }

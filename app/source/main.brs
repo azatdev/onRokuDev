@@ -4,6 +4,8 @@ sub runUserInterface(args = {})
 
     screen.setMessagePort(port)
     screen.createScene("App")
+    ' screen.createScene("Benchmarks")
+    ' screen.createScene("TestScene")
     screen.show()
     ' vscode_rale_tracker_entry
     ' vscode_rdb_on_device_component_entry
