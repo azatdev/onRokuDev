@@ -42,7 +42,7 @@ class Safeable
 
 
     function exec(func = "", options = {}, node = top(), externalInterface = {})
-        devMode = false
+        devMode = true
 
         if devMode
             return m.runFunc(func, options, node, externalInterface)
@@ -133,7 +133,7 @@ class Safeable
 
 
     function safeFunc(functionName = "")
-        devMode = false
+        devMode = true
 
         if devMode
             return m.processSafeFunc(functionName)

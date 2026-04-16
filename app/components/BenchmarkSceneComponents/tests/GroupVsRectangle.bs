@@ -18,7 +18,9 @@ class GroupVsRectangle
         ?chr(10)
 
 
-        nodeTypes = ["Group", "Rectangle", "Poster", "Node", "ContentNode", "Label", "MultiStyleLabel", "Task", "Timer", "Animation", "RowList", "TargetGroup", "SecondNode"]
+        ' nodeTypes = ["Group", "Rectangle", "Poster", "Node", "ContentNode", "Label", "MultiStyleLabel", "Task", "Timer", "Animation", "RowList", "TargetGroup", "SecondNode", "roRenderThreadQueue"]
+
+        nodeTypes = ["Group", "Rectangle", "Poster", "Node", "ContentNode", "Label", "MultiStyleLabel", "Task", "Timer", "Animation", "RowList", "TargetGroup", "roRenderThreadQueue"]
 
         nodeArray = []
 
@@ -26,7 +28,11 @@ class GroupVsRectangle
             m.benchTimer.mark()
 
             for ix = 0 to m.iterations
-                nodeArray.push(createObject("roSGNode", "Group"))
+                if nodeType = "roRenderThreadQueue"
+                    nodeArray.push(createObject("roRenderThreadQueue"))
+                else
+                    nodeArray.push(createObject("roSGNode", nodeType))
+                end if
             end for
 
             m.logText.push(`${nodeType} took ${m.benchTimer.totalMilliseconds().toStr()} ms`)

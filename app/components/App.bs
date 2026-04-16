@@ -1,13 +1,11 @@
 import "pkg:/source/helpers/timestamps.bs"
-import "pkg:/components/~boilerplate/azat.bs"
+import "pkg:/components/_ord/azat.bs"
 import "testdata.bs"
 
 
 function onKeyEvent(key as string, press as boolean) as boolean
     if not press then return false
     handled = false
-
-    ' m.messageTask.eventData = testData._123KB
 
     if key = "down"
     else if key = "up"
@@ -65,27 +63,37 @@ class NodeFunctions extends SafeFunctions
         ' safeObserve("data", "onDataChange", m.secondNode)
         ' m.secondNode.data = { test: "azat test" }
 
-        set({
-            "food": "burrito"
-            "drink": "diet dr pepper"
+        ' set({
+        '     "food": "burrito"
+        '     "drink": "diet dr pepper"
+        ' })
+
+        ' ?"get self " get("food")
+        ' ?"get self 2" get(["food", "drink"])
+        ' ?"get self 3 " top().drink
+
+        ' set({
+        '     "food": "pizza"
+        ' }, m.secondNode)
+
+        ' ?"get remote " get("food", m.secondNode)
+        ' res2 = get(["food", "someArray"], m.secondNode)
+        ' ?"get remote 2 " res2 res2.someArray
+
+        subscribe({
+            "TEST_EVENT": "onTestEvent"
         })
 
-        ?"get self " get("food")
-        ?"get self 2" get(["food", "drink"])
-        ?"get self 3 " top().drink
-
-        set({
-            "food": "pizza"
-        }, m.secondNode)
-
-        ?"get remote " get("food", m.secondNode)
-        res2 = get(["food", "someArray"], m.secondNode)
-        ?"get remote 2 " res2 res2.someArray
+        ?"After subscribe"
 
         ' registerControllers([
         '     "SocketController"
-        '     "StylesController"
+        '     ' "StylesController"
         ' ])
+
+        ' dispatch("TEST_EVENT", { test: "azat" })
+
+
 
         ' appStyles = "<%- o(STYLES) %>"
         ' m.top.setRef("styles", appStyles)
@@ -95,9 +103,7 @@ class NodeFunctions extends SafeFunctions
     end sub
 
     ' function onInit(options = {})
-        ' subscribe({
-        '     "TEST_EVENT": "onTestEvent"
-        ' })
+
 
         ' m.task = createObject("roSGNode", "TestNode")
 

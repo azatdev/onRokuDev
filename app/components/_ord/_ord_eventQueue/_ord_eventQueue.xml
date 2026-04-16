@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="roMessageTask" extends="Task" >
+<component name="_ord_eventQueue" extends="Task" >
     <interface>
         <field id="eventData" type="assocarray" />
     </interface>
-    <script type="text/brightscript" uri="roMessageTask.bs"/>
+    <script type="text/brightscript" uri="_ord_eventQueue.bs"/>
 </component>

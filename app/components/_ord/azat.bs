@@ -10,7 +10,7 @@ import "interfaces/stateable.bs"
 import "interfaces/styleable.bs"
 
 sub init()
-    interfaces = [Safeable, Stateable]
+    interfaces = [Safeable, Stateable, Eventable]
 
     allFunctions = {}
     interfaceFunctions = {}
@@ -97,13 +97,17 @@ function publish(name = "", options = {})
 end function
 
 
-function subscribe(options = {})
-    return m.interfaceFuncs.subscribe(options)
+function subscribe(options, node = m.top)
+    interface = m.interfaceFunctions["subscribe"]
+    if interface = invalid then return invalid
+    return exec("subscribe", options, node, interface)
 end function
 
 
-function dispatch(event = "", options = {})
-    return m.interfaceFuncs.dispatch(event, options)
+function dispatch(options, node = m.top)
+    interface = m.interfaceFunctions["dispatch"]
+    if interface = invalid then return invalid
+    return exec("dispatch", options, node, interface)
 end function
 
 

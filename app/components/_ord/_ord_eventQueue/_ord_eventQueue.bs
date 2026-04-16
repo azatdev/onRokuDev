@@ -1,0 +1,31 @@
+import "pkg:/components/_ord/azat.bs"
+
+
+class NodeFunctions
+    sub onInit(options = {})
+        ?"_ord_eventQueue onInit"
+        top().functionName = "runTask"
+    end sub
+
+    function runTask(options = {}, msgInfo = {})
+        messagePort = createObject("roMessagePort")
+        m.top.observeFieldScoped("eventData", messagePort)
+
+        while true
+            msg = wait(1000, messagePort)
+            if msg = invalid then continue while
+
+            field = msg.getField()
+            messageData = msg.getData()
+            if rodash.isEmpty(messageData) then continue while
+
+            eventId = messageData.id ?? ""
+            eventOptions = messageData.options ?? {}
+
+            if rodash.isEmpty(eventId) then continue while
+            publish(eventId, eventOptions)
+        end while
+
+        return true
+    end function
+end class

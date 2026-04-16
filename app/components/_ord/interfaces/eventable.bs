@@ -1,48 +1,39 @@
 class Eventable
     subscriptions = {}
-    publicFunctions = {}
+    publicFunctions = []
 
     sub new(options = {})
-        if not rodash.isNode(options.top) then return
-        m.top = options.top
 
-        componentRole = options.role ?? ""
-        if rodash.isEmptyString(componentRole) then return
-
-        if componentRole <> "Task"
-            m.messageTask = createObject("roSGNode", "roMessageTask")
-            m.messageTask.control = "RUN"
+        if role() = "Scene" or global()._ord_eventQueue = invalid
+            m.eventQueue = createObject("roSGNode", "_ord_eventQueue")
+            m.eventQueue.control = "RUN"
+            global().addField("_ord_eventQueue", "node", false)
+            global()._ord_eventQueue = m.eventQueue
         end if
 
-        m.top.addField("ordSubscriptions", "assocarray", false)
+        top().addField("_ord_subscriptions", "assocarray", false)
 
-        ' m.setExportFunctions(componentRole)
+        m.setExportFunctions(role())
     end sub
 
-    ' sub setExportFunctions(role)
-    '     if rodash.isEmptyString(role) then return
+    sub setExportFunctions(componentRole = "")
+        if rodash.isEmptyString(role) then return
 
-    '     if rodash.findIndex(["Scene", "View", "Model", "Controller", "Task"], role) <> -1
-    '         m.publicFunctions.append({
-    '             _dispatch: m.dispatch
-    '         })
-    '     end if
+        if rodash.findIndex(["Scene", "View", "Model", "Controller", "Task"], componentRole) <> -1
+            m.publicFunctions.push("dispatch")
+        end if
 
-    '     if rodash.findIndex(["Scene", "Controller"], role) <> -1
-    '         m.publicFunctions.append({
-    '             _subscribe: m.subscribe
-    '         })
-    '     end if
+        if rodash.findIndex(["Scene", "Controller"], componentRole) <> -1
+            m.publicFunctions.push("subscribe")
+        end if
 
-    '     if rodash.findIndex(["Task"], role) <> -1
-    '         m.publicFunctions.append({
-    '             _publish: m.publish
-    '         })
-    '     end if
-    ' end sub
+        if rodash.findIndex(["Task"], componentRole) <> -1
+            m.publicFunctions.push("publish")
+        end if
+    end sub
 
     sub storeFunctions(options = {})
-        subscriptions = m.top.getRef("ordSubscriptions") ?? {}
+        subscriptions = top().getRef("_ord_subscriptions") ?? {}
 
         name = options.name
         functions = options.functions
@@ -55,7 +46,7 @@ class Eventable
         end if
 
         subscriptions[name] = functionArray
-        m.top.setRef("ordSubscriptions", subscriptions)
+        top().setRef("_ord_subscriptions", subscriptions)
     end sub
 
 
@@ -84,7 +75,7 @@ class Eventable
         ?"callEventFunctions " data messageInfo
         if rodash.isEmpty(messageInfo) then return
 
-        subscriptions = m.top.getRef("ordSubscriptions") ?? {}
+        subscriptions = top().getRef("_ord_subscriptions") ?? {}
 
         if rodash.isEmpty(subscriptions) then return
 
@@ -108,6 +99,6 @@ class Eventable
             id: eventId
             options: options
         }
-        m.messageTask.eventData = payload
+        m.eventQueue.eventData = payload
     end sub
 end class
