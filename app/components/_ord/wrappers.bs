@@ -1,41 +1,4 @@
-import "pkg:/source/roku_modules/rodash/rodash.brs"
-import "pkg:/source/roku_modules/rokurequests/Requests.brs"
-
-import "pkg:/source/plugins/logger.bs"
-import "pkg:/components/constants.bs"
-
-import "interfaces/safeable.bs"
-import "interfaces/eventable.bs"
-import "interfaces/stateable.bs"
-import "interfaces/styleable.bs"
-
-sub init()
-    interfaces = [Safeable, Stateable, Eventable, Styleable]
-
-    allFunctions = {}
-    interfaceFunctions = {}
-
-    for each interface in interfaces
-        interfaceInstance = new interface()
-        ' if rodash.isNonEmptyAA(interfaceInstance) then allFunctions.append(interfaceInstance)
-
-        interfacePublicFunctions = interfaceInstance.publicFunctions ?? []
-        for each functionName in interfacePublicFunctions
-            interfaceFunctions[functionName] = interfaceInstance
-        end for
-    end for
-
-    m.allFunctions = allFunctions
-    m.interfaceFunctions = interfaceFunctions
-    m.interfaceFuncs = allFunctions
-
-    if role() = "Task"
-        top().functionName = "runTask"
-    end if
-
-    exec("onInit")
-end sub
-
+import "init.bs"
 
 sub registerControllers(controllers = [])
     if not rodash.isNonEmptyArray(controllers) then return
@@ -96,7 +59,6 @@ function publish(name = "", options = {})
         id: name,
         options: options
     }
-    ?"publish " name, options
     return exec("publish", payload, top(), interface)
 end function
 
@@ -159,4 +121,16 @@ end function
 
 function runTask()
     exec("runTask")
+end function
+
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    if not press then return false
+    handled = false
+
+    if key = "down"
+    else if key = "up"
+    end if
+
+    return handled
 end function

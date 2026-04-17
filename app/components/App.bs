@@ -1,51 +1,10 @@
 import "pkg:/source/helpers/timestamps.bs"
-import "pkg:/components/_ord/azat.bs"
+import "pkg:/components/_ord/wrappers.bs"
 import "testdata.bs"
-
-
-function onKeyEvent(key as string, press as boolean) as boolean
-    if not press then return false
-    handled = false
-
-    if key = "down"
-    else if key = "up"
-    end if
-
-    return handled
-end function
-
-
-' sub onInit(options = {})
-'     ' initFramework(NodeFunctions)
-'     ' exec("onInit")
-'     ' exec("doErrorTest")
-'     ' implements(["Safeable", "Stateable"])
-'     ' azLog([m, m.top], SOURCE_LOCATION)
-
-'     registerControllers([
-'         "SocketController"
-'     ])
-
-
-
-'     set({ status: "Stateable Azat Test" })
-'     set({ code: 1212123 })
-
-'     getTest = get(["code", "status"])
-
-'     ?"getTest " getTest
-
-
-'     ' styles are now generated on the host at build/styles.json and sent over the socket server
-'     ' ?"styles " parseJSON(styles)
-' end sub
 
 
 class NodeFunctions
     sub onInit(options = {})
-
-        ?"onInit"
-
         m.secondNode = createObject("roSGNode", "SecondNode")
         ' localResult = exec("onTheNose", { name: "Azat" })
         ' remoteResult = exec("onTheNose", { name: "Azat" }, m.secondNode)
@@ -99,15 +58,11 @@ class NodeFunctions
         return { result: options.name + " success"  }
     end function
 
+
     sub onTestEvent(options = {})
         ?"onTestEvent " options
     end sub
 end class
-
-
-function add()
-    return "add"
-end function
 
 
 sub loadList()
@@ -146,29 +101,3 @@ sub loadList()
     list.translation = [399,198]
     list.setFocus(true)
 end sub
-
-
-sub applyStyles(appStyles = {})
-    setStyles(appStyles.App)
-end sub
-
-
-function returnHandles(options = {})
-    allNodeHandles = []
-
-    node = options.node
-    if not rodash.isNode(node) then return allNodeHandles
-
-    nodeSubtype = node.subType()
-    if not nodeSubtype = "Group" and not node.isSubtype("Group") then return allNodeHandles
-
-    allNodeHandles.push(nodeSubtype)
-
-    if rodash.isNonEmptyString(node.class) then allNodeHandles.push(`${nodeSubtype}.${node.class}`)
-
-    if rodash.isNonEmptyString(node.id) then allNodeHandles.push(`${nodeSubtype}#${node.id}`)
-
-    if rodash.isNonEmptyString(node.id) and rodash.isNonEmptyString(node.class) then allNodeHandles.push(`${nodeSubtype}#${node.id}.${node.class}`)
-
-    return allNodeHandles
-end function

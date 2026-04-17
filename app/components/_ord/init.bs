@@ -1,0 +1,37 @@
+import "pkg:/source/roku_modules/rodash/rodash.brs"
+import "pkg:/source/roku_modules/rokurequests/Requests.brs"
+
+import "pkg:/source/plugins/logger.bs"
+import "pkg:/components/constants.bs"
+
+import "traits/safeable.bs"
+import "traits/eventable.bs"
+import "traits/stateable.bs"
+import "traits/styleable.bs"
+
+sub init()
+    interfaces = [Safeable, Stateable, Eventable, Styleable]
+
+    allFunctions = {}
+    interfaceFunctions = {}
+
+    for each interface in interfaces
+        interfaceInstance = new interface()
+        ' if rodash.isNonEmptyAA(interfaceInstance) then allFunctions.append(interfaceInstance)
+
+        interfacePublicFunctions = interfaceInstance.publicFunctions ?? []
+        for each functionName in interfacePublicFunctions
+            interfaceFunctions[functionName] = interfaceInstance
+        end for
+    end for
+
+    m.allFunctions = allFunctions
+    m.interfaceFunctions = interfaceFunctions
+    m.interfaceFuncs = allFunctions
+
+    if role() = "Task"
+        top().functionName = "runTask"
+    end if
+
+    exec("onInit")
+end sub

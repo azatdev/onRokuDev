@@ -1,5 +1,5 @@
 import "pkg:/source/helpers/typeGuard.bs"
-' import "pkg:/components/_ord/azat.bs"
+' import "pkg:/components/_ord/wrappers.bs"
 import "tests/AAvsRef.bs"
 import "tests/CallFuncVsSafeFunc.bs"
 import "tests/CallfuncObserve.bs"

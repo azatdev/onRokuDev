@@ -6,7 +6,6 @@
         <field id="drink" type="string" />
         <field id="styles" type="assocarray" />
         <function name="safeFunc" />
-        <function name="applyStyles" />
     </interface>
     <children>
         <Group id="container">
