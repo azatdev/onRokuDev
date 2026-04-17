@@ -4,12 +4,11 @@ import "pkg:/components/_ord/azat.bs"
 class NodeFunctions
     sub onInit(options = {})
         ?"_ord_eventQueue onInit"
-        top().functionName = "runTask"
     end sub
 
-    function runTask(options = {}, msgInfo = {})
+    function runTask(options = {})
         messagePort = createObject("roMessagePort")
-        m.top.observeFieldScoped("eventData", messagePort)
+        safeObserve("eventData", messagePort)
 
         while true
             msg = wait(1000, messagePort)

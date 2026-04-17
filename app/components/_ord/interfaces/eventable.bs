@@ -3,18 +3,20 @@ class Eventable
     publicFunctions = []
 
     sub new(options = {})
-
-        if role() = "Scene" or global()._ord_eventQueue = invalid
-            m.eventQueue = createObject("roSGNode", "_ord_eventQueue")
-            m.eventQueue.control = "RUN"
-            global().addField("_ord_eventQueue", "node", false)
-            global()._ord_eventQueue = m.eventQueue
+        if role() <> "Task" and global()._ord_eventQueue = invalid
+            m.setupEventQueue()
         end if
+
+        m.eventQueue = global()._ord_eventQueue
+
+        'bs:disable-next-line
+        m.renderQueue = createObject("roRenderThreadQueue")
 
         top().addField("_ord_subscriptions", "assocarray", false)
 
         m.setExportFunctions(role())
     end sub
+
 
     sub setExportFunctions(componentRole = "")
         if rodash.isEmptyString(role) then return
@@ -31,6 +33,20 @@ class Eventable
             m.publicFunctions.push("publish")
         end if
     end sub
+
+
+    sub setupEventQueue()
+        if rodash.isNode(global()._ord_eventQueue)
+            m.eventQueue = global()._ord_eventQueue
+        else
+            eventQueue = createObject("roSGNode", "_ord_eventQueue")
+            eventQueue.control = "RUN"
+
+            global().addField("_ord_eventQueue", "node", false)
+            global()._ord_eventQueue = eventQueue
+        end if
+    end sub
+
 
     sub storeFunctions(options = {})
         subscriptions = top().getRef("_ord_subscriptions") ?? {}
@@ -62,17 +78,16 @@ class Eventable
 
             m.storeFunctions({ name: eventName, functions: eventFunctions })
 
-            messageQueue = getQueue()
-            if messageQueue = invalid then return
+            if m.renderQueue = invalid then return
 
             observeFunction = m.callEventFunctions
             observeFunctionName = rodash.getFunctionName(observeFunction)
-            messageQueue.addMessageHandler(eventName, observeFunctionName)
+            m.renderQueue.addMessageHandler(eventName, observeFunctionName)
         end for
     end sub
 
+
     sub callEventFunctions(data = {}, messageInfo = {})
-        ?"callEventFunctions " data messageInfo
         if rodash.isEmpty(messageInfo) then return
 
         subscriptions = top().getRef("_ord_subscriptions") ?? {}
@@ -87,18 +102,16 @@ class Eventable
         end for
     end sub
 
-    sub publish(name = "", options = {})
-        messageQueue = getQueue()
-        if messageQueue = invalid then return
-        messageQueue.postMessage(name, options)
+
+    sub publish(options = {})
+        if m.renderQueue = invalid then return
+        m.renderQueue.postMessage(options.id, options.options)
     end sub
 
-    sub dispatch(eventId, options = {})
-        if rodash.isEmpty(eventId) then return
-        payload = {
-            id: eventId
-            options: options
-        }
-        m.eventQueue.eventData = payload
+
+    sub dispatch(options = {})
+        if not rodash.isNonEmptyAA(options) then return
+        if m.eventQueue = invalid then return
+        m.eventQueue.eventData = options
     end sub
 end class

@@ -80,24 +80,22 @@ class NodeFunctions extends SafeFunctions
         ' res2 = get(["food", "someArray"], m.secondNode)
         ' ?"get remote 2 " res2 res2.someArray
 
-        subscribe({
-            "TEST_EVENT": "onTestEvent"
-        })
-
-        ?"After subscribe"
+        ' subscribe({
+        '     "TEST_EVENT": "onTestEvent"
+        ' })
 
         ' registerControllers([
         '     "SocketController"
         '     ' "StylesController"
         ' ])
 
-        ' dispatch("TEST_EVENT", { test: "azat" })
+        ' rodash.delay(sub(args)
+        '     dispatch("TEST_EVENT", { test: "azat" })
+        ' end sub, 500, {})
 
-
-
-        ' appStyles = "<%- o(STYLES) %>"
-        ' m.top.setRef("styles", appStyles)
-        ' applyStyles(appStyles)
+        appStyles = "<%- o(STYLES) %>"
+        top().setRef("styles", appStyles)
+        applyStyles(appStyles)
 
         top().setFocus(true)
     end sub
@@ -140,14 +138,11 @@ class NodeFunctions extends SafeFunctions
     function onTheNose(options = {})
         return { result: options.name + " success"  }
     end function
+
+    sub onTestEvent(options = {})
+        ?"onTestEvent " options
+    end sub
 end class
-
-
-sub onTestEvent(data, msgInfo)
-    ?"onTestEvent2 " data
-    ' result = exec("onTheNose", { name: "test" })
-    ' ?"result " result
-end sub
 
 
 function add()

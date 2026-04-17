@@ -36,6 +36,10 @@ sub init()
 
     m.interfaceFuncs = allFunctions
 
+    if role() = "Task"
+        top().functionName = "runTask"
+    end if
+
     exec("onInit")
 end sub
 
@@ -93,7 +97,13 @@ end function
 
 
 function publish(name = "", options = {})
-    return m.interfaceFuncs.publish(name, options)
+    interface = m.interfaceFunctions["publish"]
+    if interface = invalid then return invalid
+    payload = {
+        id: name,
+        options: options
+    }
+    return exec("publish", payload, top(), interface)
 end function
 
 
@@ -104,23 +114,21 @@ function subscribe(options, node = m.top)
 end function
 
 
-function dispatch(options, node = m.top)
+function dispatch(eventId, options, node = m.top)
     interface = m.interfaceFunctions["dispatch"]
     if interface = invalid then return invalid
-    return exec("dispatch", options, node, interface)
+    payload = {
+        id: eventId,
+        options: options
+    }
+    return exec("dispatch", payload, node, interface)
 end function
 
-
-function getQueue()
-    if m.messageQueue <> invalid return m.messageQueue
-    'bs:disable-next-line
-    m.messageQueue = createObject("roRenderThreadQueue")
-    return m.messageQueue
-end function
 
 function top()
     return getGlobalAA().top
 end function
+
 
 function global()
     return getGlobalAA().global
@@ -142,9 +150,13 @@ end function
 
 
 function timer()
-    if m.timer = invalid
-        m.timer = createObject("roTimespan")
-    end if
+    if m.timer = invalid then m.timer = createObject("roTimespan")
 
     return m.timer
+end function
+
+
+function runTask()
+    ?"runTask 1"
+    exec("runTask")
 end function

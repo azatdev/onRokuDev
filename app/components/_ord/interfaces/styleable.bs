@@ -1,25 +1,17 @@
 class Styleable
-    publicFunctions = {}
+    publicFunctions = []
 
     sub new(options = {})
-        if not rodash.isNode(options.top) then return
-        m.top = options.top
-
-        componentRole = options.role ?? ""
-        if rodash.isEmptyString(componentRole) then return
-
-        ' m.setExportFunctions(componentRole)
+        m.setExportFunctions(role())
     end sub
 
 
-    ' sub setExportFunctions(role)
-    '     if rodash.isEmptyString(role) then return
+    sub setExportFunctions(componentRole)
+        if rodash.isEmptyString(componentRole) then return
 
-    '     if rodash.findIndex(["Scene", "View"], role) = -1 then return
-    '     m.publicFunctions.append({
-    '         _setStyles: m.setStyles
-    '     })
-    ' end sub
+        if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
+        m.publicFunctions.push("setStyles")
+    end sub
 
 
     function returnHandles(options = {})
@@ -43,8 +35,7 @@ class Styleable
     end function
 
 
-    ' Progammatically attach styles to the node's children and its grandchildren
-    sub setStyles(stylesheet, node = m.top)
+    sub setStyles(stylesheet, node = top())
         m.styleField(node, stylesheet)
 
         children = node.getChildren(-1, 0)
