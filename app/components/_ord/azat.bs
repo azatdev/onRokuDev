@@ -10,7 +10,7 @@ import "interfaces/stateable.bs"
 import "interfaces/styleable.bs"
 
 sub init()
-    interfaces = [Safeable, Stateable, Eventable]
+    interfaces = [Safeable, Stateable, Eventable, Styleable]
 
     allFunctions = {}
     interfaceFunctions = {}
@@ -25,15 +25,8 @@ sub init()
         end for
     end for
 
-    ' ?"allFunctions " allFunctions
-
     m.allFunctions = allFunctions
     m.interfaceFunctions = interfaceFunctions
-
-    ' if componentRole = "Scene" then m.top.removeChild(m.top.getChild(0))
-
-    '[Safeable, Eventable, Stateable, Styleable]
-
     m.interfaceFuncs = allFunctions
 
     if role() = "Task"
@@ -103,6 +96,7 @@ function publish(name = "", options = {})
         id: name,
         options: options
     }
+    ?"publish " name, options
     return exec("publish", payload, top(), interface)
 end function
 
@@ -111,6 +105,13 @@ function subscribe(options, node = m.top)
     interface = m.interfaceFunctions["subscribe"]
     if interface = invalid then return invalid
     return exec("subscribe", options, node, interface)
+end function
+
+
+function setStyles(options, node = m.top)
+    interface = m.interfaceFunctions["setStyles"]
+    if interface = invalid then return invalid
+    return exec("setStyles", options, node, interface)
 end function
 
 
@@ -157,6 +158,5 @@ end function
 
 
 function runTask()
-    ?"runTask 1"
     exec("runTask")
 end function

@@ -3,8 +3,6 @@ import "pkg:/components/_ord/azat.bs"
 
 class NodeFunctions
     sub onInit(options = {})
-        m.top.role = "Controller"
-
         m.stylesTask = createObject("roSGNode", "StyleTask")
 
         subscribe({
@@ -14,11 +12,14 @@ class NodeFunctions
     end sub
 
     sub onStylesUpdate(options = {})
-        ?"onStylesUpdate " options
+        globeStyles = global()._ord_styles
+        newStyles = options.STYLES ?? {}
+        for each style in newStyles.items()
+            globeStyles[style.key] = style.value
+        end for
     end sub
 
     sub requestStyles(options = {})
-        ?"requestStyles "
         m.stylesTask.control = "RUN"
     end sub
 end class

@@ -3,6 +3,57 @@ class Styleable
 
     sub new(options = {})
         m.setExportFunctions(role())
+
+        if rodash.findIndex(["Scene", "View"], role()) = -1 then return
+
+        if not global().hasField("_ord_styles")
+            m.setupGlobalStyles()
+        end if
+
+        styleNode = global()._ord_styles
+
+        if not styleNode.hasField(top().subType())
+            styleNode.addField(top().subType(), "assocarray", true)
+        end if
+
+        if role() = "Scene"
+            appStyles = "<%- o(STYLES) %>"
+            m.setStyles(appStyles.App)
+        end if
+
+        styleNode.observeFieldScoped(top().subType(), rodash.getFunctionName(m.stylesUpdated))
+    end sub
+
+
+    sub stylesUpdated(event)
+        styleObject = event.getData()
+        if rodash.isEmpty(styleObject) then return
+        setStyles(styleObject)
+    end sub
+
+
+    sub setupGlobalStyles()
+        ' appStyles = "<%- o(STYLES) %>"
+        global().addField("_ord_styles", "node", true)
+        global()._ord_styles = createObject("roSGNode", "Node")
+        ' m.updateGlobalStyles(appStyles)
+        ' m.setStyles(appStyles.App)
+    end sub
+
+
+    sub updateGlobalStyles(options = {})
+        if not rodash.isNode(global()._ord_styles) then return
+        if rodash.isEmpty(options) then return
+
+        styleNode = global()._ord_styles
+
+        for each viewStyle in options.items()
+            if not styleNode.hasField(viewStyle.key)
+                styleNode.addField(viewStyle.key, "assocarray", false)
+            end if
+
+            styleNode.setField(viewStyle.key, viewStyle.value)
+        end for
     end sub
 
 

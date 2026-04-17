@@ -157,8 +157,3 @@ class Safeable
         top().setRef("_ord_callbacks", callbacks)
     end sub
 end class
-
-
-class SafeFunctions
-end class
-

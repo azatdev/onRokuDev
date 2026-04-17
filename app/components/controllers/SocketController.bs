@@ -3,8 +3,6 @@ import "pkg:/components/_ord/azat.bs"
 
 class NodeFunctions
     sub onInit(options = {})
-        m.top.role = "Controller"
-
         m.socketTest = createObject("roSGNode", "_ord_socketTask")
         m.socketTest.control = "RUN"
 

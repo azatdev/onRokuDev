@@ -22,8 +22,6 @@ end function
 '     ' implements(["Safeable", "Stateable"])
 '     ' azLog([m, m.top], SOURCE_LOCATION)
 
-'     m.top.role = "Scene"
-
 '     registerControllers([
 '         "SocketController"
 '     ])
@@ -43,10 +41,8 @@ end function
 ' end sub
 
 
-class NodeFunctions extends SafeFunctions
-
+class NodeFunctions
     sub onInit(options = {})
-        ' m.top.role = "Scene"
 
         ?"onInit"
 
@@ -84,55 +80,19 @@ class NodeFunctions extends SafeFunctions
         '     "TEST_EVENT": "onTestEvent"
         ' })
 
-        ' registerControllers([
-        '     "SocketController"
-        '     ' "StylesController"
-        ' ])
-
-        ' rodash.delay(sub(args)
-        '     dispatch("TEST_EVENT", { test: "azat" })
-        ' end sub, 500, {})
-
-        appStyles = "<%- o(STYLES) %>"
-        top().setRef("styles", appStyles)
-        applyStyles(appStyles)
+        registerControllers([
+            "SocketController"
+            "StylesController"
+        ])
 
         top().setFocus(true)
     end sub
 
-    ' function onInit(options = {})
-
-
-        ' m.task = createObject("roSGNode", "TestNode")
-
-        ' setTimeout(sub(m)
-        '     m.task.control = "run"
-        ' end sub, m, 500)
-
-        ' loadList()
-        ' loadPlugin()
-    ' end function
 
     sub onDataChange(options = {})
         ?"onDataChange data " options.data
         ?"onDataChange info " options.info
     end sub
-
-    function doErrorTest(options = {})
-        ?"doErrorTest "
-        ' exec("errorTest2")
-    end function
-
-
-    function errorTest2(options = {})
-        ?"errorTest2 "
-        ?1/0
-    end function
-
-
-    function testFunction(options = {})
-        ?"testFunction " options
-    end function
 
 
     function onTheNose(options = {})
@@ -189,7 +149,7 @@ end sub
 
 
 sub applyStyles(appStyles = {})
-    exec("setStyles", appStyles.App)
+    setStyles(appStyles.App)
 end sub
 
 
