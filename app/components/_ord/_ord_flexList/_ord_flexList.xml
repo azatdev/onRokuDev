@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="_ord_flexList" extends="Group">
+    <interface>
+        <field id="data" type="assocarray" />
+        <field id="config" type="assocarray" />
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <TargetGroup id="list" />
+        <Timer id="focusTimer" />
+    </children>
+    <script type="text/brightscript" uri="_ord_flexList.bs" />
+</component>

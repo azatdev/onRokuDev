@@ -19,6 +19,7 @@ end function
 
 function exec(func = "", options = {}, node = m.top, externalInterface = {})
     interface = m.interfaceFunctions["exec"]
+    externalInterface = m.interfaceFunctions[func]
     if interface = invalid then return invalid
     return interface.exec(func, options, node, externalInterface)
 end function
@@ -34,7 +35,7 @@ end function
 function safeObserve(fieldName = "", callbackFunc = "", node = m.top, infoFields = [])
     interface = m.interfaceFunctions["safeObserve"]
     if interface = invalid then return invalid
-    return interface.safeObserve(fieldName, callbackFunc, node,infoFields)
+    return interface.safeObserve(fieldName, callbackFunc, node, infoFields)
 end function
 
 
@@ -95,27 +96,6 @@ end function
 
 function global()
     return getGlobalAA().global
-end function
-
-function role()
-    componentRole = "Controller"
-
-    if m.top.isSubtype("Group")
-        componentRole = m.top.isSubtype("Scene") ? "Scene" : "View"
-    else if m.top.isSubtype("Task")
-        componentRole = "Task"
-    else if m.top.isSubtype("ContentNode")
-        componentRole = "Model"
-    end if
-
-    return componentRole
-end function
-
-
-function timer()
-    if m.timer = invalid then m.timer = createObject("roTimespan")
-
-    return m.timer
 end function
 
 

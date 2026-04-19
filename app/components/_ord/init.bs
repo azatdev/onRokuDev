@@ -12,22 +12,15 @@ import "traits/styleable.bs"
 sub init()
     interfaces = [Safeable, Stateable, Eventable, Styleable]
 
-    allFunctions = {}
-    interfaceFunctions = {}
+    m.interfaceFunctions = {}
 
     for each interface in interfaces
         interfaceInstance = new interface()
-        ' if rodash.isNonEmptyAA(interfaceInstance) then allFunctions.append(interfaceInstance)
-
         interfacePublicFunctions = interfaceInstance.publicFunctions ?? []
         for each functionName in interfacePublicFunctions
-            interfaceFunctions[functionName] = interfaceInstance
+            m.interfaceFunctions[functionName] = interfaceInstance
         end for
     end for
-
-    m.allFunctions = allFunctions
-    m.interfaceFunctions = interfaceFunctions
-    m.interfaceFuncs = allFunctions
 
     if role() = "Task"
         top().functionName = "runTask"
@@ -35,3 +28,25 @@ sub init()
 
     exec("onInit")
 end sub
+
+
+function role()
+    componentRole = "Controller"
+
+    if m.top.isSubtype("Group")
+        componentRole = m.top.isSubtype("Scene") ? "Scene" : "View"
+    else if m.top.isSubtype("Task")
+        componentRole = "Task"
+    else if m.top.isSubtype("ContentNode")
+        componentRole = "Model"
+    end if
+
+    return componentRole
+end function
+
+
+function timer()
+    if m.timer = invalid then m.timer = createObject("roTimespan")
+
+    return m.timer
+end function

@@ -27,17 +27,17 @@ class Safeable
 
         if rodash.findIndex(["Scene", "View", "Model"], componentRole) = -1 then return
 
-        if rodash.findIndex(m.publicFunctions, "safeFunc") <> -1 and not top().hasFunc("safeFunc")
-            ?`
+        m.publicFunctions.push("safeFunc")
 
-            WARNING: Please add
-            <function name="safeFunc" />
-            to ${top().subType()}.xml file
+        if top().hasFunc("safeFunc") then return
 
-            `
-        else
-            m.publicFunctions.push("safeFunc")
-        end if
+        ?`
+
+        WARNING: Please add
+        <function name="safeFunc" />
+        to ${top().subType()}.xml file
+
+        `
     end sub
 
 

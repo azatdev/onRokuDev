@@ -16,12 +16,38 @@ class Styleable
             styleNode.addField(top().subType(), "assocarray", true)
         end if
 
+        appStyles = "<%- o(STYLES) %>"
+
         if role() = "Scene"
-            appStyles = "<%- o(STYLES) %>"
             m.setStyles(appStyles.App)
         end if
 
         styleNode.observeFieldScoped(top().subType(), rodash.getFunctionName(m.stylesUpdated))
+
+        if appStyles[top().subType()] <> invalid
+            styleNode.setField(top().subType(), appStyles[top().subType()])
+        end if
+
+        ' top().observeFieldScoped("change", rodash.getFunctionName(m.onChildChange))
+
+        safeObserve("change", "onChildChange")
+    end sub
+
+
+    sub onChildChange(options = {})
+        changeData = options.data
+        if rodash.isEmpty(changeData) then return
+        operation = changeData.operation ?? ""
+        if operation = "add" or operation = "remove"
+            m.redrawStyles()
+        end if
+    end sub
+
+
+    sub redrawStyles()
+        styleObject = global()._ord_styles.getField(top().subType())
+        if rodash.isEmpty(styleObject) then return
+        setStyles(styleObject)
     end sub
 
 
@@ -33,11 +59,8 @@ class Styleable
 
 
     sub setupGlobalStyles()
-        ' appStyles = "<%- o(STYLES) %>"
         global().addField("_ord_styles", "node", true)
         global()._ord_styles = createObject("roSGNode", "Node")
-        ' m.updateGlobalStyles(appStyles)
-        ' m.setStyles(appStyles.App)
     end sub
 
 
@@ -62,6 +85,7 @@ class Styleable
 
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
         m.publicFunctions.push("setStyles")
+        m.publicFunctions.push("onChildChange")
     end sub
 
 
@@ -103,7 +127,6 @@ class Styleable
 
             if rodash.isEmpty(combinedNodeStyles) then continue for
 
-            childId = child.id.split("_")[0]
 
             m.setStyles(combinedNodeStyles, child)
         end for

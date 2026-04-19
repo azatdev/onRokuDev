@@ -126,44 +126,6 @@ function getContentChildCount() as integer
     return m.top.content.getChildCount()
 end function
 
-
-function getDynamicStartingPosition(options = {})
-    focusedTile = options.focusedTile ?? 0
-    coordinates = [0, 0]
-    index = options.index ?? 0
-    horizontal = options.horizontal ?? false
-
-    if not TypeGuard_isArray(m.top.rectSizes) then return coordinates
-
-    accumulator = 0
-
-    for x = 0 to index
-        rectSize = [0, 0]
-
-        if x <= focusedTile or focusedTile < 0
-            rectSize = (m.top.rectSizes[x - 1] ?? {}).smallSquare ?? [0, 0]
-        else if x = focusedTile + 1
-            rectSize = (m.top.rectSizes[x - 1] ?? {}).bigSquare ?? [0, 0]
-        end if
-
-        if horizontal
-            accumulator += rectSize[0]
-        else
-            accumulator += rectSize[1]
-        end if
-
-    end for
-
-    if horizontal
-        coordinates[0] = accumulator
-    else
-        coordinates[1] = accumulator
-    end if
-
-    return coordinates
-end function
-
-
 ' Get the number of extra hidden rects
 ' for *each side* of the carousel
 ' meaning ultimately it will be n*2
@@ -497,6 +459,7 @@ end sub
 
 sub onRectSizesChanged(event)
     rectSizes = event.getData()
+    ?"onRectSizesChanged " rectSizes
     if TypeGuard_isArray(rectSizes) and m.totalRects <> 0 and rectSizes.count() = m.totalRects
         processRects()
     end if
