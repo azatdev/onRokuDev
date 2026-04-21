@@ -28,8 +28,6 @@ class Styleable
             styleNode.setField(top().subType(), appStyles[top().subType()])
         end if
 
-        ' top().observeFieldScoped("change", rodash.getFunctionName(m.onChildChange))
-
         safeObserve("change", "onChildChange")
     end sub
 

@@ -2,8 +2,10 @@ class Safeable
     publicFunctions = []
 
     sub new(options = {})
+        top().addField("_ord_safeFunctions", "assocarray", false)
         top().addField("_ord_proxyData", "assocarray", true)
         top().addField("_ord_callbacks", "assocarray", false)
+        top().setRef("_ord_safeFunctions", {})
         top().setRef("_ord_proxyData", {})
 
         m.setExportFunctions(role())
@@ -15,6 +17,11 @@ class Safeable
 
         m.publicFunctions.push("exec")
         m.publicFunctions.push("safeObserve")
+        m.publicFunctions.push("safeFunctions")
+
+        if rodash.findIndex(["Task"], componentRole) <> -1
+            m.publicFunctions.push("setTaskFunction")
+        end if
 
         if rodash.findIndex(["Scene", "View", "Model"], componentRole) = -1 then return
 
@@ -53,35 +60,41 @@ class Safeable
         node = options.node ?? top()
         externalInterface = options.externalInterface ?? {}
 
-        if rodash.isFunction(func)
-            try
-                return func(functionArgument)
-            catch e
-                return func()
-            end try
-        end if
-
         if not node.isSameNode(top())
             return m.proxyFunc(func, functionArgument, node)
         end if
 
-        if not rodash.isEmpty(externalInterface) and rodash.isFunction(externalInterface[func])
-            return externalInterface[func](functionArgument)
+        ' if not rodash.isEmpty(externalInterface) and rodash.isFunction(externalInterface[func])
+        '     return externalInterface[func](functionArgument)
+        ' end if
+
+        targetFunction = invalid
+
+        if rodash.isFunction(func)
+            targetFunction = func
         end if
 
-        nodeSafeFunctions = top().getRef("_ord_safeFunctions")
+        if rodash.isString(func)
+            nodeSafeFunctions = top().getRef("_ord_safeFunctions")
+            nodeFunction = nodeSafeFunctions[func]
+            targetFunction = nodeFunction
+        end if
 
-        if not rodash.isFunction(nodeSafeFunctions[func]) then return invalid
-
-        nodeFunction = nodeSafeFunctions[func]
-
-        if rodash.isFunction(nodeFunction)
+        if rodash.isFunction(targetFunction)
             try
-                return nodeFunction(functionArgument)
+                return targetFunction(functionArgument)
             catch e
-                return nodeFunction()
+                return targetFunction()
             end try
+
+            return invalid
         end if
+
+        internalFunctions = getGlobalAA().interfaceFunctions ?? {}
+
+        internalInterface = internalFunctions[func] ?? {}
+
+        if rodash.isNonEmptyAA(internalInterface) then return internalInterface[func](functionArgument)
 
         return invalid
     end function
@@ -105,7 +118,7 @@ class Safeable
     sub processSafeFunc(functionName)
         proxyData = top().getRef("_ord_proxyData") ?? {}
         options = proxyData.input
-        returnData = exec(functionName, options, top(), getGlobalAA().interfaceFunctions[functionName])
+        returnData = exec(functionName, options, top())
         proxyData.input = invalid
         proxyData.output = rodash.isEmpty(returnData) ? invalid : returnData
     end sub
@@ -131,6 +144,7 @@ class Safeable
     sub safeCallback(event)
         fieldName = event.getField() ?? ""
         callbacks = top().getRef("_ord_callbacks") ?? {}
+
         functionName = callbacks[fieldName] ?? ""
 
         if rodash.isEmptyString(functionName) then return
@@ -159,6 +173,13 @@ class Safeable
     end function
 
 
+    sub safeFunctions(options = {})
+        if not rodash.isAA(options) then return
+        allFunctions = top().getRef("_ord_safeFunctions") ?? {}
+        allFunctions.append(options)
+    end sub
+
+
     sub storeCallback(options = {})
         callbacks = top().getRef("_ord_callbacks") ?? {}
 
@@ -167,5 +188,12 @@ class Safeable
 
         callbacks[field] = callback
         top().setRef("_ord_callbacks", callbacks)
+    end sub
+
+
+    sub setTaskFunction(options = {})
+        if not rodash.isNonEmptyAA(options) then return
+        taskFunction = options.function
+        getGlobalAA()._ord_taskFunction = taskFunction
     end sub
 end class

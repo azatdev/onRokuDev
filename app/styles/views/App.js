@@ -10,12 +10,12 @@ module.exports = {
                 width: 0
             },
             "Label#title": {
-                color: "#b8e6b8ff"
+                color: "#a4f376ff"
             },
             "test": []
         },
         "MagicList": {
-            translation: [300, 10]
+            translation: [400, 300]
         }
     }
 };

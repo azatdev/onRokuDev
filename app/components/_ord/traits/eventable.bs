@@ -73,9 +73,6 @@ class Eventable
             eventName = event.key
             eventFunctions = event.value
 
-            if rodash.isEmptyString(eventName) then continue for
-            if not rodash.isString(eventFunctions) and not rodash.isArray(eventFunctions) then continue for
-
             m.storeFunctions({ name: eventName, functions: eventFunctions })
 
             if m.renderQueue = invalid then return

@@ -2,10 +2,11 @@ import "pkg:/components/_ord/wrappers.bs"
 
 
 sub init()
-    ?"INIT TESTBASE"
-    safeFunctions({
-        onInit: onInit
-    })
+    exec(function()
+        safeFunctions({
+            onInit: onInit
+        })
+    end function)
 end sub
 
 
@@ -13,27 +14,7 @@ sub onInit()
     ?"Testbase ONINIT "
 end sub
 
+
 sub testBaseTest()
     ?"testBaseTest "
 end sub
-
-' class NodeFunctions
-'     sub onInit(options = {})
-'         top().someArray = ["one", "two"]
-'     end sub
-
-
-'     function onTheNose(options = {})
-'         return { result: options.name + " failure" }
-'     end function
-
-
-'     function regularFunc(options = {})
-'         return { result: "safe count is: " + options.data.count().toStr()}
-'     end function
-' end class
-
-
-namespace testFunctions
-
-end namespace

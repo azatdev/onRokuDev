@@ -12,19 +12,15 @@ sub registerControllers(controllers = [])
 end sub
 
 
-sub safeFunctions(options = {})
-    if not rodash.isAA(options) then return
-    if not m.top.hasField("_ord_safeFunctions")
-        m.top.addField("_ord_safeFunctions", "assocarray", false)
-    end if
-    allFunctions = m.top.getRef("_ord_safeFunctions") ?? {}
-    allFunctions.append(options)
-    m.top.setRef("_ord_safeFunctions", allFunctions)
-end sub
+function safeFunctions(options = {})
+    interface = m.interfaceFunctions["safeFunctions"]
+    if interface = invalid then return invalid
+    return interface.safeFunctions(options)
+end function
 
 
 function devMode()
-    return false
+    return true
 end function
 
 
@@ -40,8 +36,6 @@ function exec(func, options = {}, node = m.top, externalInterface = {})
 
     interface = m.interfaceFunctions["exec"]
     if interface = invalid then return invalid
-
-    ' externalInterface = m.interfaceFunctions[rodash.getFunctionName]
 
     return interface.exec({
         func: func,
@@ -66,53 +60,59 @@ function safeObserve(fieldName = "", callbackFunc = "", node = m.top, infoFields
 end function
 
 
+function setTaskFunction(taskFunction = invalid)
+    if not rodash.isFunction(taskFunction) then return invalid
+    interface = m.interfaceFunctions["setTaskFunction"]
+    return interface.setTaskFunction({ function: taskFunction })
+end function
+
+
+
 function get(options, node = m.top)
     interface = m.interfaceFunctions["get"]
     if interface = invalid then return invalid
-    return exec("get", options, node, interface)
+    return interface.get(options, node)
 end function
 
 
 function set(options = {}, node = m.top)
     interface = m.interfaceFunctions["set"]
     if interface = invalid then return invalid
-    return exec("set", options, node, interface)
+    return interface.set(options, node)
 end function
 
 
 function publish(name = "", options = {})
     interface = m.interfaceFunctions["publish"]
     if interface = invalid then return invalid
-    payload = {
+    return interface.publish({
         id: name,
         options: options
-    }
-    return exec("publish", payload, top(), interface)
+    })
 end function
 
 
-function subscribe(options, node = m.top)
+function subscribe(options)
     interface = m.interfaceFunctions["subscribe"]
     if interface = invalid then return invalid
-    return exec("subscribe", options, node, interface)
+    return interface.subscribe(options)
 end function
 
 
 function setStyles(options, node = m.top)
     interface = m.interfaceFunctions["setStyles"]
     if interface = invalid then return invalid
-    return exec("setStyles", options, node, interface)
+    return interface.setStyles(options, node)
 end function
 
 
 function dispatch(eventId, options, node = m.top)
     interface = m.interfaceFunctions["dispatch"]
     if interface = invalid then return invalid
-    payload = {
+    return interface.dispatch({
         id: eventId,
         options: options
-    }
-    return exec("dispatch", payload, node, interface)
+    })
 end function
 
 
@@ -127,7 +127,8 @@ end function
 
 
 function runTask()
-    exec("runTask")
+    if not rodash.isFunction(m._ord_taskFunction) then return invalid
+    exec(m._ord_taskFunction)
 end function
 
 

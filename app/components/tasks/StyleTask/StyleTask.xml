@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="StyleTask" extends="Task">
-    <interface>
-        
-    </interface>
-    <children>
-        
-    </children>
     <script type="text/brightscript" uri="StyleTask.bs" />
 </component>

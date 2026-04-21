@@ -1,12 +1,17 @@
 import "pkg:/components/_ord/wrappers.bs"
 
-class NodeFunctions
-    function runTask(options = {})
-        response = rokurequests_Requests().get("http://192.168.88.31:54323/styles.json")
-        if not rodash.isEmpty(response.text)
-            dispatch(events.STYLES_UPDATE, parseJSON(response.text))
-        end if
+sub init()
+    exec(function()
+        setTaskFunction(runStyleTask)
+    end function)
+end sub
 
-        return true
-    end function
-end class
+
+function runStyleTask(options = {})
+    response = rokurequests_Requests().get("http://192.168.88.31:54323/styles.json")
+    if not rodash.isEmpty(response.text)
+        dispatch(events.STYLES_UPDATE, parseJSON(response.text))
+    end if
+
+    return true
+end function

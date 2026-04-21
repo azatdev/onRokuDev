@@ -3,22 +3,16 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(function ()
-        ?"INIT " m.top.subtype()
         safeFunctions({
             nodeTest: nodeTest
+            onTheNose: onTheNose
         })
+
+        top().setField("someArray", ["asd","123"])
 
         safeObserve("data", onDataChange, m.top)
 
-        testFunc()
     end function)
-end sub
-
-
-sub testFunc()
-    funcRefs = m.top.getRef("_ord_safeFunctions")
-    ?"funcRefs " funcRefs
-    exec("onInit")
 end sub
 
 
@@ -33,19 +27,6 @@ sub nodeTest()
 end sub
 
 
-class NodeFunctions
-    sub onInit(options = {})
-        ' ?top()
-        ' top().someArray = ["one", "two"]
-    end sub
-
-
-    function onTheNose(options = {})
-        return { result: options.name + " failure" }
-    end function
-
-
-    function regularFunc(options = {})
-        return { result: "safe count is: " + options.data.count().toStr()}
-    end function
-end class
+function onTheNose(options = {})
+    return { result: options.name + " failure" }
+end function

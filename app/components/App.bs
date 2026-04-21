@@ -3,7 +3,7 @@ import "testdata.bs"
 
 
 sub init()
-    exec(function ()
+    exec(function()
         ?"INIT " m.top.subtype()
         m.secondNode = createObject("roSGNode", "SecondNode")
 
@@ -11,124 +11,91 @@ sub init()
             azat: "is cool"
         }
 
-        safeObserve("launchArgs", onLaunchArgChange)
+        localResult = onTheNose({ name: "Azat" })
+        remoteResult = exec("onTheNose", { name: "Azat" }, m.secondNode)
+        ?"localResult " localResult
+        ?"remoteResult " remoteResult
+
+        set({
+            "food": "burrito"
+            "drink": "diet dr pepper"
+        })
+
+        ?"get self " get("food")
+        ?"get self 2" get(["food", "drink"])
+        ?"get self 3 " top().drink
+
+        set({
+            "food": "pizza"
+        }, m.secondNode)
+
+        ?"get remote " get("food", m.secondNode)
+        res2 = get(["food", "someArray"], m.secondNode)
+        ?"get remote 2 " res2 res2.someArray
+
+        registerControllers([
+            "SocketController"
+            "StylesController"
+        ])
+
+        loadList()
+        ' exec("loadList")
+        ' exec("loadFlexList")
+
     end function)
 end sub
 
 
-sub onLaunchArgChange(options = {})
-    ?"onLaunchArgChange " options
+sub loadList(options = {})
+    rectConfig = {
+        "autoclip": true,
+        "bigSquare": [251, 321],
+        "defaultVisibleIndex": 1,
+        "direction": "horizontal",
+        "duration": 0.5,
+        "flushFocus": false,
+        "focusType": "floating",
+        "gutterWidth": 0,
+        "itemComponentName": "TestItem",
+        "margin": [9, 0],
+        "smallSquare": [212, 273],
+        "visibleTiles": 4,
+        "wrap": true
+    }
+
+    list = createObject("roSGNode", "MagicList")
+    top().appendChild(list)
+
+    testModel = createObject("roSGNode", "ContentNode")
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+
+    list.content = testModel
+    list.rectConfig = rectconfig
+    list.color = "#FFFFFF00"
+    list.setFocus(true)
 end sub
 
-class NodeFunctions
-    sub onInit(options = {})
-        ' localResult = exec("onTheNose", { name: "Azat" })
-        ' remoteResult = exec("onTheNose", { name: "Azat" }, m.secondNode)
-        ' ?"localResult " localResult
-        ' ?"remoteResult " remoteResult
 
-        ' styleTask = createObject("roSGNode", "StyleTask")
-        ' remoteResult2 = exec("onTheNose", { name: "Azat" }, styleTask)
-        ' ?"remoteResult2 " remoteResult2
-
-        ' safeObserve("data", "onDataChange", m.secondNode)
-        ' m.secondNode.data = { test: "azat test" }
-
-        ' set({
-        '     "food": "burrito"
-        '     "drink": "diet dr pepper"
-        ' })
-
-        ' ?"get self " get("food")
-        ' ?"get self 2" get(["food", "drink"])
-        ' ?"get self 3 " top().drink
-
-        ' set({
-        '     "food": "pizza"
-        ' }, m.secondNode)
-
-        ' ?"get remote " get("food", m.secondNode)
-        ' res2 = get(["food", "someArray"], m.secondNode)
-        ' ?"get remote 2 " res2 res2.someArray
-
-        ' subscribe({
-        '     "TEST_EVENT": "onTestEvent"
-        ' })
-
-        ' registerControllers([
-        '     "SocketController"
-        '     "StylesController"
-        ' ])
-
-        ' exec("loadList")
-        ' exec("loadFlexList")
-        ' m.loadSecondList()
-
-        ' top().setFocus(true)
-    end sub
+sub loadSecondList(options = {})
+    list = createObject("roSGNode", "_ord_flexList")
+    list.config = {
+        componentName: "TestItem"
+        visibleTiles: 3,
+        bigSquare: [251, 321],
+        smallSquare: [212, 273]
+    }
+    ?"LSIT CONFIG " get("config", list)
+end sub
 
 
-    sub onDataChange(options = {})
-        ?"onDataChange data " options.data
-        ?"onDataChange info " options.info
-    end sub
+function onTheNose(options = {})
+    return { result: options.name + " success"  }
+end function
 
-
-    function onTheNose(options = {})
-        return { result: options.name + " success"  }
-    end function
-
-
-    sub onTestEvent(options = {})
-        ?"onTestEvent " options
-    end sub
-
-
-    sub loadList(options = {})
-        rectConfig = {
-            "autoclip": true,
-            "bigSquare": [251, 321],
-            "defaultVisibleIndex": 1,
-            "direction": "horizontal",
-            "duration": 0.5,
-            "flushFocus": false,
-            "focusType": "floating",
-            "gutterWidth": 0,
-            "itemComponentName": "TestItem",
-            "margin": [9, 0],
-            "smallSquare": [212, 273],
-            "visibleTiles": 4,
-            "wrap": true
-        }
-
-        list = createObject("roSGNode", "MagicList")
-        top().appendChild(list)
-
-        testModel = createObject("roSGNode", "ContentNode")
-        testModel.appendChild(createObject("roSGNode", "ContentNode"))
-        testModel.appendChild(createObject("roSGNode", "ContentNode"))
-        testModel.appendChild(createObject("roSGNode", "ContentNode"))
-        testModel.appendChild(createObject("roSGNode", "ContentNode"))
-        testModel.appendChild(createObject("roSGNode", "ContentNode"))
-        testModel.appendChild(createObject("roSGNode", "ContentNode"))
-        testModel.appendChild(createObject("roSGNode", "ContentNode"))
-        testModel.appendChild(createObject("roSGNode", "ContentNode"))
-
-        list.content = testModel
-        list.rectConfig = rectconfig
-        list.color = "#FFFFFF00"
-        list.setFocus(true)
-    end sub
-
-
-    sub loadSecondList(options = {})
-        list = createObject("roSGNode", "_ord_flexList")
-        list.config = {
-            componentName: "TestItem"
-            visibleTiles: 3,
-            bigSquare: [251, 321],
-            smallSquare: [212, 273]
-        }
-        ?"LSIT CONFIG " get("config", list)
-    end sub
-end class

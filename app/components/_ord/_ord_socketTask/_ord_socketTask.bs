@@ -1,98 +1,106 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 
+sub init()
+    exec(function()
+        setTaskFunction(setupSocket)
+    end function)
+end sub
+
+
+function setupSocket(options = {})
+    serverHost = "192.168.88.31"
+    serverPort = 54320
+
+    messagePort = createObject("roMessagePort")
+    sendAddress = createObject("roSocketAddress")
+    sendAddress.setAddress(serverHost + ":" + serverPort.toStr())
+    socket = createObject("roStreamSocket")
+    socket.setMessagePort(messagePort)
+    socket.setSendToAddress(sendAddress)
+    socket.notifyReadable(true)
+    socket.setKeepAlive(true)
+    socket.setNoDelay(true)
+    socket.connect()
+
+    ?"Connected to TCP socket server at"; serverHost + ":" + serverPort.toStr()
+
+    ' sendMessage(socket, { message: "Azat says hello" })
+    waitForSocketMessages(socket, messagePort)
+    socket.close()
+
+    return invalid
+end function
+
+
+sub waitForSocketMessages(socket as object, messagePort as object)
+    lastLoopTime = rodash.now()
+    connectionErrorCount = 0
+
+    while true
+        event = wait(0, messagePort)
+        currentLoopTime = rodash.now()
+
+        if currentLoopTime - lastLoopTime < 100
+            connectionErrorCount += 1
+            if connectionErrorCount > 100
+                ?"Socket server is down or device is being flooded"
+                exit while
+            end if
+
+            sleep(50)
+        else
+            connectionErrorCount = 0
+        end if
+
+        lastLoopTime = currentLoopTime
+
+        if type(event) <> "roSocketEvent" or event.getSocketID() <> socket.getID() then continue while
+
+        socketMessage = socket.receiveStr(131072) ?? ""
+
+        if not rodash.isNonEmptyString(socketMessage) then continue while
+
+        receiveMessage(socketMessage)
+    end while
+end sub
+
+
+sub sendMessage(socket as object, messageObj as object)
+    payload = createPayload(messageObj)
+    ?"Sent TCP socket message " payload
+    socket.sendStr(payload + chr(10))
+end sub
+
+
+function createPayload(messageObj = {})
+    rokuDevice = createObject("roDeviceInfo")
+
+    return formatJSON({
+        deviceId: rokuDevice.getChannelClientId()
+        deviceName: rokuDevice.getFriendlyName()
+        message: messageObj
+        type: "device-message"
+    })
+end function
+
+
+sub receiveMessage(socketMessage as string)
+    if len(socketMessage) = 0 then return
+    ?"socketMessage " socketMessage
+    messageObj = parseJSON(socketMessage)
+    ?"Received TCP socket object " messageObj
+    if rodash.isInvalid(messageObj) then return
+
+    if messageObj.type = "STYLES_UPDATE"
+        publish("REQUEST_STYLES")
+    end if
+end sub
+
 class NodeFunctions
     sub onInit(options = {})
     end sub
 
 
-    function runTask(options = {})
-        serverHost = "192.168.88.31"
-        serverPort = 54320
 
-        messagePort = createObject("roMessagePort")
-        sendAddress = createObject("roSocketAddress")
-        sendAddress.setAddress(serverHost + ":" + serverPort.toStr())
-        socket = createObject("roStreamSocket")
-        socket.setMessagePort(messagePort)
-        socket.setSendToAddress(sendAddress)
-        socket.notifyReadable(true)
-        socket.setKeepAlive(true)
-        socket.setNoDelay(true)
-        socket.connect()
-
-        ?"Connected to TCP socket server at"; serverHost + ":" + serverPort.toStr()
-
-        ' sendMessage(socket, { message: "Azat says hello" })
-        m.waitForSocketMessages(socket, messagePort)
-        socket.close()
-
-        return invalid
-    end function
-
-
-    sub waitForSocketMessages(socket as object, messagePort as object)
-        ?"waitForSocketMessages "
-        lastLoopTime = rodash.now()
-        connectionErrorCount = 0
-
-        while true
-            event = wait(0, messagePort)
-            currentLoopTime = rodash.now()
-
-            if currentLoopTime - lastLoopTime < 100
-                connectionErrorCount += 1
-                if connectionErrorCount > 100
-                    ?"Socket server is down or device is being flooded"
-                    exit while
-                end if
-
-                sleep(50)
-            else
-                connectionErrorCount = 0
-            end if
-
-            lastLoopTime = currentLoopTime
-
-            if type(event) <> "roSocketEvent" or event.getSocketID() <> socket.getID() then continue while
-
-            socketMessage = socket.receiveStr(131072) ?? ""
-
-            if not rodash.isNonEmptyString(socketMessage) then continue while
-
-            m.receiveMessage(socketMessage)
-        end while
-    end sub
-
-
-    sub sendMessage(socket as object, messageObj as object)
-        payload = m.createPayload(messageObj)
-        ?"Sent TCP socket message " payload
-        socket.sendStr(payload + chr(10))
-    end sub
-
-
-    function createPayload(messageObj = {})
-        rokuDevice = createObject("roDeviceInfo")
-
-        return formatJSON({
-            deviceId: rokuDevice.getChannelClientId()
-            deviceName: rokuDevice.getFriendlyName()
-            message: messageObj
-            type: "device-message"
-        })
-    end function
-
-
-    sub receiveMessage(socketMessage as string)
-        if len(socketMessage) = 0 then return
-        ?"socketMessage " socketMessage
-        messageObj = parseJSON(socketMessage)
-        ?"Received TCP socket object " messageObj
-        if rodash.isInvalid(messageObj) then return
-
-        if messageObj.type = "STYLES_UPDATE"
-            publish("REQUEST_STYLES")
-        end if
-    end sub
 end class
