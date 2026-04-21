@@ -11,6 +11,7 @@ class NodeFunctions
         })
     end sub
 
+
     sub onStylesUpdate(options = {})
         globeStyles = global()._ord_styles
         newStyles = options.STYLES ?? {}
@@ -18,6 +19,7 @@ class NodeFunctions
             globeStyles[style.key] = style.value
         end for
     end sub
+
 
     sub requestStyles(options = {})
         m.stylesTask.control = "RUN"

@@ -9,7 +9,8 @@ import "traits/eventable.bs"
 import "traits/stateable.bs"
 import "traits/styleable.bs"
 
-sub init()
+
+sub ord_init()
     interfaces = [Safeable, Stateable, Eventable, Styleable]
 
     m.interfaceFunctions = {}
@@ -26,7 +27,8 @@ sub init()
         top().functionName = "runTask"
     end if
 
-    exec("onInit")
+    top().addField("_ord_initiated", "boolean", false)
+    top()._ord_initiated = true
 end sub
 
 

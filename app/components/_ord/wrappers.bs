@@ -12,16 +12,43 @@ sub registerControllers(controllers = [])
 end sub
 
 
+sub safeFunctions(options = {})
+    if not rodash.isAA(options) then return
+    if not m.top.hasField("_ord_safeFunctions")
+        m.top.addField("_ord_safeFunctions", "assocarray", false)
+    end if
+    allFunctions = m.top.getRef("_ord_safeFunctions") ?? {}
+    allFunctions.append(options)
+    m.top.setRef("_ord_safeFunctions", allFunctions)
+end sub
+
+
+function devMode()
+    return false
+end function
+
+
 function app()
     return m.global.getScene()
 end function
 
 
-function exec(func = "", options = {}, node = m.top, externalInterface = {})
+function exec(func, options = {}, node = m.top, externalInterface = {})
+    if not m.top.hasField("_ord_initiated") or not m.top._ord_initiated then ord_init()
+
+    if not rodash.isNonEmptyAA(m.interfaceFunctions) then return invalid
+
     interface = m.interfaceFunctions["exec"]
-    externalInterface = m.interfaceFunctions[func]
     if interface = invalid then return invalid
-    return interface.exec(func, options, node, externalInterface)
+
+    ' externalInterface = m.interfaceFunctions[rodash.getFunctionName]
+
+    return interface.exec({
+        func: func,
+        options: options,
+        node: node,
+        externalInterface: externalInterface
+    })
 end function
 
 

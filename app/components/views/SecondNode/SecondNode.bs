@@ -1,13 +1,42 @@
 import "pkg:/components/_ord/wrappers.bs"
 
-function asdFunc()
-    ?"ASADASDASDADASDAD"
-end function
+
+sub init()
+    exec(function ()
+        ?"INIT " m.top.subtype()
+        safeFunctions({
+            nodeTest: nodeTest
+        })
+
+        safeObserve("data", onDataChange, m.top)
+
+        testFunc()
+    end function)
+end sub
+
+
+sub testFunc()
+    funcRefs = m.top.getRef("_ord_safeFunctions")
+    ?"funcRefs " funcRefs
+    exec("onInit")
+end sub
+
+
+sub onDataChange(options = {})
+    ?"onDataChange " options.data
+end sub
+
+
+sub nodeTest()
+    ?"!!!!!!!!!!!!!!!!!!!!"
+    ?"nodeTest " m.top
+end sub
 
 
 class NodeFunctions
     sub onInit(options = {})
-        top().someArray = ["one", "two"]
+        ' ?top()
+        ' top().someArray = ["one", "two"]
     end sub
 
 

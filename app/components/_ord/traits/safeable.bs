@@ -6,15 +6,6 @@ class Safeable
         top().addField("_ord_callbacks", "assocarray", false)
         top().setRef("_ord_proxyData", {})
 
-        m.nodeFunctions = {}
-
-        try
-            nodeFuncs = new NodeFunctions() ?? invalid
-            if rodash.isAA(nodeFuncs) then m.nodeFunctions.append(nodeFuncs)
-        catch e
-            ?"Private functions do not exist in " getGlobalAA().top.subType()
-        end try
-
         m.setExportFunctions(role())
     end sub
 
@@ -41,14 +32,14 @@ class Safeable
     end sub
 
 
-    function exec(func = "", options = {}, node = top(), externalInterface = {})
-        devMode = true
+    function exec(options = {})
+        if not rodash.isNonEmptyAA(options) then return invalid
 
-        if devMode
-            return m.runFunc(func, options, node, externalInterface)
+        if devMode()
+            return m.runFunc(options)
         else
             try
-                return m.runFunc(func, options, node, externalInterface)
+                return m.runFunc(options)
             catch e
                 ?"Error: " e
             end try
@@ -56,20 +47,43 @@ class Safeable
     end function
 
 
-    function runFunc(func = "", options = {}, node = top(), externalInterface = {})
-        if rodash.isFunction(func) then return func(options)
+    function runFunc(options = {})
+        func = options.func
+        functionArgument = options.options ?? {}
+        node = options.node ?? top()
+        externalInterface = options.externalInterface ?? {}
+
+        if rodash.isFunction(func)
+            try
+                return func(functionArgument)
+            catch e
+                return func()
+            end try
+        end if
 
         if not node.isSameNode(top())
-            return m.proxyFunc(func, options, node)
+            return m.proxyFunc(func, functionArgument, node)
         end if
 
         if not rodash.isEmpty(externalInterface) and rodash.isFunction(externalInterface[func])
-            return externalInterface[func](options)
+            return externalInterface[func](functionArgument)
         end if
 
-        if not rodash.isFunction(m.nodeFunctions[func]) then return invalid
+        nodeSafeFunctions = top().getRef("_ord_safeFunctions")
 
-        return m.nodeFunctions[func](options)
+        if not rodash.isFunction(nodeSafeFunctions[func]) then return invalid
+
+        nodeFunction = nodeSafeFunctions[func]
+
+        if rodash.isFunction(nodeFunction)
+            try
+                return nodeFunction(functionArgument)
+            catch e
+                return nodeFunction()
+            end try
+        end if
+
+        return invalid
     end function
 
 
@@ -133,9 +147,7 @@ class Safeable
 
 
     function safeFunc(functionName = "")
-        devMode = true
-
-        if devMode
+        if devMode()
             return m.processSafeFunc(functionName)
         else
             try

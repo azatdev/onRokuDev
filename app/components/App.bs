@@ -1,11 +1,27 @@
-import "pkg:/source/helpers/timestamps.bs"
 import "pkg:/components/_ord/wrappers.bs"
 import "testdata.bs"
 
 
+sub init()
+    exec(function ()
+        ?"INIT " m.top.subtype()
+        m.secondNode = createObject("roSGNode", "SecondNode")
+
+        m.secondNode.data = {
+            azat: "is cool"
+        }
+
+        safeObserve("launchArgs", onLaunchArgChange)
+    end function)
+end sub
+
+
+sub onLaunchArgChange(options = {})
+    ?"onLaunchArgChange " options
+end sub
+
 class NodeFunctions
     sub onInit(options = {})
-        m.secondNode = createObject("roSGNode", "SecondNode")
         ' localResult = exec("onTheNose", { name: "Azat" })
         ' remoteResult = exec("onTheNose", { name: "Azat" }, m.secondNode)
         ' ?"localResult " localResult
@@ -39,12 +55,16 @@ class NodeFunctions
         '     "TEST_EVENT": "onTestEvent"
         ' })
 
-        registerControllers([
-            "SocketController"
-            "StylesController"
-        ])
+        ' registerControllers([
+        '     "SocketController"
+        '     "StylesController"
+        ' ])
 
-        top().setFocus(true)
+        ' exec("loadList")
+        ' exec("loadFlexList")
+        ' m.loadSecondList()
+
+        ' top().setFocus(true)
     end sub
 
 
@@ -62,42 +82,53 @@ class NodeFunctions
     sub onTestEvent(options = {})
         ?"onTestEvent " options
     end sub
+
+
+    sub loadList(options = {})
+        rectConfig = {
+            "autoclip": true,
+            "bigSquare": [251, 321],
+            "defaultVisibleIndex": 1,
+            "direction": "horizontal",
+            "duration": 0.5,
+            "flushFocus": false,
+            "focusType": "floating",
+            "gutterWidth": 0,
+            "itemComponentName": "TestItem",
+            "margin": [9, 0],
+            "smallSquare": [212, 273],
+            "visibleTiles": 4,
+            "wrap": true
+        }
+
+        list = createObject("roSGNode", "MagicList")
+        top().appendChild(list)
+
+        testModel = createObject("roSGNode", "ContentNode")
+        testModel.appendChild(createObject("roSGNode", "ContentNode"))
+        testModel.appendChild(createObject("roSGNode", "ContentNode"))
+        testModel.appendChild(createObject("roSGNode", "ContentNode"))
+        testModel.appendChild(createObject("roSGNode", "ContentNode"))
+        testModel.appendChild(createObject("roSGNode", "ContentNode"))
+        testModel.appendChild(createObject("roSGNode", "ContentNode"))
+        testModel.appendChild(createObject("roSGNode", "ContentNode"))
+        testModel.appendChild(createObject("roSGNode", "ContentNode"))
+
+        list.content = testModel
+        list.rectConfig = rectconfig
+        list.color = "#FFFFFF00"
+        list.setFocus(true)
+    end sub
+
+
+    sub loadSecondList(options = {})
+        list = createObject("roSGNode", "_ord_flexList")
+        list.config = {
+            componentName: "TestItem"
+            visibleTiles: 3,
+            bigSquare: [251, 321],
+            smallSquare: [212, 273]
+        }
+        ?"LSIT CONFIG " get("config", list)
+    end sub
 end class
-
-
-sub loadList()
-    rectConfig = {
-        "autoclip": true,
-        "bigSquare": [251, 321],
-        "defaultVisibleIndex": 1,
-        "direction": "horizontal",
-        "duration": 0.5,
-        "flushFocus": false,
-        "focusType": "floating",
-        "gutterWidth": 0,
-        "itemComponentName": "TestItem",
-        "margin": [9, 0],
-        "smallSquare": [212, 273],
-        "visibleTiles": 4,
-        "wrap": true
-    }
-
-    list = createObject("roSGNode", "MagicList")
-    m.top.appendChild(list)
-
-    testModel = createObject("roSGNode", "ContentNode")
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
-
-    list.content = testModel
-    list.rectConfig = rectconfig
-    list.color = "#FFFFFF00"
-    list.translation = [399,198]
-    list.setFocus(true)
-end sub

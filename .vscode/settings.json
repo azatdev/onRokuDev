@@ -1,5 +1,6 @@
 {
     "brightscript.debug.enableDebugProtocol": false,
+    "brightscript.debug.enableSourceMaps": true,
     "brightscript.deviceDiscovery.enabled": false,
     "editor.insertSpaces": true,
     "editor.renderWhitespace": "all",
@@ -16,4 +17,7 @@
     },
     "files.trimTrailingWhitespace": true,
     "brightscript.bsdk": "node_modules/brighterscript",
+    "workbench.view.showQuietly": {
+        "workbench.panel.output": true
+    },
 }

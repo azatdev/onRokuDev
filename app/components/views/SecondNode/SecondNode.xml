@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="SecondNode" extends="Group">
+<component name="SecondNode" extends="TestBase">
     <interface>
         <field id="funcs" type="assocarray" />
         <field id="someArray" type="array" />
@@ -8,7 +8,6 @@
         <function name="safeFunc" />
     </interface>
     <children>
-
     </children>
     <script type="text/brightscript" uri="SecondNode.bs" />
 </component>
