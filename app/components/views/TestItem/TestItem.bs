@@ -3,6 +3,6 @@ sub init()
 end sub
 
 sub itemContentChanged(event)
-    ?m.top.index
+    ' ?m.top.index
     m.indexLabel.text = m.top.index
 end sub

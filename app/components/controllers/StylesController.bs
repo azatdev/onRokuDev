@@ -2,14 +2,14 @@ import "pkg:/components/_ord/wrappers.bs"
 
 
 sub init()
-    exec(function()
+    exec(sub()
         m.stylesTask = createObject("roSGNode", "StyleTask")
 
         subscribe({
-            "STYLES_UPDATE": onStylesUpdate
+            "STYLES_UPDATE": onStylesUpdate,
             "REQUEST_STYLES": requestStyles
         })
-    end function)
+    end sub)
 end sub
 
 

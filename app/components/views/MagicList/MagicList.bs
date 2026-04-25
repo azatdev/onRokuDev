@@ -24,8 +24,8 @@ sub init()
 
     m.focusTimer = m.top.findNode("focusTimer")
     m.focusTimer.update({
-        finishTime: rodash.now()
-        focused: false
+        finishTime: rodash.now(),
+        focused: false,
         startTime: rodash.now()
     }, true)
 
@@ -34,7 +34,7 @@ sub init()
     m.focusTimer.observeFieldScoped("fire", "onFocusTimerFired")
 
     m.totalRectDimensions = {
-        height: 0
+        height: 0,
         width: 0
     }
 
@@ -79,7 +79,7 @@ sub generateDynamicRects()
 
     for index = 0 to targetsetRects.count() - 1
         focusedTargetSet = createTargetSet({
-            focusIndex: index
+            focusIndex: index,
             targetRects: targetsetRects[index]
         })
         m.targetSetArray.push(focusedTargetSet)
@@ -110,7 +110,7 @@ sub generateRects()
 
         if index >= m.firstVisibleIndex and index <= m.lastVisibleIndex
             focusedTargetSet = createTargetSet({
-                focusIndex: index
+                focusIndex: index,
                 targetRects: targetsetRects[index]
             })
             m.targetSetArray.push(focusedTargetSet)
@@ -273,9 +273,9 @@ function getWidth() as integer
         if m.rectConfig.direction = "horizontal"
             firstSet = m.targetsetRects[m.lastVisibleIndex] ?? []
             lastItem = firstSet[m.lastVisibleIndex]
-            if not TypeGuard_isEmptyAssocArray(lastItem)
-                return lastItem.width + lastItem.x
-            end if
+            ' if not TypeGuard_isEmptyAssocArray(lastItem)
+            '     return lastItem.width + lastItem.x
+            ' end if
             return m.totalRectDimensions.width * m.rectConfig.visibleTiles
         else
             return m.totalRectDimensions.width
@@ -459,7 +459,7 @@ end sub
 
 sub onRectSizesChanged(event)
     rectSizes = event.getData()
-    ?"onRectSizesChanged " rectSizes
+    ' ?"onRectSizesChanged " rectSizes
     if TypeGuard_isArray(rectSizes) and m.totalRects <> 0 and rectSizes.count() = m.totalRects
         processRects()
     end if
@@ -519,6 +519,7 @@ function returnDynamicTargetsetRects(options = {})
 
     rectSizes = m.top.rectSizes ?? []
     margins = getMargins()
+
     targetsetRects = []
 
     ' y = -1 is for getting the unfocused targetset rects
@@ -545,9 +546,9 @@ function returnDynamicTargetsetRects(options = {})
 
             if TypeGuard_isArrayNotEmpty(square)
                 rects.push({
-                    height: square[1] ?? 0
-                    width: square[0] ?? 0
-                    x: coordinates[0]
+                    height: square[1] ?? 0,
+                    width: square[0] ?? 0,
+                    x: coordinates[0],
                     y: coordinates[1]
                 })
             end if
@@ -560,9 +561,9 @@ function returnDynamicTargetsetRects(options = {})
         if TypeGuard_isArrayEmpty(rects)
             for x = 0 to m.totalRects -1
                 rects.push({
-                    height: 36
-                    width: 12
-                    x: 0
+                    height: 36,
+                    width: 12,
+                    x: 0,
                     y: 0
                 })
             end for
@@ -598,7 +599,7 @@ function returnTargetsetRects(options = {})
             smallSquare = rectSquare({ type: "small", index: x })
 
             m.totalRectDimensions = {
-                height: bigSquare[1] + margins.top + margins.bottom
+                height: bigSquare[1] + margins.top + margins.bottom,
                 width: bigSquare[0] + margins.left + margins.right
             }
 
@@ -619,10 +620,10 @@ function returnTargetsetRects(options = {})
             end if
 
             containerPosition = getStartingPosition({
-                extraRects: extraRects
-                horizontal: horizontal
-                focusedTile: focusedTile
-                index: x
+                extraRects: extraRects,
+                horizontal: horizontal,
+                focusedTile: focusedTile,
+                index: x,
                 square: m.totalRectDimensions
             })
 
@@ -682,7 +683,7 @@ sub setUnfocusedTargetSet(unfocusedRects = [])
 
         ' Peel off the first array, which should always be for unfocused targetset
         unFocusedTargetSet = createTargetSet({
-            focusIndex: defaultVisibleIndex + extraRects
+            focusIndex: defaultVisibleIndex + extraRects,
             targetRects: unfocusedRects
         })
 
@@ -691,11 +692,6 @@ sub setUnfocusedTargetSet(unfocusedRects = [])
         m.unFocusedTargetSet = unFocusedTargetSet
     end if
 end sub
-
-
-function totalRectDimensions()
-    return {}
-end function
 
 
 function CommonUtils_floatMOD(x as dynamic, y as dynamic) as dynamic

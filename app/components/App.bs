@@ -3,62 +3,65 @@ import "testdata.bs"
 
 
 sub init()
-    exec(function()
+    exec(sub()
         ?"INIT " m.top.subtype()
-        m.secondNode = createObject("roSGNode", "SecondNode")
+        ' m.secondNode = createObject("roSGNode", "SecondNode")
 
-        m.secondNode.data = {
-            azat: "is cool"
-        }
+        ' m.secondNode.data = {
+        '     azat: "is cool"
+        ' }
 
-        localResult = onTheNose({ name: "Azat" })
-        remoteResult = exec("onTheNose", { name: "Azat" }, m.secondNode)
-        ?"localResult " localResult
-        ?"remoteResult " remoteResult
+        ' localResult = onTheNose({ name: "Azat" })
+        ' remoteResult = exec("onTheNose", { name: "Azat" }, m.secondNode)
+        ' ?"localResult " localResult
+        ' ?"remoteResult " remoteResult
 
-        set({
-            "food": "burrito"
-            "drink": "diet dr pepper"
-        })
+        ' set({
+        '     "food": "burrito"
+        '     "drink": "diet dr pepper"
+        ' })
 
-        ?"get self " get("food")
-        ?"get self 2" get(["food", "drink"])
-        ?"get self 3 " top().drink
+        ' ?"get self " get("food")
+        ' ?"get self 2" get(["food", "drink"])
+        ' ?"get self 3 " top().drink
 
-        set({
-            "food": "pizza"
-        }, m.secondNode)
+        ' set({
+        '     "food": "pizza"
+        ' }, m.secondNode)
 
-        ?"get remote " get("food", m.secondNode)
-        res2 = get(["food", "someArray"], m.secondNode)
-        ?"get remote 2 " res2 res2.someArray
+        ' ?"get remote " get("food", m.secondNode)
+        ' res2 = get(["food", "someArray"], m.secondNode)
+        ' ?"get remote 2 " res2 res2.someArray
 
         registerControllers([
             "SocketController"
             "StylesController"
         ])
 
-        loadList()
-        ' exec("loadList")
-        ' exec("loadFlexList")
+        ?"FRIENDS "
+        ?get("asd")
 
-    end function)
+        loadList()
+        loadSecondList()
+    end sub)
 end sub
 
 
 sub loadList(options = {})
     rectConfig = {
         "autoclip": true,
-        "bigSquare": [251, 321],
-        "defaultVisibleIndex": 1,
+        "bigSquare": [252, 321],
+        "defaultVisibleIndex": 0,
         "direction": "horizontal",
-        "duration": 0.5,
+        "duration": 0.3,
         "flushFocus": false,
         "focusType": "floating",
         "gutterWidth": 0,
         "itemComponentName": "TestItem",
-        "margin": [9, 0],
-        "smallSquare": [212, 273],
+        "margin": [0],
+        "smallSquare": [213, 273],
+        ' "horizAlign": "left",
+        ' "vertAlign": "top",
         "visibleTiles": 4,
         "wrap": true
     }
@@ -66,33 +69,53 @@ sub loadList(options = {})
     list = createObject("roSGNode", "MagicList")
     top().appendChild(list)
 
-    testModel = createObject("roSGNode", "ContentNode")
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
-    testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    testModel = returnModel({ number: 6 })
 
     list.content = testModel
-    list.rectConfig = rectconfig
+    list.rectConfig = rectConfig
     list.color = "#FFFFFF00"
-    list.setFocus(true)
+    ' list.setFocus(true)
 end sub
 
 
 sub loadSecondList(options = {})
     list = createObject("roSGNode", "_ord_flexList")
-    list.config = {
-        componentName: "TestItem"
-        visibleTiles: 3,
-        bigSquare: [251, 321],
-        smallSquare: [212, 273]
+
+    testModel = returnModel({ number: 11 })
+    testModel.addField("rectConfig", "assocarray", true)
+    testModel.addField("totalCount", "integer", false)
+
+    testModel.rectConfig = {
+        direction: "horizontal",
+        animationDuration: 0.1,
+        itemComponentName: "TestItem",
+        visibleTiles: 4,
+        wrap: true,
+        bigSquare: [252, 321],
+        smallSquare: [213, 273],
+        squareMargins: [0]
     }
-    ?"LSIT CONFIG " get("config", list)
+
+    testModel.id = "flexCarousel_model"
+    testModel.totalCount = testModel.getChildCount()
+
+    list.data = {
+        content: testModel
+    }
+
+    top().appendChild(list)
+    list.setFocus(true)
 end sub
+
+
+function returnModel(options = {})
+    numberOfModels = options.number
+    testModel = createObject("roSGNode", "ContentNode")
+    for i = 1 to numberOfModels
+        testModel.appendChild(createObject("roSGNode", "ContentNode"))
+    end for
+    return testModel
+end function
 
 
 function onTheNose(options = {})

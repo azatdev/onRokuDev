@@ -14,5 +14,4 @@ sub init()
     m.top.addField("rectSizes", "array", false)
     m.top.addField("reverseKey", "string", false)
     m.top.addField("reversing", "boolean", false)
-
 end sub

@@ -2,17 +2,16 @@ import "pkg:/components/_ord/wrappers.bs"
 
 
 sub init()
-    exec(function ()
+    exec(sub()
         safeFunctions({
-            nodeTest: nodeTest
+            nodeTest: nodeTest,
             onTheNose: onTheNose
         })
 
         top().setField("someArray", ["asd","123"])
 
         safeObserve("data", onDataChange, m.top)
-
-    end function)
+    end sub)
 end sub
 
 

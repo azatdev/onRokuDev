@@ -58,7 +58,7 @@ class Stateable
             else
                 itemObj = {}
                 itemObj[key] = value
-                nodestate.append(itemObj)
+                nodeState.append(itemObj)
             end if
         end for
 

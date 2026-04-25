@@ -48,7 +48,7 @@ class Safeable
             try
                 return m.runFunc(options)
             catch e
-                ?"Error: " e
+                return onError(e)
             end try
         end if
     end function
@@ -81,13 +81,32 @@ class Safeable
         end if
 
         if rodash.isFunction(targetFunction)
+
             try
                 return targetFunction(functionArgument)
             catch e
-                return targetFunction()
+                if e.number = 241
+                    return targetFunction()
+                end if
+
+                if devMode() then throw e
+
+                return invalid
             end try
 
-            return invalid
+            ' return targetFunction()
+
+            ' try
+
+            ' catch e
+            '     ' if e.number = 241
+            '     '     return targetFunction()
+            '     ' end if
+
+            '     ' return invalid
+            ' end try
+
+            ' return invalid
         end if
 
         internalFunctions = getGlobalAA().interfaceFunctions ?? {}
@@ -150,9 +169,9 @@ class Safeable
         if rodash.isEmptyString(functionName) then return
 
         payload = {
-            data: event.getData()
-            info: event.getInfo()
-            node: event.getRoSGNode()
+            data: event.getData(),
+            info: event.getInfo(),
+            node: event.getRoSGNode(),
             nodeId: event.getNode()
         }
 
@@ -167,7 +186,7 @@ class Safeable
             try
                 return m.processSafeFunc(functionName)
             catch e
-                ?"Error: " e
+                return onError(e)
             end try
         end if
     end function

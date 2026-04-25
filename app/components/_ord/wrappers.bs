@@ -30,6 +30,7 @@ end function
 
 
 function exec(func, options = {}, node = m.top, externalInterface = {})
+
     if not m.top.hasField("_ord_initiated") or not m.top._ord_initiated then ord_init()
 
     if not rodash.isNonEmptyAA(m.interfaceFunctions) then return invalid
@@ -128,17 +129,12 @@ end function
 
 function runTask()
     if not rodash.isFunction(m._ord_taskFunction) then return invalid
-    exec(m._ord_taskFunction)
+    return exec(m._ord_taskFunction)
 end function
 
 
-function onKeyEvent(key as string, press as boolean) as boolean
-    if not press then return false
-    handled = false
+sub onError(e)
+    ?"ERROR: " formatJSON(e)
+end sub
 
-    if key = "down"
-    else if key = "up"
-    end if
 
-    return handled
-end function

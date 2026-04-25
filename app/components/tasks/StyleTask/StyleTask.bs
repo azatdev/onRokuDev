@@ -1,9 +1,9 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(function()
+    exec(sub()
         setTaskFunction(runStyleTask)
-    end function)
+    end sub)
 end sub
 
 

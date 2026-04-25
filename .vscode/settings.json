@@ -16,8 +16,5 @@
         "**/transpiled/**": true,
     },
     "files.trimTrailingWhitespace": true,
-    "brightscript.bsdk": "node_modules/brighterscript",
-    "workbench.view.showQuietly": {
-        "workbench.panel.output": true
-    },
+    "brightscript.bsdk": "node_modules/brighterscript"
 }

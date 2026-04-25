@@ -6,16 +6,20 @@ module.exports = {
             translation: [0, 0],
             "Label": {
                 color: "#5bfaf2ff",
-                translation: [0, 0],
+                translation: [33, 33],
                 width: 0
             },
             "Label#title": {
-                color: "#a4f376ff"
+                color: "#72ebe1ff"
             },
             "test": []
         },
         "MagicList": {
-            translation: [400, 300]
+            translation: [120, 99]
+        },
+        "_ord_flexList": {
+            color: "#b96b8980",
+            translation: [300, 600]
         }
     }
 };

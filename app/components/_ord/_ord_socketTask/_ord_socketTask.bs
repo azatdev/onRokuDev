@@ -2,9 +2,9 @@ import "pkg:/components/_ord/wrappers.bs"
 
 
 sub init()
-    exec(function()
+    exec(sub()
         setTaskFunction(setupSocket)
-    end function)
+    end sub)
 end sub
 
 
@@ -77,9 +77,9 @@ function createPayload(messageObj = {})
     rokuDevice = createObject("roDeviceInfo")
 
     return formatJSON({
-        deviceId: rokuDevice.getChannelClientId()
-        deviceName: rokuDevice.getFriendlyName()
-        message: messageObj
+        deviceId: rokuDevice.getChannelClientId(),
+        deviceName: rokuDevice.getFriendlyName(),
+        message: messageObj,
         type: "device-message"
     })
 end function

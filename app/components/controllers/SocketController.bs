@@ -2,14 +2,14 @@ import "pkg:/components/_ord/wrappers.bs"
 
 
 sub init()
-    exec(function()
-        m.socketTest = createObject("roSGNode", "_ord_socketTask")
-        m.socketTest.control = "RUN"
+    exec(sub()
+        m.socketTask = createObject("roSGNode", "_ord_socketTask")
+        m.socketTask.control = "RUN"
 
         subscribe({
             [events.TEST_EVENT]: "onTestEvent"
         })
-    end function)
+    end sub)
 end sub
 
 sub onTestEvent(options = {}, msgInfo = {})

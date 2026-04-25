@@ -125,7 +125,6 @@ class Styleable
 
             if rodash.isEmpty(combinedNodeStyles) then continue for
 
-
             m.setStyles(combinedNodeStyles, child)
         end for
     end sub

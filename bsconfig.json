@@ -2,7 +2,8 @@
     "createPackage": false,
     "diagnosticLevel": "error",
     "diagnosticFilters": [
-        "**/TrackerTask.xml"
+        "**/TrackerTask.xml",
+        "./source/roku_modules/**/*"
     ],
     "files": [
         "components/**/*",

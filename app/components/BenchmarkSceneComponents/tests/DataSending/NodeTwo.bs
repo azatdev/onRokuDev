@@ -5,19 +5,19 @@ sub init()
 end sub
 
 
-function dataFunc(options = {})
+sub dataFunc(options = {})
     data = options.data
-end function
+end sub
 
 
-function onDataArrayChange(event)
+sub onDataArrayChange(event)
     data = event.getData()
-end function
+end sub
 
 
-function onFieldDataChange(event)
+sub onFieldDataChange(event)
     data = event.getData()
-end function
+end sub
 
 
 sub refFunc()
@@ -25,6 +25,6 @@ sub refFunc()
 end sub
 
 
-function onDataRefChange()
+sub onDataRefChange()
     ?"onDataRefChange "
-end function
+end sub

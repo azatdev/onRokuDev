@@ -19,17 +19,17 @@ sub init(options = {})
     m.top.observeFieldScoped("resultsText", "printResults")
 
     m.benchmarks = {
-        "AAvsRef": AAvsRef
-        "CallfuncObserve": CallfuncObserve
-        "CallFuncVsSafeFunc": CallFuncVsSafeFunc
-        "DataRetrieval": DataRetrieval
-        "DataSending": DataSending
-        "GroupVsRectangle": GroupVsRectangle
-        "ImportsVsNoImports": ImportsVsNoImports
-        "MtopVsM": MtopVsM
-        "NodeInitiation": NodeInitiation
-        "NodeRefFuncVsLocal": NodeRefFuncVsLocal
-        "ObserveUnobserve": ObserveUnobserve
+        "AAvsRef": AAvsRef,
+        "CallfuncObserve": CallfuncObserve,
+        "CallFuncVsSafeFunc": CallFuncVsSafeFunc,
+        "DataRetrieval": DataRetrieval,
+        "DataSending": DataSending,
+        "GroupVsRectangle": GroupVsRectangle,
+        "ImportsVsNoImports": ImportsVsNoImports,
+        "MtopVsM": MtopVsM,
+        "NodeInitiation": NodeInitiation,
+        "NodeRefFuncVsLocal": NodeRefFuncVsLocal,
+        "ObserveUnobserve": ObserveUnobserve,
         "TryCatch": TryCatch
     }
 end sub
@@ -69,9 +69,9 @@ sub doRun(event)
 end sub
 
 
-function testFunc()
+sub testFunc()
     m.benchmark.changeString2()
-end function
+end sub
 
 
 sub printResults(event)
