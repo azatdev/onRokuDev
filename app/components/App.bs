@@ -41,8 +41,10 @@ sub init()
         ?"FRIENDS "
         ?get("asd")
 
+        top().setFocus(true)
         loadList()
         loadSecondList()
+
     end sub)
 end sub
 
@@ -51,12 +53,12 @@ sub loadList(options = {})
     rectConfig = {
         "autoclip": true,
         "bigSquare": [252, 321],
-        "defaultVisibleIndex": 0,
+        "defaultVisibleIndex": 1,
         "direction": "horizontal",
         "duration": 0.3,
         "flushFocus": false,
         "focusType": "floating",
-        "gutterWidth": 0,
+        "gutterSize": 0,
         "itemComponentName": "TestItem",
         "margin": [0],
         "smallSquare": [213, 273],
@@ -74,12 +76,14 @@ sub loadList(options = {})
     list.content = testModel
     list.rectConfig = rectConfig
     list.color = "#FFFFFF00"
+    m.firstList = list
     ' list.setFocus(true)
 end sub
 
 
 sub loadSecondList(options = {})
     list = createObject("roSGNode", "_ord_flexList")
+    top().appendChild(list)
 
     testModel = returnModel({ number: 11 })
     testModel.addField("rectConfig", "assocarray", true)
@@ -88,10 +92,14 @@ sub loadSecondList(options = {})
     testModel.rectConfig = {
         direction: "horizontal",
         animationDuration: 0.1,
+        clip: true,
+        defaultVisibleIndex: 1,
+        focusType: "floating",
         itemComponentName: "TestItem",
         visibleTiles: 4,
         wrap: true,
         bigSquare: [252, 321],
+        gutterSize: 0,
         smallSquare: [213, 273],
         squareMargins: [0]
     }
@@ -103,7 +111,7 @@ sub loadSecondList(options = {})
         content: testModel
     }
 
-    top().appendChild(list)
+    m.secondList = list
     list.setFocus(true)
 end sub
 
@@ -122,3 +130,16 @@ function onTheNose(options = {})
     return { result: options.name + " success"  }
 end function
 
+function onKeyEvent(key as string, press as boolean) as boolean
+    return exec(function(options = {})
+        key = options.key
+        press = options.press
+        m = getGlobalAA()
+        if not press then return true
+
+        if key = "down" then m.secondList.setFocus(true)
+        if key = "up" then m.firstList.setFocus(true)
+
+        return true
+    end function, { key: key, press: press })
+end function

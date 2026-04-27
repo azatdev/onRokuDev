@@ -18,8 +18,8 @@ module.exports = {
             translation: [120, 99]
         },
         "_ord_flexList": {
-            color: "#b96b8980",
-            translation: [300, 600]
+            color: "#bad7fc80",
+            translation: [120, 450]
         }
     }
 };

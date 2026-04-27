@@ -4,6 +4,9 @@
         <field id="data" type="assocarray" />
         <field id="focusedContentIndex" type="integer" />
         <field id="focusedTargetsetIndex" type="integer" />
+        <field id="itemFocused" type="integer" alwaysNotify="true" />
+        <field id="itemSelected" type="integer" alwaysNotify="true" />
+        <field id="itemUnfocused" type="integer" alwaysNotify="true" />
         <field id="advanceKey" type="string" value="right" />
         <field id="reverseKey" type="string" value="left" />
         <field id="reversing" type="boolean" />

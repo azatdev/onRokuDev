@@ -46,7 +46,7 @@ sub init()
         "direction": "horizontal",
         "duration": 0.01,
         "focusType": "floating",
-        "gutterWidth": 0,
+        "gutterSize": 0,
         "itemComponentName": "",
         "margin": [0, 0],
         "smallSquare": [0, 0],
@@ -136,8 +136,8 @@ function getExtraRectNumber(options = {})
     ' on each side of the carousel,
     ' then we need to add an extra rect
     ' in order to smoothly load the partially visible rect.
-    gutterWidth = m.rectConfig.gutterWidth ?? 0
-    if gutterWidth > 0 then extraRects = 2
+    gutterSize = m.rectConfig.gutterSize ?? 0
+    if gutterSize > 0 then extraRects = 2
     return extraRects
 end function
 
@@ -225,7 +225,7 @@ function getVisibleIndices(options = {})
     if not TypeGuard_isNode(content) then return [0, 0]
 
     defaultVisibleIndex = m.rectConfig.defaultVisibleIndex ?? 0
-    gutterWidth = m.rectConfig.gutterWidth ?? 0
+    gutterSize = m.rectConfig.gutterSize ?? 0
 
     numberOfContentItems = content.getChildCount()
     maxVisibleTiles = m.rectConfig.visibleTiles ?? 0
@@ -237,7 +237,7 @@ function getVisibleIndices(options = {})
 
     ' If there are gutter rects that act as semi-opaque tiles
     ' then we increase the default visible rect even further
-    if gutterWidth > 0 then gutterOffset++
+    if gutterSize > 0 then gutterOffset++
 
     firstVisibleIndex = defaultVisibleIndex + gutterOffset
     lastVisibleIndex = visibleTiles - 1 + gutterOffset
@@ -341,11 +341,16 @@ sub onFocusedChildChange(event)
 
     if not TypeGuard_isArray(m.targetSetArray) then return
 
+    ?"m.top.focusedTargetsetIndex " m.top.focusedTargetsetIndex, m.targetSetArray
     currentTargetSet = m.targetSetArray[m.top.focusedTargetsetIndex]
 
-    m.list.animateToItem = currentIndex
-    m.list.animateToTargetSet = currentTargetSet
-    m.list.easeFunction = "linear"
+    m.list.jumpToItem = currentIndex
+    ' m.list.jumpToItem = currentIndex
+    rodash.delay(sub(args)
+        args[0].animateToTargetSet = args[1]
+    end sub, 100, [m.list, currentTargetSet])
+    ' m.list.animateToTargetSet = currentTargetSet
+    ' m.list.easeFunction = "linear"
 end sub
 
 
@@ -381,6 +386,7 @@ end sub
 
 
 sub onItemFocused(event)
+    ' ?"1st onItemFocused " event.getData()
     m.top.itemFocused = event.getData()
 end sub
 
@@ -491,7 +497,7 @@ sub processRects()
     m.top.width = getWidth()
     m.top.height = getHeight()
 
-    setAutoclip()
+    ' setAutoclip()
 end sub
 
 

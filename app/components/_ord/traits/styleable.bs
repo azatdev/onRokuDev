@@ -12,20 +12,23 @@ class Styleable
 
         styleNode = global()._ord_styles
 
-        if not styleNode.hasField(top().subType())
-            styleNode.addField(top().subType(), "assocarray", true)
-        end if
-
         appStyles = "<%- o(STYLES) %>"
 
-        if role() = "Scene"
-            m.setStyles(appStyles.App)
+        if not styleNode.hasField(top().subType())
+            styleNode.addField(top().subType(), "assocarray", false)
+            styleNode.setField(top().subType(), appStyles[top().subType()])
         end if
+
+
+        ' if role() = "Scene"
+        '     m.setStyles(appStyles.App)
+        ' end if
 
         styleNode.observeFieldScoped(top().subType(), rodash.getFunctionName(m.stylesUpdated))
 
+        m.setStyles(styleNode[top().subType()])
+
         if appStyles[top().subType()] <> invalid
-            styleNode.setField(top().subType(), appStyles[top().subType()])
         end if
 
         safeObserve("change", "onChildChange")
@@ -131,6 +134,7 @@ class Styleable
 
 
     sub styleField(node, styles)
+        if not rodash.isNonEmptyAA(styles) then return
         for each attribute in styles.items()
             attributeValue = attribute.value ?? ""
             if rodash.isString(attributeValue) and attributeValue.instr("TKEY") <> -1

@@ -2,10 +2,14 @@
 <component name="TestItem" extends="Group">
     <interface>
         <field id="index" type="integer" />
+        <field id="currRect" type="rect2d" />
         <field id="itemContent" type="node" onChange="itemContentChanged" />
+        <function name="safeFunc" />
     </interface>
     <children>
-        <Label id="index" />
+        <Rectangle id="container">
+            <Label id="label" />
+        </Rectangle>
     </children>
     <script type="text/brightscript" uri="TestItem.bs" />
 </component>

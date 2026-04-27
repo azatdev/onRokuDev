@@ -1,8 +1,28 @@
+import "pkg:/components/_ord/wrappers.bs"
+
 sub init()
-    m.indexLabel = m.top.findNode("index")
+    exec(sub()
+        setupItem()
+    end sub)
+end sub
+
+sub setupItem()
+    m.indexLabel = m.top.findNode("label")
+    m.container = m.top.findNode("container")
+    safeObserve("currRect", onCurrentRectChange)
 end sub
 
 sub itemContentChanged(event)
-    ' ?m.top.index
     m.indexLabel.text = m.top.index
+end sub
+
+sub onCurrentRectChange(options = {})
+    rect = options.data ?? {}
+    ' ?"onCurrentRectChange " m.top.index
+
+    if rodash.isNode(m.container)
+        m.container.height = rect.height - 3
+        m.container.width = rect.width - 3
+    end if
+
 end sub

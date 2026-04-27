@@ -4,11 +4,18 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub()
         m.carousel = top().findNode("carousel")
-        m.carousel.showTargetRects = true
+        m.carousel.advancing = true
+        m.carousel.reversing = true
+        m.carousel.easeFunction = "linear"
+        ' m.carousel.showTargetRects = true
+
+        safeObserve("itemSelected", onItemSelected, m.carousel)
+        safeObserve("itemFocused", onItemFocused, m.carousel)
+        safeObserve("itemUnfocused", onItemUnfocused, m.carousel)
+        getGlobalAA().initialFocusNode = m.carousel
 
         defaultConfig = {
             animationDuration: 0.3,
-            carouselDimensions: [0, 0],
             clip: true,
             componentName: "",
             defaultVisibleIndex: 0,
@@ -17,36 +24,17 @@ sub init()
             dynamicRectSizes: [],
             focusType: "floating",
             flushFocus: false,
-            gutterWidth: 0,
+            gutterSize: 0,
+            horizAlign: "center",
+            maxHeight: 0,
+            maxWidth: 0,
+            vertAlign: "center",
             visibleTiles: 0,
             wrap: false,
             bigSquare: [0, 0],
             smallSquare: [0, 0],
             squareMargins: [0, 0],
             squareTotalArea: [0, 0]
-            ' type: "FloatingFocus",
-            ' type: "FixedFocus",
-            ' type: "DynamicSize",
-
-            ' animation: {
-            '     duration: 0.3
-            ' },
-            ' carousel: {
-            '     clip: true,
-            '     defaultVisibleIndex: 0,
-            '     direction: "horizontal",
-            '     focusType: "floating",
-            '     wrap: false,
-            '     gutterSize: 0,
-            '     visibleTiles: 0,
-            '     totalArea: []
-            ' },
-            ' square: {
-            '     big: [],
-            '     small: [],
-            '     margins: [],
-            '     totalArea: []
-            ' }
         }
 
         set({ defaultConfig: defaultConfig })
@@ -74,21 +62,21 @@ function onKeyEvent(key as string, press as boolean) as boolean
         key = options.key
         press = options.press
         carousel = options.carousel
-        ?"inside onKeyEvent " key, press, carousel
-        if not press then return true
 
-        if CommonUtils_floatMOD(carousel.currFocusItemIndex, 1) <> 0 then return true
+        if not press then return true
+        if not rodash.isArray(m.targetSetArray) then return true
+        if calculate.floatMOD(carousel.currFocusItemIndex, 1) <> 0 then return true
         if key <> top().advanceKey and key <> top().reverseKey then return false
 
         direction = key = top().reverseKey ? -1 : 1
-
         currentIndex = top().focusedContentIndex
+        lastVisibleIndex = get("lastVisibleIndex")
         nextIndex = currentIndex + direction
-
         currentTargetSetIndex = top().focusedTargetsetIndex
         nextTargetSetIndex = currentTargetSetIndex + direction
+
         if nextTargetSetIndex <= 0 then nextTargetSetIndex = 0
-        if nextTargetSetIndex >= m.lastVisibleIndex then nextTargetSetIndex = m.lastVisibleIndex
+        if nextTargetSetIndex >= lastVisibleIndex then nextTargetSetIndex = lastVisibleIndex
 
         if carousel.content.getChild(nextIndex) = invalid
             if not get("wrap") then return false
@@ -100,11 +88,9 @@ function onKeyEvent(key as string, press as boolean) as boolean
                 profilesCollection = carousel.content
                 if not rodash.isNode(profilesCollection) then return true
                 nextIndex = profilesCollection.getChildCount() - 1
-                nextTargetSetIndex = nextIndex
+                nextTargetSetIndex = m.targetSetArray.count() - 1
             end if
         end if
-
-        if not rodash.isArray(m.targetSetArray) then return false
 
         nextTargetSet = m.targetSetArray[nextTargetSetIndex]
 
@@ -130,7 +116,7 @@ sub onFocusTimerFired(options = {})
     if totalDuration! <= 0
         m.focusTimer.control = "stop"
         currentPercentage = m.focusTimer.focused ? 1 : 0
-        m.list.focusPercent = currentPercentage
+        m.carousel.focusPercent = currentPercentage
         return
     end if
 
@@ -148,7 +134,7 @@ sub onFocusTimerFired(options = {})
 
     if not m.focusTimer.focused then currentPercentage = 1 - currentPercentage
 
-    m.list.focusPercent = currentPercentage
+    m.carousel.focusPercent = currentPercentage
 end sub
 
 
@@ -183,10 +169,14 @@ sub onFocusedChildChange(options = {})
     if not rodash.isArray(m.targetSetArray) then return
 
     currentTargetSet = m.targetSetArray[top().focusedTargetsetIndex]
-
     m.carousel.animateToItem = currentIndex
-    m.carousel.animateToTargetSet = currentTargetSet
-    m.carousel.easeFunction = "linear"
+
+    rodash.delay(sub(args)
+        args[0].animateToTargetSet = args[1]
+    end sub, 100, [m.carousel, currentTargetSet])
+
+
+    m.carousel.setFocus(true)
 end sub
 
 
@@ -202,7 +192,6 @@ sub onDataSet(options = {})
 
     m.content = content
 
-    set({ totalCarouselItems: content.totalCount ?? 0 })
     processConfig({ data: content.rectConfig })
 end sub
 
@@ -215,45 +204,107 @@ sub onTotalCountChange(options = {})
 end sub
 
 
-sub processConfig(options = {})
-    ' if not rodash.isNonEmptyAA(options) then return
-
-    config = options.data ?? {}
-    if rodash.isAA(config) then set(config)
-
-    set({
-        carouselDimensions: calculate.carouselDimensions(),
-        totalRects: calculate.totalRects(),
-        maxVisibleTiles: calculate.visibleTiles(),
-        squareTotalArea: calculate.squareTotalArea()
-    })
-
-    processRects()
+sub onItemFocused(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    m.top.itemFocused = options.data
 end sub
 
 
-' Entry to generating TargetGroup rects
-sub processRects()
-    ?"processRects " get("totalCarouselItems")
-    if get("totalCarouselItems") = 0 then return
+sub onItemSelected(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    m.top.itemSelected = options.data
+end sub
 
-    ' m.processedForRects = m.totalRects
 
-    ' totalRects = flushFocus ? get("totalCarouselItems") : tilesOnScreen + (extraRects * 2)
+sub onItemUnfocused(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    m.top.itemUnfocused = options.data
+end sub
 
-    ' if TypeGuard_isTruthy(flushFocus)
-    '     generateDynamicRects()
-    ' else
-    '     generateRects()
-    ' end if
 
-    generateRects()
-    setListContent()
+sub processConfig(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    if not rodash.isNode(m.content) then return
 
-    top().width = getWidth()
-    top().height = getHeight()
+    defaultConfig = get("defaultConfig")
+    config = {}
+    config.append(defaultConfig)
+    config.append(options.data ?? {})
 
-    if get("direction") = "vertical"
+    totalCarouselItems = m.content.totalCount ?? 0
+    margins = calculate.margins({ squareMargins: config.squareMargins })
+    squareTotalArea = calculate.squareTotalArea({
+        bigSquare: config.bigSquare,
+        margins: margins
+    })
+    maxVisibleTiles = calculate.maxVisibleTiles({
+        visibleTiles: config.visibleTiles,
+        totalCarouselItems: totalCarouselItems
+    })
+    extraRects = calculate.extraRectNumber({
+        direction: config.direction,
+        gutterSize: config.gutterSize,
+        squareTotalArea: squareTotalArea
+    })
+    totalRects = calculate.totalRects({ visibleTiles: maxVisibleTiles, extraRects: extraRects })
+
+    ' Calculate the first and last visible rects
+    ' accounting for extra gutter rects
+    visibleIndexArray = getVisibleIndices({
+        defaultVisibleIndex: config.defaultVisibleIndex ?? 0,
+        extraRects: extraRects,
+        totalCarouselItems: totalCarouselItems,
+        visibleTiles: maxVisibleTiles
+    })
+
+    firstVisibleIndex = visibleIndexArray[0]
+    lastVisibleIndex = visibleIndexArray[1]
+
+    set({
+        lastVisibleIndex: lastVisibleIndex,
+        wrap: config.wrap
+    })
+
+    generateRects({
+        bigSquare: config.bigSquare,
+        defaultVisibleIndex: config.defaultVisibleIndex,
+        direction: config.direction,
+        extraRects: extraRects,
+        firstVisibleIndex: firstVisibleIndex,
+        flushFocus: config.flushFocus,
+        focusType: config.focusType,
+        horizAlign: config.horizAlign,
+        lastVisibleIndex: lastVisibleIndex,
+        margins: margins,
+        smallSquare: config.smallSquare,
+        squareTotalArea: squareTotalArea,
+        totalRects: totalRects,
+        vertAlign: config.vertAlign
+    })
+
+    setListContent({
+        animationDuration: config.animationDuration,
+        itemComponentName: config.itemComponentName
+    })
+
+
+    top().width = calculate.carouselWidth({
+        direction: config.direction,
+        flushFocus: config.flushFocus,
+        maxWidth: config.maxWidth,
+        squareTotalArea: squareTotalArea,
+        visibleTiles: maxVisibleTiles
+    })
+
+    top().height = calculate.carouselHeight({
+        direction: config.direction,
+        flushFocus: config.flushFocus,
+        maxHeight: config.maxHeight,
+        squareTotalArea: squareTotalArea,
+        visibleTiles: maxVisibleTiles
+    })
+
+    if config.direction = "vertical"
         top().reverseKey = "up"
         top().advanceKey = "down"
     else
@@ -261,103 +312,104 @@ sub processRects()
         top().advanceKey = "right"
     end if
 
-    ' setAutoclip()
+    if config.clip then clipCarousel()
 end sub
 
 
-sub setAutoclip()
-    if get("clip")
-        top().clippingRect = [0, 0, m.top.width, m.top.height]
-        m.carousel.clippingRect = [0, 0, m.top.width, m.top.height]
-    end if
+sub clipCarousel()
+    top().clippingRect = [0, 0, m.top.width, m.top.height]
+    m.carousel.clippingRect = [0, 0, m.top.width, m.top.height]
 end sub
 
 
-sub setListContent()
+sub setListContent(options = {})
     ' content = top().content
     ' if not TypeGuard_isNode(content)
-    '     m.list.content = invalid
+    '     m.carousel.content = invalid
     '     m.childCount = 0
     '     return
     ' end if
 
-    ' if not TypeGuard_isSameNode(m.list.content, content)
-    '     m.list.content = content
+    ' if not TypeGuard_isSameNode(m.carousel.content, content)
+    '     m.carousel.content = content
     ' end if
 
-    ?" m.content 2 "  m.content
     m.carousel.content = m.content
-    m.carousel.itemComponentName = get("itemComponentName")
-    m.carousel.duration = get("animationDuration") ?? 0.3
+    m.carousel.itemComponentName = options.itemComponentName
+    m.carousel.duration = options.animationDuration ?? 0.3
 end sub
 
 
 sub generateRects(options = {})
-    ?"generateRects " options
+    defaultVisibleIndex = options.defaultVisibleIndex
+    firstVisibleIndex = options.firstVisibleIndex
+    lastVisibleIndex = options.lastVisibleIndex
+    extraRects = options.extraRects
+    flushFocus = options.flushFocus
+    focusType = options.focusType
 
-    ' defaultVisibleIndex = options.defaultVisibleIndex ?? 0
-    ' maxVisibleTiles = options.visibleTiles ?? 0
-    ' visibleDimensions = getCarouselDimensions()
+    targetsetRects = returnTargetsetRects(options)
 
-    targetsetRects = returnTargetsetRects()
     unfocusedRects = targetsetRects.shift()
-    setUnfocusedTargetSet(unfocusedRects)
-
-    ' Calculate the first and last visible rects
-    ' accounting for extra gutter rects
-    visibleIndexArray = getVisibleIndices()
-    m.firstVisibleIndex = visibleIndexArray[0]
-    m.lastVisibleIndex = visibleIndexArray[1]
+    setUnfocusedTargetSet({
+        defaultVisibleIndex: defaultVisibleIndex,
+        extraRects: extraRects,
+        flushFocus: flushFocus,
+        unfocusedRects: unfocusedRects
+    })
 
     ' Array of targetsets for each focused position in the list.
     m.targetSetArray = []
 
-    for index = 0 to targetsetRects.count() - 1
-        focusedTargetSet = createObject("roSGNode", "TargetSet")
+    if focusType = "fixed"
+        index = defaultVisibleIndex + extraRects
+        focusedTargetSet = createTargetSet({
+            focusIndex: index,
+            targetRects: targetsetRects[index]
+        })
+        m.targetSetArray.push(focusedTargetSet)
+    else
+        for index = 0 to targetsetRects.count() - 1
+            focusedTargetSet = createObject("roSGNode", "TargetSet")
 
-        if index >= m.firstVisibleIndex and index <= m.lastVisibleIndex
-            focusedTargetSet = createTargetSet({
-                focusIndex: index,
-                targetRects: targetsetRects[index]
-            })
-            m.targetSetArray.push(focusedTargetSet)
-        end if
-    end for
+            if index >= firstVisibleIndex and index <= lastVisibleIndex
+                focusedTargetSet = createTargetSet({
+                    focusIndex: index,
+                    targetRects: targetsetRects[index]
+                })
+                m.targetSetArray.push(focusedTargetSet)
+            end if
+        end for
+    end if
 
     m.targetsetRects = targetsetRects
 end sub
 
 
-
 function getVisibleIndices(options = {})
-    defaultVisibleIndex = get("defaultVisibleIndex")
-    gutterWidth = get("gutterWidth")
+    if not rodash.isNonEmptyAA(options) then return [0,0]
+    defaultVisibleIndex = options.defaultVisibleIndex
+    extraRects = options.extraRects
 
-    numberOfContentItems = get("totalCarouselItems")
-    maxVisibleTiles = get("visibleTiles")
+    numberOfContentItems = options.totalCarouselItems
+    maxVisibleTiles = options.visibleTiles
     visibleTiles = numberOfContentItems < maxVisibleTiles ? numberOfContentItems : maxVisibleTiles
 
-    ' By default the first visible rect will be index 1
-    ' in order to allow a "staging" rect that is invisible behind the clippingrect
-    gutterOffset = 1
-
-    ' If there are gutter rects that act as semi-opaque tiles
-    ' then we increase the default visible rect even further
-    if gutterWidth > 0 then gutterOffset++
-
-    firstVisibleIndex = defaultVisibleIndex + gutterOffset
-    lastVisibleIndex = visibleTiles - 1 + gutterOffset
+    firstVisibleIndex = defaultVisibleIndex + extraRects
+    lastVisibleIndex = visibleTiles - 1 + extraRects
 
     return [firstVisibleIndex, lastVisibleIndex]
 end function
 
 
-sub setUnfocusedTargetSet(unfocusedRects = [])
-    if get("flushFocus") or not rodash.isNode(m.carousel.targetSet)
-        defaultVisibleIndex = get("defaultVisibleIndex") ?? 0
-        extraRects = getExtraRectNumber()
+sub setUnfocusedTargetSet(options = {})
+    defaultVisibleIndex = options.defaultVisibleIndex
+    extraRects = options.extraRects
+    flushFocus = options.flushFocus
+    unfocusedRects = options.unfocusedRects
 
-        if get("flushFocus") then extraRects = 0
+    if flushFocus or not rodash.isNode(m.carousel.targetSet)
+        ' if get("flushFocus") then extraRects = 0
 
         ' Peel off the first array, which should always be for unfocused targetset
         unFocusedTargetSet = createTargetSet({
@@ -380,24 +432,27 @@ end function
 
 
 function returnTargetsetRects(options = {})
-    horizontal = get("direction") = "horizontal"
-    horizAlign = get("vertAlign") ?? "center"
-    vertAlign =  get("vertAlign") ?? "center"
+    bigSquare = options.bigSquare
+    smallSquare = options.smallSquare
+    extraRects = options.extraRects
+    direction = options.direction
+    horizAlign = options.horizAlign
+    margins = options.margins
+    squareTotalArea = options.squareTotalArea
+
+    totalRects = options.totalRects
+    vertAlign =  options.vertAlign
 
     targetsetRects = []
-    extraRects = getExtraRectNumber()
-    ?"returnTargetsetRects " extraRects, horizontal
-
 
     ' -1 because we want to generate the unfocused state as first array
-    for y = -1 to get("totalRects") - 1
+    for y = -1 to totalRects - 1
         focusedTile = y
-        ?"focusedTile " focusedTile
         targetRects = []
 
-        for x = 0 to get("totalRects") - 1
-            bigSquare = rectSquare({ type: "big", index: x })
-            smallSquare = rectSquare({ type: "small", index: x })
+        for x = 0 to totalRects - 1
+            ' bigSquare = rectSquare({ type: "big", index: x })
+            ' smallSquare = rectSquare({ type: "small", index: x })
 
             if horizAlign = "left"
                 deltaX = 0
@@ -415,19 +470,17 @@ function returnTargetsetRects(options = {})
                 deltaY = (bigSquare[1] - smallSquare[1]) / 2
             end if
 
-            containerPosition = getStartingPosition({
+            containerPosition = calculate.rectStartingPosition({
                 extraRects: extraRects,
-                horizontal: horizontal,
+                horizontal: direction = "horizontal",
                 index: x,
-                square: get("squareTotalArea")
+                square: squareTotalArea
             })
-
-            ?"containerPosition " containerPosition
 
             square = x = focusedTile ? bigSquare : smallSquare
 
-            offsetX = x = focusedTile ? margins().left : deltaX + margins().left
-            offsetY = x = focusedTile ? margins().top : deltaY + margins().top
+            offsetX = x = focusedTile ? margins.left : deltaX + margins.left
+            offsetY = x = focusedTile ? margins.top : deltaY + margins.top
 
             targetRects.push({
                 x: containerPosition[0] + offsetX,
@@ -460,167 +513,178 @@ function rectSquare(options = {}) as object
 end function
 
 
-' Get the number of extra hidden rects
-' for *each side* of the carousel
-' meaning ultimately it will be n*2
-function getExtraRectNumber(options = {})
-    extraRects = 1
-    ' if rodash.isEmpty(m.rectConfig) then return extraRects
-    ' If there is a gutter, meaning partially visible rects
-    ' on each side of the carousel,
-    ' then we need to add an extra rect
-    ' in order to smoothly load the partially visible rect.
-    gutterWidth = get("gutterWidth") ?? 0
-    if gutterWidth > 0 then extraRects = 2
-    return extraRects
-end function
-
-
-function getStartingPosition(options = {}) as object
-    index = options.index ?? 0
-    square = options.square ?? {}
-    horizontal = options.horizontal ?? false
-    ' Because some of the tiles will be hidden
-    extraRects = options.extraRects
-    ' We need to adjust the index based on the extraRects
-    adjustedIndex = index + extraRects * -1
-
-    coordinates = [0, 0]
-
-    if rodash.isEmpty(square) then return coordinates
-
-    if horizontal
-        coordinates[0] = adjustedIndex * square.width
-    else
-        coordinates[1] = adjustedIndex * square.height
-    end if
-
-    return coordinates
-end function
-
-
-sub getCarouselDimensions()
-
-end sub
-
-function margins()
-    margin = get("squareMargins") ?? 0
-
-    returnObj = {
-        "left": 0,
-        "top": 0,
-        "right": 0,
-        "bottom": 0
-    }
-
-    if margin.count() = 1
-        returnObj["left"] = margin[0]
-        returnObj["top"] = margin[0]
-        returnObj["right"] = margin[0]
-        returnObj["bottom"] = margin[0]
-    else if margin.count() = 2 or margin.count() = 3
-        returnObj["left"] = margin[0]
-        returnObj["top"] = margin[1]
-        returnObj["right"] = margin[0]
-        returnObj["bottom"] = margin[1]
-    else if margin.count() = 4
-        returnObj["left"] = margin[3]
-        returnObj["top"] = margin[0]
-        returnObj["right"] = margin[1]
-        returnObj["bottom"] = margin[2]
-    end if
-
-    return returnObj
-end function
-
-
-function getHeight() as integer
-    if get("flushFocus")
-        firstSet = m.targetsetRects[0] ?? []
-        lastItem = firstSet[firstSet.count() - 1] ?? { height: 0, width: 0, x: 0, y: 0}
-
-        if get("direction") = "horizontal"
-            return lastItem.height
-        else
-            return get("maxHeight")
-        end if
-    else
-        if get("direction") = "horizontal"
-            return get("squareTotalArea").height
-        else
-            return get("squareTotalArea").height * get("visibleTiles")
-        end if
-    end if
-end function
-
-
-function getWidth() as integer
-    if get("flushFocus")
-        if get("direction") = "horizontal"
-            return get("maxWidth") ?? 0
-        else
-
-            reduction = function(acc, cv, index, arr, args)
-                if rodash.isArray(cv)
-                    width = CommonUtils_reduce(cv, args.reduction, {reduction: args.reduction}, 0)
-                else
-                    width = cv.width
-                end if
-
-                if width > acc then acc = width
-                return acc
-            end function
-
-            maxWidth = CommonUtils_reduce(m.targetsetRects, reduction, {reduction: reduction}, 0)
-
-            return maxWidth
-        end if
-    else
-        if get("direction") = "horizontal"
-            firstSet = m.targetsetRects[m.lastVisibleIndex] ?? []
-            lastItem = firstSet[m.lastVisibleIndex]
-            ?"lastItem " lastItem
-            ' if not TypeGuard_isEmptyAssocArray(lastItem)
-            '     return lastItem.width + lastItem.x
-            ' end if
-            return get("squareTotalArea").width * get("visibleTiles")
-        else
-            return get("squareTotalArea").width
-        end if
-    end if
-end function
-
-
 namespace calculate
-    function carouselDimensions(options = {})
-        return 0
+    function carouselHeight(options = {})
+        if not rodash.isNonEmptyAA(options) then return 0
+
+        direction = options.direction
+        flushFocus = options.flushFocus
+        maxHeight = options.maxHeight
+        squareArea = options.squareTotalArea
+        visibleTiles = options.visibleTiles
+
+        if flushFocus
+            firstSet = m.targetsetRects[0] ?? []
+            lastItem = firstSet[firstSet.count() - 1] ?? { height: 0, width: 0, x: 0, y: 0}
+
+            if direction = "horizontal"
+                return lastItem.height
+            else
+                return maxHeight
+            end if
+        else
+            if direction = "horizontal"
+                return squareArea.height
+            else
+                return squareArea.height * visibleTiles
+            end if
+        end if
     end function
 
 
-    function totalWidth(options = {})
-        totalCarouselWidth = 0
-        return 0
+    function carouselWidth(options = {})
+        if not rodash.isNonEmptyAA(options) then return 0
+
+        direction = options.direction
+        flushFocus = options.flushFocus
+        maxWidth = options.maxWidth
+        squareArea = options.squareTotalArea
+        visibleTiles = options.visibleTiles
+
+        if flushFocus
+            if direction = "horizontal"
+                return maxWidth ?? 0
+            else
+                return squareArea.width * visibleTiles
+            end if
+        else
+            if direction = "horizontal"
+                return squareArea.width * visibleTiles
+            else
+                return squareArea.width
+            end if
+        end if
     end function
 
 
-    function totalRects()
-        return get("totalCarouselItems") + 2
+    ' Get the number of extra hidden rects
+    ' for *each side* of the carousel
+    ' meaning ultimately it will be n*2
+    function extraRectNumber(options = {})
+        if not rodash.isNonEmptyAA(options) then return 0
+
+        direction = options.direction
+        gutterSize = options.gutterSize
+        squareArea = options.squareTotalArea
+        defaultExtraRect = 1
+        ' If there is a gutter, meaning partially visible rects
+        ' on each side of the carousel,
+        ' then we need to add an extra rects
+        ' in order to smoothly load the partially visible rect.
+        if not rodash.isNonEmptyAA(squareArea) then return 0
+
+        gutterSize = gutterSize ?? 0
+        if gutterSize <= 0 then return defaultExtraRect
+
+        rectSize = squareTotalArea[direction = "horizontal" ? "width" : "height"]
+        percentageOfSquareAsGutter = gutterSize / rectSize
+        numberOfVisibleGutterSquares = int(percentageOfSquareAsGutter) + 1
+
+        return numberOfVisibleGutterSquares + defaultExtraRect
     end function
 
 
-    function visibleTiles(options = {})
-        configMaxTiles = get("visibleTiles") ?? 0
-        numberOfItems = get("totalCarouselItems") ?? 0
+    function floatMod(x as dynamic, y as dynamic)
+        if y = 0 then return 0
+        a = abs(x)
+        b = abs(y)
+        remainder = a - (int(a/b) * b)
+        return remainder * sgn(x)
+    end function
+
+
+    function rectStartingPosition(options = {}) as object
+        coordinates = [0, 0]
+        if not rodash.isNonEmptyAA(options) then return coordinates
+
+        index = options.index ?? 0
+        rect = options.square ?? {}
+        horizontal = options.horizontal ?? false
+        ' Because some of the tiles will be hidden
+        extraRects = options.extraRects
+        ' We need to adjust the index based on the extraRects
+        adjustedIndex = index + extraRects * -1
+
+        if rodash.isEmpty(rect) then return coordinates
+
+        if horizontal
+            coordinates[0] = adjustedIndex * rect.width
+        else
+            coordinates[1] = adjustedIndex * rect.height
+        end if
+
+        return coordinates
+    end function
+
+
+    function totalRects(options = {})
+        if not rodash.isNonEmptyAA(options) then return 0
+        visibleTiles = options.visibleTiles ?? {}
+        extraRects = options.extraRects ?? 0
+        return visibleTiles + (extraRects * 2)
+    end function
+
+
+    function margins(options = {})
+        returnObj = {
+            "left": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0
+        }
+        if not rodash.isNonEmptyAA(options) then return returnObj
+
+        margin = options.squareMargins ?? 0
+
+        if margin.count() = 1
+            returnObj["left"] = margin[0]
+            returnObj["top"] = margin[0]
+            returnObj["right"] = margin[0]
+            returnObj["bottom"] = margin[0]
+        else if margin.count() = 2 or margin.count() = 3
+            returnObj["left"] = margin[0]
+            returnObj["top"] = margin[1]
+            returnObj["right"] = margin[0]
+            returnObj["bottom"] = margin[1]
+        else if margin.count() = 4
+            returnObj["left"] = margin[3]
+            returnObj["top"] = margin[0]
+            returnObj["right"] = margin[1]
+            returnObj["bottom"] = margin[2]
+        end if
+
+        return returnObj
+    end function
+
+
+    function maxVisibleTiles(options = {})
+        if not rodash.isNonEmptyAA(options) then return 0
+        configMaxTiles = options.visibleTiles ?? 0
+        numberOfItems = options.totalCarouselItems ?? 0
         return numberOfItems < configMaxTiles ? numberOfItems : configMaxTiles
-        ' return true
     end function
 
 
-    function squareTotalArea()
+    function squareTotalArea(options = {})
+        if not rodash.isNonEmptyAA(options) then return 0
+
+        bigSquare = options.bigSquare
+        squareMargins = options.margins
+
         return {
-                height: get("bigSquare")[1] + margins().top + margins().bottom,
-                width: get("bigSquare")[0] + margins().left + margins().right
-            }
+            height: bigSquare[1] + squareMargins.top + squareMargins.bottom,
+            width: bigSquare[0] + squareMargins.left + squareMargins.right
+        }
     end function
 end namespace
 
@@ -645,13 +709,3 @@ function CommonUtils_reduce(arr as object, func as function, args as object, ini
 
     return accumulator
 end function
-
-
-function CommonUtils_floatMOD(x as dynamic, y as dynamic) as dynamic
-    if y = 0 then return 0
-    a = abs(x)
-    b = abs(y)
-    remainder = a - (int(a/b) * b)
-    return remainder * sgn(x)
-end function
-
