@@ -7,6 +7,7 @@ sub init()
         m.carousel.advancing = true
         m.carousel.reversing = true
         m.carousel.easeFunction = "linear"
+        m.rectSizes = []
         ' m.carousel.showTargetRects = true
 
         safeObserve("itemSelected", onItemSelected, m.carousel)
@@ -21,7 +22,7 @@ sub init()
             defaultVisibleIndex: 0,
             ' lastIndex: 2,
             direction: "horizontal",
-            dynamicRectSizes: [],
+            dynamicWidth: false,
             focusType: "floating",
             flushFocus: false,
             gutterSize: 0,
@@ -42,6 +43,10 @@ sub init()
 
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
+
+        safeFunctions({
+            registerChildRect: registerChildRect
+        })
 
         m.focusTimer = top().findNode("focusTimer")
         m.focusTimer.update({
@@ -177,7 +182,6 @@ sub onFocusedChildChange(options = {})
         args[0].animateToTargetSet = args[1]
     end sub, 100, [m.carousel, currentTargetSet])
 
-
     m.carousel.setFocus(true)
 end sub
 
@@ -193,8 +197,27 @@ sub onDataSet(options = {})
     safeObserve("rectConfig", processConfig, content)
 
     m.content = content
+    m.carousel.content = content
+    m.carousel.itemComponentName = content.rectConfig.itemComponentName
 
-    processConfig({ data: content.rectConfig })
+    if rodash.isBoolean(content.rectConfig.dynamicWidth) and content.rectConfig.dynamicWidth
+        rects = []
+        for x = 0 to m.content.getChildCount() -1
+            rects.push({
+                height: 36,
+                width: 12,
+                x: 0,
+                y: 0
+            })
+        end for
+        unFocusedTargetSet = createTargetSet({
+            focusIndex: 0,
+            targetRects: rects
+        })
+        m.carousel.targetSet = unFocusedTargetSet
+    else
+        processConfig({ data: content.rectConfig })
+    end if
 end sub
 
 
@@ -245,6 +268,7 @@ sub processConfig(options = {})
     })
     extraRects = calculate.extraRectNumber({
         direction: config.direction,
+        dynamicWidth: config.dynamicWidth,
         gutterSize: config.gutterSize,
         squareTotalArea: squareTotalArea
     })
@@ -271,6 +295,7 @@ sub processConfig(options = {})
         bigSquare: config.bigSquare,
         defaultVisibleIndex: config.defaultVisibleIndex,
         direction: config.direction,
+        dynamicWidth: config.dynamicWidth,
         extraRects: extraRects,
         firstVisibleIndex: firstVisibleIndex,
         flushFocus: config.flushFocus,
@@ -288,7 +313,6 @@ sub processConfig(options = {})
         animationDuration: config.animationDuration,
         itemComponentName: config.itemComponentName
     })
-
 
     top().width = calculate.carouselWidth({
         direction: config.direction,
@@ -324,18 +348,18 @@ sub clipCarousel()
 end sub
 
 
+sub registerChildRect(options = {})
+    m.rectSizes[options.index] = {
+        smallSquare: options.smallSquare,
+        bigSquare: options.bigSquare
+    }
+    if m.rectSizes.count() = m.content.getChildCount()
+        processConfig({ data: m.content.rectConfig })
+    end if
+end sub
+
+
 sub setListContent(options = {})
-    ' content = top().content
-    ' if not TypeGuard_isNode(content)
-    '     m.carousel.content = invalid
-    '     m.childCount = 0
-    '     return
-    ' end if
-
-    ' if not TypeGuard_isSameNode(m.carousel.content, content)
-    '     m.carousel.content = content
-    ' end if
-
     m.carousel.content = m.content
     m.carousel.itemComponentName = options.itemComponentName
     m.carousel.duration = options.animationDuration ?? 0.3
@@ -437,6 +461,7 @@ function returnTargetsetRects(options = {})
     smallSquare = options.smallSquare
     extraRects = options.extraRects
     direction = options.direction
+    dynamicWidth = options.dynamicWidth
     horizAlign = options.horizAlign
     flushFocus = options.flushFocus
     margins = options.margins
@@ -452,8 +477,8 @@ function returnTargetsetRects(options = {})
         targetRects = []
 
         for x = 0 to totalRects - 1
-            ' bigSquare = rectSquare({ type: "big", index: x })
-            ' smallSquare = rectSquare({ type: "small", index: x })
+            bigSquare = rectSquare({ type: "big", index: x })
+            smallSquare = rectSquare({ type: "small", index: x })
 
             square = x = focusedTile ? bigSquare : smallSquare
 
@@ -473,7 +498,38 @@ function returnTargetsetRects(options = {})
                 deltaY = (bigSquare[1] - smallSquare[1]) / 2
             end if
 
-            if flushFocus
+            if dynamicWidth
+                adjustedIndex = x + extraRects * -1
+                listDirection = direction = "horizontal" ? 0 : 1
+                rect = m.rectSizes[adjustedIndex]
+                if not rodash.isNonEmptyAA(rect) then rect = {
+                    bigSquare: [0, 0],
+                    smallSquare: [0, 0]
+                }
+
+                ' If not focused OR
+                ' if it is a row for unfocused state
+                square = x <> y or y = -1 ? rect.smallSquare : rect.bigSquare
+
+                coordinates = [0, 0]
+                previousRect = targetRects[x - 1]
+                if rodash.isNonEmptyAA(previousRect)
+                    if direction = "horizontal"
+                        coordinates[listDirection] = previousRect.x + previousRect.width + margins.left + margins.right
+                    else
+                        coordinates[listDirection] = previousRect.y + previousRect.height + margins.top + margins.bottom
+                    end if
+                end if
+
+                if rodash.isNonEmptyArray(square)
+                    targetRects.push({
+                        height: square[1] ?? 0,
+                        width: square[0] ?? 0,
+                        x: coordinates[0],
+                        y: coordinates[1]
+                    })
+                end if
+            else if flushFocus
                 containerPosition = calculate.rectFlushPosition({
                     bigSquare: bigSquare,
                     deltaX: deltaX,
@@ -526,14 +582,18 @@ function rectSquare(options = {}) as object
 
     squareKey = options.type = "small" ? "smallSquare" : "bigSquare"
 
-    ' if get("flushFocus")
-    '     if rodash.isEmpty(top().rectSizes) then return [0, 0]
+    rectConfig = m.content.rectConfig
+    dynamicWidth = rectConfig.dynamicWidth ?? false
 
-    '     index = options.index ?? 0
-    '     return (top().rectSizes[index] ?? {}).[squareKey] ?? [0, 0]
-    ' end if
+    if dynamicWidth
+        if rodash.isEmpty(m.rectSizes) then return [0, 0]
 
-    return get(squareKey)
+        index = options.index ?? 0
+        squaresObj = m.rectSizes[index] ?? m.rectSizes[0]
+        return squaresObj[squareKey] ?? [0, 0]
+    end if
+
+    return rectConfig[squareKey]
 end function
 
 
@@ -547,13 +607,9 @@ namespace calculate
         squareArea = options.squareTotalArea
         visibleTiles = options.visibleTiles
 
-
-
         if flushFocus
             firstSet = m.targetsetRects[0] ?? []
             lastItem = firstSet[firstSet.count() - 1] ?? { height: 0, width: 0, x: 0, y: 0}
-
-
 
             if direction = "horizontal"
                 return lastItem.height
@@ -602,6 +658,7 @@ namespace calculate
         if not rodash.isNonEmptyAA(options) then return 0
 
         direction = options.direction
+        dynamicWidth = options.dynamicWidth ?? false
         gutterSize = options.gutterSize
         squareArea = options.squareTotalArea
         defaultExtraRect = 1
@@ -610,6 +667,7 @@ namespace calculate
         ' then we need to add an extra rects
         ' in order to smoothly load the partially visible rect.
         if not rodash.isNonEmptyAA(squareArea) then return 0
+        if dynamicWidth then return 1
 
         gutterSize = gutterSize ?? 0
         if gutterSize <= 0 then return defaultExtraRect

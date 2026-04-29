@@ -38,13 +38,10 @@ sub init()
             "StylesController"
         ])
 
-        ?"FRIENDS "
-        ?get("asd")
-
         top().setFocus(true)
         loadList()
         loadSecondList()
-
+        loadThirdList()
     end sub)
 end sub
 
@@ -85,7 +82,7 @@ sub loadSecondList(options = {})
     list = createObject("roSGNode", "_ord_flexList")
     top().appendChild(list)
 
-    testModel = returnModel({ number: 11 })
+    testModel = returnModel({ number: 3 })
     testModel.addField("rectConfig", "assocarray", true)
     testModel.addField("totalCount", "integer", false)
 
@@ -115,6 +112,46 @@ sub loadSecondList(options = {})
     }
 
     m.secondList = list
+    ' list.setFocus(true)
+end sub
+
+
+sub loadThirdList(options = {})
+    list = createObject("roSGNode", "_ord_flexList")
+    list.id = "third_list"
+    top().appendChild(list)
+
+    testModel = returnDynamicWidthModel()
+    testModel.addField("rectConfig", "assocarray", true)
+    testModel.addField("totalCount", "integer", false)
+
+    testModel.id = "flexDynamicCarousel_model"
+    testModel.totalCount = testModel.getChildCount()
+
+    testModel.rectConfig = {
+        direction: "horizontal",
+        animationDuration: 0.1,
+        ' horizAlign: "right",
+        ' vertAlign: "top",
+        clip: false,
+        defaultVisibleIndex: 0,
+        dynamicWidth: true,
+        focusType: "floating",
+        itemComponentName: "DynamicItem",
+        visibleTiles: 99,
+        wrap: true,
+        flushFocus: true,
+        bigSquare: [200, 100],
+        gutterSize: 0,
+        smallSquare: [200, 100],
+        squareMargins: [8]
+    }
+
+    list.data = {
+        content: testModel
+    }
+
+    m.thirdList = list
     list.setFocus(true)
 end sub
 
@@ -125,6 +162,19 @@ function returnModel(options = {})
     for i = 1 to numberOfModels
         testModel.appendChild(createObject("roSGNode", "ContentNode"))
     end for
+    return testModel
+end function
+
+
+function returnDynamicWidthModel()
+    testModel = createObject("roSGNode", "ContentNode")
+    titles = ["Home", "Live Channels", "Documentaries", "TV Shows", "Account", "Movies"]
+    for each item in titles
+        childModel = createObject("roSGNode", "ContentNode")
+        childModel.title = item
+        testModel.appendChild(childModel)
+    end for
+
     return testModel
 end function
 

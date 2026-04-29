@@ -1,5 +1,5 @@
 module.exports = {
     "Palette": {
-        primaryColor: "#080707ff"
+        primaryColor: "#ffffffff"
     }
 };

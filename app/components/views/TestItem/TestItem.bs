@@ -33,6 +33,6 @@ end sub
 
 sub onFocusPercentChange(options = {})
     focusPercentage = options.data ?? {}
-    opacityPercentage = (0.5 * focusPercentage) * focusPercentage + 0.2
+    opacityPercentage = (0.5 * focusPercentage) * focusPercentage + 0.5
     m.container.opacity = opacityPercentage
 end sub

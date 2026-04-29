@@ -20,6 +20,9 @@ module.exports = {
         "_ord_flexList": {
             color: "#bad7fc00",
             translation: [120, 450]
+        },
+        "_ord_flexList#third_list": {
+            translation: [120, 850]
         }
     }
 };
