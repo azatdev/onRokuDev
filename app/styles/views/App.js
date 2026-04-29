@@ -14,10 +14,11 @@ module.exports = {
             },
             "test": []
         },
-        "MagicList": {
+        "_ord_flexList#first_list": {
+            color: "#bad7fc00",
             translation: [120, 99]
         },
-        "_ord_flexList": {
+        "_ord_flexList#second_list": {
             color: "#bad7fc00",
             translation: [120, 450]
         },

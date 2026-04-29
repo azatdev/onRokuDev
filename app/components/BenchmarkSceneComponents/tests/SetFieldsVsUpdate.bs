@@ -1,0 +1,184 @@
+class SetFieldsVsUpdate
+
+    sub new()
+        m.benchTimer = CreateObject("roTimespan")
+        m.logText = []
+        m.iterations = 499
+    end sub
+
+
+    sub start(options = {})
+
+        for each item in options.items()
+            m[item.key] = item.value
+        end for
+
+        ?chr(10)
+        ?`Starting benchmark "SetFieldsVsUpdate" with ${m.iterations + 1} iterations with node being instantiated in each iteration`
+        ?chr(10)
+
+        ' m.helperNode = createObject("roSGNode", "HelperNode")
+        m.obj = {
+            active: true,
+            adConfiguration: { test: "azat test" },
+            adSlots: ["Azat", "Test", "Items", "Placement"],
+            badges: ["Azat", "Test", "Items", "Placement"],
+            channelData: { test: "azat test" },
+            channelAvailability: { test: "azat test" },
+            channelId: "Azat testing stuff",
+            clickTrackingJson: { test: "azat test" },
+            contributors: ["Azat", "Test", "Items", "Placement"],
+            copyrightYear: "Azat testing stuff",
+            ctvFillImage: "Azat testing stuff",
+            countdownTimeMS: 99,
+            cwPosition: 99,
+            detailPageAnalyticsMetadata: ["Azat", "Test", "Items", "Placement"],
+            details: "Azat testing stuff",
+            duration: 99,
+            epgCategoryId: "Azat testing stuff",
+            episodeTitle: "Azat testing stuff",
+            playlist: ["Azat", "Test", "Items", "Placement"],
+            endDate: "Azat testing stuff",
+            episodeNum: 99,
+            extraVideos: ["Azat", "Test", "Items", "Placement"],
+            parentId: "Azat testing stuff",
+            parentBadges: ["Azat", "Test", "Items", "Placement"],
+            parentStreamAvailability: { test: "azat test" },
+            extraType: "Azat testing stuff",
+            featuredUri: "Azat testing stuff",
+            genres: ["Azat", "Test", "Items", "Placement"],
+            heroContentType: "Azat testing stuff",
+            heroPosterUri: "Azat testing stuff",
+            horizontalHeroUri: "Azat testing stuff",
+            horizontalPosterUri: "Azat testing stuff",
+            verticalPosterUri: "Azat testing stuff",
+            hasReverseOrder: true,
+            index: 99,
+            introEndPosition: 99,
+            introSkippable: true,
+            introStartPosition: 99,
+            isContinueWatchingRow: true,
+            isWatchlistRow: true,
+            isEPG: true,
+            isKids: true,
+            seriesId: "Azat testing stuff",
+            seriesBadges: ["Azat", "Test", "Items", "Placement"],
+            seriesTitle: "Azat testing stuff",
+            seriesDescription: "Azat testing stuff",
+            shortCode: "Azat testing stuff",
+            snapshotPosterUri: "Azat testing stuff",
+            sponsorMetadata: { test: "azat test" },
+            titlePosterUri: "Azat testing stuff"
+        }
+
+        m.test1()
+    end sub
+
+
+    sub end()
+        m.top.resultsText = m.logText.join(chr(10))
+    end sub
+
+
+    sub test1()
+        ?"Running Test 1"
+        m.benchTimer.mark()
+
+        for ix = 0 to m.iterations
+            helperNode = createObject("roSGNode", "HelperNode")
+            helperNode.setFields(m.obj)
+        end for
+
+        m.logText.push(`setFields took ${m.benchTimer.totalMilliseconds().toStr()} ms`)
+        m.test2()
+    end sub
+
+    sub test2()
+        ?"Running Test 2"
+        m.benchTimer.mark()
+
+        for ix = 0 to m.iterations
+            helperNode = createObject("roSGNode", "HelperNode")
+            helperNode.update(m.obj, true)
+        end for
+
+        m.logText.push(`Update took ${m.benchTimer.totalMilliseconds().toStr()} ms`)
+        m.test3()
+    end sub
+
+    sub test3()
+        ?"Running Test 3"
+        m.benchTimer.mark()
+
+        for ix = 0 to m.iterations
+            node = createObject("roSGNode", "Node")
+            node.addField("active", "boolean", true)
+            node.addField("adConfiguration", "assocarray", true)
+            node.addField("adSlots", "array", true)
+            node.addField("badges", "array", true)
+            node.addField("channelData", "assocArray", true)
+            node.addField("channelAvailability", "assocArray", true)
+            node.addField("channelId", "string", true)
+            node.addField("clickTrackingJson", "assocarray", true)
+            node.addField("contributors", "array", true)
+            node.addField("copyrightYear", "string", true)
+            node.addField("ctvFillImage", "string", true)
+            node.addField("countdownTimeMS", "integer", true)
+            node.addField("cwPosition", "integer", true)
+            node.addField("detailPageAnalyticsMetadata", "array", true)
+            node.addField("details", "string", true)
+            node.addField("duration", "integer", true)
+            node.addField("epgCategoryId", "string", true)
+            node.addField("episodeTitle", "string", true)
+            node.addField("playlist", "array", true)
+            node.addField("endDate", "string", true)
+            node.addField("episodeNum", "integer", true)
+            node.addField("extraVideos", "array", true)
+            node.addField("parentId", "string", true)
+            node.addField("parentBadges", "array", true)
+            node.addField("parentStreamAvailability", "assocArray", true)
+            node.addField("extraType", "string", true)
+            node.addField("featuredUri", "string", true)
+            node.addField("genres", "stringarray", true)
+            node.addField("heroContentType", "string", true)
+            node.addField("heroPosterUri", "string", true)
+            node.addField("horizontalHeroUri", "string", true)
+            node.addField("horizontalPosterUri", "string", true)
+            node.addField("verticalPosterUri", "string", true)
+            node.addField("hasReverseOrder", "boolean", true)
+            node.addField("index", "integer", true)
+            node.addField("introEndPosition", "integer", true)
+            node.addField("introSkippable", "boolean", true)
+            node.addField("introStartPosition", "integer", true)
+            node.addField("isContinueWatchingRow", "boolean", true)
+            node.addField("isWatchlistRow", "boolean", true)
+            node.addField("isEPG", "boolean", true)
+            node.addField("isKids", "boolean", true)
+            node.addField("seriesId", "string", true)
+            node.addField("seriesBadges", "array", true)
+            node.addField("seriesTitle", "string", true)
+            node.addField("seriesDescription", "string", true)
+            node.addField("shortCode", "string", true)
+            node.addField("snapshotPosterUri", "string", true)
+            node.addField("sponsorMetadata", "assocArray", true)
+            node.addField("titlePosterUri", "string", true)
+            node.setFields(m.obj)
+        end for
+
+        m.logText.push(`AddField and SetFields took ${m.benchTimer.totalMilliseconds().toStr()} ms`)
+        m.test4()
+    end sub
+
+    sub test4()
+        ?"Running Test 4"
+        m.benchTimer.mark()
+
+        for ix = 0 to m.iterations
+            helperNode = createObject("roSGNode", "Node")
+            helperNode.update(m.obj, true)
+        end for
+
+        m.logText.push(`Update with True took ${m.benchTimer.totalMilliseconds().toStr()} ms`)
+        m.end()
+    end sub
+end class

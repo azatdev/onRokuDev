@@ -2,7 +2,7 @@ sub init()
     m.top.removeChild(m.top.getChild(0))
     ?"BenchmarkScene"
     m.top.backgroundColor = "#000000"
-    runBenchmark("GroupVsRectangle")
+    runBenchmark("SetFieldsVsUpdate")
 end sub
 
 

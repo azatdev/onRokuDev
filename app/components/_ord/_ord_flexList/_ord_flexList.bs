@@ -7,6 +7,7 @@ sub init()
         m.carousel.advancing = true
         m.carousel.reversing = true
         m.carousel.easeFunction = "linear"
+        m.carousel.update({ focusPercent: 0.0 }, true)
         m.rectSizes = []
         ' m.carousel.showTargetRects = true
 
@@ -55,9 +56,9 @@ sub init()
             startTime: rodash.now()
         }, true)
 
-        m.focusTimer.duration = 0.016
+        m.focusTimer.duration = 0.0667
         m.focusTimer.repeat = true
-        safeObserve("fire", onFocusTimerFired)
+        safeObserve("fire", onFocusTimerFired, m.focusTimer)
     end sub)
 end sub
 
@@ -139,6 +140,33 @@ sub onFocusTimerFired(options = {})
 
     if not m.focusTimer.focused then currentPercentage = 1 - currentPercentage
 
+    unfocusedClippingRect = calculate.clippingRect({ focused: false, visibleIndexArray: get("visibleIndexArray") })
+    focusedClippingRect = calculate.clippingRect({ focused: true, visibleIndexArray: get("visibleIndexArray") })
+
+    deltaX = focusedClippingRect[0] - unfocusedClippingRect[0]
+    deltaY = focusedClippingRect[1] - unfocusedClippingRect[1]
+    deltaWidth = focusedClippingRect[2] - unfocusedClippingRect[2]
+    deltaHeight = focusedClippingRect[3] - unfocusedClippingRect[3]
+
+    direction = get("direction") ?? "horizontal"
+
+    if direction = "horizontal"
+        newClippingRect = [
+            deltaX * currentPercentage + unfocusedClippingRect[0],
+            focusedClippingRect[1],
+            deltaWidth * currentPercentage + unfocusedClippingRect[2] - (deltaX * currentPercentage + unfocusedClippingRect[0]),
+            focusedClippingRect[3]
+        ]
+    else
+       newClippingRect = [
+            focusedClippingRect[0],
+            deltaY * currentPercentage + unfocusedClippingRect[1],
+            focusedClippingRect[2]
+            deltaHeight * currentPercentage + unfocusedClippingRect[3]
+        ]
+    end if
+
+    m.carousel.clippingRect = newClippingRect
     m.carousel.focusPercent = currentPercentage
 end sub
 
@@ -286,11 +314,6 @@ sub processConfig(options = {})
     firstVisibleIndex = visibleIndexArray[0]
     lastVisibleIndex = visibleIndexArray[1]
 
-    set({
-        lastVisibleIndex: lastVisibleIndex,
-        wrap: config.wrap
-    })
-
     generateRects({
         bigSquare: config.bigSquare,
         defaultVisibleIndex: config.defaultVisibleIndex,
@@ -315,9 +338,12 @@ sub processConfig(options = {})
     })
 
     top().width = calculate.carouselWidth({
+        visibleIndexArray: visibleIndexArray,
         direction: config.direction,
         flushFocus: config.flushFocus,
         maxWidth: config.maxWidth,
+        bigSquare: config.bigSquare,
+        smallSquare: config.smallSquare,
         squareTotalArea: squareTotalArea,
         visibleTiles: maxVisibleTiles
     })
@@ -337,6 +363,13 @@ sub processConfig(options = {})
         top().reverseKey = "left"
         top().advanceKey = "right"
     end if
+
+    set({
+        direction: config.direction,
+        lastVisibleIndex: lastVisibleIndex,
+        visibleIndexArray: visibleIndexArray,
+        wrap: config.wrap
+    })
 
     if config.clip then clipCarousel()
 end sub
@@ -608,11 +641,8 @@ namespace calculate
         visibleTiles = options.visibleTiles
 
         if flushFocus
-            firstSet = m.targetsetRects[0] ?? []
-            lastItem = firstSet[firstSet.count() - 1] ?? { height: 0, width: 0, x: 0, y: 0}
-
             if direction = "horizontal"
-                return lastItem.height
+                return squareArea.height
             else
                 return maxHeight
             end if
@@ -629,15 +659,19 @@ namespace calculate
     function carouselWidth(options = {})
         if not rodash.isNonEmptyAA(options) then return 0
 
+        visibleIndexArray = options.visibleIndexArray
         direction = options.direction
         flushFocus = options.flushFocus
         maxWidth = options.maxWidth
         squareArea = options.squareTotalArea
+        bigSquare = options.bigSquare
+        smallSquare = options.smallSquare
         visibleTiles = options.visibleTiles
 
         if flushFocus
             if direction = "horizontal"
-                return maxWidth ?? 0
+                width = (smallSquare[0] * (visibleTiles - 1)) + bigSquare[0]
+                return width
             else
                 return squareArea.width * visibleTiles
             end if
@@ -648,6 +682,27 @@ namespace calculate
                 return squareArea.width
             end if
         end if
+    end function
+
+
+    function clippingRect(options = {})
+        focused = options.focused ?? false
+        visibleIndexArray = options.visibleIndexArray
+
+        clippingRectangle = [0, 0, 0, 0]
+
+        targetSet = focused ? m.targetSetArray[0] : m.unFocusedTargetSet
+        targetRects = targetSet.targetRects
+
+        firstVisibleRect = targetRects[visibleIndexArray[0]]
+        lastVisibleRect = targetRects[visibleIndexArray[1]]
+
+        clippingRectangle[0] = firstVisibleRect.x
+        clippingRectangle[1] = firstVisibleRect.y
+        clippingRectangle[2] = lastVisibleRect.width + lastVisibleRect.x
+        clippingRectangle[3] = firstVisibleRect.height
+
+        return clippingRectangle
     end function
 
 
