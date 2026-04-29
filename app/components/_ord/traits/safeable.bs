@@ -130,7 +130,9 @@ class Safeable
 
         node.callFunc("safeFunc", functionName)
 
-        return proxyData.output ?? invalid
+        returnObj = proxyData.output ?? invalid
+        proxyData.output = invalid
+        return returnObj
     end function
 
 
@@ -139,7 +141,8 @@ class Safeable
         options = proxyData.input
         returnData = exec(functionName, options, top())
         proxyData.input = invalid
-        proxyData.output = rodash.isEmpty(returnData) ? invalid : returnData
+        proxyData.output = returnData
+        ' proxyData.output = rodash.isEmpty(returnData) ? invalid : returnData
     end sub
 
 

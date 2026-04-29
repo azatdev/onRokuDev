@@ -9,7 +9,10 @@ end sub
 sub setupItem()
     m.indexLabel = m.top.findNode("label")
     m.container = m.top.findNode("container")
+    m.container.opacity = 0.2
     safeObserve("currRect", onCurrentRectChange)
+    safeObserve("focusPercent", onFocusPercentChange)
+
 end sub
 
 sub itemContentChanged(event)
@@ -21,8 +24,15 @@ sub onCurrentRectChange(options = {})
     ' ?"onCurrentRectChange " m.top.index
 
     if rodash.isNode(m.container)
-        m.container.height = rect.height - 3
-        m.container.width = rect.width - 3
+        m.container.height = rect.height
+        m.container.width = rect.width
     end if
 
+end sub
+
+
+sub onFocusPercentChange(options = {})
+    focusPercentage = options.data ?? {}
+    opacityPercentage = (0.5 * focusPercentage) * focusPercentage + 0.2
+    m.container.opacity = opacityPercentage
 end sub

@@ -107,7 +107,7 @@ function setStyles(options, node = m.top)
 end function
 
 
-function dispatch(eventId, options, node = m.top)
+function dispatch(eventId, options = {})
     interface = m.interfaceFunctions["dispatch"]
     if interface = invalid then return invalid
     return interface.dispatch({

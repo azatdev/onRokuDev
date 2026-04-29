@@ -65,22 +65,6 @@ class Styleable
     end sub
 
 
-    sub updateGlobalStyles(options = {})
-        if not rodash.isNode(global()._ord_styles) then return
-        if rodash.isEmpty(options) then return
-
-        styleNode = global()._ord_styles
-
-        for each viewStyle in options.items()
-            if not styleNode.hasField(viewStyle.key)
-                styleNode.addField(viewStyle.key, "assocarray", false)
-            end if
-
-            styleNode.setField(viewStyle.key, viewStyle.value)
-        end for
-    end sub
-
-
     sub setExportFunctions(componentRole)
         if rodash.isEmptyString(componentRole) then return
 

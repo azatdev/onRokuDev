@@ -5,12 +5,12 @@ module.exports = {
         "Group#container": {
             translation: [0, 0],
             "Label": {
-                color: "#5bfaf2ff",
+                color: "#190c8bff",
                 translation: [33, 33],
                 width: 0
             },
             "Label#title": {
-                color: "#72ebe1ff"
+                color: "#f3efebff"
             },
             "test": []
         },
@@ -18,7 +18,7 @@ module.exports = {
             translation: [120, 99]
         },
         "_ord_flexList": {
-            color: "#bad7fc80",
+            color: "#bad7fc00",
             translation: [120, 450]
         }
     }

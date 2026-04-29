@@ -3,6 +3,7 @@
     <interface>
         <field id="index" type="integer" />
         <field id="currRect" type="rect2d" />
+        <field id="focusPercent" type="float" />
         <field id="itemContent" type="node" onChange="itemContentChanged" />
         <function name="safeFunc" />
     </interface>

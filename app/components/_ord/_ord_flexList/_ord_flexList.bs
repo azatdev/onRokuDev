@@ -161,7 +161,9 @@ sub onFocusedChildChange(options = {})
     if unfocused
         unFocusedTargetSet = m.unFocusedTargetSet
         unFocusedTargetSet.focusIndex = m.carousel.targetSet.focusIndex
-        m.carousel.animateToTargetSet = unFocusedTargetSet
+        rodash.delay(sub(args)
+            args[0].animateToTargetSet = args[1]
+        end sub, 100, [m.carousel, unFocusedTargetSet])
         m.carousel.animateToItem = currentIndex
         return
     end if
@@ -409,7 +411,6 @@ sub setUnfocusedTargetSet(options = {})
     unfocusedRects = options.unfocusedRects
 
     if flushFocus or not rodash.isNode(m.carousel.targetSet)
-        ' if get("flushFocus") then extraRects = 0
 
         ' Peel off the first array, which should always be for unfocused targetset
         unFocusedTargetSet = createTargetSet({
@@ -437,9 +438,9 @@ function returnTargetsetRects(options = {})
     extraRects = options.extraRects
     direction = options.direction
     horizAlign = options.horizAlign
+    flushFocus = options.flushFocus
     margins = options.margins
     squareTotalArea = options.squareTotalArea
-
     totalRects = options.totalRects
     vertAlign =  options.vertAlign
 
@@ -453,6 +454,8 @@ function returnTargetsetRects(options = {})
         for x = 0 to totalRects - 1
             ' bigSquare = rectSquare({ type: "big", index: x })
             ' smallSquare = rectSquare({ type: "small", index: x })
+
+            square = x = focusedTile ? bigSquare : smallSquare
 
             if horizAlign = "left"
                 deltaX = 0
@@ -470,24 +473,45 @@ function returnTargetsetRects(options = {})
                 deltaY = (bigSquare[1] - smallSquare[1]) / 2
             end if
 
-            containerPosition = calculate.rectStartingPosition({
-                extraRects: extraRects,
-                horizontal: direction = "horizontal",
-                index: x,
-                square: squareTotalArea
-            })
+            if flushFocus
+                containerPosition = calculate.rectFlushPosition({
+                    bigSquare: bigSquare,
+                    deltaX: deltaX,
+                    deltaY: deltaY,
+                    extraRects: extraRects,
+                    horizontal: direction = "horizontal",
+                    index: x,
+                    focusedTile: focusedTile,
+                    smallSquare: smallSquare
+                })
 
-            square = x = focusedTile ? bigSquare : smallSquare
+                targetRects.push({
+                    x: containerPosition[0],
+                    y: containerPosition[1],
+                    width: square[0],
+                    height: square[1]
+                })
+            else
+                containerPosition = calculate.rectStartingPosition({
+                    extraRects: extraRects,
+                    flushFocus: flushFocus,
+                    horizontal: direction = "horizontal",
+                    margins: margins,
+                    smallSquare: smallSquare,
+                    index: x,
+                    square: squareTotalArea
+                })
 
-            offsetX = x = focusedTile ? margins.left : deltaX + margins.left
-            offsetY = x = focusedTile ? margins.top : deltaY + margins.top
+                offsetX = x = focusedTile ? margins.left : deltaX + margins.left
+                offsetY = x = focusedTile ? margins.top : deltaY + margins.top
 
-            targetRects.push({
-                x: containerPosition[0] + offsetX,
-                y: containerPosition[1] + offsetY,
-                width: square[0],
-                height: square[1]
-            })
+                targetRects.push({
+                    x: containerPosition[0] + offsetX,
+                    y: containerPosition[1] + offsetY,
+                    width: square[0],
+                    height: square[1]
+                })
+            end if
         end for
 
         targetsetRects.push(targetRects)
@@ -523,9 +547,13 @@ namespace calculate
         squareArea = options.squareTotalArea
         visibleTiles = options.visibleTiles
 
+
+
         if flushFocus
             firstSet = m.targetsetRects[0] ?? []
             lastItem = firstSet[firstSet.count() - 1] ?? { height: 0, width: 0, x: 0, y: 0}
+
+
 
             if direction = "horizontal"
                 return lastItem.height
@@ -603,7 +631,44 @@ namespace calculate
     end function
 
 
-    function rectStartingPosition(options = {}) as object
+    function rectFlushPosition(options = {})
+        coordinates = [0, 0]
+        if not rodash.isNonEmptyAA(options) then return coordinates
+
+        bigSquare = options.bigSquare
+        deltaX = options.deltaX
+        deltaY = options.deltaY
+        extraRects = options.extraRects
+        horizontal = options.horizontal
+        index = options.index
+        focusedTile = options.focusedTile
+        smallSquare = options.smallSquare
+
+        adjustedIndex = index + extraRects * -1
+
+        primaryArrayIndex = horizontal ? 0 : 1
+        secondryArrayIndex = horizontal ? 1 : 0
+        deltaArray = [deltaX, deltaY]
+
+        if focusedTile = -1
+            coordinates[primaryArrayIndex] = adjustedIndex * smallSquare[primaryArrayIndex] + (deltaArray[primaryArrayIndex] / 2)
+            coordinates[secondryArrayIndex] = deltaArray[secondryArrayIndex]
+        else if index < focusedTile
+            coordinates[primaryArrayIndex] = adjustedIndex * smallSquare[primaryArrayIndex]
+            coordinates[secondryArrayIndex] = deltaArray[secondryArrayIndex]
+        else if index = focusedTile
+            coordinates[primaryArrayIndex] = adjustedIndex * smallSquare[primaryArrayIndex]
+            coordinates[secondryArrayIndex] = 0
+        else
+            coordinates[primaryArrayIndex] = ((adjustedIndex - 1) * smallSquare[primaryArrayIndex]) + bigSquare[primaryArrayIndex]
+            coordinates[secondryArrayIndex] = deltaArray[secondryArrayIndex]
+        end if
+
+        return coordinates
+    end function
+
+
+    function rectStartingPosition(options = {})
         coordinates = [0, 0]
         if not rodash.isNonEmptyAA(options) then return coordinates
 

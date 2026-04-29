@@ -51,8 +51,8 @@ end sub
 
 sub loadList(options = {})
     rectConfig = {
-        "autoclip": true,
         "bigSquare": [252, 321],
+        "autoclip": true,
         "defaultVisibleIndex": 1,
         "direction": "horizontal",
         "duration": 0.3,
@@ -92,12 +92,15 @@ sub loadSecondList(options = {})
     testModel.rectConfig = {
         direction: "horizontal",
         animationDuration: 0.1,
-        clip: true,
-        defaultVisibleIndex: 1,
+        ' horizAlign: "right",
+        ' vertAlign: "top",
+        clip: false,
+        defaultVisibleIndex: 0,
         focusType: "floating",
         itemComponentName: "TestItem",
         visibleTiles: 4,
         wrap: true,
+        flushFocus: true,
         bigSquare: [252, 321],
         gutterSize: 0,
         smallSquare: [213, 273],
@@ -129,6 +132,7 @@ end function
 function onTheNose(options = {})
     return { result: options.name + " success"  }
 end function
+
 
 function onKeyEvent(key as string, press as boolean) as boolean
     return exec(function(options = {})

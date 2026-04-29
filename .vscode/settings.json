@@ -1,5 +1,5 @@
 {
-    "brightscript.debug.enableDebugProtocol": false,
+    "brightscript.debug.enableDebugProtocol": true,
     "brightscript.debug.enableSourceMaps": true,
     "brightscript.deviceDiscovery.enabled": false,
     "editor.insertSpaces": true,

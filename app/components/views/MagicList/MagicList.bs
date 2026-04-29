@@ -316,6 +316,7 @@ sub onFocusedChildChange(event)
     currentIndex = m.top.focusedContentIndex
     if m.top.content = invalid then return
 
+
     unfocused = node = invalid or not node.isSameNode(m.top) and not m.top.isInFocusChain()
 
     if not TypeGuard_isNode(m.list.targetSet) then return
@@ -334,14 +335,16 @@ sub onFocusedChildChange(event)
     if unfocused
         unFocusedTargetSet = m.unFocusedTargetSet
         unFocusedTargetSet.focusIndex = m.list.targetSet.focusIndex
-        m.list.animateToTargetSet = unFocusedTargetSet
+        ' m.list.animateToTargetSet = unFocusedTargetSet
         m.list.animateToItem = currentIndex
+        rodash.delay(sub(args)
+            args[0].animateToTargetSet = args[1]
+        end sub, 100, [m.list, unFocusedTargetSet])
         return
     end if
 
     if not TypeGuard_isArray(m.targetSetArray) then return
 
-    ?"m.top.focusedTargetsetIndex " m.top.focusedTargetsetIndex, m.targetSetArray
     currentTargetSet = m.targetSetArray[m.top.focusedTargetsetIndex]
 
     m.list.jumpToItem = currentIndex
