@@ -17,6 +17,7 @@ class Safeable
 
         m.publicFunctions.push("exec")
         m.publicFunctions.push("safeObserve")
+        m.publicFunctions.push("safeUnobserve")
         m.publicFunctions.push("safeFunctions")
 
         if rodash.findIndex(["Task"], componentRole) <> -1
@@ -156,19 +157,38 @@ class Safeable
 
         if rodash.isEmptyString(callbackFunc) then return
 
-        m.storeCallback({ field: fieldName, callback: callbackFunc })
+        nodeIdentifier = node.isSameNode(getGlobalAA().top) ? "" : `_${node.subType()}_${node.id}`
+        uniqueFieldName = `${fieldName}${nodeIdentifier}`
+
+        m.storeCallback({
+            field: uniqueFieldName,
+            callback: callbackFunc
+        })
 
         node.unObserveFieldScoped(fieldName)
         node.observeFieldScoped(fieldName, rodash.getFunctionName(m.safeCallback), infoFields)
     end sub
 
 
+    sub safeUnobserve(fieldName = "", node = getGlobalAA().top)
+        if rodash.isEmptyString(fieldName) then return
+        nodeIdentifier = node.isSameNode(getGlobalAA().top) ? "" : `_${node.subType()}_${node.id}`
+        uniqueFieldName = `${fieldName}${nodeIdentifier}`
+        node.unObserveFieldScoped(fieldName)
+        m.removeCallback({ field: uniqueFieldName })
+    end sub
+
+
     sub safeCallback(event)
         fieldName = event.getField() ?? ""
+        if rodash.isEmptyString(fieldName) then return
+
         callbacks = top().getRef("_ord_callbacks") ?? {}
+        node = event.getRoSGNode()
+        nodeIdentifier = node.isSameNode(getGlobalAA().top) ? "" : `_${node.subType()}_${node.id}`
+        uniqueFieldName = `${fieldName}${nodeIdentifier}`
 
-        functionName = callbacks[fieldName] ?? ""
-
+        functionName = callbacks[uniqueFieldName] ?? ""
         if rodash.isEmptyString(functionName) then return
 
         payload = {
@@ -202,6 +222,15 @@ class Safeable
     end sub
 
 
+    sub removeCallback(options = {})
+        callbacks = top().getRef("_ord_callbacks") ?? {}
+
+        field = options.field
+        callbacks.delete(field)
+        top().setRef("_ord_callbacks", callbacks)
+    end sub
+
+
     sub storeCallback(options = {})
         callbacks = top().getRef("_ord_callbacks") ?? {}
 
@@ -218,4 +247,5 @@ class Safeable
         taskFunction = options.function
         getGlobalAA()._ord_taskFunction = taskFunction
     end sub
+
 end class

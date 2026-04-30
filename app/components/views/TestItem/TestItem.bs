@@ -27,7 +27,6 @@ sub onCurrentRectChange(options = {})
         m.container.height = rect.height
         m.container.width = rect.width
     end if
-
 end sub
 
 

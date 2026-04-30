@@ -14,7 +14,6 @@
     </interface>
     <children>
         <TargetGroup id="carousel" />
-        <Timer id="focusTimer" />
     </children>
     <script type="text/brightscript" uri="_ord_flexList.bs" />
 </component>

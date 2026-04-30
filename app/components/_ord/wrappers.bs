@@ -61,6 +61,13 @@ function safeObserve(fieldName = "", callbackFunc = "", node = m.top, infoFields
 end function
 
 
+function safeUnobserve(fieldName = "", node = m.top)
+    interface = m.interfaceFunctions["safeUnobserve"]
+    if interface = invalid then return invalid
+    return interface.safeUnobserve(fieldName, node)
+end function
+
+
 function setTaskFunction(taskFunction = invalid)
     if not rodash.isFunction(taskFunction) then return invalid
     interface = m.interfaceFunctions["setTaskFunction"]
