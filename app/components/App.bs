@@ -4,6 +4,7 @@ import "testdata.bs"
 
 sub init()
     exec(sub()
+        ' m.top.removeChild(m.top.getChild(0))
         ?"INIT " m.top.subtype()
         ' m.secondNode = createObject("roSGNode", "SecondNode")
 
@@ -39,9 +40,9 @@ sub init()
         ])
 
         top().setFocus(true)
-        ' loadList()
+        loadList()
         loadSecondList()
-        ' loadThirdList()
+        loadThirdList()
         ' loadRectTest()
     end sub)
 end sub
@@ -52,8 +53,11 @@ sub loadRectTest()
     rect1.id = "rect1"
     rect2 = createObject("roSGNode", "Rectangle")
     rect2.id = "rect2"
-    rect1.appendChild(rect2)
-    top().appendChild(rect1)
+    ' rect1.appendChild(rect2)
+    ?"insertingChildren " rodash.now()
+    top().insertChild(rect1, 0)
+    ?"insertingChildren 2 " rodash.now()
+    top().insertChild(rect2, 0)
 end sub
 
 
@@ -106,7 +110,7 @@ sub loadSecondList(options = {})
     testModel.addField("totalCount", "integer", false)
 
     testModel.rectConfig = {
-        direction: "vertical",
+        ' direction: "vertical",
         animationDuration: 0.3,
         ' horizAlign: "right",
         ' vertAlign: "bottom",
@@ -117,7 +121,7 @@ sub loadSecondList(options = {})
         visibleTiles: 4,
         wrap: true,
         flushFocus: true,
-        bigSquare: [421, 252],
+        bigSquare: [421, 452],
         gutterSize: 0,
         smallSquare: [273, 213],
         squareMargins: [0]
@@ -149,10 +153,10 @@ sub loadThirdList(options = {})
     m.dynamicModel = testModel
 
     testModel.rectConfig = {
-        direction: "horizontal",
+        direction: "vertical",
         animationDuration: 0.1,
-        ' horizAlign: "right",
-        ' vertAlign: "top",
+        ' horizAlign: "left",
+        vertAlign: "top",
         clip: true,
         defaultVisibleIndex: 0,
         dynamicWidth: true,
@@ -161,11 +165,11 @@ sub loadThirdList(options = {})
         visibleTiles: 999,
         wrap: true,
         flushFocus: true,
-        maxWidth: 900,
+        maxWidth: 600,
         bigSquare: [200, 100],
         gutterSize: 0,
         smallSquare: [200, 100],
-        squareMargins: [8]
+        squareMargins: [0, 6]
     }
 
     list.data = {

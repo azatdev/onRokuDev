@@ -4,7 +4,7 @@ const palette = mixins["Palette"]
 module.exports = {
     "TestItem": {
         "Rectangle#container": {
-            color: "#84bef3ff",
+            color: "#84bef380",
         },
         "Label#label": {
             color: palette.primaryColor,

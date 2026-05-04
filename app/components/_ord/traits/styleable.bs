@@ -11,20 +11,14 @@ class Styleable
         end if
 
         styleNode = global()._ord_styles
-
         appStyles = "<%- o(STYLES) %>"
 
         if not styleNode.hasField(top().subType())
             styleNode.addField(top().subType(), "assocarray", false)
             styleNode.setField(top().subType(), appStyles[top().subType()])
-            styleNode.observeFieldScoped(top().subType(), rodash.getFunctionName(m.stylesUpdated))
         end if
 
-
-        ' if role() = "Scene"
-        '     m.setStyles(appStyles.App)
-        ' end if
-
+        styleNode.observeFieldScoped(top().subType(), rodash.getFunctionName(m.stylesUpdated))
 
         m.setStyles(styleNode[top().subType()])
 

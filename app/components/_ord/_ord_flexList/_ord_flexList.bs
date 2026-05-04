@@ -3,10 +3,11 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub()
+        m.clippingRectOutline = top().findNode("clippingRectOutline")
         m.carousel = top().findNode("carousel")
         m.carousel.advancing = true
         m.carousel.reversing = true
-        m.carousel.easeFunction = "piecewise"
+        m.carousel.easeFunction = "linear"
         m.carousel.update({ focusPercent: 0.0 }, true)
         m.rectSizes = []
         ' m.carousel.showTargetRects = true
@@ -16,7 +17,7 @@ sub init()
         safeObserve("itemUnfocused", onItemUnfocused, m.carousel)
         safeObserve("focusedChild", onCarouselFocusedChildChange, m.carousel)
 
-        getGlobalAA().initialFocusNode = m.carousel
+        m.initialFocusNode = m.carousel
 
         set({ defaultConfig: {
             animationDuration: 0.3,
@@ -72,9 +73,14 @@ end sub
 sub onTestTimerFired(options = {})
     fraction = options.data
     if rodash.isNode(m.focusTimer) and (fraction = 0 or fraction = 1) then safeUnobserve("fraction", m.focusTimer)
+
     percentage = m.carousel.isInFocusChain() ? fraction : 1 - fraction
-    applyClippingRect({ percentage: percentage })
-    ' m.carousel.focusPercent = percentage
+
+    ' There is a 100ms delay before
+    ' TargetGroup animation starts
+    rodash.delay(sub(percentage)
+        applyClippingRect({ percentage: percentage })
+    end sub, 100, percentage)
 end sub
 
 
@@ -134,43 +140,41 @@ sub applyClippingRect(options = {})
     if not get("clip") then return
 
     percentage = options.percentage
+    percentage = percentage < 0 ? 0 : percentage
+    percentage = percentage > 1 ? 1 : percentage
     direction = get("direction") ?? "horizontal"
     focusedClippingRect = get("focusedClippingRect")
     unfocusedClippingRect = get("unfocusedClippingRect")
+    ?"focusedClippingRect " focusedClippingRect
 
     if focusedClippingRect = invalid then return
     if unfocusedClippingRect = invalid then return
-
-    if top().id = "second_list"
-        ?"focusedClippingRect " focusedClippingRect
-        ?"unfocusedClippingRect " unfocusedClippingRect
-    end if
 
     deltaX = focusedClippingRect[0] - unfocusedClippingRect[0]
     deltaY = focusedClippingRect[1] - unfocusedClippingRect[1]
     deltaWidth = focusedClippingRect[2] - unfocusedClippingRect[2]
     deltaHeight = focusedClippingRect[3] - unfocusedClippingRect[3]
 
+    newClippingRect = [
+        deltaX * percentage + unfocusedClippingRect[0],
+        deltaY * percentage + unfocusedClippingRect[1],
+        deltaWidth * percentage + unfocusedClippingRect[2],
+        deltaHeight * percentage + unfocusedClippingRect[3]
+    ]
+
     if direction = "horizontal"
-        newClippingRect = [
-            deltaX * percentage + unfocusedClippingRect[0],
-            deltaY * percentage + unfocusedClippingRect[1],
-            deltaWidth * percentage + unfocusedClippingRect[2] - (deltaX * percentage + unfocusedClippingRect[0]),
-            deltaHeight * percentage + unfocusedClippingRect[3]
-        ]
+        newClippingRect[2] -= (deltaX * percentage + unfocusedClippingRect[0])
     else
-       newClippingRect = [
-            focusedClippingRect[0],
-            deltaY * percentage + unfocusedClippingRect[1],
-            focusedClippingRect[2]
-            deltaHeight * percentage + unfocusedClippingRect[3]
-        ]
+        newClippingRect[3] -= (deltaY * percentage + unfocusedClippingRect[1])
     end if
 
-    top().width = newClippingRect[0] + newClippingRect[2]
-    top().height = newClippingRect[1] + newClippingRect[3]
+    m.clippingRectOutline.width = newClippingRect[2]
+    m.clippingRectOutline.height = newClippingRect[3]
+    m.clippingRectOutline.translation = [newClippingRect[0], newClippingRect[1]]
+
+    top().width = focusedClippingRect[2]
+    top().height = focusedClippingRect[3]
     top().clippingRect = newClippingRect
-    ' m.carousel.clippingRect = newClippingRect
 end sub
 
 
@@ -182,7 +186,6 @@ sub setClippingRects(options = {})
     gutterSize = options.gutterSize ?? 0
     maxWidth = options.maxWidth ?? 0
 
-    ?"setClippingRects dynamicWidth " dynamicWidth
     unfocusedClippingRect = clippingRects.shift()
     set({ unfocusedClippingRect: unfocusedClippingRect })
 
@@ -192,7 +195,6 @@ sub setClippingRects(options = {})
     for each clippingRect in clippingRects
         if clippingRect[2] > focusedClippingRect[2] then focusedClippingRect[2] = clippingRect[2]
     end for
-
 
     if dynamicWidth and maxWidth > 0
         focusedClippingRect[index] = maxWidth
@@ -411,8 +413,6 @@ sub generateRects(options = {})
     focusType = options.focusType
     maxWidth = options.maxWidth
 
-    ?"dynamicWidth " dynamicWidth
-
     rects = returnTargetsetRects(options)
     targetsetRects = rects.targetsetRects
     clippingRects = rects.clippingRects
@@ -628,11 +628,7 @@ function returnTargetsetRects(options = {})
                     if direction = "horizontal"
                         rectsLastY = targetRect.height
                     else
-                        rectsLastY = targetRect.height + targetRect.y - deltaY
-                    end if
-
-                    if top().id = "second_list"
-                        ?"rectsLastY " rectsLastY
+                        rectsLastY = targetRect.height + targetRect.y
                     end if
 
                     if clippingRect[3] < rectsLastY then clippingRect[3] = rectsLastY

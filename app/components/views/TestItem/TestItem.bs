@@ -10,7 +10,7 @@ end sub
 sub setupItem()
     m.indexLabel = m.top.findNode("label")
     m.container = m.top.findNode("container")
-    m.container.opacity = 0.2
+    m.container.opacity = 0.5
     safeObserve("currRect", onCurrentRectChange)
     safeObserve("focusPercent", onFocusPercentChange)
 end sub
