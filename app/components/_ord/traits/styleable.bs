@@ -17,6 +17,7 @@ class Styleable
         if not styleNode.hasField(top().subType())
             styleNode.addField(top().subType(), "assocarray", false)
             styleNode.setField(top().subType(), appStyles[top().subType()])
+            styleNode.observeFieldScoped(top().subType(), rodash.getFunctionName(m.stylesUpdated))
         end if
 
 
@@ -24,7 +25,6 @@ class Styleable
         '     m.setStyles(appStyles.App)
         ' end if
 
-        styleNode.observeFieldScoped(top().subType(), rodash.getFunctionName(m.stylesUpdated))
 
         m.setStyles(styleNode[top().subType()])
 

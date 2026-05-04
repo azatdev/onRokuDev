@@ -17,7 +17,7 @@ sub onStylesUpdate(options = {})
     globeStyles = global()._ord_styles
     newStyles = options.STYLES ?? {}
     for each style in newStyles.items()
-        globeStyles[style.key] = style.value
+        if globeStyles[style.key] <> invalid then globeStyles[style.key] = style.value
     end for
 end sub
 

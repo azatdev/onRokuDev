@@ -6,7 +6,7 @@ sub init()
         m.carousel = top().findNode("carousel")
         m.carousel.advancing = true
         m.carousel.reversing = true
-        m.carousel.easeFunction = "linear"
+        m.carousel.easeFunction = "piecewise"
         m.carousel.update({ focusPercent: 0.0 }, true)
         m.rectSizes = []
         ' m.carousel.showTargetRects = true
@@ -18,7 +18,7 @@ sub init()
 
         getGlobalAA().initialFocusNode = m.carousel
 
-        defaultConfig = {
+        set({ defaultConfig: {
             animationDuration: 0.3,
             clip: true,
             componentName: "",
@@ -39,10 +39,7 @@ sub init()
             smallSquare: [0, 0],
             squareMargins: [0, 0],
             squareTotalArea: [0, 0]
-        }
-
-        set({ defaultConfig: defaultConfig })
-        set(defaultConfig)
+        }})
 
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
@@ -76,7 +73,8 @@ sub onTestTimerFired(options = {})
     fraction = options.data
     if rodash.isNode(m.focusTimer) and (fraction = 0 or fraction = 1) then safeUnobserve("fraction", m.focusTimer)
     percentage = m.carousel.isInFocusChain() ? fraction : 1 - fraction
-    setClippingRect({ percentage: percentage })
+    applyClippingRect({ percentage: percentage })
+    ' m.carousel.focusPercent = percentage
 end sub
 
 
@@ -87,19 +85,21 @@ function onKeyEvent(key as string, press as boolean) as boolean
         carousel = options.carousel
 
         if not press then return true
-        if not rodash.isArray(m.targetSetArray) then return true
+        if not rodash.isArray(m.focusedTargetSetArray) then return true
+        if not rodash.isNode(carousel) then return true
+
         if calculate.floatMOD(carousel.currFocusItemIndex, 1) <> 0 then return true
         if key <> top().advanceKey and key <> top().reverseKey then return false
 
         direction = key = top().reverseKey ? -1 : 1
         currentIndex = top().focusedContentIndex
-        lastVisibleIndex = get("lastVisibleIndex")
+        lastFocusableIndex = get("lastFocusableIndex")
         nextIndex = currentIndex + direction
         currentTargetSetIndex = top().focusedTargetsetIndex
         nextTargetSetIndex = currentTargetSetIndex + direction
 
         if nextTargetSetIndex <= 0 then nextTargetSetIndex = 0
-        if nextTargetSetIndex >= lastVisibleIndex then nextTargetSetIndex = lastVisibleIndex
+        if nextTargetSetIndex >= lastFocusableIndex then nextTargetSetIndex = lastFocusableIndex
 
         if carousel.content.getChild(nextIndex) = invalid
             if not get("wrap") then return false
@@ -111,11 +111,11 @@ function onKeyEvent(key as string, press as boolean) as boolean
                 profilesCollection = carousel.content
                 if not rodash.isNode(profilesCollection) then return true
                 nextIndex = profilesCollection.getChildCount() - 1
-                nextTargetSetIndex = m.targetSetArray.count() - 1
+                nextTargetSetIndex = m.focusedTargetSetArray.count() - 1
             end if
         end if
 
-        nextTargetSet = m.targetSetArray[nextTargetSetIndex]
+        nextTargetSet = m.focusedTargetSetArray[nextTargetSetIndex]
 
         if nextTargetSet <> invalid and carousel.currTargetSet <> invalid and nextTargetSet.focusIndex <> carousel.currTargetSet.focusIndex
             carousel.animateToTargetSet = nextTargetSet
@@ -130,11 +130,21 @@ function onKeyEvent(key as string, press as boolean) as boolean
 end function
 
 
-sub setClippingRect(options = {})
-    currentPercentage = options.percentage
+sub applyClippingRect(options = {})
+    if not get("clip") then return
+
+    percentage = options.percentage
     direction = get("direction") ?? "horizontal"
-    unfocusedClippingRect = calculate.clippingRect({ direction: direction, focused: false, visibleIndexArray: get("visibleIndexArray") })
-    focusedClippingRect = calculate.clippingRect({ direction: direction, focused: true, visibleIndexArray: get("visibleIndexArray") })
+    focusedClippingRect = get("focusedClippingRect")
+    unfocusedClippingRect = get("unfocusedClippingRect")
+
+    if focusedClippingRect = invalid then return
+    if unfocusedClippingRect = invalid then return
+
+    if top().id = "second_list"
+        ?"focusedClippingRect " focusedClippingRect
+        ?"unfocusedClippingRect " unfocusedClippingRect
+    end if
 
     deltaX = focusedClippingRect[0] - unfocusedClippingRect[0]
     deltaY = focusedClippingRect[1] - unfocusedClippingRect[1]
@@ -143,22 +153,53 @@ sub setClippingRect(options = {})
 
     if direction = "horizontal"
         newClippingRect = [
-            deltaX * currentPercentage + unfocusedClippingRect[0],
-            focusedClippingRect[1],
-            deltaWidth * currentPercentage + unfocusedClippingRect[2] - (deltaX * currentPercentage + unfocusedClippingRect[0]),
-            focusedClippingRect[3]
+            deltaX * percentage + unfocusedClippingRect[0],
+            deltaY * percentage + unfocusedClippingRect[1],
+            deltaWidth * percentage + unfocusedClippingRect[2] - (deltaX * percentage + unfocusedClippingRect[0]),
+            deltaHeight * percentage + unfocusedClippingRect[3]
         ]
     else
        newClippingRect = [
             focusedClippingRect[0],
-            deltaY * currentPercentage + unfocusedClippingRect[1],
+            deltaY * percentage + unfocusedClippingRect[1],
             focusedClippingRect[2]
-            deltaHeight * currentPercentage + unfocusedClippingRect[3]
+            deltaHeight * percentage + unfocusedClippingRect[3]
         ]
     end if
 
-    m.carousel.clippingRect = newClippingRect
-    m.carousel.focusPercent = currentPercentage
+    top().width = newClippingRect[0] + newClippingRect[2]
+    top().height = newClippingRect[1] + newClippingRect[3]
+    top().clippingRect = newClippingRect
+    ' m.carousel.clippingRect = newClippingRect
+end sub
+
+
+sub setClippingRects(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    clippingRects = options.clippingRects ?? {}
+    direction = options.direction
+    dynamicWidth = options.dynamicWidth ?? false
+    gutterSize = options.gutterSize ?? 0
+    maxWidth = options.maxWidth ?? 0
+
+    ?"setClippingRects dynamicWidth " dynamicWidth
+    unfocusedClippingRect = clippingRects.shift()
+    set({ unfocusedClippingRect: unfocusedClippingRect })
+
+    index = direction = "horizontal" ? 2 : 3
+
+    focusedClippingRect = clippingRects[0]
+    for each clippingRect in clippingRects
+        if clippingRect[2] > focusedClippingRect[2] then focusedClippingRect[2] = clippingRect[2]
+    end for
+
+
+    if dynamicWidth and maxWidth > 0
+        focusedClippingRect[index] = maxWidth
+        unfocusedClippingRect[index] = maxWidth
+    end if
+
+    set({ focusedClippingRect: focusedClippingRect })
 end sub
 
 
@@ -181,9 +222,9 @@ sub onFocusedChildChange(options = {})
         return
     end if
 
-    if not rodash.isArray(m.targetSetArray) then return
+    if not rodash.isArray(m.focusedTargetSetArray) then return
 
-    currentTargetSet = m.targetSetArray[top().focusedTargetsetIndex]
+    currentTargetSet = m.focusedTargetSetArray[top().focusedTargetsetIndex]
     m.carousel.animateToItem = currentIndex
 
     rodash.delay(sub(args)
@@ -212,8 +253,8 @@ sub onDataSet(options = {})
         rects = []
         for x = 0 to m.content.getChildCount() -1
             rects.push({
-                height: 36,
-                width: 12,
+                height: 1,
+                width: 1,
                 x: 0,
                 y: 0
             })
@@ -284,15 +325,15 @@ sub processConfig(options = {})
 
     ' Calculate the first and last visible rects
     ' accounting for extra gutter rects
-    visibleIndexArray = getVisibleIndices({
+    focusableIndexArray = getVisibleIndices({
         defaultVisibleIndex: config.defaultVisibleIndex ?? 0,
         extraRects: extraRects,
         totalCarouselItems: totalCarouselItems,
         visibleTiles: maxVisibleTiles
     })
 
-    firstVisibleIndex = visibleIndexArray[0]
-    lastVisibleIndex = visibleIndexArray[1]
+    firstFocusableIndex = focusableIndexArray[0]
+    lastFocusableIndex = focusableIndexArray[1]
 
     generateRects({
         bigSquare: config.bigSquare,
@@ -300,12 +341,14 @@ sub processConfig(options = {})
         direction: config.direction,
         dynamicWidth: config.dynamicWidth,
         extraRects: extraRects,
-        firstVisibleIndex: firstVisibleIndex,
+        firstFocusableIndex: firstFocusableIndex,
         flushFocus: config.flushFocus,
         focusType: config.focusType,
+        gutterSize: config.gutterSize,
         horizAlign: config.horizAlign,
-        lastVisibleIndex: lastVisibleIndex,
+        lastFocusableIndex: lastFocusableIndex,
         margins: margins,
+        maxWidth: config.maxWidth,
         smallSquare: config.smallSquare,
         squareTotalArea: squareTotalArea,
         totalRects: totalRects,
@@ -317,25 +360,6 @@ sub processConfig(options = {})
         itemComponentName: config.itemComponentName
     })
 
-    top().width = calculate.carouselWidth({
-        visibleIndexArray: visibleIndexArray,
-        direction: config.direction,
-        flushFocus: config.flushFocus,
-        maxWidth: config.maxWidth,
-        bigSquare: config.bigSquare,
-        smallSquare: config.smallSquare,
-        squareTotalArea: squareTotalArea,
-        visibleTiles: maxVisibleTiles
-    })
-
-    top().height = calculate.carouselHeight({
-        direction: config.direction,
-        flushFocus: config.flushFocus,
-        maxHeight: config.maxHeight,
-        squareTotalArea: squareTotalArea,
-        visibleTiles: maxVisibleTiles
-    })
-
     if config.direction = "vertical"
         top().reverseKey = "up"
         top().advanceKey = "down"
@@ -345,19 +369,15 @@ sub processConfig(options = {})
     end if
 
     set({
+        clip: config.clip,
         direction: config.direction,
-        lastVisibleIndex: lastVisibleIndex,
-        visibleIndexArray: visibleIndexArray,
+        extraRects: extraRects,
+        lastFocusableIndex: lastFocusableIndex,
+        focusableIndexArray: focusableIndexArray,
         wrap: config.wrap
     })
 
-    ' if config.clip then clipCarousel()
-end sub
-
-
-sub clipCarousel()
-    top().clippingRect = [0, 0, m.top.width, m.top.height]
-    m.carousel.clippingRect = [0, 0, m.top.width, m.top.height]
+    applyClippingRect({ percentage: 0 })
 end sub
 
 
@@ -381,13 +401,21 @@ end sub
 
 sub generateRects(options = {})
     defaultVisibleIndex = options.defaultVisibleIndex
-    firstVisibleIndex = options.firstVisibleIndex
-    lastVisibleIndex = options.lastVisibleIndex
+    direction = options.direction
+    dynamicWidth = options.dynamicWidth
     extraRects = options.extraRects
+    firstFocusableIndex = options.firstFocusableIndex
+    gutterSize = options.gutterSize
+    lastFocusableIndex = options.lastFocusableIndex
     flushFocus = options.flushFocus
     focusType = options.focusType
+    maxWidth = options.maxWidth
 
-    targetsetRects = returnTargetsetRects(options)
+    ?"dynamicWidth " dynamicWidth
+
+    rects = returnTargetsetRects(options)
+    targetsetRects = rects.targetsetRects
+    clippingRects = rects.clippingRects
 
     unfocusedRects = targetsetRects.shift()
     setUnfocusedTargetSet({
@@ -397,8 +425,15 @@ sub generateRects(options = {})
         unfocusedRects: unfocusedRects
     })
 
+    setClippingRects({
+        clippingRects: clippingRects,
+        direction: direction,
+        dynamicWidth: dynamicWidth,
+        gutterSize: gutterSize,
+        maxWidth: maxWidth
+    })
     ' Array of targetsets for each focused position in the list.
-    m.targetSetArray = []
+    m.focusedTargetSetArray = []
 
     if focusType = "fixed"
         index = defaultVisibleIndex + extraRects
@@ -406,17 +441,17 @@ sub generateRects(options = {})
             focusIndex: index,
             targetRects: targetsetRects[index]
         })
-        m.targetSetArray.push(focusedTargetSet)
+        m.focusedTargetSetArray.push(focusedTargetSet)
     else
         for index = 0 to targetsetRects.count() - 1
             focusedTargetSet = createObject("roSGNode", "TargetSet")
 
-            if index >= firstVisibleIndex and index <= lastVisibleIndex
+            if index >= firstFocusableIndex and index <= lastFocusableIndex
                 focusedTargetSet = createTargetSet({
                     focusIndex: index,
                     targetRects: targetsetRects[index]
                 })
-                m.targetSetArray.push(focusedTargetSet)
+                m.focusedTargetSetArray.push(focusedTargetSet)
             end if
         end for
     end if
@@ -434,10 +469,10 @@ function getVisibleIndices(options = {})
     maxVisibleTiles = options.visibleTiles
     visibleTiles = numberOfContentItems < maxVisibleTiles ? numberOfContentItems : maxVisibleTiles
 
-    firstVisibleIndex = defaultVisibleIndex + extraRects
-    lastVisibleIndex = visibleTiles - 1 + extraRects
+    firstFocusableIndex = defaultVisibleIndex + extraRects
+    lastFocusableIndex = visibleTiles - 1 + extraRects
 
-    return [firstVisibleIndex, lastVisibleIndex]
+    return [firstFocusableIndex, lastFocusableIndex]
 end function
 
 
@@ -478,16 +513,23 @@ function returnTargetsetRects(options = {})
     horizAlign = options.horizAlign
     flushFocus = options.flushFocus
     margins = options.margins
+    maxWidth = options.maxWidth
     squareTotalArea = options.squareTotalArea
     totalRects = options.totalRects
     vertAlign =  options.vertAlign
 
     targetsetRects = []
+    clippingRects = []
+
+    ' For dynamicWidth
+    maxRectWidth = 0
+    maxRectHeight = 0
 
     ' -1 because we want to generate the unfocused state as first array
     for y = -1 to totalRects - 1
         focusedTile = y
         targetRects = []
+        clippingRect = [0, 0, 0, 0]
 
         for x = 0 to totalRects - 1
             bigSquare = rectSquare({ type: "big", index: x })
@@ -512,36 +554,16 @@ function returnTargetsetRects(options = {})
             end if
 
             if dynamicWidth
-                adjustedIndex = x + extraRects * -1
-                listDirection = direction = "horizontal" ? 0 : 1
-                rect = m.rectSizes[adjustedIndex]
-                if not rodash.isNonEmptyAA(rect) then rect = {
-                    bigSquare: [0, 0],
-                    smallSquare: [0, 0]
-                }
+                targetRect = calculate.dynamicRect({
+                    direction: direction,
+                    extraRects: extraRects,
+                    index: x,
+                    margins: margins,
+                    previousRect: targetRects[x - 1],
+                    targetSetIndex: y
+                })
 
-                ' If not focused OR
-                ' if it is a row for unfocused state
-                square = x <> y or y = -1 ? rect.smallSquare : rect.bigSquare
-
-                coordinates = [0, 0]
-                previousRect = targetRects[x - 1]
-                if rodash.isNonEmptyAA(previousRect)
-                    if direction = "horizontal"
-                        coordinates[listDirection] = previousRect.x + previousRect.width + margins.left + margins.right
-                    else
-                        coordinates[listDirection] = previousRect.y + previousRect.height + margins.top + margins.bottom
-                    end if
-                end if
-
-                if rodash.isNonEmptyArray(square)
-                    targetRects.push({
-                        height: square[1] ?? 0,
-                        width: square[0] ?? 0,
-                        x: coordinates[0],
-                        y: coordinates[1]
-                    })
-                end if
+                targetRects.push(targetRect)
             else if flushFocus
                 containerPosition = calculate.rectFlushPosition({
                     bigSquare: bigSquare,
@@ -554,12 +576,14 @@ function returnTargetsetRects(options = {})
                     smallSquare: smallSquare
                 })
 
-                targetRects.push({
+                targetRect = {
                     x: containerPosition[0],
                     y: containerPosition[1],
                     width: square[0],
                     height: square[1]
-                })
+                }
+
+                targetRects.push(targetRect)
             else
                 containerPosition = calculate.rectStartingPosition({
                     extraRects: extraRects,
@@ -574,19 +598,91 @@ function returnTargetsetRects(options = {})
                 offsetX = x = focusedTile ? margins.left : deltaX + margins.left
                 offsetY = x = focusedTile ? margins.top : deltaY + margins.top
 
-                targetRects.push({
+                targetRect = {
                     x: containerPosition[0] + offsetX,
                     y: containerPosition[1] + offsetY,
                     width: square[0],
                     height: square[1]
-                })
+                }
+                targetRects.push(targetRect)
+            end if
+
+            firstVisibleIndex = extraRects
+            lastVisibleIndex = totalRects - extraRects - 1
+
+            if y = -1
+                if x = firstVisibleIndex
+                    if targetRect.x >= 0 and targetRect.x > clippingRect[0] then clippingRect[0] = targetRect.x
+                    if targetRect.y >= 0 and targetRect.y > clippingRect[1] then clippingRect[1] = targetRect.y
+                end if
+
+                if x <= lastVisibleIndex
+                    if direction = "horizontal"
+                        rectsLastX = targetRect.width + targetRect.x
+                    else
+                        rectsLastX = targetRect.width
+                    end if
+
+                    if clippingRect[2] < rectsLastX then clippingRect[2] = rectsLastX
+
+                    if direction = "horizontal"
+                        rectsLastY = targetRect.height
+                    else
+                        rectsLastY = targetRect.height + targetRect.y - deltaY
+                    end if
+
+                    if top().id = "second_list"
+                        ?"rectsLastY " rectsLastY
+                    end if
+
+                    if clippingRect[3] < rectsLastY then clippingRect[3] = rectsLastY
+                end if
+
+            else if y <> -1 and x <= lastVisibleIndex
+                clippingRect[0] = 0
+                clippingRect[1] = 0
+
+                if direction = "horizontal"
+                    rectsLastX = targetRect.width + targetRect.x
+                else
+                    rectsLastX = targetRect.width
+                end if
+
+                if clippingRect[2] < rectsLastX then clippingRect[2] = rectsLastX
+
+                if direction = "horizontal"
+                    rectsLastY = targetRect.height
+                else
+                    rectsLastY = targetRect.y + targetRect.height
+                end if
+
+                if clippingRect[3] < rectsLastY then clippingRect[3] = rectsLastY
             end if
         end for
+
+        clippingRects.push(clippingRect)
+
+        if dynamicWidth
+            targetRects = calculate.adjustedDynamicRects({
+                direction: direction,
+                targetRects: targetRects,
+                maxWidth: maxWidth,
+                targetSetIndex: y
+            })
+        end if
 
         targetsetRects.push(targetRects)
     end for
 
-    return targetsetRects
+    set({
+        maxRectWidth: maxRectWidth,
+        maxRectHeight: maxRectHeight
+    })
+
+    return {
+        "targetsetRects": targetsetRects,
+        "clippingRects": clippingRects
+    }
 end function
 
 
@@ -611,86 +707,72 @@ end function
 
 
 namespace calculate
-    function carouselHeight(options = {})
-        if not rodash.isNonEmptyAA(options) then return 0
-
+    function adjustedDynamicRects(options = {})
         direction = options.direction
-        flushFocus = options.flushFocus
-        maxHeight = options.maxHeight
-        squareArea = options.squareTotalArea
-        visibleTiles = options.visibleTiles
-
-        if flushFocus
-            if direction = "horizontal"
-                return squareArea.height
-            else
-                return maxHeight
-            end if
-        else
-            if direction = "horizontal"
-                return squareArea.height
-            else
-                return squareArea.height * visibleTiles
-            end if
-        end if
-    end function
-
-
-    function carouselWidth(options = {})
-        if not rodash.isNonEmptyAA(options) then return 0
-
-        visibleIndexArray = options.visibleIndexArray
-        direction = options.direction
-        flushFocus = options.flushFocus
         maxWidth = options.maxWidth
-        squareArea = options.squareTotalArea
-        bigSquare = options.bigSquare
-        smallSquare = options.smallSquare
-        visibleTiles = options.visibleTiles
+        targetRects = options.targetRects ?? {}
+        targetSetIndex = options.targetSetIndex ?? {}
+        targetAxis = direction = "horizontal" ? "x" : "y"
+        targetDimension = direction = "horizontal" ? "width" : "height"
 
-        if flushFocus
-            if direction = "horizontal"
-                width = (smallSquare[0] * (visibleTiles - 1)) + bigSquare[0]
-                return width
-            else
-                return squareArea.width * visibleTiles
-            end if
-        else
-            if direction = "horizontal"
-                return squareArea.width * visibleTiles
-            else
-                return squareArea.width
-            end if
-        end if
+        if targetSetIndex = -1 then return targetRects
+
+        itemThreshold = targetRects[targetSetIndex][targetAxis] + targetRects[targetSetIndex][targetDimension]
+
+        adjustedRects = []
+
+        if itemThreshold < maxWidth then return targetRects
+
+        sizeDelta = maxWidth - itemThreshold
+
+        for each rect in targetRects
+            newRect = {}
+            newRect.append(rect)
+            newRect[targetAxis] += sizeDelta
+            adjustedRects.push(newRect)
+        end for
+
+        return adjustedRects
     end function
 
 
-    function clippingRect(options = {})
+    function dynamicRect(options = {})
+        index = options.index
         direction = options.direction
-        focused = options.focused ?? false
-        visibleIndexArray = options.visibleIndexArray
+        extraRects = options.extraRects
+        squareMargins = options.margins
+        previousRect = options.previousRect
+        targetSetIndex = options.targetSetIndex
 
-        clippingRectangle = [0, 0, 0, 0]
+        adjustedIndex = index + extraRects * -1
+        listDirection = direction = "horizontal" ? 0 : 1
+        rect = m.rectSizes[adjustedIndex]
 
-        targetSet = focused ? m.targetSetArray[0] : m.unFocusedTargetSet
-        targetRects = targetSet.targetRects
+        if not rodash.isNonEmptyAA(rect) then rect = {
+            bigSquare: [0, 0],
+            smallSquare: [0, 0]
+        }
 
-        firstVisibleRect = targetRects[visibleIndexArray[0]]
-        lastVisibleRect = targetRects[visibleIndexArray[1]]
+        ' If not focused OR
+        ' if it is a row for unfocused state
+        square = index <> targetSetIndex or targetSetIndex = -1 ? rect.smallSquare : rect.bigSquare
 
-        clippingRectangle[0] = firstVisibleRect.x
-        clippingRectangle[1] = firstVisibleRect.y
-        if direction = "horizontal"
-            clippingRectangle[2] = lastVisibleRect.width + lastVisibleRect.x
-            clippingRectangle[3] = firstVisibleRect.height
-        else
-            clippingRectangle[2] = firstVisibleRect.width
-            clippingRectangle[3] = lastVisibleRect.height + lastVisibleRect.y
+        coordinates = [0, 0]
+        if rodash.isNonEmptyAA(previousRect)
+            if direction = "horizontal"
+                coordinates[listDirection] = previousRect.x + previousRect.width + squareMargins.left + squareMargins.right
+            else
+                coordinates[listDirection] = previousRect.y + previousRect.height + squareMargins.top + squareMargins.bottom
+            end if
         end if
 
-        return clippingRectangle
+        return {
+            height: square[1] ?? 0,
+            width: square[0] ?? 0,
+            x: coordinates[0],
+            y: coordinates[1]
+        }
     end function
-
 
     ' Get the number of extra hidden rects
     ' for *each side* of the carousel
@@ -791,14 +873,6 @@ namespace calculate
     end function
 
 
-    function totalRects(options = {})
-        if not rodash.isNonEmptyAA(options) then return 0
-        visibleTiles = options.visibleTiles ?? {}
-        extraRects = options.extraRects ?? 0
-        return visibleTiles + (extraRects * 2)
-    end function
-
-
     function margins(options = {})
         returnObj = {
             "left": 0,
@@ -850,26 +924,12 @@ namespace calculate
             width: bigSquare[0] + squareMargins.left + squareMargins.right
         }
     end function
+
+
+    function totalRects(options = {})
+        if not rodash.isNonEmptyAA(options) then return 0
+        visibleTiles = options.visibleTiles ?? {}
+        extraRects = options.extraRects ?? 0
+        return visibleTiles + (extraRects * 2)
+    end function
 end namespace
-
-
-function CommonUtils_reduce(arr as object, func as function, args as object, initialValue=invalid as dynamic) as dynamic
-    if not rodash.isArray(arr) then return invalid
-
-    size = arr.count()
-    startAt = 0
-    accumulator = initialValue
-
-    if size = 0 then return accumulator
-
-    if accumulator = invalid
-        accumulator = arr[0]
-        startAt = 1
-    end if
-
-    for i = startAt to size - 1
-        accumulator = func(accumulator, arr[i], i, arr, args)
-    end for
-
-    return accumulator
-end function

@@ -6,18 +6,20 @@ sub init()
     end sub)
 end sub
 
+
 sub setupItem()
     m.indexLabel = m.top.findNode("label")
     m.container = m.top.findNode("container")
     m.container.opacity = 0.2
     safeObserve("currRect", onCurrentRectChange)
     safeObserve("focusPercent", onFocusPercentChange)
-
 end sub
+
 
 sub itemContentChanged(event)
     m.indexLabel.text = m.top.index
 end sub
+
 
 sub onCurrentRectChange(options = {})
     rect = options.data ?? {}

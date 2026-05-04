@@ -39,10 +39,21 @@ sub init()
         ])
 
         top().setFocus(true)
-        loadList()
+        ' loadList()
         loadSecondList()
         ' loadThirdList()
+        ' loadRectTest()
     end sub)
+end sub
+
+
+sub loadRectTest()
+    rect1 = createObject("roSGNode", "Rectangle")
+    rect1.id = "rect1"
+    rect2 = createObject("roSGNode", "Rectangle")
+    rect2.id = "rect2"
+    rect1.appendChild(rect2)
+    top().appendChild(rect1)
 end sub
 
 
@@ -67,9 +78,9 @@ sub loadList(options = {})
         visibleTiles: 4,
         wrap: true,
         flushFocus: false,
-        bigSquare: [252, 321],
+        bigSquare: [321, 252],
         gutterSize: 0,
-        smallSquare: [213, 273],
+        smallSquare: [273, 213],
         squareMargins: [0]
     }
 
@@ -95,10 +106,10 @@ sub loadSecondList(options = {})
     testModel.addField("totalCount", "integer", false)
 
     testModel.rectConfig = {
-        direction: "horizontal",
+        direction: "vertical",
         animationDuration: 0.3,
         ' horizAlign: "right",
-        ' vertAlign: "top",
+        ' vertAlign: "bottom",
         clip: true,
         defaultVisibleIndex: 0,
         focusType: "floating",
@@ -106,9 +117,9 @@ sub loadSecondList(options = {})
         visibleTiles: 4,
         wrap: true,
         flushFocus: true,
-        bigSquare: [252, 321],
+        bigSquare: [421, 252],
         gutterSize: 0,
-        smallSquare: [213, 273],
+        smallSquare: [273, 213],
         squareMargins: [0]
     }
 
@@ -120,7 +131,7 @@ sub loadSecondList(options = {})
     }
 
     m.secondList = list
-    m.secondList.setFocus(true)
+    ' m.secondList.setFocus(true)
 end sub
 
 
@@ -135,20 +146,22 @@ sub loadThirdList(options = {})
 
     testModel.id = "flexDynamicCarousel_model"
     testModel.totalCount = testModel.getChildCount()
+    m.dynamicModel = testModel
 
     testModel.rectConfig = {
         direction: "horizontal",
         animationDuration: 0.1,
         ' horizAlign: "right",
         ' vertAlign: "top",
-        clip: false,
+        clip: true,
         defaultVisibleIndex: 0,
         dynamicWidth: true,
         focusType: "floating",
         itemComponentName: "DynamicItem",
-        visibleTiles: 6,
+        visibleTiles: 999,
         wrap: true,
         flushFocus: true,
+        maxWidth: 900,
         bigSquare: [200, 100],
         gutterSize: 0,
         smallSquare: [200, 100],
@@ -160,7 +173,7 @@ sub loadThirdList(options = {})
     }
 
     m.thirdList = list
-    ' m.thirdList.setFocus(true)
+    m.thirdList.setFocus(true)
 end sub
 
 
@@ -168,7 +181,9 @@ function returnModel(options = {})
     numberOfModels = options.number
     testModel = createObject("roSGNode", "ContentNode")
     for i = 1 to numberOfModels
-        testModel.appendChild(createObject("roSGNode", "ContentNode"))
+        testModel.update([
+            { id: i, subtype: "ContentNode" },
+        ])
     end for
     return testModel
 end function
@@ -176,7 +191,7 @@ end function
 
 function returnDynamicWidthModel()
     testModel = createObject("roSGNode", "ContentNode")
-    titles = ["Home", "Live Channels", "Documentaries", "TV Shows", "Account", "Movies"]
+    titles = ["Home", "Live Channels", "Documentaries", "TV Shows", "Movies", "Sports", "News", "Favorites", "Settings", "Account", "Terms of Service"]
     for each item in titles
         childModel = createObject("roSGNode", "ContentNode")
         childModel.title = item
@@ -199,8 +214,10 @@ function onKeyEvent(key as string, press as boolean) as boolean
         m = getGlobalAA()
         if not press then return true
 
-        if key = "down" then m.secondList.setFocus(true)
-        if key = "up" then m.firstList.setFocus(true)
+        ?"key " key
+
+        if key = "back" then m.secondList.setFocus(true)
+        if key = "replay" then m.firstList.setFocus(true)
 
         return true
     end function, { key: key, press: press })

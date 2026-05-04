@@ -11,19 +11,35 @@ module.exports = {
             },
             "Label#title": {
                 color: "#f3efebff"
+            }
+        },
+        "Rectangle#rect1": {
+            // clippingRect: [0, -100, 300, 230],
+            color: "#FF0000",
+            opacity: 0.2,
+            height: 321,
+            width: 1800,
+            translation: [120, 450],
+            "Rectangle#rect2": {
+                color: "#FFFFFF",
+                height: 300,
+                opacity: 0,
+                translation: [-60, -100],
+                width: 300
             },
-            "test": []
         },
         "_ord_flexList#first_list": {
-            color: "#bad7fc00",
-            translation: [120, 99]
+            color: "#bad7fc80",
+            translation: [120, 99],
+            // width: 1008
         },
         "_ord_flexList#second_list": {
             color: "#bad7fc00",
-            translation: [120, 450]
+            translation: [1450, 45]
         },
         "_ord_flexList#third_list": {
-            translation: [120, 850]
+            color: "#bad7fc80",
+            translation: [120, 840]
         }
     }
 };
