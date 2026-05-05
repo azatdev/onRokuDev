@@ -42,7 +42,7 @@ sub init()
         top().setFocus(true)
         loadList()
         loadSecondList()
-        loadThirdList()
+        ' loadThirdList()
         ' loadRectTest()
     end sub)
 end sub
@@ -118,11 +118,11 @@ sub loadSecondList(options = {})
         defaultVisibleIndex: 0,
         focusType: "floating",
         itemComponentName: "TestItem",
-        visibleTiles: 4,
+        visibleTiles: 3,
         wrap: true,
         flushFocus: true,
         bigSquare: [421, 452],
-        gutterSize: 0,
+        gutterSize: [90],
         smallSquare: [273, 213],
         squareMargins: [0]
     }
@@ -135,7 +135,7 @@ sub loadSecondList(options = {})
     }
 
     m.secondList = list
-    ' m.secondList.setFocus(true)
+    m.secondList.setFocus(true)
 end sub
 
 
@@ -177,7 +177,7 @@ sub loadThirdList(options = {})
     }
 
     m.thirdList = list
-    m.thirdList.setFocus(true)
+    ' m.thirdList.setFocus(true)
 end sub
 
 
