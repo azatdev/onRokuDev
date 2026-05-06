@@ -40,9 +40,9 @@ sub init()
         ])
 
         top().setFocus(true)
-        loadList()
-        loadSecondList()
-        ' loadThirdList()
+        ' loadList()
+        ' loadSecondList()
+        loadThirdList()
         ' loadRectTest()
     end sub)
 end sub
@@ -71,7 +71,7 @@ sub loadList(options = {})
     testModel.addField("totalCount", "integer", false)
 
     testModel.rectConfig = {
-        direction: "horizontal",
+        ' direction: "vertical",
         animationDuration: 0.3,
         ' horizAlign: "right",
         ' vertAlign: "top",
@@ -83,7 +83,7 @@ sub loadList(options = {})
         wrap: true,
         flushFocus: false,
         bigSquare: [321, 252],
-        gutterSize: 0,
+        gutterSize: [0],
         smallSquare: [273, 213],
         squareMargins: [0]
     }
@@ -96,7 +96,7 @@ sub loadList(options = {})
     }
 
     m.firstList = list
-    ' m.firstList.setFocus(true)
+    m.firstList.setFocus(true)
 end sub
 
 
@@ -110,19 +110,19 @@ sub loadSecondList(options = {})
     testModel.addField("totalCount", "integer", false)
 
     testModel.rectConfig = {
-        ' direction: "vertical",
-        animationDuration: 0.3,
-        ' horizAlign: "right",
+        direction: "vertical",
+        ' animationDuration: 0.01,
+        horizAlign: "right",
         ' vertAlign: "bottom",
         clip: true,
         defaultVisibleIndex: 0,
         focusType: "floating",
         itemComponentName: "TestItem",
-        visibleTiles: 3,
+        visibleTiles: 4,
         wrap: true,
         flushFocus: true,
         bigSquare: [421, 452],
-        gutterSize: [90],
+        gutterSize: [0, 0, 0, 90],
         smallSquare: [273, 213],
         squareMargins: [0]
     }
@@ -153,10 +153,10 @@ sub loadThirdList(options = {})
     m.dynamicModel = testModel
 
     testModel.rectConfig = {
-        direction: "vertical",
+        ' direction: "vertical",
         animationDuration: 0.1,
-        ' horizAlign: "left",
-        vertAlign: "top",
+        horizAlign: "left",
+        ' vertAlign: "top",
         clip: true,
         defaultVisibleIndex: 0,
         dynamicWidth: true,
@@ -165,9 +165,9 @@ sub loadThirdList(options = {})
         visibleTiles: 999,
         wrap: true,
         flushFocus: true,
-        maxWidth: 600,
+        maxWidth: 720,
         bigSquare: [200, 100],
-        gutterSize: 0,
+        gutterSize: 30,
         smallSquare: [200, 100],
         squareMargins: [0, 6]
     }
@@ -177,7 +177,7 @@ sub loadThirdList(options = {})
     }
 
     m.thirdList = list
-    ' m.thirdList.setFocus(true)
+    m.thirdList.setFocus(true)
 end sub
 
 

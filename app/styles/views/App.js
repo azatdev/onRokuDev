@@ -35,13 +35,13 @@ module.exports = {
         },
         "_ord_flexList#second_list": {
             color: "#bad7fc00",
-            // translation: [1450, 0]
-            translation: [120, 360]
+            translation: [1450, 0]
+            // translation: [120, 360]
         },
         "_ord_flexList#third_list": {
             color: "#bad7fc00",
-            // translation: [120, 840]
-            translation: [1450, 40]
+            translation: [120, 840]
+            // translation: [1450, 40]
         }
     }
 };

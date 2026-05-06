@@ -342,10 +342,14 @@ sub processConfig(options = {})
     totalCarouselItems = m.content.totalCount ?? 0
     margins = calculate.quadruple({ value: config.squareMargins })
     gutters = calculate.quadruple({ value: config.gutterSize })
-    squareTotalArea = calculate.squareTotalArea({
+
+    rectSizes = processRectSizes({
         bigSquare: config.bigSquare,
-        margins: margins
+        gutters: gutters,
+        margins: margins,
+        smallSquare: config.smallSquare
     })
+
     maxVisibleTiles = calculate.maxVisibleTiles({
         visibleTiles: config.visibleTiles,
         totalCarouselItems: totalCarouselItems
@@ -354,7 +358,7 @@ sub processConfig(options = {})
         direction: config.direction,
         dynamicWidth: config.dynamicWidth,
         gutters: gutters,
-        squareTotalArea: squareTotalArea
+        rectSizes: rectSizes
     })
     totalRects = calculate.totalRects({ visibleTiles: maxVisibleTiles, extraRects: extraRects })
 
@@ -384,8 +388,8 @@ sub processConfig(options = {})
         lastFocusableIndex: lastFocusableIndex,
         margins: margins,
         maxWidth: config.maxWidth,
+        rectSizes: rectSizes,
         smallSquare: config.smallSquare,
-        squareTotalArea: squareTotalArea,
         totalRects: totalRects,
         vertAlign: config.vertAlign
     })
@@ -415,6 +419,31 @@ sub processConfig(options = {})
 
     applyClippingRect({ percentage: 0 })
 end sub
+
+
+function processRectSizes(options = {})
+    bigSquare = options.bigSquare
+    smallSquare = options.smallSquare
+    rectSizes = m.rectSizes ?? []
+    margins = options.margins
+
+    if not rodash.isNonEmptyArray(rectSizes)
+        rectSizes = [{
+            bigSquare: bigSquare,
+            smallSquare: smallSquare
+        }]
+    end if
+
+    for each rectSet in rectSizes
+        rectSet.totalArea = calculate.squareTotalArea({
+            bigSquare: rectSet.bigSquare,
+            smallSquare: rectSet.smallSquare,
+            margins: margins
+        })
+    end for
+
+    return rectSizes
+end function
 
 
 sub registerChildRect(options = {})
@@ -517,13 +546,11 @@ sub setUnfocusedTargetSet(options = {})
     unfocusedRects = options.unfocusedRects
 
     if flushFocus or not rodash.isNode(m.carousel.targetSet)
-
         ' Peel off the first array, which should always be for unfocused targetset
         unFocusedTargetSet = createTargetSet({
             focusIndex: defaultVisibleIndex + extraRects,
             targetRects: unfocusedRects
         })
-
         ' Set the initial targetset of the list to the unfocused one
         m.carousel.targetSet = unFocusedTargetSet
         m.unFocusedTargetSet = unFocusedTargetSet
@@ -545,29 +572,37 @@ function returnTargetsetRects(options = {})
     direction = options.direction
     dynamicWidth = options.dynamicWidth
     horizAlign = options.horizAlign
+    gutters = options.gutters
     flushFocus = options.flushFocus
     margins = options.margins
     maxWidth = options.maxWidth
-    squareTotalArea = options.squareTotalArea
+    rectSizes = options.rectSizes
     totalRects = options.totalRects
     vertAlign =  options.vertAlign
 
     targetsetRects = []
     clippingRects = []
+    ?"direction " direction
 
-    ' For dynamicWidth
-    maxRectWidth = 0
-    maxRectHeight = 0
+    horizontal = direction = "horizontal"
+    primaryArrayIndex = horizontal ? 0 : 1
+    secondaryArrayIndex = horizontal ? 1 : 0
+    targetRectIndex = horizontal ? 0 : 1
+    targetAxis = horizontal ? "x" : "y"
+    targetDimension = horizontal ? "width" : "height"
 
     ' -1 because we want to generate the unfocused state as first array
     for y = -1 to totalRects - 1
         focusedTile = y
         targetRects = []
         clippingRect = [0, 0, 0, 0]
+        startingPosition = 0
 
         for x = 0 to totalRects - 1
-            bigSquare = rectSquare({ type: "big", index: x })
-            smallSquare = rectSquare({ type: "small", index: x })
+            rectSize = rectSizes[x] ?? rectSizes[0]
+            bigSquare = rectSize.bigSquare
+            smallSquare = rectSize.smallSquare
+            totalArea = rectSize.totalArea
 
             square = x = focusedTile ? bigSquare : smallSquare
 
@@ -588,27 +623,54 @@ function returnTargetsetRects(options = {})
             end if
 
             if dynamicWidth
-                targetRect = calculate.dynamicRect({
-                    direction: direction,
-                    extraRects: extraRects,
-                    index: x,
-                    margins: margins,
-                    previousRect: targetRects[x - 1],
-                    targetSetIndex: y
-                })
+                previousRect = targetRects[x - 1]
+                adjustedIndex = x + extraRects * -1
+                rect = rectSizes[adjustedIndex]
+                if not rodash.isNonEmptyAA(rect) then rect = {
+                    bigSquare: [0, 0],
+                    smallSquare: [0, 0]
+                }
+                containerPosition = [0, 0]
+                if rodash.isNonEmptyAA(previousRect)
+                    if direction = "horizontal"
+                        containerPosition[targetRectIndex] = previousRect.x + previousRect.width + margins.left + margins.right
+                    else
+                        containerPosition[targetRectIndex] = previousRect.y + previousRect.height + margins.top + margins.bottom
+                    end if
+                end if
+
+                ' startingPosition += square[targetRectIndex]
+
+                ?"square 1 " square
+
+                ' ?"containerPosition " containerPosition
+
+                square = x <> y or y = -1 ? rect.smallSquare : rect.bigSquare
+
+                ?"square 2 " square
+
+                targetRect = {
+                    height: square[1] ?? 0,
+                    width: square[0] ?? 0,
+                    x: containerPosition[0],
+                    y: containerPosition[1]
+                }
 
                 targetRects.push(targetRect)
             else if flushFocus
-                containerPosition = calculate.rectFlushPosition({
-                    bigSquare: bigSquare,
-                    deltaX: deltaX,
-                    deltaY: deltaY,
-                    extraRects: extraRects,
-                    horizontal: direction = "horizontal",
-                    index: x,
-                    focusedTile: focusedTile,
-                    smallSquare: smallSquare
-                })
+                adjustedPosition = startingPosition - (extraRects * smallSquare[targetRectIndex])
+                deltaArray = [deltaX, deltaY]
+
+                containerPosition = [0, 0]
+
+                containerPosition[primaryArrayIndex] = adjustedPosition
+                containerPosition[secondaryArrayIndex] = deltaArray[secondaryArrayIndex]
+
+                if focusedTile = -1
+                    containerPosition[primaryArrayIndex] += deltaArray[primaryArrayIndex] / 2
+                else if x = focusedTile
+                    containerPosition[secondaryArrayIndex] = 0
+                end if
 
                 targetRect = {
                     x: containerPosition[0],
@@ -618,16 +680,13 @@ function returnTargetsetRects(options = {})
                 }
 
                 targetRects.push(targetRect)
+
+                startingPosition += square[targetRectIndex]
             else
-                containerPosition = calculate.rectStartingPosition({
-                    extraRects: extraRects,
-                    flushFocus: flushFocus,
-                    horizontal: direction = "horizontal",
-                    margins: margins,
-                    smallSquare: smallSquare,
-                    index: x,
-                    square: squareTotalArea
-                })
+                adjustedPosition = startingPosition - (extraRects * totalArea[targetDimension])
+
+                containerPosition = [0, 0]
+                containerPosition[targetRectIndex] = adjustedPosition
 
                 offsetX = x = focusedTile ? margins.left : deltaX + margins.left
                 offsetY = x = focusedTile ? margins.top : deltaY + margins.top
@@ -639,6 +698,8 @@ function returnTargetsetRects(options = {})
                     height: square[1]
                 }
                 targetRects.push(targetRect)
+
+                startingPosition += totalArea[targetDimension]
             end if
 
             firstVisibleIndex = extraRects
@@ -690,11 +751,15 @@ function returnTargetsetRects(options = {})
             end if
         end for
 
+        ?chr(10)
+        ?chr(10)
+
         clippingRects.push(clippingRect)
 
         if dynamicWidth
             targetRects = calculate.adjustedDynamicRects({
                 direction: direction,
+                gutters: gutters,
                 targetRects: targetRects,
                 maxWidth: maxWidth,
                 targetSetIndex: y
@@ -704,35 +769,10 @@ function returnTargetsetRects(options = {})
         targetsetRects.push(targetRects)
     end for
 
-    set({
-        maxRectWidth: maxRectWidth,
-        maxRectHeight: maxRectHeight
-    })
-
     return {
         "targetsetRects": targetsetRects,
         "clippingRects": clippingRects
     }
-end function
-
-
-function rectSquare(options = {}) as object
-    if rodash.isEmpty(options) then return [0, 0]
-
-    squareKey = options.type = "small" ? "smallSquare" : "bigSquare"
-
-    rectConfig = m.content.rectConfig
-    dynamicWidth = rectConfig.dynamicWidth ?? false
-
-    if dynamicWidth
-        if rodash.isEmpty(m.rectSizes) then return [0, 0]
-
-        index = options.index ?? 0
-        squaresObj = m.rectSizes[index] ?? m.rectSizes[0]
-        return squaresObj[squareKey] ?? [0, 0]
-    end if
-
-    return rectConfig[squareKey]
 end function
 
 
@@ -744,6 +784,8 @@ namespace calculate
         targetSetIndex = options.targetSetIndex ?? {}
         targetAxis = direction = "horizontal" ? "x" : "y"
         targetDimension = direction = "horizontal" ? "width" : "height"
+        gutters = options.gutters
+        guttersKey = direction = "horizontal" ? "right" : "bottom"
 
         if targetSetIndex = -1 then return targetRects
 
@@ -751,9 +793,12 @@ namespace calculate
 
         adjustedRects = []
 
+        ' ?"itemThreshold " itemThreshold
+
         if itemThreshold < maxWidth then return targetRects
 
         sizeDelta = maxWidth - itemThreshold
+        sizeDelta -= gutters[guttersKey]
 
         for each rect in targetRects
             newRect = {}
@@ -766,44 +811,6 @@ namespace calculate
     end function
 
 
-    function dynamicRect(options = {})
-        index = options.index
-        direction = options.direction
-        extraRects = options.extraRects
-        squareMargins = options.margins
-        previousRect = options.previousRect
-        targetSetIndex = options.targetSetIndex
-
-        adjustedIndex = index + extraRects * -1
-        listDirection = direction = "horizontal" ? 0 : 1
-        rect = m.rectSizes[adjustedIndex]
-
-        if not rodash.isNonEmptyAA(rect) then rect = {
-            bigSquare: [0, 0],
-            smallSquare: [0, 0]
-        }
-
-        ' If not focused OR
-        ' if it is a row for unfocused state
-        square = index <> targetSetIndex or targetSetIndex = -1 ? rect.smallSquare : rect.bigSquare
-
-        coordinates = [0, 0]
-        if rodash.isNonEmptyAA(previousRect)
-            if direction = "horizontal"
-                coordinates[listDirection] = previousRect.x + previousRect.width + squareMargins.left + squareMargins.right
-            else
-                coordinates[listDirection] = previousRect.y + previousRect.height + squareMargins.top + squareMargins.bottom
-            end if
-        end if
-
-        return {
-            height: square[1] ?? 0,
-            width: square[0] ?? 0,
-            x: coordinates[0],
-            y: coordinates[1]
-        }
-    end function
-
     ' Get the number of extra hidden rects
     ' for *each side* of the carousel
     ' meaning ultimately it will be n*2
@@ -813,7 +820,8 @@ namespace calculate
         direction = options.direction
         dynamicWidth = options.dynamicWidth ?? false
         gutters = options.gutters
-        squareArea = options.squareTotalArea
+        rectSizes = options.rectSizes
+        squareArea = rectSizes[0].totalArea ?? { height: 0, width: 0 }
         defaultExtraRect = 1
         if not rodash.isNonEmptyAA(squareArea) then return 0
         if dynamicWidth then return 1
@@ -846,43 +854,6 @@ namespace calculate
         b = abs(y)
         remainder = a - (int(a/b) * b)
         return remainder * sgn(x)
-    end function
-
-
-    function rectFlushPosition(options = {})
-        coordinates = [0, 0]
-        if not rodash.isNonEmptyAA(options) then return coordinates
-
-        bigSquare = options.bigSquare
-        deltaX = options.deltaX
-        deltaY = options.deltaY
-        extraRects = options.extraRects
-        horizontal = options.horizontal
-        index = options.index
-        focusedTile = options.focusedTile
-        smallSquare = options.smallSquare
-
-        adjustedIndex = index + extraRects * -1
-
-        primaryArrayIndex = horizontal ? 0 : 1
-        secondryArrayIndex = horizontal ? 1 : 0
-        deltaArray = [deltaX, deltaY]
-
-        if focusedTile = -1
-            coordinates[primaryArrayIndex] = adjustedIndex * smallSquare[primaryArrayIndex] + (deltaArray[primaryArrayIndex] / 2)
-            coordinates[secondryArrayIndex] = deltaArray[secondryArrayIndex]
-        else if index < focusedTile
-            coordinates[primaryArrayIndex] = adjustedIndex * smallSquare[primaryArrayIndex]
-            coordinates[secondryArrayIndex] = deltaArray[secondryArrayIndex]
-        else if index = focusedTile
-            coordinates[primaryArrayIndex] = adjustedIndex * smallSquare[primaryArrayIndex]
-            coordinates[secondryArrayIndex] = 0
-        else
-            coordinates[primaryArrayIndex] = ((adjustedIndex - 1) * smallSquare[primaryArrayIndex]) + bigSquare[primaryArrayIndex]
-            coordinates[secondryArrayIndex] = deltaArray[secondryArrayIndex]
-        end if
-
-        return coordinates
     end function
 
 
