@@ -1,0 +1,280 @@
+import "pkg:/components/_ord/_ord_flexList/_ord_flexList.bs"
+
+
+@suite("_ord_flexList tests")
+class OrdFlexListTests extends rooibos.BaseTestSuite
+
+    @describe("calculate.alignmentOffsets")
+    @it("returns center offsets as a two-item delta array")
+    sub testAlignmentOffsetsCenter()
+        result = calculate.alignmentOffsets({
+            bigSquare: [100, 80],
+            smallSquare: [40, 20]
+        })
+
+        m.assertEqual(result, [30.0, 30.0])
+    end sub
+
+
+    @it("returns edge-aligned offsets")
+    sub testAlignmentOffsetsEdges()
+        topLeft = calculate.alignmentOffsets({
+            bigSquare: [100, 80],
+            horizAlign: "left",
+            smallSquare: [40, 20],
+            vertAlign: "top"
+        })
+        bottomRight = calculate.alignmentOffsets({
+            bigSquare: [100, 80],
+            horizAlign: "right",
+            smallSquare: [40, 20],
+            vertAlign: "bottom"
+        })
+
+        m.assertEqual(topLeft, [0, 0])
+        m.assertEqual(bottomRight, [60, 60])
+    end sub
+
+
+    @describe("calculate.extendLinearClippingRect")
+    @it("extends horizontal clipping rects through the last visible index")
+    sub testExtendLinearClippingRectHorizontal()
+        result = calculate.extendLinearClippingRect({
+            existingClippingRect: [9, 8, 7, 6],
+            horizontal: true,
+            lastVisibleIndex: 2,
+            rectIndex: 1,
+            startingPosition: 120,
+            totalArea: {
+                height: 50,
+                width: 70
+            }
+        })
+
+        m.assertEqual(result, [9, 8, 120, 50])
+    end sub
+
+
+    @it("extends vertical clipping rects through the last visible index")
+    sub testExtendLinearClippingRectVertical()
+        result = calculate.extendLinearClippingRect({
+            existingClippingRect: [9, 8, 7, 6],
+            horizontal: false,
+            lastVisibleIndex: 2,
+            rectIndex: 1,
+            startingPosition: 140,
+            totalArea: {
+                height: 50,
+                width: 70
+            }
+        })
+
+        m.assertEqual(result, [9, 8, 70, 140])
+    end sub
+
+
+    @it("does not change clipping rects after the last visible index")
+    sub testExtendLinearClippingRectPastVisibleIndex()
+        result = calculate.extendLinearClippingRect({
+            existingClippingRect: [1, 2, 3, 4],
+            horizontal: true,
+            lastVisibleIndex: 1,
+            rectIndex: 2,
+            startingPosition: 120,
+            totalArea: {
+                height: 50,
+                width: 70
+            }
+        })
+
+        m.assertEqual(result, [1, 2, 3, 4])
+    end sub
+
+
+    @describe("calculate.extraRectNumber")
+    @it("returns one extra rect for dynamic-size carousels")
+    sub testExtraRectNumberDynamicSize()
+        result = calculate.extraRectNumber({
+            direction: "horizontal",
+            dynamicSize: true,
+            gutters: calculate.quadruple({ value: 0 }),
+            rectSizes: [
+                {
+                    totalArea: {
+                        height: 80,
+                        width: 100
+                    }
+                }
+            ]
+        })
+
+        m.assertEqual(result, 1)
+    end sub
+
+
+    @it("includes additional hidden rects for visible gutters")
+    sub testExtraRectNumberGutters()
+        result = calculate.extraRectNumber({
+            direction: "horizontal",
+            gutters: calculate.quadruple({ value: [0, 250, 0, 0] }),
+            rectSizes: [
+                {
+                    totalArea: {
+                        height: 80,
+                        width: 100
+                    }
+                }
+            ]
+        })
+
+        m.assertEqual(result, 4)
+    end sub
+
+
+    @describe("calculate.visibleWindow")
+    @it("caps visible tiles and returns focusable indices")
+    sub testVisibleWindow()
+        result = calculate.visibleWindow({
+            defaultVisibleIndex: 1,
+            extraRects: 2,
+            totalCarouselItems: 3,
+            visibleTiles: 5
+        })
+
+        m.assertEqual(result.firstFocusableIndex, 3)
+        m.assertEqual(result.focusableIndexArray, [3, 4])
+        m.assertEqual(result.lastFocusableIndex, 4)
+        m.assertEqual(result.visibleTiles, 3)
+    end sub
+
+
+    @it("adds hidden rects on both sides of the visible window")
+    sub testTotalCarouselRects()
+        result = calculate.totalCarouselRects({
+            extraRects: 2,
+            visibleTiles: 3
+        })
+
+        m.assertEqual(result, 7)
+    end sub
+
+
+    @describe("returnDynamicRects")
+    @it("uses the maximum item height as the horizontal clipping rect height")
+    sub testReturnDynamicRectsHorizontalCrossAxis()
+        result = returnDynamicRects({
+            direction: "horizontal",
+            extraRects: 0,
+            gutters: calculate.quadruple({ value: 0 }),
+            horizAlign: "center",
+            margins: calculate.quadruple({ value: 0 }),
+            maxWidth: 999,
+            rectSizes: m.getRectSizesForDynamicTests(),
+            totalRects: 2,
+            vertAlign: "bottom"
+        })
+
+        m.assertEqual(result.clippingRects[0][3], 100)
+        m.assertEqual(result.targetsetRects[0][0].y, 80)
+        m.assertEqual(result.targetsetRects[0][1].y, 40)
+    end sub
+
+
+    @it("uses the maximum item width as the vertical clipping rect width")
+    sub testReturnDynamicRectsVerticalCrossAxis()
+        result = returnDynamicRects({
+            direction: "vertical",
+            extraRects: 0,
+            gutters: calculate.quadruple({ value: 0 }),
+            horizAlign: "right",
+            margins: calculate.quadruple({ value: 0 }),
+            maxWidth: 999,
+            rectSizes: m.getRectSizesForDynamicTests(),
+            totalRects: 2,
+            vertAlign: "center"
+        })
+
+        m.assertEqual(result.clippingRects[0][2], 80)
+        m.assertEqual(result.targetsetRects[0][0].x, 40)
+        m.assertEqual(result.targetsetRects[0][1].x, 30)
+    end sub
+
+
+    @describe("returnFlushRects")
+    @it("applies horizontal primary-axis margins to target rects")
+    sub testReturnFlushRectsHorizontalMargins()
+        result = returnFlushRects({
+            direction: "horizontal",
+            extraRects: 0,
+            horizAlign: "center",
+            margins: calculate.quadruple({ value: [0, 7, 0, 5] }),
+            rectSizes: m.getRectSizesForFlushTests(),
+            totalRects: 2,
+            vertAlign: "center"
+        })
+
+        m.assertEqual(result.targetsetRects[1][0].x, 5)
+        m.assertEqual(result.targetsetRects[1][1].x, 97)
+    end sub
+
+
+    @it("applies vertical primary-axis margins to target rects")
+    sub testReturnFlushRectsVerticalMargins()
+        result = returnFlushRects({
+            direction: "vertical",
+            extraRects: 0,
+            horizAlign: "center",
+            margins: calculate.quadruple({ value: [3, 0, 4, 0] }),
+            rectSizes: m.getRectSizesForFlushTests(),
+            totalRects: 2,
+            vertAlign: "center"
+        })
+
+        m.assertEqual(result.targetsetRects[1][0].y, 3)
+        m.assertEqual(result.targetsetRects[1][1].y, 90)
+    end sub
+
+
+    private function getRectSizesForDynamicTests()
+        return [
+            {
+                bigSquare: [80, 100],
+                smallSquare: [40, 20],
+                totalArea: {
+                    height: 100,
+                    width: 80
+                }
+            },
+            {
+                bigSquare: [70, 90],
+                smallSquare: [50, 60],
+                totalArea: {
+                    height: 90,
+                    width: 70
+                }
+            }
+        ]
+    end function
+
+
+    private function getRectSizesForFlushTests()
+        return [
+            {
+                bigSquare: [80, 80],
+                smallSquare: [40, 40],
+                totalArea: {
+                    height: 80,
+                    width: 80
+                }
+            },
+            {
+                bigSquare: [80, 80],
+                smallSquare: [40, 40],
+                totalArea: {
+                    height: 80,
+                    width: 80
+                }
+            }
+        ]
+    end function
+end class

@@ -1,0 +1,31 @@
+{
+    "extends": "./bsconfig.json",
+    "createPackage": true,
+    "files": [
+        "components/**/*",
+        "manifest",
+        "static/**/*",
+        "source/**/*",
+        "!source/main.brs",
+        {
+            "src": "tests/source/main.brs",
+            "dest": "source/main.brs"
+        },
+        {
+            "src": "tests/_ord_flexList.spec.bs",
+            "dest": "source/tests/_ord_flexList.spec.bs"
+        }
+    ],
+    "outFile": "out/rooibos-tests.zip",
+    "plugins": [ "@rokucommunity/bslint", "rooibos-roku" ],
+    "rooibos": {
+        "catchCrashes": true,
+        "failFast": true,
+        "includeFilters": [
+            "**/*.spec.bs",
+            "!**/roku_modules/**/*"
+        ],
+        "reporters": [ "console" ],
+        "showOnlyFailures": false
+    }
+}

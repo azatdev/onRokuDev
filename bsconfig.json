@@ -3,7 +3,8 @@
     "diagnosticLevel": "error",
     "diagnosticFilters": [
         "**/TrackerTask.xml",
-        "./source/roku_modules/**/*"
+        "./source/roku_modules/**/*",
+        "./tests/**/*"
     ],
     "files": [
         "components/**/*",

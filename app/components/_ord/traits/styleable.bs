@@ -15,15 +15,12 @@ class Styleable
 
         if not styleNode.hasField(top().subType())
             styleNode.addField(top().subType(), "assocarray", false)
-            styleNode.setField(top().subType(), appStyles[top().subType()])
+            if rodash.isAA(appStyles) then styleNode.setField(top().subType(), appStyles[top().subType()])
         end if
 
         styleNode.observeFieldScoped(top().subType(), rodash.getFunctionName(m.stylesUpdated))
 
         m.setStyles(styleNode[top().subType()])
-
-        if appStyles[top().subType()] <> invalid
-        end if
 
         safeObserve("change", "onChildChange")
     end sub
