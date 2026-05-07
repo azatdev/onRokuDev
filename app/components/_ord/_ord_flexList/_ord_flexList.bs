@@ -346,7 +346,6 @@ sub processConfig(options = {})
 
     rectSizes = processRectSizes({
         bigSquare: config.bigSquare,
-        gutters: gutters,
         margins: margins,
         smallSquare: config.smallSquare
     })
@@ -376,7 +375,6 @@ sub processConfig(options = {})
     lastFocusableIndex = focusableIndexArray[1]
 
     generateRects({
-        bigSquare: config.bigSquare,
         carouselType: config.carouselType,
         defaultVisibleIndex: config.defaultVisibleIndex,
         direction: config.direction,
@@ -391,7 +389,6 @@ sub processConfig(options = {})
         margins: margins,
         maxWidth: config.maxWidth,
         rectSizes: rectSizes,
-        smallSquare: config.smallSquare,
         totalRects: totalRects,
         vertAlign: config.vertAlign
     })
@@ -440,7 +437,6 @@ function processRectSizes(options = {})
     for each rectSet in rectSizes
         rectSet.totalArea = calculate.squareTotalArea({
             bigSquare: rectSet.bigSquare,
-            smallSquare: rectSet.smallSquare,
             margins: margins
         })
     end for
@@ -481,11 +477,35 @@ sub generateRects(options = {})
     maxWidth = options.maxWidth
 
     if carouselType = "flushFocus"
-        rects = returnFlushRects(options)
+        rects = returnFlushRects({
+            direction: direction,
+            rectSizes: options.rectSizes,
+            extraRects: extraRects,
+            margins: options.margins,
+            totalRects: options.totalRects,
+            horizAlign: options.horizAlign,
+            vertAlign: options.vertAlign
+        })
     else if carouselType = "dynamicSize"
-        rects = returnDynamicRects(options)
+        rects = returnDynamicRects({
+            extraRects: extraRects,
+            direction: direction,
+            gutters: gutters,
+            margins: options.margins,
+            maxWidth: maxWidth,
+            rectSizes: options.rectSizes,
+            totalRects: options.totalRects
+        })
     else
-        rects = returnDefaultRects(options)
+        rects = returnDefaultRects({
+            direction: direction,
+            rectSizes: options.rectSizes,
+            extraRects: extraRects,
+            margins: options.margins,
+            totalRects: options.totalRects,
+            horizAlign: options.horizAlign,
+            vertAlign: options.vertAlign
+        })
     end if
 
     targetsetRects = rects.targetsetRects
@@ -756,13 +776,11 @@ end function
 function returnDynamicRects(options = {})
     extraRects = options.extraRects
     direction = options.direction
-    horizAlign = options.horizAlign
     gutters = options.gutters
     margins = options.margins
     maxWidth = options.maxWidth
     rectSizes = options.rectSizes
     totalRects = options.totalRects
-    vertAlign =  options.vertAlign
 
     targetsetRects = []
     clippingRects = []
