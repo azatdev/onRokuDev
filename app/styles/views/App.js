@@ -29,14 +29,14 @@ module.exports = {
             width: 273
         },
         "_ord_flexList#first_list": {
-            color: "#bad7fc80",
-            translation: [120, 99],
+            color: "#bad7fc00",
+            translation: [120, 90],
             // width: 1008
         },
         "_ord_flexList#second_list": {
             color: "#bad7fc00",
-            translation: [1450, 0]
-            // translation: [120, 360]
+            // translation: [1450, 0]
+            translation: [120, 360]
         },
         "_ord_flexList#third_list": {
             color: "#bad7fc00",

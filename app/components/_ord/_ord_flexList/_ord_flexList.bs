@@ -22,6 +22,7 @@ sub init()
         set({ defaultConfig: {
             animationDuration: 0.3,
             clip: true,
+            carouselType: "default",
             componentName: "",
             defaultVisibleIndex: 0,
             ' lastIndex: 2,
@@ -205,8 +206,16 @@ sub setClippingRects(options = {})
     dynamicWidth = options.dynamicWidth ?? false
     gutters = options.gutters
     maxWidth = options.maxWidth ?? 0
+    index = direction = "horizontal" ? 2 : 3
 
     unfocusedClippingRect = clippingRects.shift()
+    focusedClippingRect = clippingRects[0]
+
+    if dynamicWidth and maxWidth > 0
+        focusedClippingRect[index] = maxWidth
+        unfocusedClippingRect[index] = maxWidth
+    end if
+
     set({
         unfocusedClippingRect: applyGutters({
             clippingRect: unfocusedClippingRect,
@@ -215,17 +224,9 @@ sub setClippingRects(options = {})
         })
     })
 
-    index = direction = "horizontal" ? 2 : 3
-
-    focusedClippingRect = clippingRects[0]
     for each clippingRect in clippingRects
         if clippingRect[2] > focusedClippingRect[2] then focusedClippingRect[2] = clippingRect[2]
     end for
-
-    if dynamicWidth and maxWidth > 0
-        focusedClippingRect[index] = maxWidth
-        unfocusedClippingRect[index] = maxWidth
-    end if
 
     set({
         focusedClippingRect: applyGutters({
@@ -247,7 +248,7 @@ sub onFocusedChildChange(options = {})
     if not rodash.isNode(m.carousel.targetSet) then return
 
     if unfocused
-        unFocusedTargetSet = m.unFocusedTargetSet
+        unFocusedTargetSet = get("dynamicWidth") ? m.carousel.targetSet : m.unFocusedTargetSet
         unFocusedTargetSet.focusIndex = m.carousel.targetSet.focusIndex
         rodash.delay(sub(args)
             args[0].animateToTargetSet = args[1]
@@ -410,6 +411,7 @@ sub processConfig(options = {})
     set({
         clip: config.clip,
         direction: config.direction,
+        dynamicWidth: config.dynamicWidth,
         extraRects: extraRects,
         gutters: gutters,
         lastFocusableIndex: lastFocusableIndex,
@@ -478,6 +480,7 @@ sub generateRects(options = {})
 
     rects = returnTargetsetRects(options)
     targetsetRects = rects.targetsetRects
+
     clippingRects = rects.clippingRects
 
     unfocusedRects = targetsetRects.shift()
@@ -582,7 +585,6 @@ function returnTargetsetRects(options = {})
 
     targetsetRects = []
     clippingRects = []
-    ?"direction " direction
 
     horizontal = direction = "horizontal"
     primaryArrayIndex = horizontal ? 0 : 1
@@ -603,6 +605,8 @@ function returnTargetsetRects(options = {})
             bigSquare = rectSize.bigSquare
             smallSquare = rectSize.smallSquare
             totalArea = rectSize.totalArea
+            firstVisibleIndex = extraRects
+            lastVisibleIndex = totalRects - (extraRects * 2)
 
             square = x = focusedTile ? bigSquare : smallSquare
 
@@ -639,15 +643,7 @@ function returnTargetsetRects(options = {})
                     end if
                 end if
 
-                ' startingPosition += square[targetRectIndex]
-
-                ?"square 1 " square
-
-                ' ?"containerPosition " containerPosition
-
                 square = x <> y or y = -1 ? rect.smallSquare : rect.bigSquare
-
-                ?"square 2 " square
 
                 targetRect = {
                     height: square[1] ?? 0,
@@ -657,6 +653,17 @@ function returnTargetsetRects(options = {})
                 }
 
                 targetRects.push(targetRect)
+
+                if x <= lastVisibleIndex
+                    if horizontal
+                        clippingRect[2] = startingPosition
+                        clippingRect[3] = totalArea.height
+                    else
+                        clippingRect[2] = totalArea.width
+                        clippingRect[3] = startingPosition
+                    end if
+                end if
+
             else if flushFocus
                 adjustedPosition = startingPosition - (extraRects * smallSquare[targetRectIndex])
                 deltaArray = [deltaX, deltaY]
@@ -682,6 +689,16 @@ function returnTargetsetRects(options = {})
                 targetRects.push(targetRect)
 
                 startingPosition += square[targetRectIndex]
+
+                clippingRect = calculate.dynamicClippingRect({
+                    existingClippingRect: clippingRect,
+                    firstVisibleIndex: extraRects,
+                    horizontal: horizontal,
+                    lastVisibleIndex: totalRects - extraRects - 1,
+                    rectIndex: x,
+                    targetRect: targetRect,
+                    targetSetIndex: y
+                })
             else
                 adjustedPosition = startingPosition - (extraRects * totalArea[targetDimension])
 
@@ -699,60 +716,19 @@ function returnTargetsetRects(options = {})
                 }
                 targetRects.push(targetRect)
 
+                if x <= lastVisibleIndex
+                    if horizontal
+                        clippingRect[2] = startingPosition
+                        clippingRect[3] = totalArea.height
+                    else
+                        clippingRect[2] = totalArea.width
+                        clippingRect[3] = startingPosition
+                    end if
+                end if
+
                 startingPosition += totalArea[targetDimension]
             end if
-
-            firstVisibleIndex = extraRects
-            lastVisibleIndex = totalRects - extraRects - 1
-
-            if y = -1
-                if x = firstVisibleIndex
-                    if targetRect.x >= 0 and targetRect.x > clippingRect[0] then clippingRect[0] = targetRect.x
-                    if targetRect.y >= 0 and targetRect.y > clippingRect[1] then clippingRect[1] = targetRect.y
-                end if
-
-                if x <= lastVisibleIndex
-                    if direction = "horizontal"
-                        rectsLastX = targetRect.width + targetRect.x
-                    else
-                        rectsLastX = targetRect.width
-                    end if
-
-                    if clippingRect[2] < rectsLastX then clippingRect[2] = rectsLastX
-
-                    if direction = "horizontal"
-                        rectsLastY = targetRect.height
-                    else
-                        rectsLastY = targetRect.height + targetRect.y
-                    end if
-
-                    if clippingRect[3] < rectsLastY then clippingRect[3] = rectsLastY
-                end if
-
-            else if y <> -1 and x <= lastVisibleIndex
-                clippingRect[0] = 0
-                clippingRect[1] = 0
-
-                if direction = "horizontal"
-                    rectsLastX = targetRect.width + targetRect.x
-                else
-                    rectsLastX = targetRect.width
-                end if
-
-                if clippingRect[2] < rectsLastX then clippingRect[2] = rectsLastX
-
-                if direction = "horizontal"
-                    rectsLastY = targetRect.height
-                else
-                    rectsLastY = targetRect.y + targetRect.height
-                end if
-
-                if clippingRect[3] < rectsLastY then clippingRect[3] = rectsLastY
-            end if
         end for
-
-        ?chr(10)
-        ?chr(10)
 
         clippingRects.push(clippingRect)
 
@@ -793,8 +769,6 @@ namespace calculate
 
         adjustedRects = []
 
-        ' ?"itemThreshold " itemThreshold
-
         if itemThreshold < maxWidth then return targetRects
 
         sizeDelta = maxWidth - itemThreshold
@@ -808,6 +782,65 @@ namespace calculate
         end for
 
         return adjustedRects
+    end function
+
+
+    function dynamicClippingRect(options = {})
+        firstVisibleIndex = options.firstVisibleIndex
+        horizontal = options.horizontal
+        lastVisibleIndex = options.lastVisibleIndex
+        rectIndex = options.rectIndex
+        targetRect = options.targetRect
+        targetSetIndex = options.targetSetIndex
+        clippingRect = options.existingClippingRect
+
+        ' clippingRect = [0, 0, 0, 0]
+
+        if targetSetIndex = -1
+            if rectIndex = firstVisibleIndex
+                if targetRect.x >= 0 and targetRect.x > clippingRect[0] then clippingRect[0] = targetRect.x
+                if targetRect.y >= 0 and targetRect.y > clippingRect[1] then clippingRect[1] = targetRect.y
+            end if
+
+            if rectIndex <= lastVisibleIndex
+                if horizontal
+                    rectsLastX = targetRect.width + targetRect.x
+                else
+                    rectsLastX = targetRect.width
+                end if
+
+                if clippingRect[2] < rectsLastX then clippingRect[2] = rectsLastX
+
+                if horizontal
+                    rectsLastY = targetRect.height
+                else
+                    rectsLastY = targetRect.height + targetRect.y
+                end if
+
+                if clippingRect[3] < rectsLastY then clippingRect[3] = rectsLastY
+            end if
+        else if targetSetIndex <> -1 and rectIndex <= lastVisibleIndex
+            clippingRect[0] = 0
+            clippingRect[1] = 0
+
+            if horizontal
+                rectsLastX = targetRect.width + targetRect.x
+            else
+                rectsLastX = targetRect.width
+            end if
+
+            if clippingRect[2] < rectsLastX then clippingRect[2] = rectsLastX
+
+            if horizontal
+                rectsLastY = targetRect.height
+            else
+                rectsLastY = targetRect.y + targetRect.height
+            end if
+
+            if clippingRect[3] < rectsLastY then clippingRect[3] = rectsLastY
+        end if
+
+        return clippingRect
     end function
 
 
