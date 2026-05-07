@@ -365,7 +365,7 @@ sub processConfig(options = {})
         totalCarouselItems: totalCarouselItems,
         visibleTiles: config.visibleTiles
     })
-    totalRects = calculate.totalRects({
+    totalRects = calculate.totalCarouselRects({
         extraRects: extraRects,
         visibleTiles: visibleWindow.visibleTiles
     })
@@ -1085,7 +1085,7 @@ namespace calculate
     end function
 
 
-    function totalRects(options = {})
+    function totalCarouselRects(options = {})
         if not rodash.isNonEmptyAA(options) then return 0
         extraRects = options.extraRects ?? 0
         visibleTiles = options.visibleTiles ?? {}
