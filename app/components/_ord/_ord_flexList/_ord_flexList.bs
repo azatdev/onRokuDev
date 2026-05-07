@@ -73,6 +73,7 @@ end sub
 
 sub onTestTimerFired(options = {})
     fraction = options.data
+
     if rodash.isNode(m.focusTimer) and (fraction = 0 or fraction = 1) then safeUnobserve("fraction", m.focusTimer)
 
     percentage = m.carousel.isInFocusChain() ? fraction : 1 - fraction
@@ -144,6 +145,7 @@ sub applyClippingRect(options = {})
     percentage = percentage < 0 ? 0 : percentage
     percentage = percentage > 1 ? 1 : percentage
     direction = get("direction") ?? "horizontal"
+    horizontal = direction = "horizontal"
     focusedClippingRect = get("focusedClippingRect")
     unfocusedClippingRect = get("unfocusedClippingRect")
 
@@ -162,7 +164,7 @@ sub applyClippingRect(options = {})
         deltaHeight * percentage + unfocusedClippingRect[3]
     ]
 
-    if direction = "horizontal"
+    if horizontal
         newClippingRect[2] -= (deltaX * percentage + unfocusedClippingRect[0])
     else
         newClippingRect[3] -= (deltaY * percentage + unfocusedClippingRect[1])
@@ -182,6 +184,7 @@ function applyGutters(options = {})
     if not rodash.isNonEmptyAA(options) then return [0,0,0,0]
     clippingRect = options.clippingRect ?? [0,0,0,0]
     direction = options.direction ?? "horizontal"
+    horizontal = direction = "horizontal"
     gutters = options.gutters ?? calculate.quadruple({ value: 0 })
 
     clippingRect[0] -= gutters.left
@@ -189,7 +192,7 @@ function applyGutters(options = {})
     clippingRect[2] += gutters.right
     clippingRect[3] += gutters.bottom
 
-    if direction = "horizontal"
+    if horizontal
         clippingRect[3] += gutters.top
     else
         clippingRect[2] += gutters.left
@@ -772,7 +775,7 @@ function returnDynamicRects(options = {})
 
             containerPosition = [0, 0]
             if rodash.isNonEmptyAA(previousRect)
-                if direction = "horizontal"
+                if horizontal
                     containerPosition[targetRectIndex] = previousRect.x + previousRect.width + margins.left + margins.right
                 else
                     containerPosition[targetRectIndex] = previousRect.y + previousRect.height + margins.top + margins.bottom
@@ -819,6 +822,39 @@ end function
 
 
 namespace calculate
+    function adjustedDynamicRects(options = {})
+        direction = options.direction
+        gutters = options.gutters
+        horizontal = direction = "horizontal"
+        maxWidth = options.maxWidth
+        targetRects = options.targetRects ?? {}
+        targetSetIndex = options.targetSetIndex ?? {}
+        targetAxis = horizontal ? "x" : "y"
+        targetDimension = horizontal ? "width" : "height"
+        guttersKey = horizontal ? "right" : "bottom"
+
+        if targetSetIndex = -1 then return targetRects
+
+        itemThreshold = targetRects[targetSetIndex][targetAxis] + targetRects[targetSetIndex][targetDimension]
+
+        adjustedRects = []
+
+        if itemThreshold < maxWidth then return targetRects
+
+        sizeDelta = maxWidth - itemThreshold
+        sizeDelta -= gutters[guttersKey]
+
+        for each rect in targetRects
+            newRect = {}
+            newRect.append(rect)
+            newRect[targetAxis] += sizeDelta
+            adjustedRects.push(newRect)
+        end for
+
+        return adjustedRects
+    end function
+
+
     function alignmentOffsets(options = {})
         bigSquare = options.bigSquare ?? [0, 0]
         horizAlign = options.horizAlign ?? "center"
@@ -845,60 +881,6 @@ namespace calculate
             x: deltaX,
             y: deltaY
         }
-    end function
-
-
-    function adjustedDynamicRects(options = {})
-        direction = options.direction
-        gutters = options.gutters
-        maxWidth = options.maxWidth
-        targetRects = options.targetRects ?? {}
-        targetSetIndex = options.targetSetIndex ?? {}
-        targetAxis = direction = "horizontal" ? "x" : "y"
-        targetDimension = direction = "horizontal" ? "width" : "height"
-        guttersKey = direction = "horizontal" ? "right" : "bottom"
-
-        if targetSetIndex = -1 then return targetRects
-
-        itemThreshold = targetRects[targetSetIndex][targetAxis] + targetRects[targetSetIndex][targetDimension]
-
-        adjustedRects = []
-
-        if itemThreshold < maxWidth then return targetRects
-
-        sizeDelta = maxWidth - itemThreshold
-        sizeDelta -= gutters[guttersKey]
-
-        for each rect in targetRects
-            newRect = {}
-            newRect.append(rect)
-            newRect[targetAxis] += sizeDelta
-            adjustedRects.push(newRect)
-        end for
-
-        return adjustedRects
-    end function
-
-
-    function extendLinearClippingRect(options = {})
-        clippingRect = options.existingClippingRect ?? [0, 0, 0, 0]
-        horizontal = options.horizontal ?? false
-        lastVisibleIndex = options.lastVisibleIndex ?? -1
-        rectIndex = options.rectIndex ?? -1
-        startingPosition = options.startingPosition ?? 0
-        totalArea = options.totalArea ?? {}
-
-        if rectIndex > lastVisibleIndex then return clippingRect
-
-        if horizontal
-            clippingRect[2] = startingPosition
-            clippingRect[3] = totalArea.height
-        else
-            clippingRect[2] = totalArea.width
-            clippingRect[3] = startingPosition
-        end if
-
-        return clippingRect
     end function
 
 
@@ -961,6 +943,28 @@ namespace calculate
     end function
 
 
+    function extendLinearClippingRect(options = {})
+        clippingRect = options.existingClippingRect ?? [0, 0, 0, 0]
+        horizontal = options.horizontal ?? false
+        lastVisibleIndex = options.lastVisibleIndex ?? -1
+        rectIndex = options.rectIndex ?? -1
+        startingPosition = options.startingPosition ?? 0
+        totalArea = options.totalArea ?? {}
+
+        if rectIndex > lastVisibleIndex then return clippingRect
+
+        if horizontal
+            clippingRect[2] = startingPosition
+            clippingRect[3] = totalArea.height
+        else
+            clippingRect[2] = totalArea.width
+            clippingRect[3] = startingPosition
+        end if
+
+        return clippingRect
+    end function
+
+
     ' Get the number of extra hidden rects
     ' for *each side* of the carousel
     ' meaning ultimately it will be n*2
@@ -970,6 +974,7 @@ namespace calculate
         direction = options.direction
         dynamicWidth = options.dynamicWidth ?? false
         gutters = options.gutters
+        horizontal = direction = "horizontal"
         rectSizes = options.rectSizes
         squareArea = rectSizes[0].totalArea ?? { height: 0, width: 0 }
         defaultExtraRect = 1
@@ -982,7 +987,7 @@ namespace calculate
 
         gutterSize = 0
 
-        if direction = "horizontal"
+        if horizontal
             gutterSize = gutters.left > gutters.right ? gutters.left : gutters.right
         else
             gutterSize = gutters.top > gutters.bottom ? gutters.top : gutters.bottom
@@ -990,7 +995,7 @@ namespace calculate
 
         if gutterSize <= 0 then return defaultExtraRect
 
-        rectSize = squareArea[direction = "horizontal" ? "width" : "height"]
+        rectSize = squareArea[horizontal ? "width" : "height"]
         percentageOfSquareAsGutter = gutterSize / rectSize
         numberOfVisibleGutterSquares = int(percentageOfSquareAsGutter) + 1
 
@@ -1004,30 +1009,6 @@ namespace calculate
         b = abs(y)
         remainder = a - (int(a/b) * b)
         return remainder * sgn(x)
-    end function
-
-
-    function rectStartingPosition(options = {})
-        coordinates = [0, 0]
-        if not rodash.isNonEmptyAA(options) then return coordinates
-
-        ' Because some of the tiles will be hidden
-        extraRects = options.extraRects
-        horizontal = options.horizontal ?? false
-        index = options.index ?? 0
-        rect = options.square ?? {}
-        ' We need to adjust the index based on the extraRects
-        adjustedIndex = index + extraRects * -1
-
-        if rodash.isEmpty(rect) then return coordinates
-
-        if horizontal
-            coordinates[0] = adjustedIndex * rect.width
-        else
-            coordinates[1] = adjustedIndex * rect.height
-        end if
-
-        return coordinates
     end function
 
 
@@ -1064,6 +1045,30 @@ namespace calculate
         end if
 
         return returnObj
+    end function
+
+
+    function rectStartingPosition(options = {})
+        coordinates = [0, 0]
+        if not rodash.isNonEmptyAA(options) then return coordinates
+
+        ' Because some of the tiles will be hidden
+        extraRects = options.extraRects
+        horizontal = options.horizontal ?? false
+        index = options.index ?? 0
+        rect = options.square ?? {}
+        ' We need to adjust the index based on the extraRects
+        adjustedIndex = index + extraRects * -1
+
+        if rodash.isEmpty(rect) then return coordinates
+
+        if horizontal
+            coordinates[0] = adjustedIndex * rect.width
+        else
+            coordinates[1] = adjustedIndex * rect.height
+        end if
+
+        return coordinates
     end function
 
 
