@@ -84,7 +84,6 @@ sub loadList(options = {})
         itemComponentName: "TestItem",
         visibleTiles: 4,
         wrap: true,
-        flushFocus: false,
         bigSquare: [210, 210],
         ' gutterSize: [0],
         gutterSize: [75, 0],
@@ -117,8 +116,8 @@ sub loadSecondList(options = {})
     testModel.rectConfig = {
         ' direction: "vertical",
         ' animationDuration: 0.01,
-        horizAlign: "center",
-        ' vertAlign: "bottom",
+        horizAlign: "left",
+        vertAlign: "center",
         clip: true,
         defaultVisibleIndex: 0,
         carouselType: "flushFocus",
@@ -126,13 +125,12 @@ sub loadSecondList(options = {})
         itemComponentName: "TestItem",
         visibleTiles: 4,
         wrap: true,
-        flushFocus: true,
         bigSquare: [421, 452],
-        gutterSize: [75, 0],
+        ' gutterSize: [75, 0],
         ' gutterSize: [0, 75],
         ' gutterSize: [0],
-        smallSquare: [273, 213],
-        squareMargins: [30]
+        smallSquare: [273, 213]
+        ' squareMargins: [30]
     }
 
     testModel.id = "flexCarousel_model"
@@ -168,18 +166,16 @@ sub loadThirdList(options = {})
         carouselType: "dynamicSize",
         clip: true,
         defaultVisibleIndex: 0,
-        dynamicWidth: true,
         focusType: "floating",
         itemComponentName: "DynamicItem",
         visibleTiles: 999,
         wrap: true,
-        flushFocus: true,
         maxWidth: 720,
         bigSquare: [200, 100],
         gutterSize: 30,
         smallSquare: [200, 100],
-        squareMargins: [6, 0]
-        ' squareMargins: [0, 6]
+        ' squareMargins: [6, 0]
+        squareMargins: [0, 6]
     }
 
     list.data = {
