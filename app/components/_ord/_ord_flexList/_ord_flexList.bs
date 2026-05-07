@@ -350,29 +350,28 @@ sub processConfig(options = {})
         smallSquare: config.smallSquare
     })
 
-    maxVisibleTiles = calculate.maxVisibleTiles({
-        totalCarouselItems: totalCarouselItems,
-        visibleTiles: config.visibleTiles
-    })
     extraRects = calculate.extraRectNumber({
         direction: config.direction,
         dynamicWidth: config.dynamicWidth,
         gutters: gutters,
         rectSizes: rectSizes
     })
-    totalRects = calculate.totalRects({ extraRects: extraRects, visibleTiles: maxVisibleTiles })
-
-    ' Calculate the first and last visible rects
-    ' accounting for extra gutter rects
-    focusableIndexArray = getVisibleIndices({
+    visibleWindow = calculate.visibleWindow({
         defaultVisibleIndex: config.defaultVisibleIndex ?? 0,
         extraRects: extraRects,
         totalCarouselItems: totalCarouselItems,
-        visibleTiles: maxVisibleTiles
+        visibleTiles: config.visibleTiles
+    })
+    totalRects = calculate.totalRects({
+        extraRects: extraRects,
+        visibleTiles: visibleWindow.visibleTiles
     })
 
-    firstFocusableIndex = focusableIndexArray[0]
-    lastFocusableIndex = focusableIndexArray[1]
+    ' Calculate the first and last visible rects
+    ' accounting for extra gutter rects
+    focusableIndexArray = visibleWindow.focusableIndexArray
+    firstFocusableIndex = visibleWindow.firstFocusableIndex
+    lastFocusableIndex = visibleWindow.lastFocusableIndex
 
     generateRects({
         carouselType: config.carouselType,
@@ -554,22 +553,6 @@ sub generateRects(options = {})
 end sub
 
 
-function getVisibleIndices(options = {})
-    if not rodash.isNonEmptyAA(options) then return [0,0]
-    defaultVisibleIndex = options.defaultVisibleIndex
-    extraRects = options.extraRects
-
-    maxVisibleTiles = options.visibleTiles
-    numberOfContentItems = options.totalCarouselItems
-    visibleTiles = numberOfContentItems < maxVisibleTiles ? numberOfContentItems : maxVisibleTiles
-
-    firstFocusableIndex = defaultVisibleIndex + extraRects
-    lastFocusableIndex = visibleTiles - 1 + extraRects
-
-    return [firstFocusableIndex, lastFocusableIndex]
-end function
-
-
 sub setUnfocusedTargetSet(options = {})
     defaultVisibleIndex = options.defaultVisibleIndex
     extraRects = options.extraRects
@@ -625,30 +608,19 @@ function returnDefaultRects(options = {})
             lastVisibleIndex = totalRects - (extraRects * 2)
 
             adjustedPosition = startingPosition - (extraRects * totalArea[targetDimension])
-
+            alignmentOffsets = calculate.alignmentOffsets({
+                bigSquare: bigSquare,
+                horizAlign: horizAlign,
+                smallSquare: smallSquare,
+                vertAlign: vertAlign
+            })
             square = x = focusedTile ? bigSquare : smallSquare
-
-            if horizAlign = "left"
-                deltaX = 0
-            else if horizAlign = "right"
-                deltaX = (bigSquare[0] - smallSquare[0])
-            else
-                deltaX = (bigSquare[0] - smallSquare[0]) / 2
-            end if
-
-            if vertAlign = "top"
-                deltaY = 0
-            else if vertAlign = "bottom"
-                deltaY = (bigSquare[1] - smallSquare[1])
-            else
-                deltaY = (bigSquare[1] - smallSquare[1]) / 2
-            end if
 
             containerPosition = [0, 0]
             containerPosition[targetRectIndex] = adjustedPosition
 
-            offsetX = x = focusedTile ? margins.left : deltaX + margins.left
-            offsetY = x = focusedTile ? margins.top : deltaY + margins.top
+            offsetX = x = focusedTile ? margins.left : alignmentOffsets.x + margins.left
+            offsetY = x = focusedTile ? margins.top : alignmentOffsets.y + margins.top
 
             targetRect = {
                 x: containerPosition[0] + offsetX,
@@ -658,15 +630,14 @@ function returnDefaultRects(options = {})
             }
             targetRects.push(targetRect)
 
-            if x <= lastVisibleIndex
-                if horizontal
-                    clippingRect[2] = startingPosition
-                    clippingRect[3] = totalArea.height
-                else
-                    clippingRect[2] = totalArea.width
-                    clippingRect[3] = startingPosition
-                end if
-            end if
+            clippingRect = calculate.extendLinearClippingRect({
+                existingClippingRect: clippingRect,
+                horizontal: horizontal,
+                lastVisibleIndex: lastVisibleIndex,
+                rectIndex: x,
+                startingPosition: startingPosition,
+                totalArea: totalArea
+            })
 
             startingPosition += totalArea[targetDimension]
         end for
@@ -708,27 +679,16 @@ function returnFlushRects(options = {})
             rectSize = rectSizes[x] ?? rectSizes[0]
             bigSquare = rectSize.bigSquare
             smallSquare = rectSize.smallSquare
-
+            alignmentOffsets = calculate.alignmentOffsets({
+                bigSquare: bigSquare,
+                horizAlign: horizAlign,
+                smallSquare: smallSquare,
+                vertAlign: vertAlign
+            })
             square = x = focusedTile ? bigSquare : smallSquare
 
-            if horizAlign = "left"
-                deltaX = 0
-            else if horizAlign = "right"
-                deltaX = (bigSquare[0] - smallSquare[0])
-            else
-                deltaX = (bigSquare[0] - smallSquare[0]) / 2
-            end if
-
-            if vertAlign = "top"
-                deltaY = 0
-            else if vertAlign = "bottom"
-                deltaY = (bigSquare[1] - smallSquare[1])
-            else
-                deltaY = (bigSquare[1] - smallSquare[1]) / 2
-            end if
-
             adjustedPosition = startingPosition - (extraRects * smallSquare[targetRectIndex])
-            deltaArray = [deltaX, deltaY]
+            deltaArray = [alignmentOffsets.x, alignmentOffsets.y]
 
             containerPosition = [0, 0]
 
@@ -828,15 +788,14 @@ function returnDynamicRects(options = {})
 
             targetRects.push(targetRect)
 
-            if x <= lastVisibleIndex
-                if horizontal
-                    clippingRect[2] = startingPosition
-                    clippingRect[3] = totalArea.height
-                else
-                    clippingRect[2] = totalArea.width
-                    clippingRect[3] = startingPosition
-                end if
-            end if
+            clippingRect = calculate.extendLinearClippingRect({
+                existingClippingRect: clippingRect,
+                horizontal: horizontal,
+                lastVisibleIndex: lastVisibleIndex,
+                rectIndex: x,
+                startingPosition: startingPosition,
+                totalArea: totalArea
+            })
         end for
 
         clippingRects.push(clippingRect)
@@ -860,6 +819,35 @@ end function
 
 
 namespace calculate
+    function alignmentOffsets(options = {})
+        bigSquare = options.bigSquare ?? [0, 0]
+        horizAlign = options.horizAlign ?? "center"
+        smallSquare = options.smallSquare ?? [0, 0]
+        vertAlign = options.vertAlign ?? "center"
+
+        if horizAlign = "left"
+            deltaX = 0
+        else if horizAlign = "right"
+            deltaX = bigSquare[0] - smallSquare[0]
+        else
+            deltaX = (bigSquare[0] - smallSquare[0]) / 2
+        end if
+
+        if vertAlign = "top"
+            deltaY = 0
+        else if vertAlign = "bottom"
+            deltaY = bigSquare[1] - smallSquare[1]
+        else
+            deltaY = (bigSquare[1] - smallSquare[1]) / 2
+        end if
+
+        return {
+            x: deltaX,
+            y: deltaY
+        }
+    end function
+
+
     function adjustedDynamicRects(options = {})
         direction = options.direction
         gutters = options.gutters
@@ -889,6 +877,28 @@ namespace calculate
         end for
 
         return adjustedRects
+    end function
+
+
+    function extendLinearClippingRect(options = {})
+        clippingRect = options.existingClippingRect ?? [0, 0, 0, 0]
+        horizontal = options.horizontal ?? false
+        lastVisibleIndex = options.lastVisibleIndex ?? -1
+        rectIndex = options.rectIndex ?? -1
+        startingPosition = options.startingPosition ?? 0
+        totalArea = options.totalArea ?? {}
+
+        if rectIndex > lastVisibleIndex then return clippingRect
+
+        if horizontal
+            clippingRect[2] = startingPosition
+            clippingRect[3] = totalArea.height
+        else
+            clippingRect[2] = totalArea.width
+            clippingRect[3] = startingPosition
+        end if
+
+        return clippingRect
     end function
 
 
@@ -1057,14 +1067,6 @@ namespace calculate
     end function
 
 
-    function maxVisibleTiles(options = {})
-        if not rodash.isNonEmptyAA(options) then return 0
-        configMaxTiles = options.visibleTiles ?? 0
-        numberOfItems = options.totalCarouselItems ?? 0
-        return numberOfItems < configMaxTiles ? numberOfItems : configMaxTiles
-    end function
-
-
     function squareTotalArea(options = {})
         if not rodash.isNonEmptyAA(options) then return 0
 
@@ -1083,5 +1085,31 @@ namespace calculate
         extraRects = options.extraRects ?? 0
         visibleTiles = options.visibleTiles ?? {}
         return visibleTiles + (extraRects * 2)
+    end function
+
+
+    function visibleWindow(options = {})
+        if not rodash.isNonEmptyAA(options) then return {
+            firstFocusableIndex: 0,
+            focusableIndexArray: [0, 0],
+            lastFocusableIndex: 0,
+            visibleTiles: 0
+        }
+
+        defaultVisibleIndex = options.defaultVisibleIndex ?? 0
+        extraRects = options.extraRects ?? 0
+        configMaxTiles = options.visibleTiles ?? 0
+        totalCarouselItems = options.totalCarouselItems ?? 0
+        visibleTiles = totalCarouselItems < configMaxTiles ? totalCarouselItems : configMaxTiles
+
+        firstFocusableIndex = defaultVisibleIndex + extraRects
+        lastFocusableIndex = visibleTiles - 1 + extraRects
+
+        return {
+            firstFocusableIndex: firstFocusableIndex,
+            focusableIndexArray: [firstFocusableIndex, lastFocusableIndex],
+            lastFocusableIndex: lastFocusableIndex,
+            visibleTiles: visibleTiles
+        }
     end function
 end namespace
