@@ -377,6 +377,7 @@ sub processConfig(options = {})
 
     generateRects({
         bigSquare: config.bigSquare,
+        carouselType: config.carouselType,
         defaultVisibleIndex: config.defaultVisibleIndex,
         direction: config.direction,
         dynamicWidth: config.dynamicWidth,
@@ -467,6 +468,7 @@ end sub
 
 
 sub generateRects(options = {})
+    carouselType = options.carouselType
     defaultVisibleIndex = options.defaultVisibleIndex
     direction = options.direction
     dynamicWidth = options.dynamicWidth
@@ -478,9 +480,15 @@ sub generateRects(options = {})
     focusType = options.focusType
     maxWidth = options.maxWidth
 
-    rects = returnTargetsetRects(options)
-    targetsetRects = rects.targetsetRects
+    if carouselType = "flushFocus"
+        rects = returnFlushRects(options)
+    else if carouselType = "dynamicSize"
+        rects = returnDynamicRects(options)
+    else
+        rects = returnDefaultRects(options)
+    end if
 
+    targetsetRects = rects.targetsetRects
     clippingRects = rects.clippingRects
 
     unfocusedRects = targetsetRects.shift()
@@ -568,32 +576,21 @@ function createTargetset(options = {})
 end function
 
 
-function returnTargetsetRects(options = {})
-    bigSquare = options.bigSquare
-    smallSquare = options.smallSquare
-    extraRects = options.extraRects
+function returnDefaultRects(options = {})
     direction = options.direction
-    dynamicWidth = options.dynamicWidth
-    horizAlign = options.horizAlign
-    gutters = options.gutters
-    flushFocus = options.flushFocus
-    margins = options.margins
-    maxWidth = options.maxWidth
     rectSizes = options.rectSizes
+    extraRects = options.extraRects
+    margins = options.margins
     totalRects = options.totalRects
-    vertAlign =  options.vertAlign
-
-    targetsetRects = []
-    clippingRects = []
-
     horizontal = direction = "horizontal"
-    primaryArrayIndex = horizontal ? 0 : 1
-    secondaryArrayIndex = horizontal ? 1 : 0
+    horizAlign = options.horizAlign
+    vertAlign = options.vertAlign
     targetRectIndex = horizontal ? 0 : 1
-    targetAxis = horizontal ? "x" : "y"
     targetDimension = horizontal ? "width" : "height"
 
-    ' -1 because we want to generate the unfocused state as first array
+    clippingRects = []
+    targetsetRects = []
+
     for y = -1 to totalRects - 1
         focusedTile = y
         targetRects = []
@@ -605,8 +602,9 @@ function returnTargetsetRects(options = {})
             bigSquare = rectSize.bigSquare
             smallSquare = rectSize.smallSquare
             totalArea = rectSize.totalArea
-            firstVisibleIndex = extraRects
             lastVisibleIndex = totalRects - (extraRects * 2)
+
+            adjustedPosition = startingPosition - (extraRects * totalArea[targetDimension])
 
             square = x = focusedTile ? bigSquare : smallSquare
 
@@ -626,121 +624,211 @@ function returnTargetsetRects(options = {})
                 deltaY = (bigSquare[1] - smallSquare[1]) / 2
             end if
 
-            if dynamicWidth
-                previousRect = targetRects[x - 1]
-                adjustedIndex = x + extraRects * -1
-                rect = rectSizes[adjustedIndex]
-                if not rodash.isNonEmptyAA(rect) then rect = {
-                    bigSquare: [0, 0],
-                    smallSquare: [0, 0]
-                }
-                containerPosition = [0, 0]
-                if rodash.isNonEmptyAA(previousRect)
-                    if direction = "horizontal"
-                        containerPosition[targetRectIndex] = previousRect.x + previousRect.width + margins.left + margins.right
-                    else
-                        containerPosition[targetRectIndex] = previousRect.y + previousRect.height + margins.top + margins.bottom
-                    end if
+            containerPosition = [0, 0]
+            containerPosition[targetRectIndex] = adjustedPosition
+
+            offsetX = x = focusedTile ? margins.left : deltaX + margins.left
+            offsetY = x = focusedTile ? margins.top : deltaY + margins.top
+
+            targetRect = {
+                x: containerPosition[0] + offsetX,
+                y: containerPosition[1] + offsetY,
+                width: square[0],
+                height: square[1]
+            }
+            targetRects.push(targetRect)
+
+            if x <= lastVisibleIndex
+                if horizontal
+                    clippingRect[2] = startingPosition
+                    clippingRect[3] = totalArea.height
+                else
+                    clippingRect[2] = totalArea.width
+                    clippingRect[3] = startingPosition
                 end if
+            end if
 
-                square = x <> y or y = -1 ? rect.smallSquare : rect.bigSquare
+            startingPosition += totalArea[targetDimension]
+        end for
 
-                targetRect = {
-                    height: square[1] ?? 0,
-                    width: square[0] ?? 0,
-                    x: containerPosition[0],
-                    y: containerPosition[1]
-                }
+        targetsetRects.push(targetRects)
+        clippingRects.push(clippingRect)
+    end for
 
-                targetRects.push(targetRect)
+    return {
+        "targetsetRects": targetsetRects,
+        "clippingRects": clippingRects
+    }
+end function
 
-                if x <= lastVisibleIndex
-                    if horizontal
-                        clippingRect[2] = startingPosition
-                        clippingRect[3] = totalArea.height
-                    else
-                        clippingRect[2] = totalArea.width
-                        clippingRect[3] = startingPosition
-                    end if
-                end if
+function returnFlushRects(options = {})
+    direction = options.direction
+    rectSizes = options.rectSizes
+    extraRects = options.extraRects
+    margins = options.margins
+    totalRects = options.totalRects
+    horizontal = direction = "horizontal"
+    horizAlign = options.horizAlign
+    vertAlign = options.vertAlign
+    primaryArrayIndex = horizontal ? 0 : 1
+    secondaryArrayIndex = horizontal ? 1 : 0
+    targetRectIndex = horizontal ? 0 : 1
 
-            else if flushFocus
-                adjustedPosition = startingPosition - (extraRects * smallSquare[targetRectIndex])
-                deltaArray = [deltaX, deltaY]
+    clippingRects = []
+    targetsetRects = []
 
-                containerPosition = [0, 0]
+    for y = -1 to totalRects - 1
+        focusedTile = y
+        targetRects = []
+        clippingRect = [0, 0, 0, 0]
+        startingPosition = 0
 
-                containerPosition[primaryArrayIndex] = adjustedPosition
-                containerPosition[secondaryArrayIndex] = deltaArray[secondaryArrayIndex]
+        for x = 0 to totalRects - 1
+            rectSize = rectSizes[x] ?? rectSizes[0]
+            bigSquare = rectSize.bigSquare
+            smallSquare = rectSize.smallSquare
 
-                if focusedTile = -1
-                    containerPosition[primaryArrayIndex] += deltaArray[primaryArrayIndex] / 2
-                else if x = focusedTile
-                    containerPosition[secondaryArrayIndex] = 0
-                end if
+            square = x = focusedTile ? bigSquare : smallSquare
 
-                targetRect = {
-                    x: containerPosition[0],
-                    y: containerPosition[1],
-                    width: square[0],
-                    height: square[1]
-                }
-
-                targetRects.push(targetRect)
-
-                startingPosition += square[targetRectIndex]
-
-                clippingRect = calculate.dynamicClippingRect({
-                    existingClippingRect: clippingRect,
-                    firstVisibleIndex: extraRects,
-                    horizontal: horizontal,
-                    lastVisibleIndex: totalRects - extraRects - 1,
-                    rectIndex: x,
-                    targetRect: targetRect,
-                    targetSetIndex: y
-                })
+            if horizAlign = "left"
+                deltaX = 0
+            else if horizAlign = "right"
+                deltaX = (bigSquare[0] - smallSquare[0])
             else
-                adjustedPosition = startingPosition - (extraRects * totalArea[targetDimension])
+                deltaX = (bigSquare[0] - smallSquare[0]) / 2
+            end if
 
-                containerPosition = [0, 0]
-                containerPosition[targetRectIndex] = adjustedPosition
+            if vertAlign = "top"
+                deltaY = 0
+            else if vertAlign = "bottom"
+                deltaY = (bigSquare[1] - smallSquare[1])
+            else
+                deltaY = (bigSquare[1] - smallSquare[1]) / 2
+            end if
 
-                offsetX = x = focusedTile ? margins.left : deltaX + margins.left
-                offsetY = x = focusedTile ? margins.top : deltaY + margins.top
+            adjustedPosition = startingPosition - (extraRects * smallSquare[targetRectIndex])
+            deltaArray = [deltaX, deltaY]
 
-                targetRect = {
-                    x: containerPosition[0] + offsetX,
-                    y: containerPosition[1] + offsetY,
-                    width: square[0],
-                    height: square[1]
-                }
-                targetRects.push(targetRect)
+            containerPosition = [0, 0]
 
-                if x <= lastVisibleIndex
-                    if horizontal
-                        clippingRect[2] = startingPosition
-                        clippingRect[3] = totalArea.height
-                    else
-                        clippingRect[2] = totalArea.width
-                        clippingRect[3] = startingPosition
-                    end if
+            containerPosition[primaryArrayIndex] = adjustedPosition
+            containerPosition[secondaryArrayIndex] = deltaArray[secondaryArrayIndex]
+
+            if focusedTile = -1
+                containerPosition[primaryArrayIndex] += deltaArray[primaryArrayIndex] / 2
+            else if x = focusedTile
+                containerPosition[secondaryArrayIndex] = 0
+            end if
+
+            targetRect = {
+                x: containerPosition[0],
+                y: containerPosition[1],
+                width: square[0],
+                height: square[1]
+            }
+
+            targetRects.push(targetRect)
+
+            startingPosition += square[targetRectIndex]
+
+            clippingRect = calculate.dynamicClippingRect({
+                existingClippingRect: clippingRect,
+                firstVisibleIndex: extraRects,
+                horizontal: horizontal,
+                lastVisibleIndex: totalRects - extraRects - 1,
+                rectIndex: x,
+                targetRect: targetRect,
+                targetSetIndex: y
+            })
+        end for
+
+        clippingRects.push(clippingRect)
+        targetsetRects.push(targetRects)
+    end for
+
+    return {
+        "targetsetRects": targetsetRects,
+        "clippingRects": clippingRects
+    }
+end function
+
+
+function returnDynamicRects(options = {})
+    extraRects = options.extraRects
+    direction = options.direction
+    horizAlign = options.horizAlign
+    gutters = options.gutters
+    margins = options.margins
+    maxWidth = options.maxWidth
+    rectSizes = options.rectSizes
+    totalRects = options.totalRects
+    vertAlign =  options.vertAlign
+
+    targetsetRects = []
+    clippingRects = []
+
+    horizontal = direction = "horizontal"
+    targetRectIndex = horizontal ? 0 : 1
+
+    ' -1 because we want to generate the unfocused state as first array
+    for y = -1 to totalRects - 1
+        targetRects = []
+        clippingRect = [0, 0, 0, 0]
+        startingPosition = 0
+
+        for x = 0 to totalRects - 1
+            rectSize = rectSizes[x] ?? rectSizes[0]
+            totalArea = rectSize.totalArea
+            previousRect = targetRects[x - 1]
+            adjustedIndex = x + extraRects * -1
+            rect = rectSizes[adjustedIndex]
+            lastVisibleIndex = totalRects - (extraRects * 2)
+
+            if not rodash.isNonEmptyAA(rect) then rect = {
+                bigSquare: [0, 0],
+                smallSquare: [0, 0]
+            }
+
+            square = x <> y or y = -1 ? rect.smallSquare : rect.bigSquare
+
+            containerPosition = [0, 0]
+            if rodash.isNonEmptyAA(previousRect)
+                if direction = "horizontal"
+                    containerPosition[targetRectIndex] = previousRect.x + previousRect.width + margins.left + margins.right
+                else
+                    containerPosition[targetRectIndex] = previousRect.y + previousRect.height + margins.top + margins.bottom
                 end if
+            end if
 
-                startingPosition += totalArea[targetDimension]
+            targetRect = {
+                height: square[1] ?? 0,
+                width: square[0] ?? 0,
+                x: containerPosition[0],
+                y: containerPosition[1]
+            }
+
+            targetRects.push(targetRect)
+
+            if x <= lastVisibleIndex
+                if horizontal
+                    clippingRect[2] = startingPosition
+                    clippingRect[3] = totalArea.height
+                else
+                    clippingRect[2] = totalArea.width
+                    clippingRect[3] = startingPosition
+                end if
             end if
         end for
 
         clippingRects.push(clippingRect)
 
-        if dynamicWidth
-            targetRects = calculate.adjustedDynamicRects({
-                direction: direction,
-                gutters: gutters,
-                targetRects: targetRects,
-                maxWidth: maxWidth,
-                targetSetIndex: y
-            })
-        end if
+        targetRects = calculate.adjustedDynamicRects({
+            direction: direction,
+            gutters: gutters,
+            targetRects: targetRects,
+            maxWidth: maxWidth,
+            targetSetIndex: y
+        })
 
         targetsetRects.push(targetRects)
     end for

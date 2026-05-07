@@ -88,6 +88,7 @@ sub loadList(options = {})
         bigSquare: [210, 210],
         ' gutterSize: [0],
         gutterSize: [75, 0],
+        ' gutterSize: [0, 75],
         smallSquare: [150, 150],
         squareMargins: [0]
     }
@@ -116,7 +117,7 @@ sub loadSecondList(options = {})
     testModel.rectConfig = {
         ' direction: "vertical",
         ' animationDuration: 0.01,
-        horizAlign: "right",
+        horizAlign: "center",
         ' vertAlign: "bottom",
         clip: true,
         defaultVisibleIndex: 0,
@@ -128,6 +129,7 @@ sub loadSecondList(options = {})
         flushFocus: true,
         bigSquare: [421, 452],
         gutterSize: [75, 0],
+        ' gutterSize: [0, 75],
         ' gutterSize: [0],
         smallSquare: [273, 213],
         squareMargins: [30]
@@ -141,7 +143,7 @@ sub loadSecondList(options = {})
     }
 
     m.secondList = list
-    ' m.secondList.setFocus(true)
+    m.secondList.setFocus(true)
 end sub
 
 
@@ -177,6 +179,7 @@ sub loadThirdList(options = {})
         gutterSize: 30,
         smallSquare: [200, 100],
         squareMargins: [6, 0]
+        ' squareMargins: [0, 6]
     }
 
     list.data = {
