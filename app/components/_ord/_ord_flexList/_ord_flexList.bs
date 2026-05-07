@@ -87,9 +87,9 @@ end sub
 
 function onKeyEvent(key as string, press as boolean) as boolean
     return exec(function(options = {})
+        carousel = options.carousel
         key = options.key
         press = options.press
-        carousel = options.carousel
 
         if not press then return true
         if not rodash.isArray(m.focusedTargetSetArray) then return true
@@ -133,7 +133,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
         top().focusedContentIndex = nextIndex
 
         return true
-    end function, { key: key, press: press, carousel: m.carousel })
+    end function, { carousel: m.carousel, key: key, press: press })
 end function
 
 
@@ -351,8 +351,8 @@ sub processConfig(options = {})
     })
 
     maxVisibleTiles = calculate.maxVisibleTiles({
-        visibleTiles: config.visibleTiles,
-        totalCarouselItems: totalCarouselItems
+        totalCarouselItems: totalCarouselItems,
+        visibleTiles: config.visibleTiles
     })
     extraRects = calculate.extraRectNumber({
         direction: config.direction,
@@ -360,7 +360,7 @@ sub processConfig(options = {})
         gutters: gutters,
         rectSizes: rectSizes
     })
-    totalRects = calculate.totalRects({ visibleTiles: maxVisibleTiles, extraRects: extraRects })
+    totalRects = calculate.totalRects({ extraRects: extraRects, visibleTiles: maxVisibleTiles })
 
     ' Calculate the first and last visible rects
     ' accounting for extra gutter rects
@@ -411,9 +411,9 @@ sub processConfig(options = {})
         direction: config.direction,
         dynamicWidth: config.dynamicWidth,
         extraRects: extraRects,
+        focusableIndexArray: focusableIndexArray,
         gutters: gutters,
         lastFocusableIndex: lastFocusableIndex,
-        focusableIndexArray: focusableIndexArray,
         wrap: config.wrap
     })
 
@@ -423,9 +423,9 @@ end sub
 
 function processRectSizes(options = {})
     bigSquare = options.bigSquare
+    margins = options.margins
     smallSquare = options.smallSquare
     rectSizes = m.rectSizes ?? []
-    margins = options.margins
 
     if not rodash.isNonEmptyArray(rectSizes)
         rectSizes = [{
@@ -470,26 +470,26 @@ sub generateRects(options = {})
     dynamicWidth = options.dynamicWidth
     extraRects = options.extraRects
     firstFocusableIndex = options.firstFocusableIndex
-    gutters = options.gutters
-    lastFocusableIndex = options.lastFocusableIndex
     flushFocus = options.flushFocus
     focusType = options.focusType
+    gutters = options.gutters
+    lastFocusableIndex = options.lastFocusableIndex
     maxWidth = options.maxWidth
 
     if carouselType = "flushFocus"
         rects = returnFlushRects({
             direction: direction,
-            rectSizes: options.rectSizes,
             extraRects: extraRects,
-            margins: options.margins,
-            totalRects: options.totalRects,
             horizAlign: options.horizAlign,
+            margins: options.margins,
+            rectSizes: options.rectSizes,
+            totalRects: options.totalRects,
             vertAlign: options.vertAlign
         })
     else if carouselType = "dynamicSize"
         rects = returnDynamicRects({
-            extraRects: extraRects,
             direction: direction,
+            extraRects: extraRects,
             gutters: gutters,
             margins: options.margins,
             maxWidth: maxWidth,
@@ -499,11 +499,11 @@ sub generateRects(options = {})
     else
         rects = returnDefaultRects({
             direction: direction,
-            rectSizes: options.rectSizes,
             extraRects: extraRects,
-            margins: options.margins,
-            totalRects: options.totalRects,
             horizAlign: options.horizAlign,
+            margins: options.margins,
+            rectSizes: options.rectSizes,
+            totalRects: options.totalRects,
             vertAlign: options.vertAlign
         })
     end if
@@ -559,8 +559,8 @@ function getVisibleIndices(options = {})
     defaultVisibleIndex = options.defaultVisibleIndex
     extraRects = options.extraRects
 
-    numberOfContentItems = options.totalCarouselItems
     maxVisibleTiles = options.visibleTiles
+    numberOfContentItems = options.totalCarouselItems
     visibleTiles = numberOfContentItems < maxVisibleTiles ? numberOfContentItems : maxVisibleTiles
 
     firstFocusableIndex = defaultVisibleIndex + extraRects
@@ -598,13 +598,13 @@ end function
 
 function returnDefaultRects(options = {})
     direction = options.direction
-    rectSizes = options.rectSizes
     extraRects = options.extraRects
-    margins = options.margins
-    totalRects = options.totalRects
-    horizontal = direction = "horizontal"
     horizAlign = options.horizAlign
+    margins = options.margins
+    rectSizes = options.rectSizes
+    totalRects = options.totalRects
     vertAlign = options.vertAlign
+    horizontal = direction = "horizontal"
     targetRectIndex = horizontal ? 0 : 1
     targetDimension = horizontal ? "width" : "height"
 
@@ -683,13 +683,14 @@ end function
 
 function returnFlushRects(options = {})
     direction = options.direction
-    rectSizes = options.rectSizes
     extraRects = options.extraRects
-    margins = options.margins
-    totalRects = options.totalRects
-    horizontal = direction = "horizontal"
     horizAlign = options.horizAlign
+    margins = options.margins
+    rectSizes = options.rectSizes
+    totalRects = options.totalRects
     vertAlign = options.vertAlign
+
+    horizontal = direction = "horizontal"
     primaryArrayIndex = horizontal ? 0 : 1
     secondaryArrayIndex = horizontal ? 1 : 0
     targetRectIndex = horizontal ? 0 : 1
@@ -774,8 +775,8 @@ end function
 
 
 function returnDynamicRects(options = {})
-    extraRects = options.extraRects
     direction = options.direction
+    extraRects = options.extraRects
     gutters = options.gutters
     margins = options.margins
     maxWidth = options.maxWidth
@@ -843,8 +844,8 @@ function returnDynamicRects(options = {})
         targetRects = calculate.adjustedDynamicRects({
             direction: direction,
             gutters: gutters,
-            targetRects: targetRects,
             maxWidth: maxWidth,
+            targetRects: targetRects,
             targetSetIndex: y
         })
 
@@ -861,12 +862,12 @@ end function
 namespace calculate
     function adjustedDynamicRects(options = {})
         direction = options.direction
+        gutters = options.gutters
         maxWidth = options.maxWidth
         targetRects = options.targetRects ?? {}
         targetSetIndex = options.targetSetIndex ?? {}
         targetAxis = direction = "horizontal" ? "x" : "y"
         targetDimension = direction = "horizontal" ? "width" : "height"
-        gutters = options.gutters
         guttersKey = direction = "horizontal" ? "right" : "bottom"
 
         if targetSetIndex = -1 then return targetRects
@@ -892,13 +893,13 @@ namespace calculate
 
 
     function dynamicClippingRect(options = {})
+        clippingRect = options.existingClippingRect
         firstVisibleIndex = options.firstVisibleIndex
         horizontal = options.horizontal
         lastVisibleIndex = options.lastVisibleIndex
         rectIndex = options.rectIndex
         targetRect = options.targetRect
         targetSetIndex = options.targetSetIndex
-        clippingRect = options.existingClippingRect
 
         ' clippingRect = [0, 0, 0, 0]
 
@@ -1000,11 +1001,11 @@ namespace calculate
         coordinates = [0, 0]
         if not rodash.isNonEmptyAA(options) then return coordinates
 
-        index = options.index ?? 0
-        rect = options.square ?? {}
-        horizontal = options.horizontal ?? false
         ' Because some of the tiles will be hidden
         extraRects = options.extraRects
+        horizontal = options.horizontal ?? false
+        index = options.index ?? 0
+        rect = options.square ?? {}
         ' We need to adjust the index based on the extraRects
         adjustedIndex = index + extraRects * -1
 
@@ -1079,8 +1080,8 @@ namespace calculate
 
     function totalRects(options = {})
         if not rodash.isNonEmptyAA(options) then return 0
-        visibleTiles = options.visibleTiles ?? {}
         extraRects = options.extraRects ?? 0
+        visibleTiles = options.visibleTiles ?? {}
         return visibleTiles + (extraRects * 2)
     end function
 end namespace
