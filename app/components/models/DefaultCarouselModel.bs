@@ -1,0 +1,78 @@
+sub init()
+    for each item in getShowItems()
+        childModel = createObject("roSGNode", "ContentNode")
+        childModel.title = item.title
+        childModel.HDPosterUrl = item.HDPosterUrl
+        m.top.appendChild(childModel)
+    end for
+end sub
+
+
+function getShowItems() as object
+    return [
+        {
+            title: "Bon Appétit",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/Bon Appétit.webp"
+        },
+        {
+            title: "Brilliant Minds",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/Brilliant Minds.webp"
+        },
+        {
+            title: "Criminal Minds",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/Criminal Minds.webp"
+        },
+        {
+            title: "Euphoria",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/Euphoria.webp"
+        },
+        {
+            title: "Fargo",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/Fargo.webp"
+        },
+        {
+            title: "Hell's Kitchen",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/Hell's Kitchen.webp"
+        },
+        {
+            title: "House",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/House.webp"
+        },
+        {
+            title: "MasterChef",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/MasterChef.webp"
+        },
+        {
+            title: "Matlock",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/Matlock.webp"
+        },
+        {
+            title: "Reacher",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/Reacher.webp"
+        },
+        {
+            title: "Scrubs",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/Scrubs.webp"
+        },
+        {
+            title: "Silicon Valley",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/Silicon Valley.webp"
+        },
+        {
+            title: "Silo",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/Silo.webp"
+        },
+        {
+            title: "Stranger Things",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/Stranger Things.webp"
+        },
+        {
+            title: "The Amazing Race Canada",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/The Amazing Race Canada.webp"
+        },
+        {
+            title: "The X-Files",
+            HDPosterUrl: "pkg:/static/images/thumbnails/shows/The X-Files.webp"
+        }
+    ]
+end function

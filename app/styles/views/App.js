@@ -1,5 +1,6 @@
 module.exports = {
     "App": {
+        backgroundColor: "#121124",
         opacity: 1,
         visible: true,
         "Group#container": {
@@ -30,17 +31,17 @@ module.exports = {
         },
         "_ord_flexList#first_list": {
             color: "#bad7fc00",
-            translation: [120, 90],
+            translation: [153, 450],
             // width: 1008
         },
         "_ord_flexList#second_list": {
             color: "#bad7fc00",
             // translation: [1450, 0]
-            translation: [120, 360]
+            translation: [120, 560]
         },
         "_ord_flexList#third_list": {
             color: "#bad7fc00",
-            translation: [120, 840]
+            translation: [120, 940]
             // translation: [1450, 40]
         }
     }

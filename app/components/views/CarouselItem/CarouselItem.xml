@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="CarouselItem" extends="Group">
+    <interface>
+        <field id="index" type="integer" />
+        <field id="currRect" type="rect2d" />
+        <field id="focusPercent" type="float" />
+        <field id="itemContent" type="node" onChange="itemContentChanged" />
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <Rectangle id="container">
+            <Poster id="thumbnail" />
+            <Poster id="outline" />
+            <Label id="label" />
+        </Rectangle>
+    </children>
+    <script type="text/brightscript" uri="CarouselItem.bs" />
+</component>

@@ -1,0 +1,58 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub()
+        setupItem()
+    end sub)
+end sub
+
+
+sub setupItem()
+    m.indexLabel = m.top.findNode("label")
+    m.container = m.top.findNode("container")
+    m.outline = m.top.findNode("outline")
+    m.thumbnail = m.top.findNode("thumbnail")
+    ' m.container.opacity = 0.5
+    safeObserve("currRect", onCurrentRectChange)
+    safeObserve("focusPercent", onFocusPercentChange)
+end sub
+
+
+sub itemContentChanged(event)
+    content = event.getData()
+    if content = invalid then return
+
+    ' m.indexLabel.text = content.title
+    if rodash.isNonEmptyString(content.HDPosterUrl)
+        m.thumbnail.uri = content.HDPosterUrl
+    end if
+end sub
+
+
+sub onCurrentRectChange(options = {})
+    rect = options.data ?? {}
+    ' ?"onCurrentRectChange " m.top.index
+
+    if rodash.isNode(m.container)
+        m.container.height = rect.height
+        m.container.width = rect.width
+    end if
+
+    if rodash.isNode(m.outline)
+        m.outline.height = rect.height
+        m.outline.width = rect.width
+    end if
+
+    if rodash.isNode(m.thumbnail)
+        m.thumbnail.height = rect.height - 12
+        m.thumbnail.width = rect.width - 12
+    end if
+end sub
+
+
+sub onFocusPercentChange(options = {})
+    focusPercentage = options.data ?? {}
+    ?"focusPercentage " focusPercentage
+    ' opacityPercentage = (0.5 * focusPercentage) * focusPercentage + 0.5
+    ' m.container.opacity = opacityPercentage
+end sub
