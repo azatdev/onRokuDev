@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="QuanticoBold" extends="Label">
+    <interface>
+        <field id="size" type="integer" alias="font.size" />
+    </interface>
+    <children>
+        <Font
+            id="font"
+            role="font"
+            uri="pkg:/static/fonts/Quantico-Bold.ttf" />
+    </children>
+</component>

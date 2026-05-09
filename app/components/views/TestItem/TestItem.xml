@@ -8,9 +8,7 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <Rectangle id="container">
-            <Label id="label" />
-        </Rectangle>
+        <Poster id="container" />
     </children>
     <script type="text/brightscript" uri="TestItem.bs" />
 </component>

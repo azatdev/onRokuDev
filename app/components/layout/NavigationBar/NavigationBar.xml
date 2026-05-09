@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="NavigationBar" extends="Group">
+    <interface>
+
+    </interface>
+    <children>
+        <Poster id="gradient" />
+    </children>
+    <script type="text/brightscript" uri="NavigationBar.bs" />
+</component>

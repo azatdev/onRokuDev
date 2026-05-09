@@ -1,0 +1,32 @@
+import "pkg:/components/constants.bs"
+
+sub init()
+    for each item in getItems()
+        childModel = createObject("roSGNode", "ContentNode")
+        childModel.title = item.title
+        childModel.iconText = item.iconText
+        m.top.appendChild(childModel)
+    end for
+end sub
+
+
+function getItems() as object
+    return [
+        {
+            iconText: Icons.search,
+            title: "Search"
+        },
+        {
+            iconText: Icons.genres,
+            title: "Genres"
+        },
+        {
+            iconText: Icons.favorites,
+            title: "Favorites"
+        },
+        {
+            iconText: Icons.watchlist,
+            title: "Watchlist"
+        }
+    ]
+end function

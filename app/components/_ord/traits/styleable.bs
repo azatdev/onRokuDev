@@ -118,7 +118,7 @@ class Styleable
 
             if node.hasField(attribute.key)
                 node.setField(attribute.key, attributeValue)
-            else if rodash.indexOf(["margin", "padding", "minWidth"], attribute.key) <> -1
+            else if rodash.indexOf(["margin", "minHeight", "minWidth"], attribute.key) <> -1
                 updateObject = {}
                 updateObject[attribute.key] = attribute.value
                 node.update(updateObject, true)

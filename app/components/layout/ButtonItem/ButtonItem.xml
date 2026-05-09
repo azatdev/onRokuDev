@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="ButtonItem" extends="Rectangle">
+    <interface>
+        <field id="index" type="integer" />
+        <field id="currRect" type="rect2d" />
+        <field id="focusPercent" type="float" />
+        <field id="itemContent" type="node" />
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <!-- <Poster id="container">
+            <Quantico id="label" />
+        </Rectangle> -->
+        <Poster id="background" />
+        <Poster id="highlightTop" />
+        <Poster id="highlightBottom" />
+        <Rectangle id="textContainer">
+            <!-- <Quantico id="label" /> -->
+            <Icon id="icon" />
+            <QuanticoBold id="label" />
+        </Rectangle>
+    </children>
+    <script type="text/brightscript" uri="ButtonItem.bs" />
+</component>

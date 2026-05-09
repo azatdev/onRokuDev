@@ -3,12 +3,14 @@ const palette = mixins["Palette"]
 
 module.exports = {
     "DynamicItem": {
-        "Rectangle#container": {
-            color: "#b6f5c680",
-            "Label#label": {
+        "Poster#container": {
+            blendColor: "#333333",
+            "uri": "pkg:/static/images/9patches/fill-18px.9.png",
+            "Quantico#label": {
                 color: palette.primaryColor,
-                height: 99,
+                height: 81,
                 margin: [48, 0],
+                size: 33,
                 vertAlign: "center"
             }
         }

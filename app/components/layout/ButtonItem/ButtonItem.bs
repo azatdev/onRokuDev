@@ -1,0 +1,113 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub()
+        setupItem()
+    end sub)
+end sub
+
+
+sub setupItem()
+    m.label = m.top.findNode("label")
+    m.icon = m.top.findNode("icon")
+    m.container = m.top.findNode("textContainer")
+    m.background = top().findNode("background")
+    m.highlightTop = top().findNode("highlightTop")
+    m.highlightBottom = top().findNode("highlightBottom")
+    safeObserve("focusPercent", onFocusPercentChange)
+    safeObserve("itemContent", itemContentChanged, top())
+    safeObserve("currRect", onCurrRectChange, top())
+
+    top().addField("watchNode", "node", true)
+    top().watchNode = m.label
+    ' safeObserve("watchNode", onTextChange, top())
+end sub
+
+
+sub itemContentChanged(options = {})
+    content = options.data
+    m.label.text = ucase(content.title)
+    m.icon.text = content.iconText
+    dynamicWidth = content.dynamicWidth ?? false
+    ?"content " content
+    ?"dynamicWidth " dynamicWidth
+    set({ dynamicWidth: dynamicWidth})
+    onTextChange()
+end sub
+
+
+sub onTextChange(options = {})
+    stackChildren({ node: m.container, horizontal: true })
+    m.container.width = m.container.boundingRect().width
+    m.container.height = m.container.boundingRect().height
+
+    exec("registerChildRect", {
+        smallSquare: getUnFocusedRectSize(),
+        bigSquare: getFocusedRectSize(),
+        index: m.top.index
+    }, top().getParent().getParent())
+
+    if get("dynamicWidth") then m.label.clippingRect = [0,0,0,0]
+end sub
+
+
+sub onCurrRectChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    rect = options.data
+
+    for each node in [m.background, m.highlightTop, m.highlightBottom]
+        node.width = rect.width
+        node.height = node.id = "highlightTop" ? (rect.height / 3) * 2 : rect.height
+    end for
+end sub
+
+
+sub onGroupFocusPercentChange(event)
+    ' if not TypeGuard_isNumber(m.parentList.currFocusItemIndex) then return
+
+    if cint(m.parentList.currFocusItemIndex) = m.top.index then runFocusTransformation(event)
+end sub
+
+
+sub onFocusPercentChange(options = {})
+    focusPercentage = options.data ?? {}
+    runFocusTransformation(focusPercentage)
+end sub
+
+
+function getFocusedRectSize(options = {})
+    if not rodash.isNode(m.label) then return [0,0]
+
+    m.label.text = ucase(top().itemContent.title)
+    labelSquare = [getVisibleWidth(m.label), getVisibleHeight(m.label)]
+    set({ "labelSquare": labelSquare })
+
+    stackChildren({ node: m.container, horizontal: true })
+    return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
+end function
+
+sub runFocusTransformation(percentage)
+    labelSquare = get("labelSquare") ?? [0,0]
+    labelWidth = labelSquare[0]
+    labelHeight = labelSquare[1]
+
+    ' m.outline.blendColor = addOpacityToHexColor("{{%- s(Palette.active) %}}", percentage)
+
+    if get("dynamicWidth")
+        m.label.clippingRect = [0, 0, labelWidth * percentage, labelHeight]
+    end if
+end sub
+
+
+function getUnfocusedRectSize(options = {})
+    if not rodash.isNode(m.label) then return [0,0]
+
+    if get("dynamicWidth")
+        m.label.width = 0
+        m.label.text = ""
+        ' m.label.margin = [0, 0, 0, 0]
+    end if
+
+    stackChildren({ node: m.container, horizontal: true })
+    return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
+end function

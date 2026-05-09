@@ -1,0 +1,78 @@
+sub init()
+    for each item in getItems()
+        childModel = createObject("roSGNode", "ContentNode")
+        childModel.title = item.title
+        childModel.HDPosterUrl = item.HDPosterUrl
+        m.top.appendChild(childModel)
+    end for
+end sub
+
+
+function getItems() as object
+    return [
+        {
+            title: "12 Donkeys",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/12 Donkeys.webp"
+        },
+        {
+            title: "A Miami Story",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/A Miami Story.webp"
+        },
+        {
+            title: "Dead The Whole Time",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/Dead The Whole Time.webp"
+        },
+        {
+            title: "Good Guy Does Bad Things",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/Good Guy Does Bad Things.webp"
+        },
+        {
+            title: "Hair Gel Mishap",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/Hair Gel Mishap.webp"
+        },
+        {
+            title: "Lecter Skelter",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/Lecter Skelter.webp"
+        },
+        {
+            title: "Manhugger",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/Manhugger.webp"
+        },
+        {
+            title: "Mars Vacation",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/Mars Vacation.webp"
+        },
+        {
+            title: "Musk's Wet Dream",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/Musk's Wet Dream.webp"
+        },
+        {
+            title: "Running From Problems",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/Running From Problems.webp"
+        },
+        {
+            title: "Sight of Darkness",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/Sight of Darkness.webp"
+        },
+        {
+            title: "Stapler Envy",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/Stapler Envy.webp"
+        },
+        {
+            title: "The Cacophony of Veal",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/The Cacophony of Veal.webp"
+        },
+        {
+            title: "Urban Samurai",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/Urban Samurai.webp"
+        },
+        {
+            title: "azamat bogatov",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/azamat bogatov.webp"
+        },
+        {
+            title: "young grandma",
+            HDPosterUrl: "pkg:/static/images/thumbnails/movies/young grandma.webp"
+        }
+    ]
+end function

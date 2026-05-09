@@ -1,7 +1,10 @@
 module.exports = {
     "_ord_flexList": {
         "Poster#clippingRectOutline": {
-            uri: "pkg:/static/images/thinner_rect.9.png"
+            height: 0,
+            uri: "pkg:/static/images/thinner_rect.9.png",
+            visible: false,
+            width: 0
         }
     }
 };

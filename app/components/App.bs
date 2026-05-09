@@ -42,6 +42,7 @@ sub init()
         ])
 
         top().setFocus(true)
+        loadCTAs()
         loadList()
         loadSecondList()
         loadThirdList()
@@ -49,6 +50,33 @@ sub init()
     end sub)
 end sub
 
+
+sub loadCTAs()
+    list = createObject("roSGNode", "_ord_flexList")
+    list.id = "ctas_list"
+    top().appendChild(list)
+
+    ctasModel = createObject("roSGNode", "CTAsModel")
+    ctasModel.id = "flexDynamicCarousel_model"
+    ctasModel.totalCount = ctasModel.getChildCount()
+
+    ctasModel.rectConfig = {
+        carouselType: "dynamicSize",
+        focusType: "floating",
+        itemComponentName: "ButtonItem",
+        maxWidth: 1800,
+        visibleTiles: 999,
+        bigSquare: [200, 100],
+        smallSquare: [200, 100],
+        squareMargins: [0, 16, 0, 0]
+    }
+
+    list.data = {
+        content: ctasModel
+    }
+
+    list.setFocus(true)
+end sub
 
 sub loadRectTest()
     rect1 = createObject("roSGNode", "Rectangle")
@@ -69,8 +97,6 @@ sub loadList(options = {})
     top().appendChild(list)
 
     testModel = createObject("roSGNode", "DefaultCarouselModel")
-    testModel.addField("rectConfig", "assocarray", true)
-    testModel.addField("totalCount", "integer", false)
 
     testModel.rectConfig = {
         ' direction: "vertical",
@@ -80,7 +106,7 @@ sub loadList(options = {})
         carouselType: "default",
         clip: true,
         defaultVisibleIndex: 0,
-        focusType: "floating",
+        focusType: "fixed",
         itemComponentName: "CarouselItem",
         visibleTiles: 5,
         wrap: true,
@@ -100,7 +126,7 @@ sub loadList(options = {})
     }
 
     m.firstList = list
-    m.firstList.setFocus(true)
+    ' m.firstList.setFocus(true)
 end sub
 
 
@@ -109,27 +135,25 @@ sub loadSecondList(options = {})
     list.id = "second_list"
     top().appendChild(list)
 
-    testModel = returnModel({ number: 8 })
-    testModel.addField("rectConfig", "assocarray", true)
-    testModel.addField("totalCount", "integer", false)
+    testModel = createObject("roSGNode", "FlushCarouselModel")
 
     testModel.rectConfig = {
         ' direction: "vertical",
         ' animationDuration: 0.01,
-        horizAlign: "left",
-        vertAlign: "center",
+        horizAlign: "center",
+        vertAlign: "bottom",
         clip: true,
         defaultVisibleIndex: 0,
         carouselType: "flushFocus",
         focusType: "floating",
         itemComponentName: "TestItem",
-        visibleTiles: 4,
+        visibleTiles: 16,
         wrap: true,
-        bigSquare: [421, 452],
+        bigSquare: [201, 300],
         ' gutterSize: [75, 0],
         ' gutterSize: [0, 75],
         ' gutterSize: [0],
-        smallSquare: [273, 213]
+        smallSquare: [120, 180]
         ' squareMargins: [30]
     }
 
@@ -156,7 +180,6 @@ sub loadThirdList(options = {})
 
     testModel.id = "flexDynamicCarousel_model"
     testModel.totalCount = testModel.getChildCount()
-    m.dynamicModel = testModel
 
     testModel.rectConfig = {
         ' direction: "vertical",
@@ -170,12 +193,12 @@ sub loadThirdList(options = {})
         itemComponentName: "DynamicItem",
         visibleTiles: 999,
         wrap: true,
-        maxWidth: 720,
+        maxWidth: 1800,
         bigSquare: [200, 100],
         gutterSize: 30,
         smallSquare: [200, 100],
-        ' squareMargins: [6, 0]
-        squareMargins: [0, 6]
+        squareMargins: [6, 0]
+        ' squareMargins: [0, 6]
     }
 
     list.data = {

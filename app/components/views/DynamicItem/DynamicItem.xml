@@ -8,8 +8,8 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <Rectangle id="container">
-            <Label id="label" />
+        <Poster id="container">
+            <Quantico id="label" />
         </Rectangle>
     </children>
     <script type="text/brightscript" uri="DynamicItem.bs" />

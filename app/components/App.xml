@@ -8,9 +8,14 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <Group id="container">
-            <Label id="title" text="Hello World!" />
-        </Group>
+        <Background id="background" />
+        <!-- <Button id="testButton" /> -->
+        <Sidebar id="sidebar" />
+        <Topbar id="topbar" />
+        <!-- <Poster id="mask" />
+        <MaskGroup id="exampleMaskGroup">
+            <Poster id="examplePoster" />
+        </MaskGroup> -->
     </children>
     <script type="text/brightscript" uri="App.bs" />
 </component>

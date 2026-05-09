@@ -3,7 +3,6 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub()
-        m.clippingRectOutline = top().findNode("clippingRectOutline")
         m.carousel = top().findNode("carousel")
         m.carousel.advancing = true
         m.carousel.reversing = true
@@ -20,16 +19,17 @@ sub init()
         m.initialFocusNode = m.carousel
 
         set({ defaultConfig: {
-            animationDuration: 0.3,
+            animationDuration: 0.1,
             clip: true,
             carouselType: "default",
-            componentName: "",
             defaultVisibleIndex: 0,
             ' lastIndex: 2,
+            debugClippingRect: false,
             direction: "horizontal",
             focusType: "floating",
             gutterSize: 0,
             horizAlign: "center",
+            itemComponentName: "",
             maxHeight: 0,
             maxWidth: 0,
             vertAlign: "center",
@@ -168,9 +168,15 @@ sub applyClippingRect(options = {})
         newClippingRect[3] -= (deltaY * percentage + unfocusedClippingRect[1])
     end if
 
-    m.clippingRectOutline.width = newClippingRect[2]
-    m.clippingRectOutline.height = newClippingRect[3]
-    m.clippingRectOutline.translation = [newClippingRect[0], newClippingRect[1]]
+    if get("debugClippingRect")
+        if m.clippingRectOutline = invalid
+            m.clippingRectOutline = top().findNode("clippingRectOutline")
+            m.clippingRectOutline.visible = true
+        end if
+        m.clippingRectOutline.width = newClippingRect[2]
+        m.clippingRectOutline.height = newClippingRect[3]
+        m.clippingRectOutline.translation = [newClippingRect[0], newClippingRect[1]]
+    end if
 
     top().width = focusedClippingRect[2]
     top().height = focusedClippingRect[3]
@@ -410,6 +416,7 @@ sub processConfig(options = {})
 
     set({
         clip: config.clip,
+        debugClippingRect: config.debugClippingRect,
         direction: config.direction,
         dynamicSize: dynamicSize,
         extraRects: extraRects,

@@ -1,0 +1,38 @@
+import "pkg:/components/constants.bs"
+
+sub init()
+    updateObjArray = []
+
+    for each item in getItems()
+        updateObject = { subtype: "ContentNode"}
+        updateObject.append(item)
+        updateObjArray.push(updateObject)
+    end for
+
+    m.top.update(updateObjArray, true)
+end sub
+
+
+function getItems() as object
+    return [
+        {
+            iconText: Icons.play,
+            title: "Play Now"
+        },
+        {
+            dynamicWidth: true,
+            iconText: Icons.watchlist,
+            title: "Add to watchlist"
+        },
+        {
+            dynamicWidth: true,
+            iconText: Icons.favorites,
+            title: "Add to favorites"
+        },
+        {
+            dynamicWidth: true,
+            iconText: Icons.ellipsis,
+            title: "Details"
+        }
+    ]
+end function

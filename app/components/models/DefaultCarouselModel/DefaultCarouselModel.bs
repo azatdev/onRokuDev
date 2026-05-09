@@ -1,5 +1,5 @@
 sub init()
-    for each item in getShowItems()
+    for each item in getItems()
         childModel = createObject("roSGNode", "ContentNode")
         childModel.title = item.title
         childModel.HDPosterUrl = item.HDPosterUrl
@@ -8,7 +8,7 @@ sub init()
 end sub
 
 
-function getShowItems() as object
+function getItems() as object
     return [
         {
             title: "Bon Appétit",

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="Background" extends="Group">
+    <interface>
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <Poster id="backgroundImage" />
+        <Poster id="bottomGradient" />
+        <Poster id="cornerGradient" />
+    </children>
+    <script type="text/brightscript" uri="Background.bs" />
+</component>

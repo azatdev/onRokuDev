@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="Topbar" extends="Group">
+    <interface>
+
+    </interface>
+    <children>
+        <MaskGroup id ="exampleMaskGroup">
+            <Poster id="gradient" />
+        </MaskGroup>
+    </children>
+    <script type="text/brightscript" uri="Topbar.bs" />
+</component>
