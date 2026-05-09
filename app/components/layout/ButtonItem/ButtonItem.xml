@@ -8,17 +8,14 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <!-- <Poster id="container">
-            <Quantico id="label" />
-        </Rectangle> -->
         <Poster id="background" />
         <Poster id="highlightTop" />
         <Poster id="highlightBottom" />
         <Rectangle id="textContainer">
-            <!-- <Quantico id="label" /> -->
             <Icon id="icon" />
             <QuanticoBold id="label" />
         </Rectangle>
+        <ColorFieldInterpolator id="focusColorInterpolator" />
     </children>
     <script type="text/brightscript" uri="ButtonItem.bs" />
 </component>

@@ -72,7 +72,8 @@ class Styleable
         if not rodash.isNode(node) then return allNodeHandles
 
         nodeSubtype = node.subType()
-        if not nodeSubtype = "Group" and not node.isSubtype("Group") then return allNodeHandles
+
+        ' if not nodeSubtype = "Group" and not node.isSubtype("Group") then return allNodeHandles
 
         allNodeHandles.push(nodeSubtype)
 

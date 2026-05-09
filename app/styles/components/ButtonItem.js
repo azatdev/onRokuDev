@@ -21,14 +21,14 @@ module.exports = {
                 vertAlign: "center"
             }
         },
-        // "color": "#FFFFFF00",
-        // "translation": [200, 200],
-        // "Rectangle#textContainer": {
-        //     color: "#FFFFFF00",
-
-        // },
+        "ColorFieldInterpolator#focusColorInterpolator": {
+            fieldToInterp: "background.blendColor",
+            key: [0.0, 0.25, 0.5, 1.0],
+            keyValue: ["#575345", "#53582E", "#4F5C17", "#4b6100"]
+        },
         "Poster#background": {
-            blendColor: "#4b6100",
+            blendColor: "#575345",
+            activeColor: "#4b6100",
             "uri": "pkg:/static/images/9patches/fill-18px.9.png",
         },
         "Poster#highlightBottom": {

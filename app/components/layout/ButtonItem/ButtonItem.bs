@@ -14,6 +14,8 @@ sub setupItem()
     m.background = top().findNode("background")
     m.highlightTop = top().findNode("highlightTop")
     m.highlightBottom = top().findNode("highlightBottom")
+    m.colorFieldInterpolator = top().findNode("focusColorInterpolator")
+
     safeObserve("focusPercent", onFocusPercentChange)
     safeObserve("itemContent", itemContentChanged, top())
     safeObserve("currRect", onCurrRectChange, top())
@@ -29,8 +31,6 @@ sub itemContentChanged(options = {})
     m.label.text = ucase(content.title)
     m.icon.text = content.iconText
     dynamicWidth = content.dynamicWidth ?? false
-    ?"content " content
-    ?"dynamicWidth " dynamicWidth
     set({ dynamicWidth: dynamicWidth})
     onTextChange()
 end sub
@@ -86,12 +86,13 @@ function getFocusedRectSize(options = {})
     return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
 end function
 
+
 sub runFocusTransformation(percentage)
     labelSquare = get("labelSquare") ?? [0,0]
     labelWidth = labelSquare[0]
     labelHeight = labelSquare[1]
 
-    ' m.outline.blendColor = addOpacityToHexColor("{{%- s(Palette.active) %}}", percentage)
+    m.colorFieldInterpolator.fraction = percentage
 
     if get("dynamicWidth")
         m.label.clippingRect = [0, 0, labelWidth * percentage, labelHeight]
@@ -105,7 +106,6 @@ function getUnfocusedRectSize(options = {})
     if get("dynamicWidth")
         m.label.width = 0
         m.label.text = ""
-        ' m.label.margin = [0, 0, 0, 0]
     end if
 
     stackChildren({ node: m.container, horizontal: true })
