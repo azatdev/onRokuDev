@@ -4,3 +4,4 @@ transpiled
 .env
 .yarn
 package-lock.json
+build/styles.json

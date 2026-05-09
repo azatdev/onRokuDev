@@ -28,7 +28,6 @@ module.exports = {
         },
         "Poster#background": {
             blendColor: "#575345",
-            activeColor: "#4b6100",
             "uri": "pkg:/static/images/9patches/fill-18px.9.png",
         },
         "Poster#highlightBottom": {
