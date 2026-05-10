@@ -24,26 +24,28 @@ module.exports = {
             translation: [1487, 9.75],
             width: 273
         },
-        "_ord_flexList#first_list": {
-            color: "#bad7fc00",
-            translation: [153, 450],
-            // width: 1008,
-        },
-        "_ord_flexList#second_list": {
-            color: "#bad7fc00",
-            // translation: [1450, 0]
-            translation: [0, 780],
-        },
-        "_ord_flexList#ctas_list": {
-            color: "#bad7fc00",
-            // translation: [1450, 0]
-            translation: [150, 150],
-        },
-        "_ord_flexList#third_list": {
-            color: "#bad7fc00",
-            translation: [120, 300],
-            // translation: [1450, 40]
-        },
+        "Group#container": {
+            "_ord_flexList#first_list": {
+                color: "#bad7fc00",
+                translation: [153, 450],
+                // width: 1008,
+            },
+            "_ord_flexList#second_list": {
+                color: "#bad7fc00",
+                // translation: [1450, 0]
+                translation: [0, 780],
+            },
+            "_ord_flexList#ctas_list": {
+                color: "#bad7fc00",
+                // translation: [1450, 0]
+                translation: [150, 150],
+            },
+            "_ord_flexList#third_list": {
+                color: "#bad7fc00",
+                translation: [120, 300],
+                // translation: [1450, 40]
+            }
+        }
         // "Poster#mask": {
         //     "height": 600,
         //     "uri": "pkg:/static/images/grad_lin_l2r_hd.png",

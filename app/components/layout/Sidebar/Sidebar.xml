@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="Sidebar" extends="Group">
+<component name="Sidebar" extends="Group" initialFocus="sidebarList">
     <interface>
-
     </interface>
     <children>
+        <_ord_flexList id="sidebarList" />
         <Poster id="gradient" />
     </children>
-    <script type="text/brightscript" uri="Sidebar.bs" />
+    <script type="text/briSghtscript" uri="Sidebar.bs" />
 </component>

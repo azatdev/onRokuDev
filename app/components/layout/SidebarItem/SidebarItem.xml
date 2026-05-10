@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="SidebarItem" extends="Rectangle">
+    <interface>
+        <field id="index" type="integer" />
+        <field id="currRect" type="rect2d" />
+        <field id="focusPercent" type="float" />
+        <field id="itemContent" type="node" />
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <Poster id="background" />
+        <Rectangle id="textContainer">
+            <Icon id="icon" />
+            <QuanticoBold id="label" />
+        </Rectangle>
+        <ColorFieldInterpolator id="focusColorInterpolator" />
+    </children>
+    <script type="text/brightscript" uri="SidebarItem.bs" />
+</component>

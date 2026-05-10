@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="SidebarModel" extends="ContentNode">
+    <interface>
+        <field id="iconText" type="integer" />
+        <field id="rectConfig" type="assocarray" />
+        <field id="totalCount" type="integer" />
+    </interface>
+    <children>
+
+    </children>
+    <script type="text/brightscript" uri="SidebarModel.bs" />
+</component>

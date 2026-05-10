@@ -2,5 +2,58 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub()
+        m.gradient = top().findNode("gradient")
+        loadSidebar()
+        safeObserve("focusedChild", onFocusedChildChange)
     end sub)
+end sub
+
+
+sub loadSidebar()
+    list = top().findNode("sidebarList")
+    ?"loadSidebar "
+    ' top().appendChild(list)
+
+    model = createObject("roSGNode", "SidebarModel")
+    model.id = "sidebarModel"
+    model.totalCount = model.getChildCount()
+
+    model.rectConfig = {
+        debugClippingRect: true,
+        direction: "vertical",
+        carouselType: "dynamicSize",
+        focusType: "floating",
+        itemComponentName: "SidebarItem",
+        maxWidth: 1800,
+        visibleTiles: 999,
+        bigSquare: [200, 100],
+        smallSquare: [200, 100],
+        squareMargins: [0, 16, 0, 0],
+        horizAlign: "left"
+    }
+
+    list.data = {
+        content: model
+    }
+
+    m.list = list
+    ?"finish loadSidebar"
+    safeObserve("width", onListWidthChange, m.list)
+end sub
+
+
+sub onFocusedChildChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    focusedChild = options.data
+    if not rodash.isNode(focusedChild) then return
+    m.list.setFocus(true)
+end sub
+
+sub onListWidthChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    listWidth = options.data
+    if not rodash.isNumber(listWidth) then return
+
+    m.gradient.width = listWidth
 end sub

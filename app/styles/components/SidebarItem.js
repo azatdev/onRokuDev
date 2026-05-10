@@ -2,7 +2,7 @@ const mixins = require("../mixins");
 const palette = mixins["Palette"]
 
 module.exports = {
-    "ButtonItem": {
+    "SidebarItem": {
         "Rectangle#textContainer": {
             color: "#33333300",
             "uri": "pkg:/static/images/9patches/fill-18px.9.png",
@@ -11,6 +11,7 @@ module.exports = {
                 height: 75,
                 margin: [0, 39, 0, 39],
                 size: 33,
+                width: 33,
                 vertAlign: "center"
             },
             "QuanticoBold#label": {
@@ -27,16 +28,9 @@ module.exports = {
             keyValue: ["#575345", "#53582E", "#4F5C17", "#4b6100"]
         },
         "Poster#background": {
-            blendColor: "#575345",
-            "uri": "pkg:/static/images/9patches/fill-18px.9.png",
-        },
-        "Poster#highlightBottom": {
-            "blendColor": `${palette.primaryColor}14`,
-            "uri": "pkg:/static/images/9patches/highlight-bottom-18px.9.png"
-        },
-        "Poster#highlightTop": {
-            blendColor: `${palette.primaryColor}14`,
-            "uri": "pkg:/static/images/9patches/highlight-top-18px.9.png"
-        },
+            blendColor: "#8fac3f00",
+            opacity: 0,
+            "uri": "pkg:/static/images/white-block.webp",
+        }
     }
 };

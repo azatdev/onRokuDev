@@ -5,16 +5,19 @@ const viewport = dimensions["viewport"]
 const gradientStyles = {
     "blendColor": "#000000",
     "height": viewport.height,
-    "opacity": 0.5,
+    "opacity": 0.7,
     "uri": "pkg:/static/images/gradients/sidebar-gradient.webp",
     "width": 111
 }
 
 module.exports = {
     "Sidebar": {
-        "visible": true,
+        "_ord_flexList#sidebarList":{
+            "translation": [0, 162]
+        },
         "Poster#gradient": {
-            ...gradientStyles
+            ...gradientStyles,
+            width: 200
         }
     },
     "Topbar": {

@@ -1,0 +1,64 @@
+import "pkg:/components/constants.bs"
+
+sub init()
+    updateObjArray = []
+
+    for each item in getItems()
+        updateObject = { subtype: "ContentNode"}
+        updateObject.append(item)
+        updateObjArray.push(updateObject)
+    end for
+
+    m.top.update(updateObjArray, true)
+end sub
+
+
+function getItems() as object
+    return [
+        {
+            dynamicWidth: true,
+            iconText: Icons.home,
+            title: "Home"
+        },
+        {
+            dynamicWidth: true,
+            iconText: Icons.movies,
+            title: "Movies"
+        },
+        {
+            dynamicWidth: true,
+            iconText: Icons.shows,
+            title: "TV Shows"
+        },
+        {
+            dynamicWidth: true,
+            iconText: Icons.documentaries,
+            title: "Documentaries"
+        },
+        {
+            dynamicWidth: true,
+            iconText: Icons.liveTV,
+            title: "Live TV"
+        },
+        {
+            dynamicWidth: true,
+            iconText: Icons.sports,
+            title: "Sports"
+        },
+        {
+            dynamicWidth: true,
+            iconText: Icons.podcasts,
+            title: "Podcasts"
+        },
+        {
+            dynamicWidth: true,
+            iconText: Icons.settings,
+            title: "Settings"
+        },
+        {
+            dynamicWidth: true,
+            iconText: Icons.user,
+            title: "Account"
+        }
+    ]
+end function

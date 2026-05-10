@@ -3,6 +3,7 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub()
+        top().color = "#00000000"
         m.carousel = top().findNode("carousel")
         m.carousel.advancing = true
         m.carousel.reversing = true
@@ -16,7 +17,7 @@ sub init()
         safeObserve("itemUnfocused", onItemUnfocused, m.carousel)
         safeObserve("focusedChild", onCarouselFocusedChildChange, m.carousel)
 
-        m.initialFocusNode = m.carousel
+        m.initialFocus = m.carousel
 
         set({ defaultConfig: {
             animationDuration: 0.1,
@@ -74,8 +75,11 @@ sub onTestTimerFired(options = {})
 
     if rodash.isNode(m.focusTimer) and (fraction = 0 or fraction = 1) then safeUnobserve("fraction", m.focusTimer)
 
-    percentage = m.carousel.isInFocusChain() ? fraction : 1 - fraction
 
+    percentage = m.carousel.isInFocusChain() ? fraction : 1 - fraction
+    m.carousel.focusPercent = percentage
+
+    ?"onTestTimerFired " percentage
     ' There is a 100ms delay before
     ' TargetGroup animation starts
     rodash.delay(sub(percentage)
@@ -178,8 +182,8 @@ sub applyClippingRect(options = {})
         m.clippingRectOutline.translation = [newClippingRect[0], newClippingRect[1]]
     end if
 
-    top().width = focusedClippingRect[2]
-    top().height = focusedClippingRect[3]
+    top().width = newClippingRect[2]
+    top().height = newClippingRect[3]
     top().clippingRect = newClippingRect
 end sub
 
@@ -218,6 +222,13 @@ sub setClippingRects(options = {})
     unfocusedClippingRect = clippingRects.shift()
     focusedClippingRect = clippingRects[0]
 
+    if top().id = "sidebarList"
+
+        ?"focusedClippingRect " focusedClippingRect
+        ?"unfocusedClippingRect " unfocusedClippingRect
+
+    end if
+
     if dynamicSize and maxWidth > 0
         focusedClippingRect[index] = maxWidth
         unfocusedClippingRect[index] = maxWidth
@@ -255,7 +266,10 @@ sub onFocusedChildChange(options = {})
     if not rodash.isNode(m.carousel.targetSet) then return
 
     if unfocused
-        unFocusedTargetSet = get("dynamicSize") ? m.carousel.targetSet : m.unFocusedTargetSet
+        dynamicSize = get("dynamicSize") ?? false
+        if m.unFocusedTargetSet = invalid then return
+        unFocusedTargetSet = dynamicSize ? m.carousel.targetSet : m.unFocusedTargetSet
+
         unFocusedTargetSet.focusIndex = m.carousel.targetSet.focusIndex
         rodash.delay(sub(args)
             args[0].animateToTargetSet = args[1]
@@ -839,6 +853,14 @@ function returnDynamicRects(options = {})
                 startingPosition: startingPosition,
                 totalArea: totalArea
             })
+            if top().id = "sidebarList" and y = -1
+                ?"startingPosition " startingPosition
+                ?"totalArea " totalArea
+                ?"targetRect " targetRect
+                ?"clippingRect " clippingRect
+                ?chr(10)
+            end if
+
         end for
 
         if horizontal
@@ -882,6 +904,8 @@ namespace calculate
         if targetSetIndex = -1 then return targetRects
 
         itemThreshold = targetRects[targetSetIndex][targetAxis] + targetRects[targetSetIndex][targetDimension]
+
+        ?"itemThreshold " itemThreshold
 
         adjustedRects = []
 

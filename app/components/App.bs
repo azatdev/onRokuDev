@@ -4,15 +4,17 @@ import "testdata.bs"
 
 sub init()
     exec(sub()
+        top().setFocus(true)
         ' m.top.removeChild(m.top.getChild(0))
         ' ?"INIT " m.top.subtype()
         ' m.secondNode = createObject("roSGNode", "SecondNode")
-
         ' m.secondNode.data = {
         '     azat: "is cool"
         ' }
 
         m.container = top().findNode("container")
+        m.sidebar = top().findNode("sidebar")
+        m.sidebar.setFocus(true)
 
         ' localResult = onTheNose({ name: "Azat" })
         ' remoteResult = exec("onTheNose", { name: "Azat" }, m.secondNode)
@@ -36,17 +38,16 @@ sub init()
         ' res2 = get(["food", "someArray"], m.secondNode)
         ' ?"get remote 2 " res2 res2.someArray
 
-        registerControllers([
-            "SocketController"
-            "StylesController"
-        ])
+        ' registerControllers([
+        '     "SocketController"
+        '     "StylesController"
+        ' ])
 
-        top().setFocus(true)
-        loadCTAs()
-        loadList()
-        loadSecondList()
-        loadThirdList()
-        ' loadRectTest()
+
+        ' loadCTAs()
+        ' loadList()
+        ' loadSecondList()
+        ' loadThirdList()
     end sub)
 end sub
 
@@ -54,7 +55,7 @@ end sub
 sub loadCTAs()
     list = createObject("roSGNode", "_ord_flexList")
     list.id = "ctas_list"
-    top().appendChild(list)
+    m.container.appendChild(list)
 
     ctasModel = createObject("roSGNode", "CTAsModel")
     ctasModel.id = "flexDynamicCarousel_model"
@@ -74,27 +75,16 @@ sub loadCTAs()
     list.data = {
         content: ctasModel
     }
+    m.ctaList = list
 
     list.setFocus(true)
-end sub
-
-sub loadRectTest()
-    rect1 = createObject("roSGNode", "Rectangle")
-    rect1.id = "rect1"
-    rect2 = createObject("roSGNode", "Rectangle")
-    rect2.id = "rect2"
-    ' rect1.appendChild(rect2)
-    ?"insertingChildren " rodash.now()
-    top().insertChild(rect1, 0)
-    ?"insertingChildren 2 " rodash.now()
-    top().insertChild(rect2, 0)
 end sub
 
 
 sub loadList(options = {})
     list = createObject("roSGNode", "_ord_flexList")
     list.id = "first_list"
-    top().appendChild(list)
+    m.container.appendChild(list)
 
     testModel = createObject("roSGNode", "DefaultCarouselModel")
 
@@ -133,7 +123,7 @@ end sub
 sub loadSecondList(options = {})
     list = createObject("roSGNode", "_ord_flexList")
     list.id = "second_list"
-    top().appendChild(list)
+    m.container.appendChild(list)
 
     testModel = createObject("roSGNode", "FlushCarouselModel")
 
@@ -172,7 +162,7 @@ end sub
 sub loadThirdList(options = {})
     list = createObject("roSGNode", "_ord_flexList")
     list.id = "third_list"
-    top().appendChild(list)
+    m.container.appendChild(list)
 
     testModel = returnDynamicWidthModel()
     testModel.addField("rectConfig", "assocarray", true)
@@ -250,9 +240,9 @@ function onKeyEvent(key as string, press as boolean) as boolean
         ?"key " key
 
         if key = "back" then m.container.setFocus(true)
-        if key = "replay" then m.firstList.setFocus(true)
-        if key = "up" then m.thirdList.setFocus(true)
-        if key = "down" then m.secondList.setFocus(true)
+        if key = "replay" then m.sidebar.setFocus(true)
+        if key = "up" then m.top.createChild("Group")
+        ' if key = "down" then m.secondList.setFocus(true)
 
         return true
     end function, { key: key, press: press })

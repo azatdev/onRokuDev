@@ -10,6 +10,7 @@
     <children>
         <Background id="background" />
         <!-- <Button id="testButton" /> -->
+        <Group id="container" />
         <Sidebar id="sidebar" />
         <Topbar id="topbar" />
         <!-- <Poster id="mask" />

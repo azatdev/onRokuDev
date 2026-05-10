@@ -20,6 +20,7 @@ module.exports = {
             "blendColor": "#3c1744",
             "height": viewport.height,
             "uri": "pkg:/static/images/gradients/corner-gradient.webp",
+            "opacity": 1,
             "translation": [0, 0],
             "width": 1161
         }
