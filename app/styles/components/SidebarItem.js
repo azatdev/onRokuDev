@@ -9,7 +9,7 @@ module.exports = {
             "Icon": {
                 color: palette.primaryColor,
                 height: 75,
-                margin: [0, 39, 0, 39],
+                margin: [0, 39, 0, 36],
                 size: 33,
                 width: 33,
                 vertAlign: "center"

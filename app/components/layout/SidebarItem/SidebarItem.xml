@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="SidebarItem" extends="Rectangle">
     <interface>
+        <field id="groupHasFocus" type="boolean" />
         <field id="index" type="integer" />
         <field id="currRect" type="rect2d" />
         <field id="focusPercent" type="float" />

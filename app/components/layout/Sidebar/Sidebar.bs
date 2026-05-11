@@ -19,7 +19,6 @@ sub loadSidebar()
     model.totalCount = model.getChildCount()
 
     model.rectConfig = {
-        debugClippingRect: true,
         direction: "vertical",
         carouselType: "dynamicSize",
         focusType: "floating",

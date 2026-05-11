@@ -79,7 +79,6 @@ sub onTestTimerFired(options = {})
     percentage = m.carousel.isInFocusChain() ? fraction : 1 - fraction
     m.carousel.focusPercent = percentage
 
-    ?"onTestTimerFired " percentage
     ' There is a 100ms delay before
     ' TargetGroup animation starts
     rodash.delay(sub(percentage)
@@ -182,8 +181,6 @@ sub applyClippingRect(options = {})
         m.clippingRectOutline.translation = [newClippingRect[0], newClippingRect[1]]
     end if
 
-    ?"newClippingRect " newClippingRect
-
     top().width = newClippingRect[2]
     top().height = newClippingRect[3]
     top().clippingRect = newClippingRect
@@ -218,24 +215,18 @@ sub setClippingRects(options = {})
     direction = options.direction
     dynamicSize = options.dynamicSize ?? false
     gutters = options.gutters
+    horizontal = direction = "horizontal"
     maxHeight = options.maxHeight ?? 0
     maxWidth = options.maxWidth ?? 0
-    index = direction = "horizontal" ? 2 : 3
-    maxPrimarySize = direction = "horizontal" ? maxWidth : maxHeight
+    index = horizontal ? 2 : 3
+    maxPrimarySize = horizontal ? maxWidth : maxHeight
 
     unfocusedClippingRect = clippingRects.shift()
     focusedClippingRect = clippingRects[0]
 
-    if top().id = "sidebarList"
-
-        ?"focusedClippingRect " focusedClippingRect
-        ?"unfocusedClippingRect " unfocusedClippingRect
-
-    end if
-
-    if dynamicSize and maxPrimarySize > 0
-        focusedClippingRect[index] = maxPrimarySize
-        unfocusedClippingRect[index] = maxPrimarySize
+    if dynamicSize
+        focusedClippingRect[index] = focusedClippingRect[index] > maxPrimarySize ? maxPrimarySize : focusedClippingRect[index]
+        unfocusedClippingRect[index] = unfocusedClippingRect[index] > maxPrimarySize ? maxPrimarySize : unfocusedClippingRect[index]
     end if
 
     set({
@@ -592,7 +583,6 @@ sub setUnfocusedTargetSet(options = {})
     defaultVisibleIndex = options.defaultVisibleIndex
     dynamicSize = options.dynamicSize
     extraRects = options.extraRects
-    flushFocus = options.flushFocus
     unfocusedRects = options.unfocusedRects
 
     if dynamicSize or not rodash.isNode(m.carousel.targetSet)
@@ -625,7 +615,6 @@ function returnDefaultRects(options = {})
     vertAlign = options.vertAlign
     horizontal = direction = "horizontal"
     targetRectIndex = horizontal ? 0 : 1
-    targetDimension = horizontal ? "width" : "height"
 
     clippingRects = []
     targetsetRects = []
@@ -643,7 +632,7 @@ function returnDefaultRects(options = {})
             totalArea = rectSize.totalArea
             lastVisibleIndex = totalRects - (extraRects * 2)
 
-            adjustedPosition = startingPosition - (extraRects * totalArea[targetDimension])
+            adjustedPosition = startingPosition - (extraRects * totalArea[targetRectIndex])
             deltaArray = calculate.alignmentOffsets({
                 bigSquare: bigSquare,
                 horizAlign: horizAlign,
@@ -675,7 +664,7 @@ function returnDefaultRects(options = {})
                 totalArea: totalArea
             })
 
-            startingPosition += totalArea[targetDimension]
+            startingPosition += totalArea[targetRectIndex]
         end for
 
         targetsetRects.push(targetRects)
@@ -790,6 +779,8 @@ function returnDynamicRects(options = {})
     crossAxisIndex = horizontal ? 1 : 0
     maxClippingRectCrossAxis = 0
     targetRectIndex = horizontal ? 0 : 1
+    targetAxis = horizontal ? "x" : "y"
+    targetDimension = horizontal ? "width" : "height"
 
     for each rectSize in rectSizes
         if rodash.isNonEmptyAA(rectSize)
@@ -810,7 +801,6 @@ function returnDynamicRects(options = {})
         for x = 0 to totalRects - 1
             rectSize = rectSizes[x] ?? rectSizes[0]
             totalArea = rectSize.totalArea
-            previousRect = targetRects[x - 1]
             adjustedIndex = x + extraRects * -1
             rect = rectSizes[adjustedIndex]
             lastVisibleIndex = totalRects - (extraRects * 2)
@@ -837,12 +827,10 @@ function returnDynamicRects(options = {})
                 containerPosition[0] = deltaArray[0]
             end if
 
-            if rodash.isNonEmptyAA(previousRect)
-                if horizontal
-                    containerPosition[targetRectIndex] = previousRect.x + previousRect.width + margins.left + margins.right
-                else
-                    containerPosition[targetRectIndex] = previousRect.y + previousRect.height + margins.top + margins.bottom
-                end if
+            if horizontal
+                containerPosition[targetRectIndex] = startingPosition + margins.left + margins.right
+            else
+                containerPosition[targetRectIndex] = startingPosition + margins.top + margins.bottom
             end if
 
             targetRect = {
@@ -853,6 +841,7 @@ function returnDynamicRects(options = {})
             }
 
             targetRects.push(targetRect)
+            startingPosition = targetRect[targetAxis] + targetRect[targetDimension]
 
             clippingRect = calculate.extendLinearClippingRect({
                 existingClippingRect: clippingRect,
@@ -860,21 +849,16 @@ function returnDynamicRects(options = {})
                 lastVisibleIndex: lastVisibleIndex,
                 rectIndex: x,
                 startingPosition: startingPosition,
-                totalArea: totalArea
+                totalArea: y = -1 ? square : totalArea
             })
-            if top().id = "sidebarList" and y = -1
-                ?"startingPosition " startingPosition
-                ?"totalArea " totalArea
-                ?"targetRect " targetRect
-                ?"clippingRect " clippingRect
-                ?chr(10)
-            end if
         end for
 
-        if horizontal
-            clippingRect[3] = maxClippingRectCrossAxis
-        else
-            clippingRect[2] = maxClippingRectCrossAxis
+        if y <> -1
+            if horizontal
+                clippingRect[3] = maxClippingRectCrossAxis
+            else
+                clippingRect[2] = maxClippingRectCrossAxis
+            end if
         end if
 
         clippingRects.push(clippingRect)
@@ -916,8 +900,6 @@ namespace calculate
         if maxPrimarySize <= 0 then return targetRects
 
         itemThreshold = targetRects[targetSetIndex][targetAxis] + targetRects[targetSetIndex][targetDimension]
-
-        ?"itemThreshold " itemThreshold
 
         adjustedRects = []
 
@@ -1028,15 +1010,15 @@ namespace calculate
         lastVisibleIndex = options.lastVisibleIndex ?? -1
         rectIndex = options.rectIndex ?? -1
         startingPosition = options.startingPosition ?? 0
-        totalArea = options.totalArea ?? {}
+        totalArea = options.totalArea ?? [0, 0]
 
         if rectIndex > lastVisibleIndex then return clippingRect
 
         if horizontal
             clippingRect[2] = startingPosition
-            clippingRect[3] = totalArea.height
+            clippingRect[3] = totalArea[1]
         else
-            clippingRect[2] = totalArea.width
+            clippingRect[2] = totalArea[0]
             clippingRect[3] = startingPosition
         end if
 
@@ -1055,9 +1037,9 @@ namespace calculate
         gutters = options.gutters
         horizontal = direction = "horizontal"
         rectSizes = options.rectSizes
-        squareArea = rectSizes[0].totalArea ?? { height: 0, width: 0 }
+        squareArea = rectSizes[0].totalArea ?? [0, 0]
         defaultExtraRect = 1
-        if not rodash.isNonEmptyAA(squareArea) then return 0
+        if not rodash.isNonEmptyArray(squareArea) then return 0
         if dynamicSize then return 1
         ' If there is a gutter, meaning partially visible rects
         ' on each side of the carousel,
@@ -1074,7 +1056,7 @@ namespace calculate
 
         if gutterSize <= 0 then return defaultExtraRect
 
-        rectSize = squareArea[horizontal ? "width" : "height"]
+        rectSize = squareArea[horizontal ? 0 : 1]
         percentageOfSquareAsGutter = gutterSize / rectSize
         numberOfVisibleGutterSquares = int(percentageOfSquareAsGutter) + 1
 
@@ -1157,10 +1139,10 @@ namespace calculate
         bigSquare = options.bigSquare
         squareMargins = options.margins
 
-        return {
-            height: bigSquare[1] + squareMargins.top + squareMargins.bottom,
-            width: bigSquare[0] + squareMargins.left + squareMargins.right
-        }
+        return [
+            bigSquare[0] + squareMargins.left + squareMargins.right,
+            bigSquare[1] + squareMargins.top + squareMargins.bottom
+        ]
     end function
 
 

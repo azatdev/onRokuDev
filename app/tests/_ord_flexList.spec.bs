@@ -45,10 +45,7 @@ class OrdFlexListTests extends rooibos.BaseTestSuite
             lastVisibleIndex: 2,
             rectIndex: 1,
             startingPosition: 120,
-            totalArea: {
-                height: 50,
-                width: 70
-            }
+            totalArea: [70, 50]
         })
 
         m.assertEqual(result, [9, 8, 120, 50])
@@ -63,10 +60,7 @@ class OrdFlexListTests extends rooibos.BaseTestSuite
             lastVisibleIndex: 2,
             rectIndex: 1,
             startingPosition: 140,
-            totalArea: {
-                height: 50,
-                width: 70
-            }
+            totalArea: [70, 50]
         })
 
         m.assertEqual(result, [9, 8, 70, 140])
@@ -81,10 +75,7 @@ class OrdFlexListTests extends rooibos.BaseTestSuite
             lastVisibleIndex: 1,
             rectIndex: 2,
             startingPosition: 120,
-            totalArea: {
-                height: 50,
-                width: 70
-            }
+            totalArea: [70, 50]
         })
 
         m.assertEqual(result, [1, 2, 3, 4])
@@ -100,10 +91,7 @@ class OrdFlexListTests extends rooibos.BaseTestSuite
             gutters: calculate.quadruple({ value: 0 }),
             rectSizes: [
                 {
-                    totalArea: {
-                        height: 80,
-                        width: 100
-                    }
+                    totalArea: [100, 80]
                 }
             ]
         })
@@ -119,10 +107,7 @@ class OrdFlexListTests extends rooibos.BaseTestSuite
             gutters: calculate.quadruple({ value: [0, 250, 0, 0] }),
             rectSizes: [
                 {
-                    totalArea: {
-                        height: 80,
-                        width: 100
-                    }
+                    totalArea: [100, 80]
                 }
             ]
         })
@@ -269,18 +254,12 @@ class OrdFlexListTests extends rooibos.BaseTestSuite
             {
                 bigSquare: [80, 100],
                 smallSquare: [40, 20],
-                totalArea: {
-                    height: 100,
-                    width: 80
-                }
+                totalArea: [80, 100]
             },
             {
                 bigSquare: [70, 90],
                 smallSquare: [50, 60],
-                totalArea: {
-                    height: 90,
-                    width: 70
-                }
+                totalArea: [70, 90]
             }
         ]
     end function
@@ -291,18 +270,12 @@ class OrdFlexListTests extends rooibos.BaseTestSuite
             {
                 bigSquare: [80, 80],
                 smallSquare: [40, 40],
-                totalArea: {
-                    height: 80,
-                    width: 80
-                }
+                totalArea: [80, 80]
             },
             {
                 bigSquare: [80, 80],
                 smallSquare: [40, 40],
-                totalArea: {
-                    height: 80,
-                    width: 80
-                }
+                totalArea: [80, 80]
             }
         ]
     end function

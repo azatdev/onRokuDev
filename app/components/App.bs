@@ -14,7 +14,7 @@ sub init()
 
         m.container = top().findNode("container")
         m.sidebar = top().findNode("sidebar")
-        m.sidebar.setFocus(true)
+        ' m.sidebar.setFocus(true)
 
         ' localResult = onTheNose({ name: "Azat" })
         ' remoteResult = exec("onTheNose", { name: "Azat" }, m.secondNode)
@@ -38,10 +38,10 @@ sub init()
         ' res2 = get(["food", "someArray"], m.secondNode)
         ' ?"get remote 2 " res2 res2.someArray
 
-        ' registerControllers([
-        '     "SocketController"
-        '     "StylesController"
-        ' ])
+        registerControllers([
+            "SocketController"
+            "StylesController"
+        ])
 
 
         ' loadCTAs()
@@ -196,7 +196,7 @@ sub loadThirdList(options = {})
     }
 
     m.thirdList = list
-    ' m.thirdList.setFocus(true)
+    m.thirdList.setFocus(true)
 end sub
 
 
