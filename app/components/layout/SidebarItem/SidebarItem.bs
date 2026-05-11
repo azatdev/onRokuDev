@@ -66,14 +66,23 @@ end sub
 sub onGroupFocusPercentChange(options = {})
     ' if not TypeGuard_isNumber(m.parentList.currFocusItemIndex) then return
     ' if cint(m.parentList.currFocusItemIndex) = m.top.index then
-    ?"onGroupFocusPercentChange " options.data
-    runFocusTransformation(options.data)
+    labelSquare = get("labelSquare") ?? [0,0]
+    labelWidth = labelSquare[0]
+    labelHeight = labelSquare[1]
+
+    ' m.colorFieldInterpolator.fraction = percentage
+    ' ?"runFocusTransformation " percentage
+
+    if get("dynamicWidth")
+        m.label.clippingRect = [0, 0, labelWidth * options.data, labelHeight]
+    end if
+
+    ' runFocusTransformation(options.data)
 end sub
 
 
 sub onFocusPercentChange(options = {})
     focusPercentage = options.data ?? {}
-    ?"onFocusPercentChange " focusPercentage
     if top().groupHasFocus then runFocusTransformation(focusPercentage)
 end sub
 
@@ -91,16 +100,16 @@ end function
 
 
 sub runFocusTransformation(percentage)
-    labelSquare = get("labelSquare") ?? [0,0]
-    labelWidth = labelSquare[0]
-    labelHeight = labelSquare[1]
+    ' labelSquare = get("labelSquare") ?? [0,0]
+    ' labelWidth = labelSquare[0]
+    ' labelHeight = labelSquare[1]
 
-    ' m.colorFieldInterpolator.fraction = percentage
-    ?"runFocusTransformation " percentage
+    ' ' m.colorFieldInterpolator.fraction = percentage
+    ' ' ?"runFocusTransformation " percentage
 
-    if get("dynamicWidth")
-        m.label.clippingRect = [0, 0, labelWidth * percentage, labelHeight]
-    end if
+    ' if get("dynamicWidth")
+    '     m.label.clippingRect = [0, 0, labelWidth * percentage, labelHeight]
+    ' end if
 end sub
 
 

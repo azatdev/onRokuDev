@@ -27,6 +27,7 @@ sub init()
             ' lastIndex: 2,
             debugClippingRect: false,
             direction: "horizontal",
+            uniformCrossAxisSize: false,
             focusType: "floating",
             gutterSize: 0,
             horizAlign: "center",
@@ -407,6 +408,7 @@ sub processConfig(options = {})
         maxHeight: config.maxHeight,
         maxWidth: config.maxWidth,
         rectSizes: rectSizes,
+        uniformCrossAxisSize: config.uniformCrossAxisSize,
         totalRects: totalRects,
         vertAlign: config.vertAlign
     })
@@ -517,6 +519,7 @@ sub generateRects(options = {})
             maxWidth: maxWidth,
             rectSizes: options.rectSizes,
             totalRects: options.totalRects,
+            uniformCrossAxisSize: options.uniformCrossAxisSize,
             vertAlign: options.vertAlign
         })
     else
@@ -533,6 +536,8 @@ sub generateRects(options = {})
 
     targetsetRects = rects.targetsetRects
     clippingRects = rects.clippingRects
+
+    ?"targetsetRects " formatJSON(targetsetRects)
 
     unfocusedRects = targetsetRects.shift()
     setUnfocusedTargetSet({
@@ -770,6 +775,7 @@ function returnDynamicRects(options = {})
     maxWidth = options.maxWidth ?? 0
     rectSizes = options.rectSizes
     totalRects = options.totalRects
+    uniformCrossAxisSize = options.uniformCrossAxisSize ?? false
     vertAlign = options.vertAlign
 
     targetsetRects = []
@@ -777,18 +783,19 @@ function returnDynamicRects(options = {})
 
     horizontal = direction = "horizontal"
     crossAxisIndex = horizontal ? 1 : 0
-    maxClippingRectCrossAxis = 0
+    maxCrossAxisSize = 0
     targetRectIndex = horizontal ? 0 : 1
     targetAxis = horizontal ? "x" : "y"
     targetDimension = horizontal ? "width" : "height"
+    targetCrossDimension = horizontal ? "height" : "width"
 
     for each rectSize in rectSizes
         if rodash.isNonEmptyAA(rectSize)
             bigSquare = rectSize.bigSquare ?? [0, 0]
             smallSquare = rectSize.smallSquare ?? [0, 0]
 
-            if bigSquare[crossAxisIndex] > maxClippingRectCrossAxis then maxClippingRectCrossAxis = bigSquare[crossAxisIndex]
-            if smallSquare[crossAxisIndex] > maxClippingRectCrossAxis then maxClippingRectCrossAxis = smallSquare[crossAxisIndex]
+            if bigSquare[crossAxisIndex] > maxCrossAxisSize then maxCrossAxisSize = bigSquare[crossAxisIndex]
+            if smallSquare[crossAxisIndex] > maxCrossAxisSize then maxCrossAxisSize = smallSquare[crossAxisIndex]
         end if
     end for
 
@@ -813,7 +820,7 @@ function returnDynamicRects(options = {})
             square = x <> y or y = -1 ? rect.smallSquare : rect.bigSquare
 
             containerPosition = [0, 0]
-            alignmentBounds = horizontal ? [square[0], maxClippingRectCrossAxis] : [maxClippingRectCrossAxis, square[1]]
+            alignmentBounds = horizontal ? [square[0], maxCrossAxisSize] : [maxCrossAxisSize, square[1]]
             deltaArray = calculate.alignmentOffsets({
                 bigSquare: alignmentBounds,
                 horizAlign: horizAlign,
@@ -840,6 +847,10 @@ function returnDynamicRects(options = {})
                 y: containerPosition[1]
             }
 
+            if y <> -1 and uniformCrossAxisSize
+                targetRect[targetCrossDimension] = maxCrossAxisSize
+            end if
+
             targetRects.push(targetRect)
             startingPosition = targetRect[targetAxis] + targetRect[targetDimension]
 
@@ -855,9 +866,9 @@ function returnDynamicRects(options = {})
 
         if y <> -1
             if horizontal
-                clippingRect[3] = maxClippingRectCrossAxis
+                clippingRect[3] = maxCrossAxisSize
             else
-                clippingRect[2] = maxClippingRectCrossAxis
+                clippingRect[2] = maxCrossAxisSize
             end if
         end if
 

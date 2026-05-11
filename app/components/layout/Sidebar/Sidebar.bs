@@ -11,8 +11,6 @@ end sub
 
 sub loadSidebar()
     list = top().findNode("sidebarList")
-    ?"loadSidebar "
-    ' top().appendChild(list)
 
     model = createObject("roSGNode", "SidebarModel")
     model.id = "sidebarModel"
@@ -28,6 +26,7 @@ sub loadSidebar()
         bigSquare: [200, 100],
         smallSquare: [200, 100],
         squareMargins: [0, 16, 0, 0],
+        uniformCrossAxisSize: true,
         horizAlign: "left"
     }
 
@@ -36,7 +35,6 @@ sub loadSidebar()
     }
 
     m.list = list
-    ?"finish loadSidebar"
     safeObserve("width", onListWidthChange, m.list)
 end sub
 
@@ -54,5 +52,5 @@ sub onListWidthChange(options = {})
     listWidth = options.data
     if not rodash.isNumber(listWidth) then return
 
-    m.gradient.width = listWidth
+    m.gradient.width = listWidth + 3
 end sub

@@ -16,8 +16,7 @@ module.exports = {
             "translation": [0, 162]
         },
         "Poster#gradient": {
-            ...gradientStyles,
-            width: 200
+            ...gradientStyles
         }
     },
     "Topbar": {
