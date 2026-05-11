@@ -188,7 +188,7 @@ class OrdFlexListTests extends rooibos.BaseTestSuite
             gutters: calculate.quadruple({ value: 0 }),
             horizAlign: "right",
             margins: calculate.quadruple({ value: 0 }),
-            maxWidth: 999,
+            maxHeight: 999,
             rectSizes: m.getRectSizesForDynamicTests(),
             totalRects: 2,
             vertAlign: "center"
@@ -197,6 +197,35 @@ class OrdFlexListTests extends rooibos.BaseTestSuite
         m.assertEqual(result.clippingRects[0][2], 80)
         m.assertEqual(result.targetsetRects[0][0].x, 40)
         m.assertEqual(result.targetsetRects[0][1].x, 30)
+    end sub
+
+
+    @describe("calculate.adjustedDynamicRects")
+    @it("uses maxHeight to constrain vertical dynamic lists")
+    sub testAdjustedDynamicRectsVerticalMaxHeight()
+        result = calculate.adjustedDynamicRects({
+            direction: "vertical",
+            gutters: calculate.quadruple({ value: 0 }),
+            maxHeight: 120,
+            targetRects: [
+                {
+                    height: 50,
+                    width: 40,
+                    x: 0,
+                    y: 0
+                },
+                {
+                    height: 100,
+                    width: 40,
+                    x: 0,
+                    y: 50
+                }
+            ],
+            targetSetIndex: 1
+        })
+
+        m.assertEqual(result[0].y, -30)
+        m.assertEqual(result[1].y, 20)
     end sub
 
 

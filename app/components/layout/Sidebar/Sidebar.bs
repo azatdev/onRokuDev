@@ -24,7 +24,7 @@ sub loadSidebar()
         carouselType: "dynamicSize",
         focusType: "floating",
         itemComponentName: "SidebarItem",
-        maxWidth: 1800,
+        maxHeight: 1800,
         visibleTiles: 999,
         bigSquare: [200, 100],
         smallSquare: [200, 100],

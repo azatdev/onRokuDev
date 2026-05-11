@@ -182,6 +182,8 @@ sub applyClippingRect(options = {})
         m.clippingRectOutline.translation = [newClippingRect[0], newClippingRect[1]]
     end if
 
+    ?"newClippingRect " newClippingRect
+
     top().width = newClippingRect[2]
     top().height = newClippingRect[3]
     top().clippingRect = newClippingRect
@@ -216,8 +218,10 @@ sub setClippingRects(options = {})
     direction = options.direction
     dynamicSize = options.dynamicSize ?? false
     gutters = options.gutters
+    maxHeight = options.maxHeight ?? 0
     maxWidth = options.maxWidth ?? 0
     index = direction = "horizontal" ? 2 : 3
+    maxPrimarySize = direction = "horizontal" ? maxWidth : maxHeight
 
     unfocusedClippingRect = clippingRects.shift()
     focusedClippingRect = clippingRects[0]
@@ -229,9 +233,9 @@ sub setClippingRects(options = {})
 
     end if
 
-    if dynamicSize and maxWidth > 0
-        focusedClippingRect[index] = maxWidth
-        unfocusedClippingRect[index] = maxWidth
+    if dynamicSize and maxPrimarySize > 0
+        focusedClippingRect[index] = maxPrimarySize
+        unfocusedClippingRect[index] = maxPrimarySize
     end if
 
     set({
@@ -409,6 +413,7 @@ sub processConfig(options = {})
         horizAlign: config.horizAlign,
         lastFocusableIndex: lastFocusableIndex,
         margins: margins,
+        maxHeight: config.maxHeight,
         maxWidth: config.maxWidth,
         rectSizes: rectSizes,
         totalRects: totalRects,
@@ -497,7 +502,8 @@ sub generateRects(options = {})
     focusType = options.focusType
     gutters = options.gutters
     lastFocusableIndex = options.lastFocusableIndex
-    maxWidth = options.maxWidth
+    maxHeight = options.maxHeight ?? 0
+    maxWidth = options.maxWidth ?? 0
 
     if carouselType = "flushFocus"
         rects = returnFlushRects({
@@ -516,6 +522,7 @@ sub generateRects(options = {})
             gutters: gutters,
             horizAlign: options.horizAlign,
             margins: options.margins,
+            maxHeight: maxHeight,
             maxWidth: maxWidth,
             rectSizes: options.rectSizes,
             totalRects: options.totalRects,
@@ -550,6 +557,7 @@ sub generateRects(options = {})
         direction: direction,
         dynamicSize: dynamicSize,
         gutters: gutters,
+        maxHeight: maxHeight,
         maxWidth: maxWidth
     })
     ' Array of targetsets for each focused position in the list.
@@ -769,7 +777,8 @@ function returnDynamicRects(options = {})
     gutters = options.gutters
     horizAlign = options.horizAlign
     margins = options.margins
-    maxWidth = options.maxWidth
+    maxHeight = options.maxHeight ?? 0
+    maxWidth = options.maxWidth ?? 0
     rectSizes = options.rectSizes
     totalRects = options.totalRects
     vertAlign = options.vertAlign
@@ -860,7 +869,6 @@ function returnDynamicRects(options = {})
                 ?"clippingRect " clippingRect
                 ?chr(10)
             end if
-
         end for
 
         if horizontal
@@ -874,6 +882,7 @@ function returnDynamicRects(options = {})
         targetRects = calculate.adjustedDynamicRects({
             direction: direction,
             gutters: gutters,
+            maxHeight: maxHeight,
             maxWidth: maxWidth,
             targetRects: targetRects,
             targetSetIndex: y
@@ -894,7 +903,9 @@ namespace calculate
         direction = options.direction
         gutters = options.gutters
         horizontal = direction = "horizontal"
-        maxWidth = options.maxWidth
+        maxHeight = options.maxHeight ?? 0
+        maxWidth = options.maxWidth ?? 0
+        maxPrimarySize = horizontal ? maxWidth : maxHeight
         targetRects = options.targetRects ?? {}
         targetSetIndex = options.targetSetIndex ?? {}
         targetAxis = horizontal ? "x" : "y"
@@ -902,6 +913,7 @@ namespace calculate
         guttersKey = horizontal ? "right" : "bottom"
 
         if targetSetIndex = -1 then return targetRects
+        if maxPrimarySize <= 0 then return targetRects
 
         itemThreshold = targetRects[targetSetIndex][targetAxis] + targetRects[targetSetIndex][targetDimension]
 
@@ -909,9 +921,9 @@ namespace calculate
 
         adjustedRects = []
 
-        if itemThreshold < maxWidth then return targetRects
+        if itemThreshold < maxPrimarySize then return targetRects
 
-        sizeDelta = maxWidth - itemThreshold
+        sizeDelta = maxPrimarySize - itemThreshold
         sizeDelta -= gutters[guttersKey]
 
         for each rect in targetRects
