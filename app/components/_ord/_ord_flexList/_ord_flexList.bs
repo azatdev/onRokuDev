@@ -511,6 +511,7 @@ sub generateRects(options = {})
             horizAlign: options.horizAlign,
             margins: options.margins,
             rectSizes: options.rectSizes,
+            startingPositionOffsets: options.startingPositionOffsets,
             totalRects: options.totalRects,
             vertAlign: options.vertAlign
         })
@@ -536,6 +537,7 @@ sub generateRects(options = {})
             horizAlign: options.horizAlign,
             margins: options.margins,
             rectSizes: options.rectSizes,
+            startingPositionOffsets: options.startingPositionOffsets,
             totalRects: options.totalRects,
             vertAlign: options.vertAlign
         })
@@ -621,6 +623,7 @@ function returnDefaultRects(options = {})
     horizAlign = options.horizAlign
     margins = options.margins
     rectSizes = options.rectSizes
+    startingPositionOffsets = options.startingPositionOffsets
     totalRects = options.totalRects
     vertAlign = options.vertAlign
     horizontal = direction = "horizontal"
@@ -641,6 +644,9 @@ function returnDefaultRects(options = {})
             smallSquare = rectSize.smallSquare
             totalArea = rectSize.totalArea
             lastVisibleIndex = totalRects - (extraRects * 2)
+            adjustedIndex = x + extraRects * -1
+            startingPositionOffset = startingPositionOffsets[adjustedIndex]
+            if rodash.isNumber(startingPositionOffset) then startingPosition += startingPositionOffset
 
             adjustedPosition = startingPosition - (extraRects * totalArea[targetRectIndex])
             deltaArray = calculate.alignmentOffsets({
@@ -687,12 +693,14 @@ function returnDefaultRects(options = {})
     }
 end function
 
+
 function returnFlushRects(options = {})
     direction = options.direction
     extraRects = options.extraRects
     horizAlign = options.horizAlign
     margins = options.margins
     rectSizes = options.rectSizes
+    startingPositionOffsets = options.startingPositionOffsets
     totalRects = options.totalRects
     vertAlign = options.vertAlign
 
@@ -713,6 +721,10 @@ function returnFlushRects(options = {})
         startingPosition = 0
 
         for x = 0 to totalRects - 1
+            adjustedIndex = x + extraRects * -1
+            startingPositionOffset = startingPositionOffsets[adjustedIndex]
+            if rodash.isNumber(startingPositionOffset) then startingPosition += startingPositionOffset
+
             rectSize = rectSizes[x] ?? rectSizes[0]
             bigSquare = rectSize.bigSquare
             smallSquare = rectSize.smallSquare
