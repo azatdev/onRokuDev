@@ -21,27 +21,27 @@ sub init()
 
         set({ defaultConfig: {
             animationDuration: 0.1,
-            clip: true,
+            bigSquare: [0, 0],
             carouselType: "default",
+            clip: true,
+            debugClippingRect: false,
             defaultVisibleIndex: 0,
             ' lastIndex: 2,
-            debugClippingRect: false,
             direction: "horizontal",
-            uniformCrossAxisSize: false,
-            useUnfocusedTargetSet: false,
             focusType: "floating",
             gutterSize: 0,
             horizAlign: "center",
             itemComponentName: "",
             maxHeight: 0,
             maxWidth: 0,
-            vertAlign: "center",
-            visibleTiles: 0,
-            wrap: false,
-            bigSquare: [0, 0],
             smallSquare: [0, 0],
             squareMargins: [0, 0],
-            squareTotalArea: [0, 0]
+            squareTotalArea: [0, 0],
+            uniformCrossAxisSize: false,
+            useUnfocusedTargetSet: false,
+            vertAlign: "center",
+            visibleTiles: 0,
+            wrap: false
         }})
 
         safeObserve("data", onDataSet)
@@ -363,6 +363,7 @@ sub processConfig(options = {})
     dynamicSize = config.carouselType = "dynamicSize"
     flushFocus = config.carouselType = "flushFocus"
     totalCarouselItems = m.content.totalCount ?? 0
+    
     margins = calculate.quadruple({ value: config.squareMargins })
     gutters = calculate.quadruple({ value: config.gutterSize })
 
