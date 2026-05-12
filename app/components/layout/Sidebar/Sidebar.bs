@@ -27,6 +27,7 @@ sub loadSidebar()
         smallSquare: [200, 100],
         squareMargins: [0, 16, 0, 0],
         uniformCrossAxisSize: true,
+        useUnfocusedTargetSet: true,
         horizAlign: "left"
     }
 

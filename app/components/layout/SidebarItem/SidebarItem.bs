@@ -12,7 +12,7 @@ sub setupItem()
     m.icon = m.top.findNode("icon")
     m.container = m.top.findNode("textContainer")
     m.background = top().findNode("background")
-    m.colorFieldInterpolator = top().findNode("focusColorInterpolator")
+    m.highlight = top().findNode("highlight")
     m.parentList = top().getParent()
     m.flexList = m.parentList.getParent()
 
@@ -20,10 +20,13 @@ sub setupItem()
     safeObserve("itemContent", itemContentChanged, top())
     safeObserve("currRect", onCurrRectChange, top())
     safeObserve("focusPercent", onGroupFocusPercentChange, m.parentList)
+    safeObserve("itemSelected", onListItemSelected, m.parentList)
+end sub
 
-    top().addField("watchNode", "node", true)
-    top().watchNode = m.label
-    ' safeObserve("watchNode", onTextChange, top())
+
+sub onListItemSelected(options = {})
+    itemSelected = options.data
+    setColors(itemSelected = top().index)
 end sub
 
 
@@ -32,7 +35,13 @@ sub itemContentChanged(options = {})
     m.label.text = ucase(content.title)
     m.icon.text = content.iconText
     dynamicWidth = content.dynamicWidth ?? false
-    set({ dynamicWidth: dynamicWidth})
+
+    listContent = content.getParent()
+    totalItemCount = listContent.totalCount
+
+    if rodash.isNode(m.parentList) then setColors(m.parentList.itemSelected = top().index)
+
+    set({ dynamicWidth: dynamicWidth, totalItemCount: totalItemCount})
     onTextChange()
 end sub
 
@@ -52,41 +61,6 @@ sub onTextChange(options = {})
 end sub
 
 
-sub onCurrRectChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    rect = options.data
-
-    for each node in [m.background]
-        node.width = rect.width
-        node.height = rect.height
-    end for
-end sub
-
-
-sub onGroupFocusPercentChange(options = {})
-    ' if not TypeGuard_isNumber(m.parentList.currFocusItemIndex) then return
-    ' if cint(m.parentList.currFocusItemIndex) = m.top.index then
-    labelSquare = get("labelSquare") ?? [0,0]
-    labelWidth = labelSquare[0]
-    labelHeight = labelSquare[1]
-
-    ' m.colorFieldInterpolator.fraction = percentage
-    ' ?"runFocusTransformation " percentage
-
-    if get("dynamicWidth")
-        m.label.clippingRect = [0, 0, labelWidth * options.data, labelHeight]
-    end if
-
-    ' runFocusTransformation(options.data)
-end sub
-
-
-sub onFocusPercentChange(options = {})
-    focusPercentage = options.data ?? {}
-    if top().groupHasFocus then runFocusTransformation(focusPercentage)
-end sub
-
-
 function getFocusedRectSize(options = {})
     if not rodash.isNode(m.label) then return [0,0]
 
@@ -97,20 +71,6 @@ function getFocusedRectSize(options = {})
     stackChildren({ node: m.container, horizontal: true })
     return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
 end function
-
-
-sub runFocusTransformation(percentage)
-    ' labelSquare = get("labelSquare") ?? [0,0]
-    ' labelWidth = labelSquare[0]
-    ' labelHeight = labelSquare[1]
-
-    ' ' m.colorFieldInterpolator.fraction = percentage
-    ' ' ?"runFocusTransformation " percentage
-
-    ' if get("dynamicWidth")
-    '     m.label.clippingRect = [0, 0, labelWidth * percentage, labelHeight]
-    ' end if
-end sub
 
 
 function getUnfocusedRectSize(options = {})
@@ -124,3 +84,73 @@ function getUnfocusedRectSize(options = {})
     stackChildren({ node: m.container, horizontal: true })
     return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
 end function
+
+
+sub onCurrRectChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    rect = options.data
+    m.background.width = rect.width
+    m.background.height = rect.height
+end sub
+
+
+sub onGroupFocusPercentChange(options = {})
+    labelSquare = get("labelSquare") ?? [0, 0]
+    labelWidth = labelSquare[0]
+    labelHeight = labelSquare[1]
+
+    if get("dynamicWidth")
+        m.label.clippingRect = [0, 0, labelWidth * options.data, labelHeight]
+    end if
+
+    percentageOffset = getCenteredPercentage(options.data ?? 0)
+
+    if top().groupHasFocus
+        delayMS = top().index * 33
+    else
+        totalItemCount = get("totalItemCount") ?? 0
+        delayMS =  (totalItemCount - top().index) * 33
+    end if
+
+    rodash.delay(sub(args)
+        node = args[0]
+        percentageOffset = args[1]
+        node.opacity = percentageOffset
+    end sub, delayMS, [m.highlight, percentageOffset])
+end sub
+
+
+sub onFocusPercentChange(options = {})
+    focusPercentage = options.data ?? {}
+    maxOpacity = 0.20
+
+    if m.parentList.itemSelected = top().index
+        maxOpacity = 1
+    end if
+
+    m.background.opacity = focusPercentage * maxOpacity
+end sub
+
+
+function getCenteredPercentage(value = 0)
+    if not rodash.isNumber(value) then return 0
+
+    clampedValue = value
+    if clampedValue < 0 then clampedValue = 0
+    if clampedValue > 1 then clampedValue = 1
+
+    return 1 - abs((clampedValue * 2) - 1)
+end function
+
+
+sub setColors(active = false)
+    if active
+        m.label.color = "#9ca56c"
+        m.icon.color = "#9ca56c"
+        m.background.opacity = 1
+    else
+        m.label.color = "#BBBBBB"
+        m.icon.color = "#BBBBBB"
+        m.background.opacity = 0
+    end if
+end sub

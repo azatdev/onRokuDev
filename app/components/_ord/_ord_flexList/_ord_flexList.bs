@@ -28,6 +28,7 @@ sub init()
             debugClippingRect: false,
             direction: "horizontal",
             uniformCrossAxisSize: false,
+            useUnfocusedTargetSet: false,
             focusType: "floating",
             gutterSize: 0,
             horizAlign: "center",
@@ -263,8 +264,10 @@ sub onFocusedChildChange(options = {})
 
     if unfocused
         dynamicSize = get("dynamicSize") ?? false
+        useUnfocusedTargetSet = get("useUnfocusedTargetSet") ?? false
+
         if m.unFocusedTargetSet = invalid then return
-        unFocusedTargetSet = dynamicSize ? m.carousel.targetSet : m.unFocusedTargetSet
+        unFocusedTargetSet = dynamicSize and not useUnfocusedTargetSet ? m.carousel.targetSet : m.unFocusedTargetSet
 
         unFocusedTargetSet.focusIndex = m.carousel.targetSet.focusIndex
         rodash.delay(sub(args)
@@ -435,6 +438,7 @@ sub processConfig(options = {})
         focusableIndexArray: focusableIndexArray,
         gutters: gutters,
         lastFocusableIndex: lastFocusableIndex,
+        useUnfocusedTargetSet: config.useUnfocusedTargetSet,
         wrap: config.wrap
     })
 
@@ -536,8 +540,6 @@ sub generateRects(options = {})
 
     targetsetRects = rects.targetsetRects
     clippingRects = rects.clippingRects
-
-    ?"targetsetRects " formatJSON(targetsetRects)
 
     unfocusedRects = targetsetRects.shift()
     setUnfocusedTargetSet({
