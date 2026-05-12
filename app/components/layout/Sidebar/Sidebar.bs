@@ -23,9 +23,8 @@ sub loadSidebar()
         itemComponentName: "SidebarItem",
         maxHeight: 1800,
         visibleTiles: 999,
-        bigSquare: [200, 100],
-        smallSquare: [200, 100],
-        squareMargins: [0, 16, 0, 0],
+        squareMargins: [0, 0, 0, 0],
+        startingPositionOffsets: [0, 0, 0, 0, 0, 0, 0, 149, 0],
         uniformCrossAxisSize: true,
         useUnfocusedTargetSet: true,
         horizAlign: "left"

@@ -37,6 +37,7 @@ sub init()
             smallSquare: [0, 0],
             squareMargins: [0, 0],
             squareTotalArea: [0, 0],
+            startingPositionOffsets: [0],
             uniformCrossAxisSize: false,
             useUnfocusedTargetSet: false,
             vertAlign: "center",
@@ -363,7 +364,6 @@ sub processConfig(options = {})
     dynamicSize = config.carouselType = "dynamicSize"
     flushFocus = config.carouselType = "flushFocus"
     totalCarouselItems = m.content.totalCount ?? 0
-    
     margins = calculate.quadruple({ value: config.squareMargins })
     gutters = calculate.quadruple({ value: config.gutterSize })
 
@@ -412,6 +412,7 @@ sub processConfig(options = {})
         maxHeight: config.maxHeight,
         maxWidth: config.maxWidth,
         rectSizes: rectSizes,
+        startingPositionOffsets: config.startingPositionOffsets,
         uniformCrossAxisSize: config.uniformCrossAxisSize,
         totalRects: totalRects,
         vertAlign: config.vertAlign
@@ -523,6 +524,7 @@ sub generateRects(options = {})
             maxHeight: maxHeight,
             maxWidth: maxWidth,
             rectSizes: options.rectSizes,
+            startingPositionOffsets: options.startingPositionOffsets,
             totalRects: options.totalRects,
             uniformCrossAxisSize: options.uniformCrossAxisSize,
             vertAlign: options.vertAlign
@@ -777,6 +779,7 @@ function returnDynamicRects(options = {})
     maxHeight = options.maxHeight ?? 0
     maxWidth = options.maxWidth ?? 0
     rectSizes = options.rectSizes
+    startingPositionOffsets = options.startingPositionOffsets
     totalRects = options.totalRects
     uniformCrossAxisSize = options.uniformCrossAxisSize ?? false
     vertAlign = options.vertAlign
@@ -814,6 +817,8 @@ function returnDynamicRects(options = {})
             adjustedIndex = x + extraRects * -1
             rect = rectSizes[adjustedIndex]
             lastVisibleIndex = totalRects - (extraRects * 2)
+            startingPositionOffset = startingPositionOffsets[adjustedIndex]
+            if rodash.isNumber(startingPositionOffset) then startingPosition += startingPositionOffset
 
             if not rodash.isNonEmptyAA(rect) then rect = {
                 bigSquare: [0, 0],
