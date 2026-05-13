@@ -4,5 +4,5 @@ module.exports = {
     ...require("./CarouselItem"),
     ...require("./DynamicItem"),
     ...require("./TestItem"),
-    ...require("./SidebarItem")
+    ...require("./NavigationItem")
 };

@@ -390,8 +390,6 @@ sub processConfig(options = {})
         visibleTiles: visibleWindow.visibleTiles
     })
 
-    ' Calculate the first and last visible rects
-    ' accounting for extra gutter rects
     focusableIndexArray = visibleWindow.focusableIndexArray
     firstFocusableIndex = visibleWindow.firstFocusableIndex
     lastFocusableIndex = visibleWindow.lastFocusableIndex

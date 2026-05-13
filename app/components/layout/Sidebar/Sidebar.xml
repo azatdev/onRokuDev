@@ -3,7 +3,7 @@
     <interface>
     </interface>
     <children>
-        <_ord_flexList id="sidebarList" />
+        <_ord_flexList id="sidebarList" itemSelected="0" />
         <Poster id="gradient" />
     </children>
     <script type="text/briSghtscript" uri="Sidebar.bs" />

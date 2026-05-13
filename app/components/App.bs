@@ -14,6 +14,7 @@ sub init()
 
         m.container = top().findNode("container")
         m.sidebar = top().findNode("sidebar")
+        m.topbar = top().findNode("topbar")
         ' m.sidebar.setFocus(true)
 
         ' localResult = onTheNose({ name: "Azat" })
@@ -241,7 +242,8 @@ function onKeyEvent(key as string, press as boolean) as boolean
 
         if key = "back" then m.container.setFocus(true)
         if key = "replay" then m.sidebar.setFocus(true)
-        if key = "up" then m.top.createChild("Group")
+        if key = "up" then m.topbar.setFocus(true)
+        if key = "down" then m.top.createChild("Group")
         ' if key = "down" then m.secondList.setFocus(true)
 
         return true

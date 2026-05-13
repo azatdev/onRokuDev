@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="SidebarItem" extends="Rectangle">
+<component name="NavigationItem" extends="Rectangle">
     <interface>
         <field id="groupHasFocus" type="boolean" />
         <field id="index" type="integer" />
@@ -17,5 +17,5 @@
             <QuanticoBold id="label" />
         </Rectangle>
     </children>
-    <script type="text/brightscript" uri="SidebarItem.bs" />
+    <script type="text/brightscript" uri="NavigationItem.bs" />
 </component>

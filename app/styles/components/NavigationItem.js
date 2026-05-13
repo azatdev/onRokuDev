@@ -2,7 +2,7 @@ const mixins = require("../mixins");
 const palette = mixins["Palette"]
 
 module.exports = {
-    "SidebarItem": {
+    "NavigationItem": {
         "Rectangle#highlight": {
             color: "#b8bca414",
             height: 75,
@@ -11,6 +11,7 @@ module.exports = {
         },
         "Rectangle#background": {
             color: "#4b6100FF",
+            height: 75,
             opacity: 0
         },
         "Rectangle#textContainer": {
@@ -26,7 +27,7 @@ module.exports = {
             },
             "QuanticoBold#label": {
                 color: palette.primaryColor,
-                height: 78,
+                height: 75,
                 margin: [0, 39, 0, -12],
                 size: 24,
                 vertAlign: "center"

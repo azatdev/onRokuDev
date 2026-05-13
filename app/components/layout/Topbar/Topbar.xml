@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="Topbar" extends="Group">
     <interface>
-
     </interface>
     <children>
         <MaskGroup id ="exampleMaskGroup">
+            <_ord_flexList id="topbarList" />
             <Poster id="gradient" />
         </MaskGroup>
     </children>

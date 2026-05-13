@@ -17,16 +17,21 @@ sub setupItem()
     m.flexList = m.parentList.getParent()
 
     safeObserve("focusPercent", onFocusPercentChange)
-    safeObserve("itemContent", itemContentChanged, top())
-    safeObserve("currRect", onCurrRectChange, top())
+    safeObserve("itemContent", itemContentChanged)
+    safeObserve("currRect", onCurrRectChange)
+    safeObserve("groupHasFocus", onGroupFocusChange)
     safeObserve("focusPercent", onGroupFocusPercentChange, m.parentList)
     safeObserve("itemSelected", onListItemSelected, m.parentList)
 end sub
 
 
+sub onGroupFocusChange(options = {})
+    setColors()
+end sub
+
+
 sub onListItemSelected(options = {})
-    itemSelected = options.data
-    setColors(itemSelected = top().index)
+    setColors()
 end sub
 
 
@@ -39,7 +44,7 @@ sub itemContentChanged(options = {})
     listContent = content.getParent()
     totalItemCount = listContent.totalCount
 
-    if rodash.isNode(m.parentList) then setColors(m.parentList.itemSelected = top().index)
+    setColors()
 
     set({ dynamicWidth: dynamicWidth, totalItemCount: totalItemCount})
     onTextChange()
@@ -122,9 +127,9 @@ end sub
 
 sub onFocusPercentChange(options = {})
     focusPercentage = options.data ?? {}
-    maxOpacity = 0.20
+    maxOpacity = top().groupHasFocus ? 0.20 : 0
 
-    if m.parentList.itemSelected = top().index
+    if m.flexList.itemSelected = top().index
         maxOpacity = 1
     end if
 
@@ -143,14 +148,20 @@ function getCenteredPercentage(value = 0)
 end function
 
 
-sub setColors(active = false)
-    if active
+sub setColors()
+    activeItem = m.flexList.itemSelected <> -1 and m.parentList.itemSelected = top().index
+    selectedItem = m.parentList.itemFocused = top().index
+    groupHasFocus = top().groupHasFocus
+
+    m.label.color = "#BBBBBB"
+    m.icon.color = "#BBBBBB"
+    m.background.opacity = 0
+
+    if activeItem
         m.label.color = "#9ca56c"
         m.icon.color = "#9ca56c"
         m.background.opacity = 1
-    else
-        m.label.color = "#BBBBBB"
-        m.icon.color = "#BBBBBB"
-        m.background.opacity = 0
+    else if selectedItem and groupHasFocus
+        m.background.opacity = 0.2
     end if
 end sub

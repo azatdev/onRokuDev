@@ -24,6 +24,9 @@ module.exports = {
         "MaskGroup": {
             "maskOffset": [0, 216],
             "maskuri": "pkg:/static/images/gradients/topbar-mask-white.webp",
+            "_ord_flexList#topbarList": {
+                "translation": [-999, 0]
+            },
             "Poster#gradient": {
                 ...gradientStyles,
                 "height": 1170,
