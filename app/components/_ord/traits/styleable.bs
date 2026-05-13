@@ -39,12 +39,11 @@ class Styleable
         if rodash.isEmptyString(className) then return
 
         classNames = m.getClassNames(node)
-        ?"addClass " classNames
         if rodash.indexOf(classNames, className) = -1 then classNames.push(className)
 
         m.setClassNames(node, classNames)
 
-        if not node.isSameNode(top()) then m.redrawStyles()
+        m.redrawStyles()
     end sub
 
 
@@ -56,7 +55,6 @@ class Styleable
         if rodash.isEmptyString(className) then return
 
         classNames = m.getClassNames(node)
-        ?"removeClass " classNames
         if rodash.indexOf(classNames, className) = -1 then return
 
         filteredClassNames = []
@@ -66,7 +64,7 @@ class Styleable
 
         m.setClassNames(node, filteredClassNames)
 
-        if not node.isSameNode(top()) then m.redrawStyles()
+        m.redrawStyles()
     end sub
 
 
