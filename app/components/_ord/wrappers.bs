@@ -114,6 +114,20 @@ function setStyles(options, node = m.top)
 end function
 
 
+function addClass(className = "", node = m.top)
+    interface = m.interfaceFunctions["addClass"]
+    if interface = invalid then return invalid
+    return interface.addClass({ class: className, node: node })
+end function
+
+
+function removeClass(className = "", node = m.top)
+    interface = m.interfaceFunctions["removeClass"]
+    if interface = invalid then return invalid
+    return interface.removeClass({ class: className, node: node })
+end function
+
+
 function dispatch(eventId, options = {})
     interface = m.interfaceFunctions["dispatch"]
     if interface = invalid then return invalid

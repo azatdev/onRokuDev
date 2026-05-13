@@ -17,7 +17,7 @@ sub setupItem()
     m.flexList = m.parentList.getParent()
 
     if m.flexList.id = "topbarList"
-        top().class = "topbar"
+        addClass("topbar")
     end if
 
     safeObserve("focusPercent", onFocusPercentChange)

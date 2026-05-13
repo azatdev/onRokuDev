@@ -6,6 +6,10 @@ class Styleable
 
         if rodash.findIndex(["Scene", "View"], role()) = -1 then return
 
+        if not top().hasField("class")
+            top().addField("class", "string", true)
+        end if
+
         if not global().hasField("_ord_styles")
             m.setupGlobalStyles()
         end if
@@ -24,6 +28,45 @@ class Styleable
         safeObserve("change", "onChildChange")
         safeObserve("id", "onIdClassChange")
         safeObserve("class", "onIdClassChange")
+    end sub
+
+
+    sub addClass(options = {})
+        node = options.node ?? top()
+        className = (options.class ?? "").trim()
+
+        if not rodash.isNode(node) then return
+        if rodash.isEmptyString(className) then return
+
+        classNames = m.getClassNames(node)
+        ?"addClass " classNames
+        if rodash.indexOf(classNames, className) = -1 then classNames.push(className)
+
+        m.setClassNames(node, classNames)
+
+        if not node.isSameNode(top()) then m.redrawStyles()
+    end sub
+
+
+    sub removeClass(options = {})
+        node = options.node ?? top()
+        className = (options.class ?? "").trim()
+
+        if not rodash.isNode(node) then return
+        if rodash.isEmptyString(className) then return
+
+        classNames = m.getClassNames(node)
+        ?"removeClass " classNames
+        if rodash.indexOf(classNames, className) = -1 then return
+
+        filteredClassNames = []
+        for each existingClassName in classNames
+            if existingClassName <> className then filteredClassNames.push(existingClassName)
+        end for
+
+        m.setClassNames(node, filteredClassNames)
+
+        if not node.isSameNode(top()) then m.redrawStyles()
     end sub
 
 
@@ -66,6 +109,8 @@ class Styleable
         if rodash.isEmptyString(componentRole) then return
 
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
+        m.publicFunctions.push("addClass")
+        m.publicFunctions.push("removeClass")
         m.publicFunctions.push("setStyles")
         m.publicFunctions.push("onChildChange")
         m.publicFunctions.push("onIdClassChange")
@@ -84,11 +129,18 @@ class Styleable
 
         allNodeHandles.push(nodeSubtype)
 
-        if rodash.isNonEmptyString(node.class) then allNodeHandles.push(`${nodeSubtype}.${node.class}`)
+        classNames = m.getClassNames(node)
+        for each className in classNames
+            allNodeHandles.push(`${nodeSubtype}.${className}`)
+        end for
 
         if rodash.isNonEmptyString(node.id) then allNodeHandles.push(`${nodeSubtype}#${node.id}`)
 
-        if rodash.isNonEmptyString(node.id) and rodash.isNonEmptyString(node.class) then allNodeHandles.push(`${nodeSubtype}#${node.id}.${node.class}`)
+        if rodash.isNonEmptyString(node.id)
+            for each className in classNames
+                allNodeHandles.push(`${nodeSubtype}#${node.id}.${className}`)
+            end for
+        end if
 
         return allNodeHandles
     end function
@@ -106,10 +158,14 @@ class Styleable
         end for
 
         idStyles = stylesheet[`&#${node.id ?? ""}`]
-        classStyles = stylesheet[`&.${node.class ?? ""}`]
 
         if rodash.isNonEmptyAA(idStyles) then m.setStyles(idStyles, node)
-        if rodash.isNonEmptyAA(classStyles) then m.setStyles(classStyles, node)
+
+        classNames = m.getClassNames(node)
+        for each className in classNames
+            classStyles = stylesheet[`&.${className}`]
+            if rodash.isNonEmptyAA(classStyles) then m.setStyles(classStyles, node)
+        end for
     end sub
 
 
@@ -129,5 +185,35 @@ class Styleable
                 node.update(updateObject, true)
             end if
         end for
+    end sub
+
+
+    function getClassNames(node)
+        classNames = []
+
+        if not rodash.isNode(node) then return classNames
+        if not node.hasField("class") then return classNames
+
+        rawClassNames = node.class ?? ""
+        if not rodash.isNonEmptyString(rawClassNames) then return classNames
+
+        for each className in rawClassNames.tokenize(" ")
+            trimmedClassName = className.trim()
+            if rodash.isEmptyString(trimmedClassName) then continue for
+            if rodash.indexOf(classNames, trimmedClassName) = -1 then classNames.push(trimmedClassName)
+        end for
+
+        return classNames
+    end function
+
+
+    sub setClassNames(node, classNames = [])
+        if not rodash.isNode(node) then return
+
+        if not node.hasField("class")
+            node.addField("class", "string", true)
+        end if
+
+        node.setField("class", rodash.join(classNames, " "))
     end sub
 end class
