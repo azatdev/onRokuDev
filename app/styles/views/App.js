@@ -9,47 +9,55 @@ module.exports = {
         "Background": {
         "visible": true
         },
-        "Rectangle#rect1": {
-            // clippingRect: [0, -100, 300, 230],
-            color: "#c51010ff",
-            opacity: .9,
-            height: 213,
-            width: 1129,
-            translation: [157, 459.75],
+        "Rectangle": {
+            "&#rect1": {
+                // clippingRect: [0, -100, 300, 230],
+                color: "#c51010ff",
+                opacity: .9,
+                height: 213,
+                width: 1129,
+                translation: [157, 459.75],
+            },
+            "&#rect2": {
+                color: "#FFFFFF",
+                height: 861.75,
+                opacity: 0.5,
+                translation: [1487, 9.75],
+                width: 273
+            }
         },
-        "Rectangle#rect2": {
-            color: "#FFFFFF",
-            height: 861.75,
-            opacity: 0.5,
-            translation: [1487, 9.75],
-            width: 273
-        },
-        "Group#container": {
-            "_ord_flexList#first_list": {
-                color: "#bad7fc00",
-                translation: [153, 450],
-                // width: 1008,
-            },
-            "_ord_flexList#second_list": {
-                color: "#bad7fc00",
-                // translation: [1450, 0]
-                translation: [0, 780],
-            },
-            "_ord_flexList#ctas_list": {
-                color: "#bad7fc00",
-                // translation: [1450, 0]
-                translation: [150, 150],
-            },
-            "_ord_flexList#third_list": {
-                color: "#bad7fc00",
-                translation: [120, 300],
-                // translation: [1450, 40]
+        "Group": {
+            "&#container": {
+                "_ord_flexList": {
+                    "&#first_list": {
+                        color: "#bad7fc00",
+                        translation: [153, 450],
+                        // width: 1008,
+                    },
+                    "&#second_list": {
+                        color: "#bad7fc00",
+                        // translation: [1450, 0]
+                        translation: [0, 780],
+                    },
+                    "&#ctas_list": {
+                        color: "#bad7fc00",
+                        // translation: [1450, 0]
+                        translation: [150, 150],
+                    },
+                    "&#third_list": {
+                        color: "#bad7fc00",
+                        translation: [120, 300],
+                        // translation: [1450, 40]
+                    }
+                }
             }
         }
-        // "Poster#mask": {
-        //     "height": 600,
-        //     "uri": "pkg:/static/images/grad_lin_l2r_hd.png",
-        //     "width": 1000
+        // "Poster": {
+        //     "&#mask": {
+        //         "height": 600,
+        //         "uri": "pkg:/static/images/grad_lin_l2r_hd.png",
+        //         "width": 1000
+        //     }
         // },
         // "MaskGroup": {
         //     "masksize": [0, 0],

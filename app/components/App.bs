@@ -44,10 +44,11 @@ sub init()
             "StylesController"
         ])
 
-        ' loadCTAs()
-        ' loadList()
-        ' loadSecondList()
-        ' loadThirdList()
+        loadCTAs()
+        loadList()
+        loadSecondList()
+        loadThirdList()
+        redrawStyles()
     end sub)
 end sub
 

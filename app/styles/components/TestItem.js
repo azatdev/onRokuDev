@@ -3,12 +3,16 @@ const palette = mixins["Palette"]
 
 module.exports = {
     "TestItem": {
-        "Rectangle#container": {
-            color: "#84bef380",
+        "Rectangle": {
+            "&#container": {
+                color: "#84bef380",
+            }
         },
-        "Label#label": {
-            color: palette.primaryColor,
-            translation: [33, 33]
+        "Label": {
+            "&#label": {
+                color: palette.primaryColor,
+                translation: [33, 33]
+            }
         }
     }
 };

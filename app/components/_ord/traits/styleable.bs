@@ -109,6 +109,7 @@ class Styleable
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
         m.publicFunctions.push("addClass")
         m.publicFunctions.push("removeClass")
+        m.publicFunctions.push("redrawStyles")
         m.publicFunctions.push("setStyles")
         m.publicFunctions.push("onChildChange")
         m.publicFunctions.push("onIdClassChange")
