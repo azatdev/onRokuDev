@@ -12,7 +12,6 @@ sub setupItem()
     m.container = m.top.findNode("container")
     m.outline = m.top.findNode("outline")
     m.thumbnail = m.top.findNode("thumbnail")
-    ' m.container.opacity = 0.5
     safeObserve("currRect", onCurrentRectChange)
     safeObserve("focusPercent", onFocusPercentChange)
 end sub
@@ -52,7 +51,6 @@ end sub
 
 sub onFocusPercentChange(options = {})
     focusPercentage = options.data ?? {}
-    ?"focusPercentage " focusPercentage
     ' opacityPercentage = (0.5 * focusPercentage) * focusPercentage + 0.5
     ' m.container.opacity = opacityPercentage
 end sub

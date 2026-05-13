@@ -30,8 +30,6 @@ sub loadTopbar()
         content: model
     }
 
-    ?"ASDASD2 " top(), top().findNode("topbar")
-
     m.list = list
 end sub
 

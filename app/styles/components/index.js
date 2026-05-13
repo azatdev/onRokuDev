@@ -3,6 +3,6 @@ module.exports = {
     ...require("./ButtonItem"),
     ...require("./CarouselItem"),
     ...require("./DynamicItem"),
-    ...require("./TestItem"),
-    ...require("./NavigationItem")
+    ...require("./NavigationItem"),
+    ...require("./TestItem")
 };
