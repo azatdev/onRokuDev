@@ -12,10 +12,10 @@ const gradientStyles = {
 
 module.exports = {
     "Sidebar": {
-        "_ord_flexList#sidebarList":{
+        "_ord_flexList":{
             "translation": [0, 162]
         },
-        "Poster#gradient": {
+        "Poster": {
             ...gradientStyles
         }
     },
@@ -24,10 +24,10 @@ module.exports = {
         "MaskGroup": {
             "maskOffset": [0, 216],
             "maskuri": "pkg:/static/images/gradients/topbar-mask-white.webp",
-            "_ord_flexList#topbarList": {
+            "_ord_flexList": {
                 "translation": [-999, 0]
             },
-            "Poster#gradient": {
+            "Poster": {
                 ...gradientStyles,
                 "height": 1170,
                 "rotation": -1.5708

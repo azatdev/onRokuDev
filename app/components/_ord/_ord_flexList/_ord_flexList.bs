@@ -1138,30 +1138,6 @@ namespace calculate
     end function
 
 
-    function rectStartingPosition(options = {})
-        coordinates = [0, 0]
-        if not rodash.isNonEmptyAA(options) then return coordinates
-
-        ' Because some of the tiles will be hidden
-        extraRects = options.extraRects
-        horizontal = options.horizontal ?? false
-        index = options.index ?? 0
-        rect = options.square ?? {}
-        ' We need to adjust the index based on the extraRects
-        adjustedIndex = index + extraRects * -1
-
-        if rodash.isEmpty(rect) then return coordinates
-
-        if horizontal
-            coordinates[0] = adjustedIndex * rect.width
-        else
-            coordinates[1] = adjustedIndex * rect.height
-        end if
-
-        return coordinates
-    end function
-
-
     function squareTotalArea(options = {})
         if not rodash.isNonEmptyAA(options) then return 0
 

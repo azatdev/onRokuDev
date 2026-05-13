@@ -7,7 +7,7 @@ module.exports = {
         "backgroundUri": "",
         opacity: 1,
         "Background": {
-            "visible": true
+        "visible": true
         },
         "Rectangle#rect1": {
             // clippingRect: [0, -100, 300, 230],

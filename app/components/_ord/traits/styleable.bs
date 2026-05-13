@@ -21,8 +21,9 @@ class Styleable
         styleNode.observeFieldScoped(top().subType(), rodash.getFunctionName(m.stylesUpdated))
 
         m.setStyles(styleNode[top().subType()])
-
         safeObserve("change", "onChildChange")
+        safeObserve("id", "onIdClassChange")
+        safeObserve("class", "onIdClassChange")
     end sub
 
 
@@ -33,6 +34,11 @@ class Styleable
         if operation = "add" or operation = "remove"
             m.redrawStyles()
         end if
+    end sub
+
+
+    sub onIdClassChange(options = {})
+        m.redrawStyles()
     end sub
 
 
@@ -62,6 +68,7 @@ class Styleable
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
         m.publicFunctions.push("setStyles")
         m.publicFunctions.push("onChildChange")
+        m.publicFunctions.push("onIdClassChange")
     end sub
 
 
@@ -91,21 +98,18 @@ class Styleable
         m.styleField(node, stylesheet)
 
         children = node.getChildren(-1, 0)
-        if children.count() = 0 then return
-        if not rodash.isNonEmptyAA(stylesheet) then return
 
         for each child in children
-            elementhandles = m.returnHandles({ node: child })
-            combinedNodeStyles = {}
-
-            for each handle in elementhandles
-                if rodash.isAA(stylesheet[handle]) then combinedNodeStyles.append(stylesheet[handle])
-            end for
-
-            if rodash.isEmpty(combinedNodeStyles) then continue for
-
-            m.setStyles(combinedNodeStyles, child)
+            childStyles = stylesheet[child.subType()]
+            if rodash.isEmpty(childStyles) then continue for
+            m.setStyles(childStyles, child)
         end for
+
+        idStyles = stylesheet[`&#${node.id ?? ""}`]
+        classStyles = stylesheet[`&.${node.class ?? ""}`]
+
+        if rodash.isNonEmptyAA(idStyles) then m.setStyles(idStyles, node)
+        if rodash.isNonEmptyAA(classStyles) then m.setStyles(classStyles, node)
     end sub
 
 

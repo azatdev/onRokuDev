@@ -16,6 +16,10 @@ sub setupItem()
     m.parentList = top().getParent()
     m.flexList = m.parentList.getParent()
 
+    if m.flexList.id = "topbarList"
+        top().class = "topbar"
+    end if
+
     safeObserve("focusPercent", onFocusPercentChange)
     safeObserve("itemContent", itemContentChanged)
     safeObserve("currRect", onCurrRectChange)
