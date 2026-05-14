@@ -13,9 +13,6 @@ sub loadSidebar()
     list = top().findNode("sidebarList")
 
     model = createObject("roSGNode", "SidebarModel")
-    model.id = "sidebarModel"
-    model.totalCount = model.getChildCount()
-
     model.rectConfig = {
         direction: "vertical",
         carouselType: "dynamicSize",

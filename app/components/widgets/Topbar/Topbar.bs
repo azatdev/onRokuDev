@@ -13,9 +13,6 @@ sub loadTopbar()
     list = top().findNode("topbarList")
 
     model = createObject("roSGNode", "TopbarModel")
-    model.id = "topbarModel"
-    model.totalCount = model.getChildCount()
-
     model.rectConfig = {
         carouselType: "dynamicSize",
         focusType: "floating",

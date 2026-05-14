@@ -10,6 +10,7 @@ sub init()
     end for
 
     m.top.update(updateObjArray, true)
+    m.top.totalCount = m.top.getChildCount()
 end sub
 
 

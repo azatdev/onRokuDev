@@ -12,8 +12,6 @@ sub loadList()
     list = top().findNode("ctasList")
 
     ctasModel = createObject("roSGNode", "CTAsModel")
-    ctasModel.totalCount = ctasModel.getChildCount()
-
     ctasModel.rectConfig = {
         carouselType: "dynamicSize",
         focusType: "floating",
