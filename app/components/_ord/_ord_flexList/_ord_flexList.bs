@@ -262,6 +262,8 @@ sub onFocusedChildChange(options = {})
 
     unfocused = node = invalid or not node.isSameNode(m.top) and not top().isInFocusChain()
 
+    ?"onFocusedChildChange " unfocused
+
     if not rodash.isNode(m.carousel.targetSet) then return
 
     if unfocused

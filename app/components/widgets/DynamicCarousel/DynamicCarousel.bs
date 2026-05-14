@@ -21,7 +21,7 @@ sub loadList()
         focusType: "floating",
         itemComponentName: "DynamicItem",
         visibleTiles: 999,
-        wrap: true,
+        wrap: false,
         maxWidth: 1800,
         bigSquare: [200, 100],
         gutterSize: 60,

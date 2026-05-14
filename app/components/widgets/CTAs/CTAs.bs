@@ -19,7 +19,8 @@ sub loadList()
         maxWidth: 1800,
         visibleTiles: 999,
         squareMargins: [0, 16, 0, 0],
-        useUnfocusedTargetSet: true
+        useUnfocusedTargetSet: true,
+        wrap: false
     }
 
     list.data = {
