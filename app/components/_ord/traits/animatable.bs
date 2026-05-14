@@ -1,0 +1,426 @@
+class Animatable
+    publicFunctions = []
+
+    sub new(options = {})
+        m.setExportFunctions(role())
+
+        if rodash.findIndex(["Scene", "View"], role()) = -1 then return
+
+        m.animations = {}
+        m.timers = {}
+    end sub
+
+
+    sub setExportFunctions(componentRole = "")
+        if rodash.isEmptyString(componentRole) then return
+
+        if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
+
+        m.publicFunctions.push("animate")
+        m.publicFunctions.push("reverse")
+        m.publicFunctions.push("morph")
+        m.publicFunctions.push("fadeIn")
+        m.publicFunctions.push("fadeOut")
+    end sub
+
+
+    sub animate(id = "", cb = "" as String, isReverse = false as Boolean, skip = false as Boolean)
+        if rodash.isEmptyString(id) then return
+
+        animation = m.animations[id] ?? invalid
+        if not rodash.isNode(animation) then return
+
+        m.setReverse(animation.getChildren(-1, 0), isReverse)
+
+        cbTimer = m.timers[id] ?? invalid
+        if rodash.isNode(timer) then safeUnobserve("fire", cbTimer)
+
+        if skip then animation.duration = 0.001
+
+        animation.cb = cb
+
+        safeObserve("state", m.onAnimationComplete, animation)
+        animation.control = "start"
+
+        if rodash.isAA(m.continuousAnimations) and not m.continuousAnimations.doesExist(id) and not skip
+            m.activeAnimations({ action: "add", id: id, node: animation })
+        end if
+    end sub
+
+
+    sub finishAnimation(id = "" as String, shouldFinish = true as Boolean)
+        if rodash.isEmptyString(id) then return
+
+        animation = m.animations[id] ?? invalid
+        if not rodash.isNode(animation) then return
+
+        animation.cb = ""
+        safeUnobserve("state", animation)
+
+        if shouldFinish
+            animation.control = "finish"
+        else
+            animation.control = "stop"
+        end if
+
+        if rodash.isNode(m.scheduleTimer) then safeUnobserve("fire", m.scheduleTimer)
+    end sub
+
+
+    sub reverse(id = "", cb = "" as String)
+        m.animate(id, cb, true)
+    end sub
+
+
+    sub addAnimation(id = "", animations = [], options = {} as Object)
+        if rodash.isEmptyString(id) then return
+        if not rodash.isArray(animations) then return
+
+        if m.animations = invalid then m.animations = {}
+        if m.animations[id] <> invalid then return
+        if m.timers = invalid then m.timers = {}
+
+        defaultDuration = 0.3
+        animationCollection = []
+
+        cbTimer = createObject("roSGNode", "Timer")
+        cbTimer.id = id
+        cbTimer.duration = 0.001
+        cbTimer.addField("callbackName", "string", false)
+        cbTimer.addField("callbackOptions", "assocarray", false)
+
+        for each settings in animations
+            nodeId = settings.nodeId ?? ""
+            animationOptions = settings.options ?? []
+
+            animation = createObject("roSGNode", "Animation")
+
+            if settings.delay <> invalid then animation.delay = settings.delay
+
+            if settings.duration <> invalid
+                animation.duration = settings.duration
+            else
+                animation.duration = defaultDuration
+            end if
+
+            if settings.easeFunction <> invalid then animation.easeFunction = settings.easeFunction
+            if settings.repeat <> invalid then animation.repeat = settings.repeat
+            if settings.optional <> invalid then animation.optional = settings.optional
+
+            for each option in animationOptions
+                field = option.field ?? ""
+                if rodash.isEmptyString(field) then return
+
+                keyValue = option.keyValue ?? invalid
+                if type(keyValue) <> "roArray" then return
+
+                interp = m.getInterpName(field)
+                if rodash.isEmptyString(interp) then return
+
+                interpField = createObject("roSGNode", interp)
+                interpField.fieldToInterp = [nodeId, field].join(".")
+                interpField.id = [nodeId, field].join(".")
+                interpField.key = option.key ?? [0, 1]
+                interpField.keyValue = keyValue
+                animation.appendChild(interpField)
+            end for
+
+            animationCollection.push(animation)
+        end for
+
+        if animationCollection.count() = 0 then return
+
+        if animationCollection.count() > 1
+            animationShell = createObject("roSGNode", "ParallelAnimation")
+            duration = 0
+
+            for each item in animationCollection
+                if item.duration > duration then duration = item.duration
+                animationShell.appendChild(item)
+            end for
+
+            animationShell.update({ duration: duration }, true)
+        else
+            animationShell = animationCollection[0]
+        end if
+
+        if not rodash.isNode(animationShell) then return
+
+        animationShell.addField("cb", "string", false)
+        animationShell.addField("cbOpts", "assocarray", false)
+        animationShell.id = id
+
+        top().appendChild(animationShell)
+        m.animations[id] = animationShell
+        m.timers[id] = cbTimer
+    end sub
+
+
+    sub removeAnimation(id = "")
+        if rodash.isEmptyString(id) then return
+
+        animationShell = m.animations[id] ?? invalid
+        if not rodash.isNode(animationShell) then return
+
+        safeUnobserve("state", animationShell)
+        top().removeChild(animationShell)
+        m.animations.delete(id)
+
+        cbTimer = m.timers[id] ?? invalid
+        if rodash.isNode(timer) then safeUnobserve("fire", cbTimer)
+        if m.timers <> invalid then m.timers.delete(id)
+    end sub
+
+
+    function getInterpName(field = "") as Object
+        if rodash.isEmptyString(field) then return ""
+
+        fieldsMap = {
+            "blendColor": "ColorFieldInterpolator",
+            "color": "ColorFieldInterpolator",
+            "height": "FloatFieldInterpolator",
+            "opacity": "FloatFieldInterpolator",
+            "scale": "Vector2DFieldInterpolator",
+            "size": "FloatFieldInterpolator",
+            "translation": "Vector2DFieldInterpolator",
+            "width": "FloatFieldInterpolator"
+        }
+
+        if fieldsMap.doesExist(field) then return fieldsMap[field]
+        return ""
+    end function
+
+
+    sub setReverse(animationChildren, isReverse = false as Boolean)
+        for each child in animationChildren
+            if child.subType() = "Animation" or child.subType() = "ParallelAnimation"
+                m.setReverse(child.getChildren(-1, 0), isReverse)
+            else if rodash.indexOf(["Vector2DFieldInterpolator", "FloatFieldInterpolator", "ColorFieldInterpolator"], child.subType()) <> -1
+                child.reverse = isReverse
+            end if
+        end for
+    end sub
+
+
+    sub onAnimationComplete(options = {})
+        state = options.data ?? ""
+        animation = options.node
+
+        if state <> "stopped" then return
+        if not rodash.isNode(animation) then return
+
+        safeUnobserve("state", animation)
+
+        if rodash.isAA(m.continuousAnimations) and not m.continuousAnimations.doesExist(animation.id)
+            m.activeAnimations({ action: "delete", id: animation.id })
+        end if
+
+        callbackName = animation.cb ?? ""
+        if rodash.isEmptyString(callbackName) then return
+
+        cbTimer = m.timers[animation.id] ?? invalid
+        if not rodash.isNode(cbTimer) then return
+
+        callbackOptions = animation.cbOpts ?? {}
+
+        cbTimer.callbackName = callbackName
+        cbTimer.callbackOptions = callbackOptions
+
+        safeObserve("fire", m.onAnimationTimerFire, cbTimer)
+        cbTimer.control = "start"
+    end sub
+
+
+    sub onAnimationTimerFire(options = {})
+        cbTimer = options.node
+        if not rodash.isNode(cbTimer) then return
+
+        safeUnobserve("fire", cbTimer)
+
+        callbackName = cbTimer.callbackName ?? ""
+        callbackOptions = cbTimer.callbackOptions ?? {}
+
+        cbTimer.callbackName = ""
+        cbTimer.callbackOptions = {}
+
+        if rodash.isEmptyString(callbackName) then return
+
+        if rodash.isNonEmptyAA(callbackOptions)
+            exec(callbackName, callbackOptions)
+        else
+            exec(callbackName)
+        end if
+    end sub
+
+
+    sub morph(state = "", morphs = {})
+        if rodash.isEmptyString(state) then return
+        if not rodash.isNonEmptyAA(morphs) then return
+
+        morphConfig = morphs[state] ?? {}
+        if not rodash.isNonEmptyAA(morphConfig) then return
+
+        if m.animations = invalid then m.animations = {}
+
+        animationOptions = []
+        animationDuration = morphConfig.duration
+        animationCallback = morphConfig.callbackFunc ?? ""
+        animationCallbackOpts = morphConfig.callbackOpts ?? {}
+
+        for each nodeOptions in morphConfig.items()
+            nodeId = nodeOptions.key
+            node = top().findNode(nodeId)
+            nodeMorphOptions = nodeOptions.value
+            nodeAnimationOptions = []
+
+            if not rodash.isNode(node) then continue for
+            if not rodash.isAA(nodeMorphOptions) then continue for
+
+            for each fieldOptions in nodeMorphOptions.items()
+                fieldName = fieldOptions.key
+                oldValue = node[fieldName]
+                newValue = fieldOptions.value
+
+                if rodash.isNumber(oldValue)
+                    oldValue = m.toFloatValue(oldValue)
+                end if
+
+                if rodash.isNumber(newValue)
+                    newValue = m.toFloatValue(newValue)
+                end if
+
+                if fieldName = "color" or fieldName = "blendColor"
+                    newValueClean = newValue.toStr().replace("#", "")
+                    newValue = val(newValueClean, 16)
+                    oldColorValue% = node[fieldName]
+                    oldValue = oldColorValue%
+                end if
+
+                if type(oldValue) = type(newValue) and formatJSON(oldValue) <> formatJSON(newValue)
+                    nodeAnimationOptions.push({
+                        field: fieldName,
+                        keyValue: [oldValue, newValue]
+                    })
+                end if
+            end for
+
+            if nodeAnimationOptions.count() > 0
+                animationConfig = {
+                    "duration": 0.2,
+                    "easeFunction": "linear",
+                    "optional": true,
+                    "options": []
+                }
+                if rodash.isNumber(animationDuration) then animationConfig.duration = m.toFloatValue(animationDuration)
+                animationConfig.nodeId = nodeId
+                animationConfig.state = state
+                animationConfig.options = nodeAnimationOptions
+                animationOptions.push(animationConfig)
+            end if
+        end for
+
+        if animationOptions.count() = 0 then return
+
+        animationId = m.constructAnimationId(state, animationOptions)
+        animation = m.animations[animationId] ?? invalid
+
+        if not rodash.isNode(animation)
+            m.addAnimation(animationId, animationOptions)
+        end if
+
+        animation = m.animations[animationId] ?? invalid
+        if not rodash.isNode(animation) then return
+
+        animation.cb = animationCallback
+        animation.cbOpts = animationCallbackOpts
+
+        m.animate(animationId, animationCallback)
+    end sub
+
+
+    function constructAnimationId(state = "", options = []) as String
+        if rodash.isEmptyString(state) then return ""
+        if not rodash.isNonEmptyArray(options) then return ""
+
+        animationId = state
+
+        for each nodeOptions in options
+            nodeId = nodeOptions.nodeId ?? ""
+            animationId += nodeId
+
+            fields = nodeOptions.options ?? []
+            for each fieldObject in fields
+                animationId += fieldObject.field ?? ""
+            end for
+        end for
+
+        return animationId
+    end function
+
+
+    sub fadeIn(node = invalid, options = {})
+        if not rodash.isNode(node) then return
+
+        options.opacity = 1
+        m.fade(node, options)
+    end sub
+
+
+    sub fadeOut(node = invalid, options = {})
+        if not rodash.isNode(node) then return
+
+        options.opacity = 0
+        m.fade(node, options)
+    end sub
+
+
+    sub fade(node = invalid, options = {})
+        if not rodash.isNode(node) then return
+        ?"fade " options
+
+        nodeId = node.id ?? ""
+        if rodash.isEmptyString(nodeId) then return
+
+        morphObject = {
+            callbackFunc: options.callbackFunc ?? "",
+            callbackOpts: options.callbackOpts ?? {}
+        }
+        morphObject[nodeId] = {
+            delay: options.delay ?? 0,
+            duration: options.duration ?? 0.3,
+            opacity: options.opacity,
+            callbackFunc: options.callbackFunc ?? ""
+        }
+
+        state = options.opacity = 0 ? "out" : "in"
+        payloadObject = {}
+        payloadObject[state] = morphObject
+        ?"payloadObject " payloadObject.out.first_list
+
+        m.morph(state, payloadObject)
+    end sub
+
+
+    function activeAnimations(options = {}) as Object
+        if not rodash.isAA(options) then return invalid
+
+        scene = app()
+        if not rodash.isNode(scene) then return invalid
+        if not scene.hasFunc("manageActiveAnimations") then return invalid
+
+        payload = options
+        payload.nodeId = m.getNodeId()
+        return scene.callFunc("manageActiveAnimations", payload)
+    end function
+
+
+    function getNodeId() as String
+        return `${top().subType()}_${top().id ?? ""}`
+    end function
+
+
+    function toFloatValue(value)
+        if not rodash.isNumber(value) then return value
+        return value + 0.0
+    end function
+end class

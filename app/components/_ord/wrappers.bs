@@ -135,6 +135,41 @@ function redrawStyles()
 end function
 
 
+function animate(id = "", cb = "", isReverse = false, skip = false)
+    interface = m.interfaceFunctions["animate"]
+    if interface = invalid then return invalid
+    return interface.animate(id, cb, isReverse, skip)
+end function
+
+
+function reverse(id = "", cb = "")
+    interface = m.interfaceFunctions["reverse"]
+    if interface = invalid then return invalid
+    return interface.reverse(id, cb)
+end function
+
+
+function morph(state = "", morphs = {})
+    interface = m.interfaceFunctions["morph"]
+    if interface = invalid then return invalid
+    return interface.morph(state, morphs)
+end function
+
+
+function fadeIn(node = invalid, options = {})
+    interface = m.interfaceFunctions["fadeIn"]
+    if interface = invalid then return invalid
+    return interface.fadeIn(node, options)
+end function
+
+
+function fadeOut(node = invalid, options = {})
+    interface = m.interfaceFunctions["fadeOut"]
+    if interface = invalid then return invalid
+    return interface.fadeOut(node, options)
+end function
+
+
 function dispatch(eventId, options = {})
     interface = m.interfaceFunctions["dispatch"]
     if interface = invalid then return invalid
