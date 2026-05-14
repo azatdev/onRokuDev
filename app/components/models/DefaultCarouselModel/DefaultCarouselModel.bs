@@ -1,10 +1,14 @@
 sub init()
+    updateObjArray = []
+
     for each item in getItems()
-        childModel = createObject("roSGNode", "ContentNode")
-        childModel.title = item.title
-        childModel.HDPosterUrl = item.HDPosterUrl
-        m.top.appendChild(childModel)
+        updateObject = { subtype: "ContentNode"}
+        updateObject.append(item)
+        updateObjArray.push(updateObject)
     end for
+
+    m.top.update(updateObjArray, true)
+    m.top.totalCount = m.top.getChildCount()
 end sub
 
 

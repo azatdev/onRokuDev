@@ -1,0 +1,43 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub()
+        loadList()
+        safeObserve("focusedChild", onFocusedChildChange)
+    end sub)
+end sub
+
+
+sub loadList()
+    list = top().findNode("defaultCarouselList")
+
+    carouselModel = createObject("roSGNode", "DefaultCarouselModel")
+    carouselModel.rectConfig = {
+        animationDuration: 0.3,
+        carouselType: "default",
+        clip: true,
+        defaultVisibleIndex: 0,
+        focusType: "fixed",
+        itemComponentName: "CarouselItem",
+        visibleTiles: 5,
+        wrap: true,
+        bigSquare: [336, 189],
+        gutterSize: [153, 0],
+        smallSquare: [288, 162],
+        squareMargins: [0]
+    }
+
+    list.data = {
+        content: carouselModel
+    }
+
+    m.list = list
+end sub
+
+
+sub onFocusedChildChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    focusedChild = options.data
+    if not rodash.isNode(focusedChild) then return
+    m.list.setFocus(true)
+end sub

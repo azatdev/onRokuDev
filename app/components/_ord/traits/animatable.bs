@@ -378,7 +378,7 @@ class Animatable
         if not rodash.isNode(node) then return
         ?"fade " options
 
-        nodeId = node.id ?? ""
+        nodeId = node.subtype() + node.id ?? ""
         if rodash.isEmptyString(nodeId) then return
 
         morphObject = {
@@ -395,7 +395,6 @@ class Animatable
         state = options.opacity = 0 ? "out" : "in"
         payloadObject = {}
         payloadObject[state] = morphObject
-        ?"payloadObject " payloadObject.out.first_list
 
         m.morph(state, payloadObject)
     end sub

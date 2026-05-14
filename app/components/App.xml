@@ -9,7 +9,10 @@
     </interface>
     <children>
         <Background id="background" />
-        <Group id="container" />
+        <CTAs id="ctas" />
+        <DefaultCarousel id="defaultCarousel" />
+        <DynamicCarousel id="dynamicCarousel" />
+        <FlushCarousel id="flushCarousel" />
         <Topbar id="topbar" />
         <Sidebar id="sidebar" />
     </children>

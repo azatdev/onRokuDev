@@ -1,0 +1,45 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub()
+        loadList()
+        safeObserve("focusedChild", onFocusedChildChange)
+    end sub)
+end sub
+
+
+sub loadList()
+    list = top().findNode("dynamicCarouselList")
+
+    carouselModel = createObject("roSGNode", "DynamicCarouselModel")
+    carouselModel.rectConfig = {
+        animationDuration: 0.1,
+        horizAlign: "left",
+        carouselType: "dynamicSize",
+        clip: true,
+        defaultVisibleIndex: 0,
+        focusType: "floating",
+        itemComponentName: "DynamicItem",
+        visibleTiles: 999,
+        wrap: true,
+        maxWidth: 1800,
+        bigSquare: [200, 100],
+        gutterSize: 30,
+        smallSquare: [200, 100],
+        squareMargins: [6, 0]
+    }
+
+    list.data = {
+        content: carouselModel
+    }
+
+    m.list = list
+end sub
+
+
+sub onFocusedChildChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    focusedChild = options.data
+    if not rodash.isNode(focusedChild) then return
+    m.list.setFocus(true)
+end sub

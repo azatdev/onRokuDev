@@ -146,6 +146,7 @@ class Styleable
 
 
     sub setStyles(stylesheet, node = top())
+        if not rodash.isNonEmptyAA(stylesheet) then return
         m.styleField(node, stylesheet)
 
         children = node.getChildren(-1, 0)

@@ -12,7 +12,6 @@ sub init()
         '     azat: "is cool"
         ' }
 
-        m.container = top().findNode("container")
         m.sidebar = top().findNode("sidebar")
         m.topbar = top().findNode("topbar")
         ' m.sidebar.setFocus(true)
@@ -44,186 +43,9 @@ sub init()
             "StylesController"
         ])
 
-        loadCTAs()
-        loadList()
-        loadSecondList()
-        loadThirdList()
         redrawStyles()
     end sub)
 end sub
-
-
-sub loadCTAs()
-    list = createObject("roSGNode", "_ord_flexList")
-    list.id = "ctas_list"
-    m.container.appendChild(list)
-
-    ctasModel = createObject("roSGNode", "CTAsModel")
-    ctasModel.id = "flexDynamicCarousel_model"
-    ctasModel.totalCount = ctasModel.getChildCount()
-
-    ctasModel.rectConfig = {
-        carouselType: "dynamicSize",
-        focusType: "floating",
-        itemComponentName: "ButtonItem",
-        maxWidth: 1800,
-        visibleTiles: 999,
-        bigSquare: [200, 100],
-        smallSquare: [200, 100],
-        squareMargins: [0, 16, 0, 0]
-    }
-
-    list.data = {
-        content: ctasModel
-    }
-    m.ctaList = list
-
-    list.setFocus(true)
-end sub
-
-
-sub loadList(options = {})
-    list = createObject("roSGNode", "_ord_flexList")
-    list.id = "first_list"
-    m.container.appendChild(list)
-
-    testModel = createObject("roSGNode", "DefaultCarouselModel")
-
-    testModel.rectConfig = {
-        ' direction: "vertical",
-        animationDuration: 0.3,
-        ' horizAlign: "right",
-        ' vertAlign: "top",
-        carouselType: "default",
-        clip: true,
-        defaultVisibleIndex: 0,
-        focusType: "fixed",
-        itemComponentName: "CarouselItem",
-        visibleTiles: 5,
-        wrap: true,
-        bigSquare: [336, 189],
-        ' gutterSize: [0],
-        gutterSize: [153, 0],
-        ' gutterSize: [0, 75],
-        smallSquare: [288, 162],
-        squareMargins: [0]
-    }
-
-    testModel.id = "flexCarousel_model"
-    testModel.totalCount = testModel.getChildCount()
-
-    list.data = {
-        content: testModel
-    }
-
-    m.firstList = list
-    ' m.firstList.setFocus(true)
-end sub
-
-
-sub loadSecondList(options = {})
-    list = createObject("roSGNode", "_ord_flexList")
-    list.id = "second_list"
-    m.container.appendChild(list)
-
-    testModel = createObject("roSGNode", "FlushCarouselModel")
-
-    testModel.rectConfig = {
-        ' direction: "vertical",
-        ' animationDuration: 0.01,
-        horizAlign: "center",
-        vertAlign: "bottom",
-        clip: true,
-        defaultVisibleIndex: 0,
-        carouselType: "flushFocus",
-        focusType: "floating",
-        itemComponentName: "TestItem",
-        visibleTiles: 16,
-        wrap: true,
-        bigSquare: [201, 300],
-        ' gutterSize: [75, 0],
-        ' gutterSize: [0, 75],
-        ' gutterSize: [0],
-        smallSquare: [120, 180]
-        ' squareMargins: [30]
-    }
-
-    testModel.id = "flexCarousel_model"
-    testModel.totalCount = testModel.getChildCount()
-
-    list.data = {
-        content: testModel
-    }
-
-    m.secondList = list
-    ' m.secondList.setFocus(true)
-end sub
-
-
-sub loadThirdList(options = {})
-    list = createObject("roSGNode", "_ord_flexList")
-    list.id = "third_list"
-    m.container.appendChild(list)
-
-    testModel = returnDynamicWidthModel()
-    testModel.addField("rectConfig", "assocarray", true)
-    testModel.addField("totalCount", "integer", false)
-
-    testModel.id = "flexDynamicCarousel_model"
-    testModel.totalCount = testModel.getChildCount()
-
-    testModel.rectConfig = {
-        ' direction: "vertical",
-        animationDuration: 0.1,
-        horizAlign: "left",
-        ' vertAlign: "top",
-        carouselType: "dynamicSize",
-        clip: true,
-        defaultVisibleIndex: 0,
-        focusType: "floating",
-        itemComponentName: "DynamicItem",
-        visibleTiles: 999,
-        wrap: true,
-        maxWidth: 1800,
-        bigSquare: [200, 100],
-        gutterSize: 30,
-        smallSquare: [200, 100],
-        squareMargins: [6, 0]
-        ' squareMargins: [0, 6]
-    }
-
-    list.data = {
-        content: testModel
-    }
-
-    m.thirdList = list
-    m.thirdList.setFocus(true)
-end sub
-
-
-function returnModel(options = {})
-    numberOfModels = options.number
-    testModel = createObject("roSGNode", "ContentNode")
-    for i = 1 to numberOfModels
-        testModel.update([
-            { id: i, subtype: "ContentNode" },
-        ])
-    end for
-    return testModel
-end function
-
-
-function returnDynamicWidthModel()
-    testModel = createObject("roSGNode", "ContentNode")
-    titles = ["Home", "Live Channels", "Documentaries", "TV Shows", "Movies", "Sports", "News", "Favorites", "Settings", "Account", "Terms of Service"]
-    for each item in titles
-        childModel = createObject("roSGNode", "ContentNode")
-        childModel.title = item
-        testModel.appendChild(childModel)
-    end for
-
-    return testModel
-end function
 
 
 function onTheNose(options = {})
@@ -240,7 +62,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
 
         ?"key " key
 
-        if key = "back" then m.container.setFocus(true)
         if key = "replay" then m.sidebar.setFocus(true)
         if key = "up" then m.topbar.setFocus(true)
         if key = "down" then m.top.createChild("Group")

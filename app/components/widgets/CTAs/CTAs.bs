@@ -1,0 +1,39 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub()
+        loadList()
+        safeObserve("focusedChild", onFocusedChildChange)
+    end sub)
+end sub
+
+
+sub loadList()
+    list = top().findNode("ctasList")
+
+    ctasModel = createObject("roSGNode", "CTAsModel")
+    ctasModel.totalCount = ctasModel.getChildCount()
+
+    ctasModel.rectConfig = {
+        carouselType: "dynamicSize",
+        focusType: "floating",
+        itemComponentName: "ButtonItem",
+        maxWidth: 1800,
+        visibleTiles: 999,
+        squareMargins: [0, 16, 0, 0]
+    }
+
+    list.data = {
+        content: ctasModel
+    }
+
+    m.list = list
+end sub
+
+
+sub onFocusedChildChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    focusedChild = options.data
+    if not rodash.isNode(focusedChild) then return
+    m.list.setFocus(true)
+end sub
