@@ -30,7 +30,7 @@ sub itemContentChanged(options = {})
     m.label.text = ucase(content.title)
     m.icon.text = content.iconText
     dynamicWidth = content.dynamicWidth ?? false
-    set({ dynamicWidth: dynamicWidth})
+    set({ dynamicWidth: dynamicWidth })
     onTextChange()
 end sub
 
@@ -66,13 +66,11 @@ sub onGroupFocusPercentChange(options = {})
     labelSquare = get("labelSquare") ?? [0,0]
     labelWidth = labelSquare[0]
     labelHeight = labelSquare[1]
-    ' runFocusTransformation(focusPercentage)
     if m.parentList.itemFocused = top().index then m.colorFieldInterpolator.fraction = percentage
 
     if m.parentList.itemFocused = top().index and get("dynamicWidth")
         m.label.clippingRect = [0, 0, labelWidth * percentage, labelHeight]
     end if
-    ' runFocusTransformation(percentage)
 end sub
 
 
@@ -98,8 +96,6 @@ sub runFocusTransformation(percentage)
     labelSquare = get("labelSquare") ?? [0,0]
     labelWidth = labelSquare[0]
     labelHeight = labelSquare[1]
-
-    ' if m.parentList.itemFocused = top().index then m.colorFieldInterpolator.fraction = percentage
 
     if top().groupHasFocus then m.colorFieldInterpolator.fraction = percentage
 

@@ -25,7 +25,6 @@ function setupSocket(options = {})
 
     ?"Connected to TCP socket server at"; serverHost + ":" + serverPort.toStr()
 
-    ' sendMessage(socket, { message: "Azat says hello" })
     waitForSocketMessages(socket, messagePort)
     socket.close()
 

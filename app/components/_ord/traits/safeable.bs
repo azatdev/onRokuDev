@@ -59,15 +59,10 @@ class Safeable
         func = options.func
         functionArgument = options.options ?? {}
         node = options.node ?? top()
-        externalInterface = options.externalInterface ?? {}
 
         if not node.isSameNode(top())
             return m.proxyFunc(func, functionArgument, node)
         end if
-
-        ' if not rodash.isEmpty(externalInterface) and rodash.isFunction(externalInterface[func])
-        '     return externalInterface[func](functionArgument)
-        ' end if
 
         targetFunction = invalid
 
@@ -82,7 +77,6 @@ class Safeable
         end if
 
         if rodash.isFunction(targetFunction)
-
             try
                 return targetFunction(functionArgument)
             catch e
@@ -94,20 +88,6 @@ class Safeable
 
                 return invalid
             end try
-
-            ' return targetFunction()
-
-            ' try
-
-            ' catch e
-            '     ' if e.number = 241
-            '     '     return targetFunction()
-            '     ' end if
-
-            '     ' return invalid
-            ' end try
-
-            ' return invalid
         end if
 
         internalFunctions = getGlobalAA().interfaceFunctions ?? {}
@@ -143,7 +123,6 @@ class Safeable
         returnData = exec(functionName, options, top())
         proxyData.input = invalid
         proxyData.output = returnData
-        ' proxyData.output = rodash.isEmpty(returnData) ? invalid : returnData
     end sub
 
 
