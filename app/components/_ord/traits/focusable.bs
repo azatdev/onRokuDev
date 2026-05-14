@@ -1,0 +1,48 @@
+class Focusable
+    publicFunctions = []
+    focusMap = {}
+
+    sub new(options = {})
+        m.setExportFunctions(role())
+    end sub
+
+
+    sub setExportFunctions(componentRole = "")
+        if rodash.isEmptyString(role) then return
+
+        if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
+
+        m.publicFunctions.push("processFocus")
+        m.publicFunctions.push("setFocusMap")
+    end sub
+
+
+    function processFocus(key as string)
+        handled = false
+
+        focusedChild = top().focusedChild
+        nodeMap = m.focusMap[focusedChild.id] ?? {}
+        focusValue = nodeMap[key]
+
+        if focusValue = invalid then return handled
+
+        if rodash.isFunction(focusValue)
+            exec(focusValue)
+            handled = true
+        else if rodash.isNode(focusValue)
+            focusValue.setFocus(true)
+            handled = true
+        else if rodash.isNonEmptyString(focusValue)
+            node = top().findNode(focusValue)
+            if rodash.isNode(node) then node.setFocus(true)
+            handled = true
+        end if
+
+        return handled
+    end function
+
+
+    sub setFocusMap(options = {})
+        m.focusMap.append(options)
+    end sub
+end class

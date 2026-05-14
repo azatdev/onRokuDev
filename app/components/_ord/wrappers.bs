@@ -180,6 +180,20 @@ function dispatch(eventId, options = {})
 end function
 
 
+function setFocusMap(options = {})
+    interface = m.interfaceFunctions["setFocusMap"]
+    if interface = invalid then return invalid
+    return interface.setFocusMap(options)
+end function
+
+
+function processFocus(key = "")
+    interface = m.interfaceFunctions["processFocus"]
+    if interface = invalid then return invalid
+    return interface.processFocus(key)
+end function
+
+
 function top()
     return getGlobalAA().top
 end function

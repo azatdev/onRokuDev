@@ -18,6 +18,35 @@ sub init()
             "StylesController"
         ])
 
+        setFocusMap({
+            "ctas": {
+                "down": m.dynamicCarousel,
+                "up": "topbar",
+                "left": "sidebar"
+            },
+            "dynamicCarousel": {
+                "down": "defaultCarousel",
+                "up": "ctas",
+                "left": "sidebar"
+            },
+            "defaultCarousel": {
+                "down": "flushCarousel",
+                "up": "dynamicCarousel",
+                "left": "sidebar"
+            },
+            "flushCarousel": {
+                "down": "flushCarousel",
+                "up": "defaultCarousel",
+                "left": "sidebar"
+            },
+            "topbar": {
+                "down": "ctas"
+            },
+            "sidebar": {
+                "right": "ctas"
+            }
+        })
+
         rodash.delay(sub(node)
             node.setFocus(true)
         end sub, 100, m.ctas)
@@ -34,27 +63,8 @@ function onKeyEvent(key as string, press as boolean) as boolean
     return exec(function(options = {})
         key = options.key
         press = options.press
-        m = getGlobalAA()
         if not press then return true
-
-        if key = "up"
-            if m.sidebar.isInFocusChain() then return true
-            if m.ctas.isInFocusChain() then m.topbar.setFocus(true)
-            if m.dynamicCarousel.isInFocusChain() then m.ctas.setFocus(true)
-            if m.defaultCarousel.isInFocusChain() then m.dynamicCarousel.setFocus(true)
-            if m.flushCarousel.isInFocusChain() then m.defaultCarousel.setFocus(true)
-        else if key = "down"
-            if m.sidebar.isInFocusChain() then return true
-            if m.defaultCarousel.isInFocusChain() then m.flushCarousel.setFocus(true)
-            if m.dynamicCarousel.isInFocusChain() then m.defaultCarousel.setFocus(true)
-            if m.ctas.isInFocusChain() then m.dynamicCarousel.setFocus(true)
-            if m.topbar.isInFocusChain() then m.ctas.setFocus(true)
-        else if key = "left"
-            if not m.sidebar.isInFocusChain() then m.sidebar.setFocus(true)
-        else if key = "right"
-            if m.sidebar.isInFocusChain() then m.ctas.setFocus(true)
-        end if
-
-        return true
+        handled = processFocus(key)
+        return handled
     end function, { key: key, press: press })
 end function
