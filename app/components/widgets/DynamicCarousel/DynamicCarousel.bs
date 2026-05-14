@@ -24,7 +24,7 @@ sub loadList()
         wrap: true,
         maxWidth: 1800,
         bigSquare: [200, 100],
-        gutterSize: 30,
+        gutterSize: 60,
         smallSquare: [200, 100],
         squareMargins: [6, 0]
     }

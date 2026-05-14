@@ -14,6 +14,11 @@ sub init()
 
         m.sidebar = top().findNode("sidebar")
         m.topbar = top().findNode("topbar")
+        m.ctas = top().findNode("ctas")
+        m.defaultCarousel = top().findNode("defaultCarousel")
+        m.dynamicCarousel = top().findNode("dynamicCarousel")
+        m.flushCarousel = top().findNode("flushCarousel")
+
         ' m.sidebar.setFocus(true)
 
         ' localResult = onTheNose({ name: "Azat" })
@@ -59,8 +64,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
         press = options.press
         m = getGlobalAA()
         if not press then return true
-
-        ?"key " key
 
         if key = "replay" then m.sidebar.setFocus(true)
         if key = "up" then m.topbar.setFocus(true)

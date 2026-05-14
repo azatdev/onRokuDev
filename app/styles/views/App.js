@@ -7,19 +7,19 @@ module.exports = {
         },
         "CTAs": {
             color: "#bad7fc00",
-            translation: [150, 150]
+            translation: [150, 210]
         },
         "DefaultCarousel": {
             color: "#bad7fc00",
-            translation: [153, 450]
+            translation: [150, 540]
         },
         "DynamicCarousel": {
             color: "#bad7fc00",
-            translation: [120, 300]
+            translation: [150, 402]
         },
         "FlushCarousel": {
             color: "#bad7fc00",
-            translation: [0, 780]
+            translation: [150, 780]
         }
     }
 };

@@ -15,14 +15,13 @@ sub setupItem()
     m.highlightTop = top().findNode("highlightTop")
     m.highlightBottom = top().findNode("highlightBottom")
     m.colorFieldInterpolator = top().findNode("focusColorInterpolator")
+    m.parentList = top().getParent()
+    m.flexList = m.parentList.getParent()
 
     safeObserve("focusPercent", onFocusPercentChange)
     safeObserve("itemContent", itemContentChanged, top())
     safeObserve("currRect", onCurrRectChange, top())
-
-    top().addField("watchNode", "node", true)
-    top().watchNode = m.label
-    ' safeObserve("watchNode", onTextChange, top())
+    safeObserve("focusPercent", onGroupFocusPercentChange, m.parentList)
 end sub
 
 
@@ -62,16 +61,24 @@ sub onCurrRectChange(options = {})
 end sub
 
 
-sub onGroupFocusPercentChange(event)
-    ' if not TypeGuard_isNumber(m.parentList.currFocusItemIndex) then return
+sub onGroupFocusPercentChange(options = {})
+    percentage = options.data ?? {}
+    labelSquare = get("labelSquare") ?? [0,0]
+    labelWidth = labelSquare[0]
+    labelHeight = labelSquare[1]
+    ' runFocusTransformation(focusPercentage)
+    if m.parentList.itemFocused = top().index then m.colorFieldInterpolator.fraction = percentage
 
-    if cint(m.parentList.currFocusItemIndex) = m.top.index then runFocusTransformation(event)
+    if m.parentList.itemFocused = top().index and get("dynamicWidth")
+        m.label.clippingRect = [0, 0, labelWidth * percentage, labelHeight]
+    end if
+    ' runFocusTransformation(percentage)
 end sub
 
 
 sub onFocusPercentChange(options = {})
-    focusPercentage = options.data ?? {}
-    runFocusTransformation(focusPercentage)
+    percentage = options.data ?? {}
+    runFocusTransformation(percentage)
 end sub
 
 
@@ -92,7 +99,9 @@ sub runFocusTransformation(percentage)
     labelWidth = labelSquare[0]
     labelHeight = labelSquare[1]
 
-    m.colorFieldInterpolator.fraction = percentage
+    ' if m.parentList.itemFocused = top().index then m.colorFieldInterpolator.fraction = percentage
+
+    if top().groupHasFocus then m.colorFieldInterpolator.fraction = percentage
 
     if get("dynamicWidth")
         m.label.clippingRect = [0, 0, labelWidth * percentage, labelHeight]

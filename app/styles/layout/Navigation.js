@@ -12,6 +12,8 @@ const gradientStyles = {
 
 module.exports = {
     "Sidebar": {
+        "color": "#3c174400",
+        "height": viewport.height,
         "_ord_flexList":{
             "translation": [0, 162]
         },

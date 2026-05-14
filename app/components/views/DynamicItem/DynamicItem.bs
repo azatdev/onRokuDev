@@ -10,8 +10,11 @@ end sub
 sub setupItem()
     m.indexLabel = m.top.findNode("label")
     m.container = m.top.findNode("container")
-    m.container.opacity = 0.5
+    m.parentList = top().getParent()
+    m.flexList = m.parentList.getParent()
+    m.colorFieldInterpolator = top().findNode("focusColorInterpolator")
     safeObserve("focusPercent", onFocusPercentChange)
+    safeObserve("focusPercent", onGroupFocusPercentChange, m.parentList)
 end sub
 
 
@@ -30,7 +33,13 @@ end sub
 
 
 sub onFocusPercentChange(options = {})
-    focusPercentage = options.data ?? {}
-    opacityPercentage = (0.5 * focusPercentage) * focusPercentage + 0.5
-    m.container.opacity = opacityPercentage
+    if not top().groupHasFocus then return
+    percentage = options.data ?? {}
+    m.colorFieldInterpolator.fraction = percentage
+end sub
+
+
+sub onGroupFocusPercentChange(options = {})
+    percentage = options.data ?? {}
+    if m.parentList.itemFocused = top().index then m.colorFieldInterpolator.fraction = percentage
 end sub

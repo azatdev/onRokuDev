@@ -19,7 +19,7 @@ sub loadList()
         carouselType: "flushFocus",
         focusType: "floating",
         itemComponentName: "TestItem",
-        visibleTiles: 16,
+        visibleTiles: 14,
         wrap: true,
         bigSquare: [201, 300],
         smallSquare: [120, 180]

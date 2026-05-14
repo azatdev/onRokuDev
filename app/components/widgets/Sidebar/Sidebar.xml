@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="Sidebar" extends="Group" initialFocus="sidebarList">
+<component name="Sidebar" extends="Rectangle" initialFocus="sidebarList">
     <interface>
         <function name="safeFunc" />
     </interface>

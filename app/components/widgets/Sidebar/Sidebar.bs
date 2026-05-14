@@ -33,6 +33,7 @@ sub loadSidebar()
 
     m.list = list
     safeObserve("width", onListWidthChange, m.list)
+    safeObserve("focusPercent", onFocusPercentChange, m.list)
 end sub
 
 
@@ -43,6 +44,18 @@ sub onFocusedChildChange(options = {})
     m.list.setFocus(true)
 end sub
 
+
+sub onFocusPercentChange(options = {})
+    focusPercent = options.data ?? 0
+    sidebarColor = "<%- s(STYLES.Palette.sidebarColor) %>"
+    maxSidebarColorOpacity = 0.8
+    top().color = addOpacityToHexColor(sidebarColor, focusPercent * maxSidebarColorOpacity)
+
+    minGradientOpacity = 0.7
+    m.gradient.opacity = minGradientOpacity + ((1 - minGradientOpacity) * focusPercent)
+end sub
+
+
 sub onListWidthChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
 
@@ -50,4 +63,12 @@ sub onListWidthChange(options = {})
     if not rodash.isNumber(listWidth) then return
 
     m.gradient.width = listWidth + 3
+    top().width = listWidth
 end sub
+
+
+function addOpacityToHexColor(color = "", opacity = 0) as string
+    opacityHex = right("0" + stri(cint(opacity * 255), 16), 2)
+
+    return left(color, 7) + opacityHex
+end function

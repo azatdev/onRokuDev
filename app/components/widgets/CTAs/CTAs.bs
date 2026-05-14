@@ -18,7 +18,8 @@ sub loadList()
         itemComponentName: "ButtonItem",
         maxWidth: 1800,
         visibleTiles: 999,
-        squareMargins: [0, 16, 0, 0]
+        squareMargins: [0, 16, 0, 0],
+        useUnfocusedTargetSet: true
     }
 
     list.data = {

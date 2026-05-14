@@ -4,6 +4,7 @@
         <field id="index" type="integer" />
         <field id="currRect" type="rect2d" />
         <field id="focusPercent" type="float" />
+        <field id="groupHasFocus" type="boolean" />
         <field id="itemContent" type="node" />
         <function name="safeFunc" />
     </interface>

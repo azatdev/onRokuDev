@@ -69,11 +69,11 @@ end function
 sub onCarouselFocusedChildChange(options = {})
     if not rodash.isNode(m.focusTimer) then return
     safeUnobserve("fraction", m.focusTimer)
-    safeObserve("fraction", onTestTimerFired, m.focusTimer)
+    safeObserve("fraction", onFocusTimerFired, m.focusTimer)
 end sub
 
 
-sub onTestTimerFired(options = {})
+sub onFocusTimerFired(options = {})
     fraction = options.data
 
     if rodash.isNode(m.focusTimer) and (fraction = 0 or fraction = 1) then safeUnobserve("fraction", m.focusTimer)
@@ -81,6 +81,7 @@ sub onTestTimerFired(options = {})
 
     percentage = m.carousel.isInFocusChain() ? fraction : 1 - fraction
     m.carousel.focusPercent = percentage
+    top().focusPercent = percentage
 
     ' There is a 100ms delay before
     ' TargetGroup animation starts
