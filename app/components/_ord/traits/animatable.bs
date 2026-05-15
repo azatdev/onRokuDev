@@ -253,24 +253,24 @@ class Animatable
     end sub
 
 
-    sub morph(state = "", morphs = {})
-        if rodash.isEmptyString(state) then return
-        if not rodash.isNonEmptyAA(morphs) then return
-
-        morphConfig = morphs[state] ?? {}
-        if not rodash.isNonEmptyAA(morphConfig) then return
-
+    sub morph(options = {})
+        if not rodash.isNonEmptyAA(options) then return
         if m.animations = invalid then m.animations = {}
 
         animationOptions = []
-        animationDuration = morphConfig.duration
-        animationCallback = morphConfig.callbackFunc ?? ""
-        animationCallbackOpts = morphConfig.callbackOpts ?? {}
+        animationDuration = options.duration
+        animationCallback = options.callbackFunc ?? ""
+        animationCallbackOpts = options.callbackOpts ?? {}
 
-        for each nodeOptions in morphConfig.items()
+        ?"options " options
+
+        for each nodeOptions in options.items()
             nodeId = nodeOptions.key
             node = top().findNode(nodeId)
             nodeMorphOptions = nodeOptions.value
+            ?"node " node
+            ?"nodeId " nodeId
+            ?"nodeMorphOptions " nodeMorphOptions
             nodeAnimationOptions = []
 
             if not rodash.isNode(node) then continue for
@@ -296,13 +296,18 @@ class Animatable
                     oldValue = oldColorValue%
                 end if
 
-                if type(oldValue) = type(newValue) and formatJSON(oldValue) <> formatJSON(newValue)
+                ?"oldValue " oldValue
+                ?"newValue " newValue
+
+                if type(oldValue) = type(newValue) and not rodash.isEqual(oldValue, newValue)
                     nodeAnimationOptions.push({
                         field: fieldName,
                         keyValue: [oldValue, newValue]
                     })
                 end if
             end for
+
+            ?"nodeAnimationOptions " formatJSON(nodeAnimationOptions)
 
             if nodeAnimationOptions.count() > 0
                 animationConfig = {
@@ -313,7 +318,6 @@ class Animatable
                 }
                 if rodash.isNumber(animationDuration) then animationConfig.duration = m.toFloatValue(animationDuration)
                 animationConfig.nodeId = nodeId
-                animationConfig.state = state
                 animationConfig.options = nodeAnimationOptions
                 animationOptions.push(animationConfig)
             end if
@@ -321,7 +325,7 @@ class Animatable
 
         if animationOptions.count() = 0 then return
 
-        animationId = m.constructAnimationId(state, animationOptions)
+        animationId = m.constructAnimationId(animationOptions)
         animation = m.animations[animationId] ?? invalid
 
         if not rodash.isNode(animation)
@@ -331,6 +335,7 @@ class Animatable
         animation = m.animations[animationId] ?? invalid
         if not rodash.isNode(animation) then return
 
+        ?"animation " animation
         animation.cb = animationCallback
         animation.cbOpts = animationCallbackOpts
 
@@ -338,11 +343,10 @@ class Animatable
     end sub
 
 
-    function constructAnimationId(state = "", options = []) as String
-        if rodash.isEmptyString(state) then return ""
+    function constructAnimationId(options = []) as String
         if not rodash.isNonEmptyArray(options) then return ""
 
-        animationId = state
+        animationId = ""
 
         for each nodeOptions in options
             nodeId = nodeOptions.nodeId ?? ""
@@ -378,7 +382,7 @@ class Animatable
         if not rodash.isNode(node) then return
         ?"fade " options
 
-        nodeId = node.subtype() + node.id ?? ""
+        nodeId = node.id ?? ""
         if rodash.isEmptyString(nodeId) then return
 
         morphObject = {

@@ -1,0 +1,40 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub()
+        m.container = top().findNode("container")
+        m.first = top().findNode("first")
+        stackChildren({ node: m.container })
+
+        morphObject = {
+            duration: 3
+        }
+        morphObject[m.container.id] = {
+            translation: [0, -100]
+        }
+
+        morphObject[m.first.id] = {
+            color: "#00FF0080",
+            width: 500
+        }
+
+        morph(morphObject)
+
+        ' rodash.delay(sub(morphObject)
+        '     morph(morphObject)
+        ' end sub, 5000, morphObject)
+    end sub)
+end sub
+
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    return exec(function(options = {})
+        key = options.key
+        press = options.press
+        if not press then return true
+        handled = true
+        ?"onKeyEvent " key
+        ' handled = processFocus(key)
+        return handled
+    end function, { key: key, press: press })
+end function

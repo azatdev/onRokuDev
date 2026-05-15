@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="_ord_scrollGroup" extends="Rectangle">
+    <interface>
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <Rectangle id="container">
+            <Rectangle id="first" />
+            <Rectangle id="second" />
+            <Rectangle id="third" />
+            <Rectangle id="fourth" />
+        </Rectangle>
+    </children>
+    <script type="text/brightscript" uri="_ord_scrollGroup.bs" />
+</component>

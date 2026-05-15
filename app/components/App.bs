@@ -12,6 +12,7 @@ sub init()
         m.defaultCarousel = top().findNode("defaultCarousel")
         m.dynamicCarousel = top().findNode("dynamicCarousel")
         m.flushCarousel = top().findNode("flushCarousel")
+        m.scrollGroup = top().findNode("scrollGroup")
 
         registerControllers([
             "SocketController"
@@ -47,9 +48,10 @@ sub init()
             }
         })
 
-        rodash.delay(sub(node)
-            node.setFocus(true)
-        end sub, 100, m.ctas)
+        ' rodash.delay(sub(node)
+        '     node.setFocus(true)
+        ' end sub, 100, m.ctas)
+        m.scrollGroup.setFocus(true)
     end sub)
 end sub
 

@@ -149,10 +149,10 @@ function reverse(id = "", cb = "")
 end function
 
 
-function morph(state = "", morphs = {})
+function morph(options = {})
     interface = m.interfaceFunctions["morph"]
     if interface = invalid then return invalid
-    return interface.morph(state, morphs)
+    return interface.morph(options)
 end function
 
 
