@@ -110,14 +110,20 @@ class Animatable
     end sub
 
 
-    function createAnimation(options = {})
+    function createAnimation(animationId = "", options = {})
+        if rodash.isEmptyString(animationId) then return invalid
+        if not rodash.isNonEmptyAA(options) then return invalid
+
         settings = {}
         settings.append(options)
         nodeId = settings.nodeId ?? ""
         animationOptions = settings.options ?? []
         settings.delete("options")
 
-        animation = createObject("roSGNode", "Animation")
+        animation = top().findNode(animationId)
+        if rodash.isInvalid(animation) then animation = createObject("roSGNode", "Animation")
+
+        animation.id = animationId
         animation.setFields(settings)
 
         for each option in animationOptions
@@ -127,12 +133,17 @@ class Animatable
             keyValue = option.keyValue ?? invalid
             if not rodash.isNonEmptyArray(keyValue) then continue for
 
-            interp = m.getInterpName(field)
-            if rodash.isEmptyString(interp) then continue for
+            interpId = [nodeId, field].join(".")
+            interpField = animation.findNode(interpId)
 
-            interpField = createObject("roSGNode", interp)
-            interpField.fieldToInterp = [nodeId, field].join(".")
-            interpField.id = [nodeId, field].join(".")
+            if not rodash.isNode(interpField)
+                interp = m.getInterpName(field)
+                if rodash.isEmptyString(interp) then continue for
+                interpField = createObject("roSGNode", interp)
+                interpField.fieldToInterp = interpId
+                interpField.id = interpId
+            end if
+
             interpField.key = option.key ?? [0, 1]
             interpField.keyValue = keyValue
             animation.appendChild(interpField)
@@ -145,14 +156,12 @@ class Animatable
     sub addAnimation(id = "", animations = [])
         if rodash.isEmptyString(id) then return
         if not rodash.isArray(animations) then return
-
         if m.animations = invalid then m.animations = {}
-        if m.animations[id] <> invalid then return
 
         animationCollection = []
 
         for each settings in animations
-            animation = m.createAnimation(settings)
+            animation = m.createAnimation(id, settings)
             if rodash.isNode(animation) then animationCollection.push(animation)
         end for
 
@@ -173,8 +182,6 @@ class Animatable
         end if
 
         if not rodash.isNode(animationShell) then return
-
-        animationShell.id = id
 
         top().appendChild(animationShell)
         m.animations[id] = animationShell
@@ -236,7 +243,9 @@ class Animatable
             m.activeAnimations({ action: "delete", id: animation.id })
         end if
 
-        callback = animation.getRef("callback")
+        callback = animation.hasField("callback") ? animation.getRef("callback") : invalid
+        if not rodash.isNonEmptyAA(callback) then return
+
         callbackFunction = callback.function
         callbackOptions = callback.options
 
@@ -331,11 +340,8 @@ class Animatable
         end for
 
         animationId = m.constructAnimationId(animationOptionsArray)
-        animation = m.animations[animationId] ?? invalid
-
-        if not rodash.isNode(animation)
-            m.addAnimation(animationId, animationOptionsArray)
-        end if
+        ' animation = m.animations[animationId] ?? invalid
+        m.addAnimation(animationId, animationOptionsArray)
 
         animation = m.animations[animationId] ?? invalid
         if not rodash.isNode(animation) then return invalid

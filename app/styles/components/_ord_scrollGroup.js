@@ -1,6 +1,6 @@
 module.exports = {
     "_ord_scrollGroup": {
-        "translation": [210, 410],
+        "translation": [210, 360],
         "clippingRect": [0, 0, 1650, 700],
         "Rectangle": {
             "color": "#000000",

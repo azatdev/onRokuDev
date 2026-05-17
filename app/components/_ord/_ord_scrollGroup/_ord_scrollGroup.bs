@@ -3,72 +3,20 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub()
         m.container = top().findNode("container")
-        m.first = top().findNode("first")
         stackChildren({ node: m.container })
-
-        ' morphObject = {}
-
-        ' sharedOptions = {
-        '     duration: 3,
-        '     callback: animationFinished,
-        '     callbackOptions: {
-        '         name: "Azat"
-        '     }
-        ' }
-
-        ' morphObject[m.container.id] = {
-        '     fields: {
-        '         translation: [0, -100]
-        '     }
-        ' }
-
-        ' morphObject[m.first.id] = {
-        '     delay: 5,
-        '     fields: {
-        '         color: "#00FF0080",
-        '         width: 500
-        '     }
-        ' }
-
-        ' animationId = morph(morphObject, sharedOptions)
-
-
-        animationOptions = {
-            "duration": 3,
-            "easeFunction": "linear",
-            "nodeid": m.first.id,
-            "optional": true,
-            "options": [{
-                "field": "width",
-                "key": [0, 1],
-                "keyvalue": [
-                    1650,
-                    300
-                ]
-            }],
-            "repeat": true
+        defaultConfig = {
+            direction: "vertical",
+            flushEnd: false,
+            showScrollbar: false,
+            scrollSize: 0
         }
-
-        animationId = animate(animationOptions, {
-            callback: animationFinished,
-            callbackOptions: {
-                name: "Azat"
-            }
+        set({
+            defaultConfig: defaultConfig,
+            focusedItem: 0
         })
-
-        rodash.delay(sub(animationOptions)
-            reverse(animationOptions)
-        end sub, 6000, animationOptions)
-
-        rodash.delay(sub(animationId)
-            stopAnimation(animationId)
-        end sub, 10000, animationId)
+        safeObserve("config", onConfigChange)
+        safeObserve("change", onChildChange)
     end sub)
-end sub
-
-
-sub animationFinished(options = {})
-    ?"animationFinished " options
 end sub
 
 
@@ -77,9 +25,107 @@ function onKeyEvent(key as string, press as boolean) as boolean
         key = options.key
         press = options.press
         if not press then return true
-        handled = true
-        ?"onKeyEvent " key
-        ' handled = processFocus(key)
+        handled = rodash.indexOf([get("advanceKey"), get("reverseKey")], key) <> -1
+
+        if handled then return performScroll(key)
         return handled
     end function, { key: key, press: press })
+end function
+
+
+sub onConfigChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    defaultConfig = get("defaultConfig")
+    config = {}
+    config.append(defaultConfig)
+    if rodash.isNonEmptyAA(options.data) then config.append(options.data)
+
+    if config.direction = "vertical"
+        config.reverseKey = "up"
+        config.advanceKey = "down"
+    else
+        config.reverseKey = "left"
+        config.advanceKey = "right"
+    end if
+
+    set(config)
+end sub
+
+
+sub onChildChange(options = {})
+    changeData = options.data
+
+    if rodash.isEmpty(changeData) then return
+    operation = changeData.operation ?? ""
+    if operation = "add" or operation = "remove"
+        numberOfNewNodes = changeData.index2 - changeData.index1 + 1
+        ?"numberOfNewNodes " numberOfNewNodes
+        addedNodes = top().getChildren(numberOfNewNodes,changeData.index1)
+
+        for each child in addedNodes
+            if child.isSubtype("Group") then m.container.appendChild(child)
+        end for
+        
+        stackChildren({ node: m.container })
+        ?"changeData " changeData
+        ?"addedNodes " addedNodes
+    end if
+end sub
+
+
+function performScroll(key = "")
+    if rodash.isEmptyString(key) then return false
+    children = m.container.getChildren(-1, 0)
+    if not rodash.isNonEmptyArray(children) then return false
+
+    focusedItem = get("focusedItem")
+    nextFocusedItem = focusedItem
+    maxIndex = children.count() - 1
+
+    ?"performScroll " key, nextFocusedItem
+
+    if key = get("advanceKey")
+        if focusedItem < maxIndex then nextFocusedItem = focusedItem + 1
+    else if key = get("reverseKey")
+        if focusedItem > 0 then nextFocusedItem = focusedItem - 1
+    end if
+
+    if nextFocusedItem = focusedItem then return false
+
+    translationY = 0
+    if nextFocusedItem > 0
+        for index = 0 to nextFocusedItem - 1
+            child = children[index]
+            translationY += getVisibleHeight(child)
+        end for
+    end if
+
+    if get("flushEnd")
+        viewportHeight = getVisibleHeight(top())
+        contentHeight = 0
+
+        for each child in children
+            contentHeight += getVisibleHeight(child)
+        end for
+
+        maxTranslationY = contentHeight - viewportHeight
+        if maxTranslationY < 0 then maxTranslationY = 0
+        if translationY > maxTranslationY then translationY = maxTranslationY
+    end if
+
+    morphObject = {}
+    morphObject[m.container.id] = {
+        fields: {
+            translation: [m.container.translation[0], -translationY]
+        }
+    }
+    children[nextFocusedItem].setFocus(true)
+
+    set({
+        focusedItem: nextFocusedItem
+    })
+
+    morph(morphObject)
+    return true
 end function
