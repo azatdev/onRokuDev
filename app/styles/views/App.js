@@ -5,6 +5,10 @@ module.exports = {
         "Background": {
             "visible": true
         },
+        "_ord_scrollGroup": {
+            height: 700,
+            width: 1650
+        },
         "CTAs": {
             color: "#bad7fc00",
             translation: [150, 210]

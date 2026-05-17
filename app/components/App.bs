@@ -56,19 +56,19 @@ sub init()
             ' m.scrollGroup.setFocus(true)
         end sub, 100, m.scrollGroup)
 
-        rodash.delay(sub(node)
-            newRect = createObject("roSGNode", "Rectangle")
-            newRect.width = 1650
-            newRect.height = 400
-            newRect.color = "#0000FFFF"
+        ' rodash.delay(sub(node)
+        '     newRect = createObject("roSGNode", "Rectangle")
+        '     newRect.width = 1650
+        '     newRect.height = 400
+        '     newRect.color = "#0000FFFF"
 
-            newRect2 = createObject("roSGNode", "Rectangle")
-            newRect2.width = 1650
-            newRect2.height = 200
-            newRect2.color = "#FF00FFFF"
-            node.appendChildren([newRect, newRect2])
-            ' node.appendChild(newRect)
-        end sub, 7000, m.scrollGroup)
+        '     newRect2 = createObject("roSGNode", "Rectangle")
+        '     newRect2.width = 1650
+        '     newRect2.height = 200
+        '     newRect2.color = "#FF00FFFF"
+        '     node.appendChildren([newRect, newRect2])
+        '     ' node.appendChild(newRect)
+        ' end sub, 7000, m.scrollGroup)
     end sub)
 end sub
 

@@ -3,7 +3,6 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub()
         m.container = top().findNode("container")
-        stackChildren({ node: m.container })
         defaultConfig = {
             direction: "vertical",
             flushEnd: false,
@@ -16,6 +15,11 @@ sub init()
         })
         safeObserve("config", onConfigChange)
         safeObserve("change", onChildChange)
+
+        safeObserve("width", setClippingRect)
+        safeObserve("height", setClippingRect)
+
+        setClippingRect()
     end sub)
 end sub
 
@@ -50,6 +54,7 @@ sub onConfigChange(options = {})
     end if
 
     set(config)
+    stackChildren({ node: m.container, direction: config.direction })
 end sub
 
 
@@ -60,14 +65,13 @@ sub onChildChange(options = {})
     operation = changeData.operation ?? ""
     if operation = "add" or operation = "remove"
         numberOfNewNodes = changeData.index2 - changeData.index1 + 1
-        ?"numberOfNewNodes " numberOfNewNodes
         addedNodes = top().getChildren(numberOfNewNodes,changeData.index1)
 
         for each child in addedNodes
             if child.isSubtype("Group") then m.container.appendChild(child)
         end for
-        
-        stackChildren({ node: m.container })
+
+        stackChildren({ node: m.container, direction: get("direction") })
         ?"changeData " changeData
         ?"addedNodes " addedNodes
     end if
@@ -129,3 +133,8 @@ function performScroll(key = "")
     morph(morphObject)
     return true
 end function
+
+
+sub setClippingRect(options = {})
+    top().clippingRect = [0, 0, top().width, top().height]
+end sub

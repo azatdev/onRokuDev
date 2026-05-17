@@ -241,7 +241,8 @@ sub stackChildren(options = {})
     children = node.getChildren(-1, 0)
     totalHeight = 0
     totalWidth = 0
-    horizontal = options.horizontal ?? false
+    direction = options.direction ?? "horizontal"
+    horizontal = direction = "horizontal"
 
     for each child in children
         if child.subType() <> "Animation" and child.subType() <> "Timer"

@@ -21,7 +21,7 @@ end sub
 sub itemContentChanged(event)
     content = event.getData()
     m.indexLabel.text = content.title
-    stackChildren({ node: m.container, horizontal: true })
+    stackChildren({ node: m.container, direction: "horizontal" })
     m.container.width = m.container.boundingRect().width
     m.container.height = m.container.boundingRect().height
     exec("registerChildRect", {
