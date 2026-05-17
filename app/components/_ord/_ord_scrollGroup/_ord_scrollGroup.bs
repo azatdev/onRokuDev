@@ -6,36 +6,59 @@ sub init()
         m.first = top().findNode("first")
         stackChildren({ node: m.container })
 
-        morphObject = {}
+        ' morphObject = {}
 
-        sharedOptions = {
-            duration: 3,
-            callback: animationFinished,
-            callbackOptions: {
-                name: "Azat"
-            }
+        ' sharedOptions = {
+        '     duration: 3,
+        '     callback: animationFinished,
+        '     callbackOptions: {
+        '         name: "Azat"
+        '     }
+        ' }
+
+        ' morphObject[m.container.id] = {
+        '     fields: {
+        '         translation: [0, -100]
+        '     }
+        ' }
+
+        ' morphObject[m.first.id] = {
+        '     delay: 5,
+        '     fields: {
+        '         color: "#00FF0080",
+        '         width: 500
+        '     }
+        ' }
+
+        ' animationId = morph(morphObject, sharedOptions)
+
+
+        animationOptions = {
+            "duration": 3,
+            "easeFunction": "linear",
+            "nodeid": m.first.id,
+            "optional": true,
+            "options": [{
+                "field": "width",
+                "key": [0, 1],
+                "keyvalue": [
+                    1650,
+                    300
+                ]
+            }],
+            "repeat": true
         }
 
-        morphObject[m.container.id] = {
-            fields: {
-                translation: [0, -100]
-            }
-        }
-
-        morphObject[m.first.id] = {
-            delay: 5,
-            fields: {
-                color: "#00FF0080",
-                width: 500
-            }
-        }
-
-        animationId = morph(morphObject, sharedOptions)
+        animationId = animate(animationOptions)
         ?"animationId " animationId
 
-        ' rodash.delay(sub(morphObject)
-        '     morph(morphObject)
-        ' end sub, 5000, morphObject)
+        rodash.delay(sub(animationId)
+            reverse(animationId)
+        end sub, 6000, animationId)
+
+        rodash.delay(sub(animationId)
+            stopAnimation(animationId)
+        end sub, 10000, animationId)
     end sub)
 end sub
 

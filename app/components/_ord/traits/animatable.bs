@@ -23,9 +23,27 @@ class Animatable
         m.publicFunctions.push("animate")
         m.publicFunctions.push("reverse")
         m.publicFunctions.push("morph")
+        m.publicFunctions.push("finishAnimation")
+        m.publicFunctions.push("stopAnimation")
         m.publicFunctions.push("fadeIn")
         m.publicFunctions.push("fadeOut")
     end sub
+
+
+    function animate(animation)
+        animationOptionsArray = []
+        if rodash.isString(animation)
+            animationId = animation
+        else
+            if not rodash.isAA(animation) and not rodash.isArray(animation) then return invalid
+            animationOptionsArray = rodash.isAA(animation) ? [animation] : animation
+            animationId = m.constructAnimationId(animationOptionsArray)
+            m.addAnimation(animationId, animationOptionsArray)
+        end if
+
+        m.runAnimation(animationId)
+        return animationId
+    end function
 
 
     sub runAnimation(id = "", isReverse = false)
@@ -45,19 +63,25 @@ class Animatable
     end sub
 
 
-    sub finishAnimation(id = "" as String, shouldFinish = true as Boolean)
+    sub finishAnimation(id = "")
         if rodash.isEmptyString(id) then return
 
         animation = m.animations[id] ?? invalid
         if not rodash.isNode(animation) then return
-
         safeUnobserve("state", animation)
 
-        if shouldFinish
-            animation.control = "finish"
-        else
-            animation.control = "stop"
-        end if
+        animation.control = "finish"
+    end sub
+
+
+    sub stopAnimation(id = "")
+        if rodash.isEmptyString(id) then return
+
+        animation = m.animations[id] ?? invalid
+        if not rodash.isNode(animation) then return
+        safeUnobserve("state", animation)
+
+        animation.control = "stop"
     end sub
 
 

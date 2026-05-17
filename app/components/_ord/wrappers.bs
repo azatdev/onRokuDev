@@ -135,17 +135,31 @@ function redrawStyles()
 end function
 
 
-function animate(id = "", cb = "", isReverse = false, skip = false)
+function animate(animation)
     interface = m.interfaceFunctions["animate"]
     if interface = invalid then return invalid
-    return interface.animate(id, cb, isReverse, skip)
+    return interface.animate(animation)
 end function
 
 
-function reverse(id = "", cb = "")
+function reverse(id = "")
     interface = m.interfaceFunctions["reverse"]
     if interface = invalid then return invalid
-    return interface.reverse(id, cb)
+    return interface.reverse(id)
+end function
+
+
+function finishAnimation(id = "")
+    interface = m.interfaceFunctions["reverse"]
+    if interface = invalid then return invalid
+    return interface.finishAnimation(id)
+end function
+
+
+function stopAnimation(id = "")
+    interface = m.interfaceFunctions["stopAnimation"]
+    if interface = invalid then return invalid
+    return interface.stopAnimation(id)
 end function
 
 
