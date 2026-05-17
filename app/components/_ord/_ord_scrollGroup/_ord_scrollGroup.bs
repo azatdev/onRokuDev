@@ -6,24 +6,42 @@ sub init()
         m.first = top().findNode("first")
         stackChildren({ node: m.container })
 
-        morphObject = {
-            duration: 3
+        morphObject = {}
+
+        sharedOptions = {
+            duration: 3,
+            callback: animationFinished,
+            callbackOptions: {
+                name: "Azat"
+            }
         }
+
         morphObject[m.container.id] = {
-            translation: [0, -100]
+            fields: {
+                translation: [0, -100]
+            }
         }
 
         morphObject[m.first.id] = {
-            color: "#00FF0080",
-            width: 500
+            delay: 5,
+            fields: {
+                color: "#00FF0080",
+                width: 500
+            }
         }
 
-        morph(morphObject)
+        animationId = morph(morphObject, sharedOptions)
+        ?"animationId " animationId
 
         ' rodash.delay(sub(morphObject)
         '     morph(morphObject)
         ' end sub, 5000, morphObject)
     end sub)
+end sub
+
+
+sub animationFinished(options = {})
+    ?"animationFinished " options
 end sub
 
 

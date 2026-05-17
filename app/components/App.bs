@@ -48,10 +48,10 @@ sub init()
             }
         })
 
-        ' rodash.delay(sub(node)
-        '     node.setFocus(true)
-        ' end sub, 100, m.ctas)
-        m.scrollGroup.setFocus(true)
+        rodash.delay(sub(node)
+            node.setFocus(true)
+            ' m.scrollGroup.setFocus(true)
+        end sub, 100, m.scrollGroup)
     end sub)
 end sub
 
@@ -66,6 +66,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
         key = options.key
         press = options.press
         if not press then return true
+        ?"onKeyEvent " key
         handled = processFocus(key)
         return handled
     end function, { key: key, press: press })
