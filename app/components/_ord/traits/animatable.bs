@@ -25,13 +25,27 @@ class Animatable
         m.publicFunctions.push("morph")
         m.publicFunctions.push("finishAnimation")
         m.publicFunctions.push("stopAnimation")
+        m.publicFunctions.push("removeAnimation")
         m.publicFunctions.push("fadeIn")
         m.publicFunctions.push("fadeOut")
     end sub
 
 
-    function animate(animation)
-        animationOptionsArray = []
+    function animate(animation, options = {})
+        animationId = m.prepareAnimation(animation, options)
+        m.runAnimation(animationId)
+        return animationId
+    end function
+
+
+    function reverse(animation, options = {})
+        animationId = m.prepareAnimation(animation, options)
+        m.runAnimation(animationId, true)
+        return animationId
+    end function
+
+
+    function prepareAnimation(animation = "", options = {})
         if rodash.isString(animation)
             animationId = animation
         else
@@ -41,7 +55,20 @@ class Animatable
             m.addAnimation(animationId, animationOptionsArray)
         end if
 
-        m.runAnimation(animationId)
+        if rodash.isNonEmptyAA(options)
+            animationCallback = options.callback
+            animationCallbackOptions = options.callbackOptions ?? {}
+
+            animation = m.animations[animationId] ?? invalid
+            if not rodash.isNode(animation) then return invalid
+
+            if rodash.isNotInvalid(animationCallback) then m.setAnimationCallback({
+                animation: animation,
+                callback: animationCallback,
+                options: animationCallbackOptions
+            })
+        end if
+
         return animationId
     end function
 
@@ -68,9 +95,8 @@ class Animatable
 
         animation = m.animations[id] ?? invalid
         if not rodash.isNode(animation) then return
-        safeUnobserve("state", animation)
-
         animation.control = "finish"
+        safeUnobserve("state", animation)
     end sub
 
 
@@ -79,18 +105,14 @@ class Animatable
 
         animation = m.animations[id] ?? invalid
         if not rodash.isNode(animation) then return
-        safeUnobserve("state", animation)
-
         animation.control = "stop"
+        safeUnobserve("state", animation)
     end sub
 
 
-    sub reverse(id = "")
-        m.runAnimation(id, true)
-    end sub
-
-
-    function createAnimation(settings = {})
+    function createAnimation(options = {})
+        settings = {}
+        settings.append(options)
         nodeId = settings.nodeId ?? ""
         animationOptions = settings.options ?? []
         settings.delete("options")
@@ -318,16 +340,11 @@ class Animatable
         animation = m.animations[animationId] ?? invalid
         if not rodash.isNode(animation) then return invalid
 
-        if rodash.isNotInvalid(animationCallback)
-            if rodash.isInvalid(animation.callback) then animation.addField("callback", "assocarray", false)
-            if rodash.isInvalid(animation.callbackOptions) then animation.addField("callbackOptions", "assocarray", false)
-
-            animation.setRef("callback", {
-                function: animationCallback,
-                options: animationCallbackOptions
-            })
-
-        end if
+        if rodash.isNotInvalid(animationCallback) then m.setAnimationCallback({
+            animation: animation,
+            callback: animationCallback,
+            options: animationCallbackOptions
+        })
 
         m.runAnimation(animationId)
 
@@ -354,6 +371,21 @@ class Animatable
     end function
 
 
+    sub setAnimationCallback(options = {})
+        animation = options.animation
+        callback = options.callback
+        options = options.options
+
+        if rodash.isInvalid(animation.callback) then animation.addField("callback", "assocarray", false)
+        if rodash.isInvalid(animation.callbackOptions) then animation.addField("callbackOptions", "assocarray", false)
+
+        animation.setRef("callback", {
+            function: callback,
+            options: options
+        })
+    end sub
+
+
     sub fadeIn(node = invalid, options = {})
         if not rodash.isNode(node) then return
 
@@ -372,7 +404,6 @@ class Animatable
 
     sub fade(node = invalid, options = {})
         if not rodash.isNode(node) then return
-        ?"fade " options
 
         nodeId = node.id ?? ""
         if rodash.isEmptyString(nodeId) then return

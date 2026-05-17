@@ -49,12 +49,16 @@ sub init()
             "repeat": true
         }
 
-        animationId = animate(animationOptions)
-        ?"animationId " animationId
+        animationId = animate(animationOptions, {
+            callback: animationFinished,
+            callbackOptions: {
+                name: "Azat"
+            }
+        })
 
-        rodash.delay(sub(animationId)
-            reverse(animationId)
-        end sub, 6000, animationId)
+        rodash.delay(sub(animationOptions)
+            reverse(animationOptions)
+        end sub, 6000, animationOptions)
 
         rodash.delay(sub(animationId)
             stopAnimation(animationId)
