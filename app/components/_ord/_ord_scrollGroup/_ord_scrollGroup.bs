@@ -3,23 +3,25 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub()
         m.container = top().findNode("container")
+        m.scrolltrack = top().findNode("scrollTrack")
+        m.scrollKnob = top().findNode("scrollKnob")
+
         defaultConfig = {
             direction: "vertical",
             flushEnd: false,
+            maxSize: 0,
             showScrollbar: false,
+            scrollbarPosition: "right",
             scrollSize: 0
         }
+
         set({
             defaultConfig: defaultConfig,
             focusedItem: 0
         })
+
         safeObserve("config", onConfigChange)
         safeObserve("change", onChildChange)
-
-        safeObserve("width", setClippingRect)
-        safeObserve("height", setClippingRect)
-
-        setClippingRect()
     end sub)
 end sub
 
@@ -54,7 +56,7 @@ sub onConfigChange(options = {})
     end if
 
     set(config)
-    stackChildren({ node: m.container, direction: config.direction })
+    setGroupSizes()
 end sub
 
 
@@ -63,39 +65,85 @@ sub onChildChange(options = {})
 
     if rodash.isEmpty(changeData) then return
     operation = changeData.operation ?? ""
-    if operation = "add" or operation = "remove"
-        numberOfNewNodes = changeData.index2 - changeData.index1 + 1
-        addedNodes = top().getChildren(numberOfNewNodes,changeData.index1)
+    if operation <> "add" and operation <> "remove" then return
 
-        for each child in addedNodes
-            if child.isSubtype("Group") then m.container.appendChild(child)
-        end for
+    numberOfNewNodes = changeData.index2 - changeData.index1 + 1
+    addedNodes = top().getChildren(numberOfNewNodes, changeData.index1)
 
-        stackChildren({ node: m.container, direction: get("direction") })
-        ?"changeData " changeData
-        ?"addedNodes " addedNodes
-    end if
+    for each child in addedNodes
+        if child.isSubtype("Group") then m.container.appendChild(child)
+    end for
+
+    setGroupSizes()
+end sub
+
+
+sub setGroupSizes()
+    direction = get("direction")
+    if rodash.isEmptyString(direction) then return
+
+    stackChildren({ node: m.container, direction: direction })
+
+    viewportDimensions = calculate.viewportSize({
+        direction: direction,
+        maxSize: get("maxSize")
+    })
+
+    scrollContainerDimensions = calculate.scrollContainerSize({
+        node: m.container
+    })
+
+    set({
+        scrollContainerDimensions: scrollContainerDimensions,
+        viewportDimensions: viewportDimensions
+    })
+
+    setClippingRect()
+
+    if not get("showScrollbar") then return
+
+    setupScrollbar({
+        direction: direction,
+        scrollbarPosition: get("scrollbarPosition"),
+        scrollContainerDimensions: scrollContainerDimensions,
+        viewportDimensions: viewportDimensions
+    })
 end sub
 
 
 function performScroll(key = "")
     if rodash.isEmptyString(key) then return false
+
     children = m.container.getChildren(-1, 0)
     if not rodash.isNonEmptyArray(children) then return false
 
     focusedItem = get("focusedItem")
-    nextFocusedItem = focusedItem
-    maxIndex = children.count() - 1
 
-    ?"performScroll " key, nextFocusedItem
-
-    if key = get("advanceKey")
-        if focusedItem < maxIndex then nextFocusedItem = focusedItem + 1
-    else if key = get("reverseKey")
-        if focusedItem > 0 then nextFocusedItem = focusedItem - 1
-    end if
+    nextFocusedItem = calculate.nextIndex({
+        focusedItem: focusedItem,
+        key: key,
+        maxIndex: children.count() - 1
+    })
 
     if nextFocusedItem = focusedItem then return false
+
+    scrollContainerDimensions = get("scrollContainerDimensions")
+    viewportDimensions = get("viewportDimensions")
+
+    viewportHeight = viewportDimensions[1]
+    contentHeight = scrollContainerDimensions[1]
+
+    maxTranslationY = 0
+
+    if get("flushEnd")
+        maxTranslationY = contentHeight - viewportHeight
+    else
+        lastChild = rodash.last(children)
+        if rodash.isNotInvalid(lastChild)
+            lastChildHeight = getVisibleHeight(lastChild)
+            maxTranslationY = contentHeight - lastChildHeight
+        end if
+    end if
 
     translationY = 0
     if nextFocusedItem > 0
@@ -105,36 +153,127 @@ function performScroll(key = "")
         end for
     end if
 
-    if get("flushEnd")
-        viewportHeight = getVisibleHeight(top())
-        contentHeight = 0
-
-        for each child in children
-            contentHeight += getVisibleHeight(child)
-        end for
-
-        maxTranslationY = contentHeight - viewportHeight
-        if maxTranslationY < 0 then maxTranslationY = 0
-        if translationY > maxTranslationY then translationY = maxTranslationY
+    if translationY > maxTranslationY
+        translationY = maxTranslationY
     end if
 
-    morphObject = {}
-    morphObject[m.container.id] = {
-        fields: {
-            translation: [m.container.translation[0], -translationY]
-        }
-    }
+    scrollableSize = viewportHeight - m.scrollKnob.height
+    scrollPercentage = translationY / maxTranslationY
+    scrollTranslationY = scrollPercentage * scrollableSize
+
+    performMorph({
+        scrollTranslationY: scrollTranslationY,
+        translationY: translationY
+    })
+
     children[nextFocusedItem].setFocus(true)
 
     set({
         focusedItem: nextFocusedItem
     })
 
-    morph(morphObject)
     return true
 end function
 
 
 sub setClippingRect(options = {})
     top().clippingRect = [0, 0, top().width, top().height]
+    m.container.clippingRect = [0, 0, m.container.width, m.container.height]
 end sub
+
+
+sub setupScrollbar(options = {})
+    direction = options.direction
+    viewportDimensions = options.viewportDimensions
+    scrollbarPosition = options.scrollbarPosition
+    scrollContainerDimensions = options.scrollContainerDimensions
+
+    viewportHeight = viewportDimensions[1]
+    viewportWidth = viewportDimensions[0]
+    totalHeight = scrollContainerDimensions[1]
+    scrolltrackWidth = m.scrolltrack.width
+
+    m.scrolltrack.height = viewportHeight
+    m.scrollKnob.height = (viewportHeight / totalHeight) * viewportHeight
+    m.scrolltrack.visible = true
+
+    if scrollbarPosition = "right"
+        m.scrolltrack.translation = [viewportWidth - scrolltrackWidth, 0]
+        m.container.width = viewportWidth - scrolltrackWidth
+    end if
+
+    setClippingRect()
+end sub
+
+
+sub performMorph(options = {})
+    scrollTranslationY = options.scrollTranslationY ?? 0
+    translationY = options.translationY ?? 0
+
+    morphObject = {}
+
+    if rodash.isNode(m.container) and rodash.isNonEmptyString(m.container.id)
+        morphObject[m.container.id] = {
+            fields: {
+                translation: [m.container.translation[0], -translationY]
+            }
+        }
+    end if
+
+    if rodash.isNode(m.scrollKnob) and rodash.isNonEmptyString(m.scrollKnob.id)
+        morphObject[m.scrollKnob.id] = {
+            fields: {
+                translation: [m.scrollKnob.translation[0], scrollTranslationY]
+            }
+        }
+    end if
+
+    morph(morphObject)
+end sub
+
+
+namespace calculate
+    function nextIndex(options = {})
+        focusedItem = options.focusedItem
+        key = options.key
+        maxIndex = options.maxIndex
+        nextFocusedItem = focusedItem
+
+        if key = get("advanceKey")
+            if focusedItem < maxIndex then nextFocusedItem = focusedItem + 1
+        else if key = get("reverseKey")
+            if focusedItem > 0 then nextFocusedItem = focusedItem - 1
+        end if
+
+        return nextFocusedItem
+    end function
+
+
+    function scrollContainerSize(options = {})
+        node = options.node
+        if not rodash.isNode(node) then return [0, 0]
+        return [
+            node.width,
+            node.height
+        ]
+    end function
+
+
+    function viewportSize(options = {})
+        direction = options.direction
+        maxSize = options.maxSize
+        viewportHeight = top().height
+        viewportWidth = top().width
+
+        if maxSize > 0
+            if direction = "horizontal"
+                viewportHeight = maxSize
+            else
+                viewportWidth = maxSize
+            end if
+        end if
+
+        return [viewportWidth, viewportHeight]
+    end function
+
+end namespace

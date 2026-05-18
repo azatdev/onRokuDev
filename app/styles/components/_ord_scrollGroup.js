@@ -1,10 +1,27 @@
 module.exports = {
     "_ord_scrollGroup": {
+        "color": "#FFFFFF00",
         "translation": [210, 360],
+        "Poster": {
+            "&#scrollTrack": {
+                blendColor: "#FFFFFF",
+                opacity: 0.5,
+                uri: "pkg:/static/images/white-block.webp",
+                visible: false,
+                width: 42,
+                "Poster": {
+                    blendColor: "#d2f3dfff",
+                    height: 72,
+                    inheritParentOpacity: false,
+                    width: 36,
+                    translation: [3, 3],
+                    uri: "pkg:/static/images/9patches/fill-9px.9.png"
+                }
+            }
+        },
         "Rectangle": {
-            "color": "#000000",
+            "color": "#00000000",
             "&#container": {
-                "color": "#00000000",
                 "height": 700,
                 "width": 1650,
                 "translation": [0, 0],

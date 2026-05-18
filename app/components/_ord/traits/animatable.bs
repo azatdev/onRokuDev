@@ -161,14 +161,21 @@ class Animatable
         animationCollection = []
 
         for each settings in animations
-            animation = m.createAnimation(id, settings)
+            animationId = m.constructAnimationId([settings])
+            animation = m.createAnimation(animationId, settings)
             if rodash.isNode(animation) then animationCollection.push(animation)
         end for
 
         if animationCollection.count() = 0 then return
 
         if animationCollection.count() > 1
-            animationShell = createObject("roSGNode", "ParallelAnimation")
+            animationShell = top().findNode(id)
+
+            if not rodash.isNode(animationShell)
+                animationShell = createObject("roSGNode", "ParallelAnimation")
+                top().appendChild(animationShell)
+            end if
+
             duration = 0
 
             for each item in animationCollection
@@ -177,13 +184,13 @@ class Animatable
             end for
 
             animationShell.update({ duration: duration }, true)
+            animationShell.id = id
         else
             animationShell = animationCollection[0]
         end if
 
         if not rodash.isNode(animationShell) then return
 
-        top().appendChild(animationShell)
         m.animations[id] = animationShell
     end sub
 

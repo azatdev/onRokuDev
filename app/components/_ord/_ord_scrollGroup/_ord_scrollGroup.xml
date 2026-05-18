@@ -11,6 +11,9 @@
             <Rectangle id="third" />
             <Rectangle id="fourth" />
         </Rectangle>
+        <Poster id="scrollTrack">
+            <Poster id="scrollKnob"/>
+        </Poster>
     </children>
     <script type="text/brightscript" uri="_ord_scrollGroup.bs" />
 </component>
