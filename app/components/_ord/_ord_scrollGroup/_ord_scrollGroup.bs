@@ -203,10 +203,18 @@ sub setupScrollbar(options = {})
     m.scrolltrack.height = viewportHeight
     m.scrollKnob.height = (viewportHeight / totalHeight) * viewportHeight
 
+    ?"scrollbarPosition " scrollbarPosition
+
     if scrollbarPosition = "right"
         m.scrolltrack.translation = [viewportWidth - scrolltrackWidth, 0]
         m.container.width = viewportWidth - scrolltrackWidth
+    else if scrollbarPosition = "left"
+        ?"scrolltrackWidth " scrolltrackWidth
+        m.container.translation = [scrolltrackWidth, 0]
+        m.container.width = viewportWidth - scrolltrackWidth
     end if
+
+    ?"m.container.translation " m.container.translation
 
     setClippingRect()
     m.scrolltrack.visible = true

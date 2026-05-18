@@ -15,6 +15,7 @@ sub init()
         m.scrollGroup = top().findNode("scrollGroup")
         m.scrollGroup.config = {
             flushEnd: false,
+            scrollbarPosition: "left",
             showScrollbar: true
         }
 
