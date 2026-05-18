@@ -117,6 +117,7 @@ function performScroll(key = "")
     children = m.container.getChildren(-1, 0)
     if not rodash.isNonEmptyArray(children) then return false
 
+    direction = get("direction")
     focusedItem = get("focusedItem")
 
     nextFocusedItem = calculate.nextIndex({
@@ -157,9 +158,13 @@ function performScroll(key = "")
         translationY = maxTranslationY
     end if
 
-    scrollableSize = viewportHeight - m.scrollKnob.height
-    scrollPercentage = translationY / maxTranslationY
-    scrollTranslationY = scrollPercentage * scrollableSize
+    scrollTranslationY = calculate.scrollTranslation({
+        direction: direction,
+        maxTranslationY: maxTranslationY,
+        scrollKnob: m.scrollKnob,
+        translationY: translationY,
+        viewportHeight: viewportHeight
+    })
 
     performMorph({
         scrollTranslationY: scrollTranslationY,
@@ -191,8 +196,10 @@ sub setupScrollbar(options = {})
     viewportHeight = viewportDimensions[1]
     viewportWidth = viewportDimensions[0]
     totalHeight = scrollContainerDimensions[1]
-    scrolltrackWidth = m.scrolltrack.width
 
+    stackChildren({ node: m.scrollTrack })
+
+    scrolltrackWidth = m.scrolltrack.width
     m.scrolltrack.height = viewportHeight
     m.scrollKnob.height = (viewportHeight / totalHeight) * viewportHeight
     m.scrolltrack.visible = true
@@ -256,6 +263,35 @@ namespace calculate
             node.width,
             node.height
         ]
+    end function
+
+
+    function scrollTranslation(options = {})
+        direction = options.direction
+        maxTranslationY = options.maxTranslationY
+        scrollKnob = options.scrollKnob
+        translationY = options.translationY
+        viewportHeight = options.viewportHeight
+
+        scrollableSize = viewportHeight - m.scrollKnob.height
+        scrollPercentage = translationY / maxTranslationY
+        scrollTranslationY = scrollPercentage * scrollableSize
+
+        if rodash.isInvalid(scrollKnob.margin) then return scrollTranslationY
+
+        if scrollPercentage <> 1 and scrollPercentage <> 0 then return scrollTranslationY
+
+        margins = quadrupleMargins(scrollKnob.margin)
+
+        if scrollPercentage = 0
+            marginOffset = direction = "horizontal" ? margins.left : margins.top
+            scrollTranslationY += marginOffset
+        else if scrollPercentage = 1
+            marginOffset = direction = "horizontal" ? margins.right : margins.bottom
+            scrollTranslationY-= marginOffset
+        end if
+
+        return scrollTranslationY
     end function
 
 

@@ -297,6 +297,9 @@ function quadrupleMargins(margin)
 
     if margin = invalid then return returnObj
 
+    if rodash.isNumber(margin) then margin = [margin]
+    if rodash.isString(margin) then margin = [val(margin)]
+
     if margin.count() = 1
         returnObj["left"] = margin[0]
         returnObj["top"] = margin[0]
