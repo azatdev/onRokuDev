@@ -13,7 +13,7 @@ module.exports = {
                     blendColor: "#d2f3dfff",
                     height: 72,
                     inheritParentOpacity: false,
-                    margins: 3,
+                    margin: 3,
                     translation: [3, 3],
                     width: 36,
                     uri: "pkg:/static/images/9patches/fill-9px.9.png"
