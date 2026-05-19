@@ -1,0 +1,22 @@
+import "pkg:/components/_ord/wrappers.bs"
+import "pkg:/source/roku_modules/promises/promises.brs"
+
+sub init()
+    exec(sub(options = {})
+        m.scrollGroup = top().findNode("scrollGroup")
+        m.scrollGroup.config = {
+            direction: "vertical",
+            flushEnd: true,
+            scrollbarPosition: "top",
+            showScrollbar: true
+        }
+    end sub)
+end sub
+
+
+function handleFocus(options = {})
+    return exec(function(options = {})
+        m.scrollGroup.setFocus(true)
+        return true
+    end function)
+end function

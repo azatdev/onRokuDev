@@ -8,14 +8,14 @@ module.exports = {
                 opacity: 0.5,
                 uri: "pkg:/static/images/white-block.webp",
                 visible: false,
-                height: 42,
+                width: 42,
                 "Poster": {
                     blendColor: "#d2f3dfff",
-                    height: 36,
+                    height: 72,
                     inheritParentOpacity: false,
                     margin: 3,
                     translation: [3, 3],
-                    width: 72,
+                    width: 36,
                     uri: "pkg:/static/images/9patches/fill-9px.9.png"
                 }
             }

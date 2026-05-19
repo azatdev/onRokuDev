@@ -6,19 +6,15 @@ sub init()
     exec(sub(options = {})
         top().setFocus(true)
 
-        m.sidebar = top().findNode("sidebar")
-        m.topbar = top().findNode("topbar")
-        m.ctas = top().findNode("ctas")
-        m.defaultCarousel = top().findNode("defaultCarousel")
-        m.dynamicCarousel = top().findNode("dynamicCarousel")
-        m.flushCarousel = top().findNode("flushCarousel")
-        m.scrollGroup = top().findNode("scrollGroup")
-        m.scrollGroup.config = {
-            direction: "vertical",
-            flushEnd: true,
-            scrollbarPosition: "top",
-            showScrollbar: true
-        }
+        ' m.sidebar = top().findNode("sidebar")
+        ' m.topbar = top().findNode("topbar")
+        ' m.ctas = top().findNode("ctas")
+        ' m.defaultCarousel = top().findNode("defaultCarousel")
+        ' m.dynamicCarousel = top().findNode("dynamicCarousel")
+        ' m.flushCarousel = top().findNode("flushCarousel")
+
+        m.layout = top().findNode("layout")
+        m.layout.setFocus(true)
 
         registerControllers([
             "SocketController"
@@ -54,24 +50,24 @@ sub init()
             }
         })
 
-        rodash.delay(sub(node)
-            node.setFocus(true)
-            ' m.scrollGroup.setFocus(true)
-        end sub, 100, m.scrollGroup)
+        ' rodash.delay(sub(node)
+        '     node.setFocus(true)
+        '     ' m.scrollGroup.setFocus(true)
+        ' end sub, 100, m.scrollGroup)
 
-        rodash.delay(sub(node)
-            newRect = createObject("roSGNode", "Rectangle")
-            newRect.width = 1650
-            newRect.height = 400
-            newRect.color = "#0000FFFF"
+        ' rodash.delay(sub(node)
+        '     newRect = createObject("roSGNode", "Rectangle")
+        '     newRect.width = 1650
+        '     newRect.height = 400
+        '     newRect.color = "#0000FFFF"
 
-            newRect2 = createObject("roSGNode", "Rectangle")
-            newRect2.width = 1650
-            newRect2.height = 200
-            newRect2.color = "#FF00FFFF"
-            node.appendChildren([newRect, newRect2])
-            ' node.appendChild(newRect)
-        end sub, 3000, m.scrollGroup)
+        '     newRect2 = createObject("roSGNode", "Rectangle")
+        '     newRect2.width = 1650
+        '     newRect2.height = 200
+        '     newRect2.color = "#FF00FFFF"
+        '     node.appendChildren([newRect, newRect2])
+        '     ' node.appendChild(newRect)
+        ' end sub, 3000, m.scrollGroup)
     end sub)
 end sub
 
