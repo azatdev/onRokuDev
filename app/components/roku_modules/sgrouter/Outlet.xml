@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="sgrouter_Outlet" extends="Group">
+    <interface>
+        <field id="__isOutlet" type="boolean" value="true" />
+    </interface>
+    <script type="text/brightscript" uri="pkg:/components/roku_modules/sgrouter/Outlet.brs" />
+    <script type="text/brightscript" uri="pkg:/source/roku_modules/sgrouter/router.brs" />
+    <script type="text/brightscript" uri="pkg:/source/roku_modules/sgrouter/RouterState.brs" />
+    <script type="text/brightscript" uri="pkg:/source/roku_modules/rodash/rodash.brs" />
+    <script type="text/brightscript" uri="pkg:/source/roku_modules/promises/promises.brs" />
+    <script type="text/brightscript" uri="pkg:/source/roku_modules/sgrouter/interfaces.brs" />
+    <script type="text/brightscript" uri="pkg:/source/roku_modules/sgrouter/bslib.brs" />
+    <children>
+        <Group id="keepAliveViewTarget" />
+        <Group id="viewTarget" />
+    </children>
+</component>

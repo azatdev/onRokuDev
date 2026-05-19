@@ -26,8 +26,10 @@
     "chokidar": "^4.0.3",
     "dotenv": "^17.2.2",
     "ejs": "^5.0.1",
+    "promises": "npm:@rokucommunity/promises@^0.7.0",
     "rodash": "npm:@tkss/rodash@^0.0.36",
     "roku-requests": "^1.2.0",
+    "sgRouter": "npm:@rokucommunity/sgrouter@^0.1.2",
     "ws": "^8.18.3"
   },
   "devDependencies": {

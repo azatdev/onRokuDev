@@ -1,0 +1,170 @@
+import "pkg:/source/roku_modules/promises/promises.brs"
+import "pkg:/source/roku_modules/rodash/rodash.brs"
+import "pkg:/source/roku_modules/sgrouter/router.brs"
+' Initialize the router
+sub init()
+end sub
+'*************************************************************************
+'#region *** PUBLIC Functions
+'*************************************************************************
+function _initialize(params = {} as Object) as Dynamic
+end function
+sub _destroy(_ = Invalid as Dynamic)
+end sub
+' Function to add routes to the router
+' @param {Array} routes - The routes to add
+sub _addRoutes(routes = [] as Object)
+end sub
+' Function to get the routes
+' @returns {Array} - The routes
+function _getRoutes(_ = Invalid as Dynamic) as Dynamic
+end function
+' Function to navigate back in the router history
+' @returns {Boolean} - Whether the navigation was successful or not
+function _goBack(_ = Invalid as Dynamic) as Dynamic
+end function
+' Function to navigate to a specific route
+' @param {String|Object} path - The path to navigate to, or an AA for named routes: { name: String, params: Object }
+' @param {Object} options - The route config overrides and navigation options
+' @returns {Dynamic} - The result of the navigation
+function _navigateTo(path = "" as Dynamic, options = {} as Object) as Dynamic
+end function
+' A public function to set the focus on the router
+' @param {Boolean} takeFocus - Whether to take focus or not
+' @returns {Boolean} - Whether the active view handled the focus or not
+function _setFocus(takeFocus as Boolean) as Boolean
+end function
+'*************************************************************************
+'#endregion *** PUBLIC Functions
+'*************************************************************************
+'*************************************************************************
+'#region *** PRIVATE Guard Functions
+'*************************************************************************
+' Function to run guard checks
+' @param {Dynamic} route - The route to run the guard checks on
+' @returns {Dynamic} - The result of the guard checks
+namespace sgrouter
+function runGuardChecks(route as Dynamic) as Dynamic
+end function
+end namespace
+'*************************************************************************
+'#endregion *** PRIVATE Guard Functions
+'*************************************************************************
+'*************************************************************************
+'#region *** PRIVATE View Stack Management Functions
+'*************************************************************************
+' Function to add a view to the view stack
+' @param {Dynamic} route - The route to add to the view stack
+' @param {Array} closeViews - The views to close/suspend
+' @returns {Dynamic} - The result of the view stack management
+namespace sgrouter
+function addViewToStack(route as Dynamic, closeViews = [] as Object) as Dynamic
+end function
+end namespace
+' Function to close a view
+' @param {Dynamic} view - The view to close
+' @returns {Dynamic} - The result of the view close
+namespace sgrouter
+function closeView(view = Invalid as Dynamic) as Dynamic
+end function
+end namespace
+' Function to suspend a view (keepAlive)
+' @param {Dynamic} view - The view to suspend
+' @returns {Dynamic} - The result of the view suspend
+namespace sgrouter
+function suspendView(view = Invalid as Dynamic) as Dynamic
+end function
+end namespace
+' Tells the view to hide and fire the onViewSuspend lifecycle method if onSuspend is true
+' @param {Object} view - The view to hide
+' @param {Boolean} onSuspend - Whether to fire the onViewSuspend lifecycle method
+namespace sgrouter
+function hideView(view as Object, onSuspend = false as Boolean) as Boolean
+end function
+end namespace
+' Called when the focus chain of the router changes
+' @param {Object} event - The event object
+namespace sgrouter
+sub onFocusChildChanged(event as Object)
+end sub
+end namespace
+' Tells the view to open and fire the handleFocus lifecycle method
+' @param {Object} view - The view to show
+' @param {Boolean} onResume - Whether the view is being resumed
+namespace sgrouter
+function showView(view as Object, onResume = false as Boolean) as Dynamic
+end function
+end namespace
+'*************************************************************************
+'#endregion *** PRIVATE View Stack Management Functions
+'*************************************************************************
+'*************************************************************************
+'#region *** PRIVATE Helper Functions
+'*************************************************************************
+' Resolve a named route to a literal path string.
+' Substitutes :param segments from params AA; leftover params become query string.
+' Returns Invalid if a required :param segment has no matching value in params.
+namespace sgrouter
+function resolveNamedRoutePath(name as String, pattern as String, params = Invalid as Dynamic) as Dynamic
+end function
+end namespace
+' Helper function to create a route object
+' @param {Object} config - The configuration object
+' @returns {Dynamic} - The result of the view open
+namespace sgrouter
+function createRoute(config = {} as Object) as Object
+end function
+end namespace
+' Helper function to dispatch a router state
+' @param {String} stateType - The type of state to dispatch
+' @param {Object} context - The context to pass to the state
+namespace sgrouter
+sub dispatchRouterState(stateType as String, context = {} as Dynamic)
+end sub
+end namespace
+namespace sgrouter
+function createRouteSnapshot(route as Object) as Object
+end function
+end namespace
+' Helper function to create a base context object
+' @returns {Object} - The base context object
+namespace sgrouter
+function createBaseContext() as Object
+end function
+end namespace
+namespace sgrouter
+function createBaseNavigationState() as Object
+end function
+end namespace
+' Helper function to find a matching route
+' @param {String} path - The path to find a matching route for
+' @param {Object} routes - The routes to search
+' @returns {Dynamic} - The matching route
+namespace sgrouter
+function findMatchingRoute(path as String, routes as Object) as sgrouter.sgRouter.Route
+end function
+end namespace
+' Helper Function to get the hash parameter from a URL
+' @param {String} url - The URL to get the hash parameter from
+' @returns {String} - The hash parameter
+namespace sgrouter
+function getHashParam(url as String) as String
+end function
+end namespace
+' Helper function to normalize a path
+' @param {String} path - The path to normalize
+' @returns {String} - The normalized path
+namespace sgrouter
+function normalizePath(path as String) as String
+end function
+end namespace
+' Helper function to parse a query string into an associative array
+' @param {Dynamic} queryString - The query string to parse
+' @returns {Object} - The parsed query string
+namespace sgrouter
+function parseQueryString(queryString as Dynamic) as Object
+end function
+end namespace
+'*************************************************************************
+'#endregion *** PRIVATE Helper Functions
+'*************************************************************************

@@ -1,0 +1,33 @@
+import "pkg:/source/roku_modules/sgrouter/router.brs"
+import "pkg:/source/roku_modules/rodash/rodash.brs"
+import "pkg:/source/roku_modules/promises/promises.brs"
+sub init()
+end sub
+function _beforeViewOpen(params = {} as Object) as Dynamic
+end function
+function beforeViewOpen(params = {} as Object) as Dynamic
+end function
+function _onViewOpen(params = {} as Object) as Dynamic
+end function
+function onViewOpen(params = {} as Object) as Dynamic
+end function
+function _beforeViewClose(params = {} as Object) as Dynamic
+end function
+function beforeViewClose(params = {} as Object) as Dynamic
+end function
+function _onRouteUpdate(event as sgrouter.sgRouter.RouteUpdateEvent) as Dynamic
+end function
+function onRouteUpdate(event = {} as Object) as Dynamic
+end function
+function _onViewResume(_ as Dynamic, applyFocus = false as Boolean) as Dynamic
+end function
+function _onViewSuspend(_ as Dynamic) as Dynamic
+end function
+function onViewResume(_ as Dynamic) as Dynamic
+end function
+function onViewSuspend(_ as Dynamic) as Dynamic
+end function
+function _handleFocus(data = {} as Object) as Boolean
+end function
+function handleFocus(data = {} as Object) as Boolean
+end function

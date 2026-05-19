@@ -1,0 +1,15 @@
+namespace sgrouter
+enum RouterState
+    ActivationStart = "ActivationStart"
+    ActivationEnd = "ActivationEnd"
+    GuardsCheckStart = "GuardsCheckStart"
+    GuardsCheckEnd = "GuardsCheckEnd"
+    NavigationStart = "NavigationStart"
+    NavigationEnd = "NavigationEnd"
+    NavigationCancel = "NavigationCancel"
+    NavigationError = "NavigationError"
+    ResolveStart = "ResolveStart"
+    ResolveEnd = "ResolveEnd"
+    RoutesRecognized = "RoutesRecognized"
+end enum
+end namespace

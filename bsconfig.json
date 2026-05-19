@@ -4,6 +4,7 @@
     "diagnosticFilters": [
         "**/TrackerTask.xml",
         "./source/roku_modules/**/*",
+        "./components/roku_modules/**/*",
         "./tests/**/*"
     ],
     "files": [

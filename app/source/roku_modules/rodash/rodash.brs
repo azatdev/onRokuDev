@@ -3039,12 +3039,10 @@ end function
 ' Gets the number of milliseconds that have elapsed since the Unix epoch (1 January 1970 00:00:00 UTC).
 ' @since 0.0.21
 ' @category Date
-' @returns {Longinteger} The number of milliseconds that have elapsed since the Unix epoch.
-function rodash_now() as Longinteger
+' @returns {Integer} The number of milliseconds that have elapsed since the Unix epoch.
+function rodash_now() as Integer
     dateObj = rodash_internal_getDateObject()
-    seconds& = dateObj.asSeconds()
-    milliseconds& = seconds& * 1000
-    return milliseconds& + dateObj.getMilliseconds()
+    return dateObj.asSeconds() + dateObj.getMilliseconds()
 end function
 
 ' The opposite of rodash.pick; this method creates an object composed of the own and inherited enumerable property paths of object that are not omitted.
