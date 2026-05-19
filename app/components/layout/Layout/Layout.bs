@@ -30,6 +30,5 @@ sub onFocusedChildChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     focusedChild = options.data
     if not rodash.isNode(focusedChild) then return
-    ?"onFocusedChildChange " focusedChild
     sgRouter.setFocus({ focus: true })
 end sub
