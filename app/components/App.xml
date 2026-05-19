@@ -8,14 +8,7 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <Background id="background" />
-        <!-- <CTAs id="ctas" />
-        <DefaultCarousel id="defaultCarousel" />
-        <DynamicCarousel id="dynamicCarousel" />
-        <FlushCarousel id="flushCarousel" /> -->
-        <_ord_scrollGroup id="scrollGroup" />
-        <Topbar id="topbar" />
-        <Sidebar id="sidebar" />
+        <Layout id="layout" />
     </children>
     <script type="text/brightscript" uri="App.bs" />
 </component>

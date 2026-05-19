@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="Layout" extends="Group">
+    <interface>
+
+    </interface>
+    <children>
+       <Background id="background" />
+        <!-- <CTAs id="ctas" />
+        <DefaultCarousel id="defaultCarousel" />
+        <DynamicCarousel id="dynamicCarousel" />
+        <FlushCarousel id="flushCarousel" /> -->
+        <_ord_scrollGroup id="scrollGroup" />
+        <Topbar id="topbar" />
+        <Sidebar id="sidebar" />
+    </children>
+    <script type="text/brightscript" uri="Layout.bs" />
+</component>
