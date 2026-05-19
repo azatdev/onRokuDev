@@ -1,7 +1,7 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub()
+    exec(sub(options = {})
         m.container = top().findNode("container")
         m.scrolltrack = top().findNode("scrollTrack")
         m.scrollKnob = top().findNode("scrollKnob")
@@ -47,6 +47,14 @@ sub onConfigChange(options = {})
     config.append(defaultConfig)
     if rodash.isNonEmptyAA(options.data) then config.append(options.data)
 
+    horizontal = config.direction = "horizontal"
+
+    config.horizontal = horizontal
+    config.axisIndex= horizontal ? 0 : 1
+    config.crossAxisIndex= horizontal ? 1 : 0
+    config.targetDimension = horizontal ? "width" : "height"
+    config.crossAxisTargetDimension = horizontal ? "height" : "width"
+
     if config.direction = "vertical"
         config.reverseKey = "up"
         config.advanceKey = "down"
@@ -79,23 +87,20 @@ end sub
 
 
 sub setGroupSizes()
-    direction = get("direction")
+    direction = get("direction") ?? "vertical"
+    horizontal = get("horizontal") ?? false
     if rodash.isEmptyString(direction) then return
 
     stackChildren({ node: m.container, direction: direction })
 
     viewportDimensions = calculate.viewportSize({
-        direction: direction,
+        horizontal: horizontal,
         maxSize: get("maxSize")
     })
-
-    ?"viewportDimensions " viewportDimensions
 
     scrollContainerDimensions = calculate.scrollContainerSize({
         node: m.container
     })
-
-    ?"scrollContainerDimensions " scrollContainerDimensions
 
     set({
         scrollContainerDimensions: scrollContainerDimensions,
@@ -107,9 +112,14 @@ sub setGroupSizes()
     if not get("showScrollbar") then return
 
     setupScrollbar({
+        axisIndex: get("axisIndex"),
+        crossAxisIndex: get("crossAxisIndex"),
+        crossAxisTargetDimension: get("crossAxisTargetDimension"),
         direction: direction,
+        horizontal: horizontal,
         scrollbarPosition: get("scrollbarPosition"),
         scrollContainerDimensions: scrollContainerDimensions,
+        targetDimension: get("targetDimension"),
         viewportDimensions: viewportDimensions
     })
 end sub
@@ -124,7 +134,7 @@ function performScroll(key = "")
     direction = get("direction")
     horizontal = direction = "horizontal"
     focusedItem = get("focusedItem")
-    axisIndex = direction = "horizontal" ? 0 : 1
+    axisIndex = get("axisIndex")
 
     nextFocusedItem = calculate.nextIndex({
         focusedItem: focusedItem,
@@ -167,10 +177,9 @@ function performScroll(key = "")
     scrollKnobTranslation = m.scrollKnob.translation
     scrollKnobTranslation[axisIndex] = 0
 
-    ?"scrollKnobTranslation 1 " scrollKnobTranslation
-
     scrollKnobTranslation[axisIndex] = calculate.scrollTranslation({
         axisIndex: axisIndex,
+        targetDimension: get("targetDimension"),
         horizontal: horizontal,
         maxTranslation: maxTranslation,
         scrollKnob: m.scrollKnob,
@@ -179,8 +188,6 @@ function performScroll(key = "")
     })
 
     trackTranslation[axisIndex] = trackTranslation[axisIndex] * -1
-
-    ?"scrollKnobTranslation 2 " scrollKnobTranslation
 
     performMorph({
         scrollKnobTranslation: scrollKnobTranslation,
@@ -204,33 +211,43 @@ end sub
 
 
 sub setupScrollbar(options = {})
-    direction = options.direction
+    axisIndex = options.axisIndex
+    horizontal = options.horizontal
     viewportDimensions = options.viewportDimensions
     scrollbarPosition = options.scrollbarPosition
     scrollContainerDimensions = options.scrollContainerDimensions
-
-    viewportHeight = viewportDimensions[1]
-    viewportWidth = viewportDimensions[0]
-    totalHeight = scrollContainerDimensions[1]
+    targetDimension = options.targetDimension
+    crossAxisTargetDimension = options.crossAxisTargetDimension
+    crossAxisIndex = options.crossAxisIndex
 
     stackChildren({ node: m.scrollTrack })
 
-    scrolltrackWidth = m.scrolltrack.width
-    m.scrolltrack.height = viewportHeight
-    m.scrollKnob.height = (viewportHeight / totalHeight) * viewportHeight
+    m.scrolltrack[targetDimension] = viewportDimensions[axisIndex]
+    m.scrollKnob[targetDimension] = (viewportDimensions[axisIndex] / scrollContainerDimensions[axisIndex]) * viewportDimensions[axisIndex]
 
-    ?"scrollbarPosition " scrollbarPosition
-
-    if scrollbarPosition = "right"
-        m.scrolltrack.translation = [viewportWidth - scrolltrackWidth, 0]
-        m.container.width = viewportWidth - scrolltrackWidth
-    else if scrollbarPosition = "left"
-        ?"scrolltrackWidth " scrolltrackWidth
-        m.container.translation = [scrolltrackWidth, 0]
-        m.container.width = viewportWidth - scrolltrackWidth
+    if horizontal
+        if scrollbarPosition <> "top" and scrollbarPosition <> "bottom"
+            scrollbarPosition = "bottom"
+        end if
+    else
+        if scrollbarPosition <> "left" and scrollbarPosition <> "right"
+            scrollbarPosition = "right"
+        end if
     end if
 
-    ?"m.container.translation " m.container.translation
+    scrolltrackTranslation = m.scrolltrack.translation
+    containerTranslation = m.container.translation
+
+    if scrollbarPosition = "right" or scrollbarPosition = "bottom"
+        scrolltrackTranslation[crossAxisIndex] = viewportDimensions[crossAxisIndex] - m.scrolltrack[crossAxisTargetDimension]
+        m.container[crossAxisTargetDimension] = viewportDimensions[crossAxisIndex] - m.scrolltrack[crossAxisTargetDimension]
+    else if scrollbarPosition = "left" or scrollbarPosition = "top"
+        containerTranslation[crossAxisIndex] = m.scrolltrack[crossAxisTargetDimension]
+        m.container[crossAxisTargetDimension] = viewportDimensions[crossAxisIndex] - m.scrolltrack[crossAxisTargetDimension]
+    end if
+
+    m.scrolltrack.translation = scrolltrackTranslation
+    m.container.translation = containerTranslation
 
     setClippingRect()
     m.scrolltrack.visible = true
@@ -242,7 +259,6 @@ sub performMorph(options = {})
     trackTranslation = options.trackTranslation ?? [0, 0]
 
     morphObject = {}
-
 
     if rodash.isNode(m.container) and rodash.isNonEmptyString(m.container.id)
         morphObject[m.container.id] = {
@@ -296,24 +312,19 @@ namespace calculate
         horizontal = options.horizontal
         maxTranslation = options.maxTranslation
         scrollKnob = options.scrollKnob
-        targetDimension = horizontal ? "width" : "height"
+        targetDimension = options.targetDimension
         trackTranslation = options.trackTranslation
         viewportDimensions = options.viewportDimensions
 
         scrollableSize = viewportDimensions[axisIndex] - m.scrollKnob[targetDimension]
-        ?"scrollableSize " scrollableSize
         scrollPercentage = trackTranslation[axisIndex] / maxTranslation[axisIndex]
-        ?"scrollPercentage " scrollPercentage
         scrollTrackTranslation = scrollPercentage * scrollableSize
-
-        ?"scrollTrackTranslation " scrollTrackTranslation
 
         if rodash.isInvalid(scrollKnob.margin) then return scrollTrackTranslation
 
         if scrollPercentage <> 1 and scrollPercentage <> 0 then return scrollTrackTranslation
 
         margins = quadrupleMargins(scrollKnob.margin)
-        ?"margins " margins
 
         if scrollPercentage = 0
             marginOffset = horizontal ? margins.left : margins.top
@@ -328,13 +339,13 @@ namespace calculate
 
 
     function viewportSize(options = {})
-        direction = options.direction
+        horizontal = options.horizontal
         maxSize = options.maxSize
         viewportHeight = top().height
         viewportWidth = top().width
 
         if maxSize > 0
-            if direction = "horizontal"
+            if horizontal
                 viewportHeight = maxSize
             else
                 viewportWidth = maxSize

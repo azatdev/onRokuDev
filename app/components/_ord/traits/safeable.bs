@@ -76,18 +76,20 @@ class Safeable
             targetFunction = nodeFunction
         end if
 
+
         if rodash.isFunction(targetFunction)
-            try
-                return targetFunction(functionArgument)
-            catch e
-                if e.number = 241
-                    return targetFunction()
-                end if
+            return targetFunction(functionArgument)
+        '     try
+        '         return targetFunction(functionArgument)
+        '     catch e
+        '         if e.number = 241
+        '             return targetFunction()
+        '         end if
 
-                if devMode() then throw e
+        '         if devMode() then throw e
 
-                return invalid
-            end try
+        '         return invalid
+        '     end try
         end if
 
         internalFunctions = getGlobalAA().interfaceFunctions ?? {}

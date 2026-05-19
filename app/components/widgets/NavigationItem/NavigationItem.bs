@@ -1,7 +1,7 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub()
+    exec(sub(options = {})
         setupItem()
     end sub)
 end sub
