@@ -89,9 +89,13 @@ sub setGroupSizes()
         maxSize: get("maxSize")
     })
 
+    ?"viewportDimensions " viewportDimensions
+
     scrollContainerDimensions = calculate.scrollContainerSize({
         node: m.container
     })
+
+    ?"scrollContainerDimensions " scrollContainerDimensions
 
     set({
         scrollContainerDimensions: scrollContainerDimensions,
@@ -118,7 +122,9 @@ function performScroll(key = "")
     if not rodash.isNonEmptyArray(children) then return false
 
     direction = get("direction")
+    horizontal = direction = "horizontal"
     focusedItem = get("focusedItem")
+    axisIndex = direction = "horizontal" ? 0 : 1
 
     nextFocusedItem = calculate.nextIndex({
         focusedItem: focusedItem,
@@ -131,44 +137,54 @@ function performScroll(key = "")
     scrollContainerDimensions = get("scrollContainerDimensions")
     viewportDimensions = get("viewportDimensions")
 
-    viewportHeight = viewportDimensions[1]
-    contentHeight = scrollContainerDimensions[1]
-
-    maxTranslationY = 0
+    maxTranslation = [0, 0]
 
     if get("flushEnd")
-        maxTranslationY = contentHeight - viewportHeight
+        maxTranslation[axisIndex] = scrollContainerDimensions[axisIndex] - viewportDimensions[axisIndex]
     else
         lastChild = rodash.last(children)
         if rodash.isNotInvalid(lastChild)
-            lastChildHeight = getVisibleHeight(lastChild)
-            maxTranslationY = contentHeight - lastChildHeight
+            lastChildSize = horizontal ? getVisibleWidth(lastChild) : getVisibleHeight(lastChild)
+            maxTranslation[axisIndex] = scrollContainerDimensions[axisIndex] - lastChildSize
         end if
     end if
 
-    translationY = 0
+    trackTranslation = m.container.translation
+    trackTranslation[axisIndex] = 0
+
     if nextFocusedItem > 0
         for index = 0 to nextFocusedItem - 1
             child = children[index]
-            translationY += getVisibleHeight(child)
+            childSize = horizontal ? getVisibleWidth(child) : getVisibleHeight(child)
+            trackTranslation[axisIndex] += childSize
         end for
     end if
 
-    if translationY > maxTranslationY
-        translationY = maxTranslationY
+    if trackTranslation[axisIndex] > maxTranslation[axisIndex]
+        trackTranslation[axisIndex] = maxTranslation[axisIndex]
     end if
 
-    scrollTranslationY = calculate.scrollTranslation({
-        direction: direction,
-        maxTranslationY: maxTranslationY,
+    scrollKnobTranslation = m.scrollKnob.translation
+    scrollKnobTranslation[axisIndex] = 0
+
+    ?"scrollKnobTranslation 1 " scrollKnobTranslation
+
+    scrollKnobTranslation[axisIndex] = calculate.scrollTranslation({
+        axisIndex: axisIndex,
+        horizontal: horizontal,
+        maxTranslation: maxTranslation,
         scrollKnob: m.scrollKnob,
-        translationY: translationY,
-        viewportHeight: viewportHeight
+        trackTranslation: trackTranslation,
+        viewportDimensions: viewportDimensions
     })
 
+    trackTranslation[axisIndex] = trackTranslation[axisIndex] * -1
+
+    ?"scrollKnobTranslation 2 " scrollKnobTranslation
+
     performMorph({
-        scrollTranslationY: scrollTranslationY,
-        translationY: translationY
+        scrollKnobTranslation: scrollKnobTranslation,
+        trackTranslation: trackTranslation
     })
 
     children[nextFocusedItem].setFocus(true)
@@ -222,15 +238,16 @@ end sub
 
 
 sub performMorph(options = {})
-    scrollTranslationY = options.scrollTranslationY ?? 0
-    translationY = options.translationY ?? 0
+    scrollKnobTranslation = options.scrollKnobTranslation ?? [0, 0]
+    trackTranslation = options.trackTranslation ?? [0, 0]
 
     morphObject = {}
+
 
     if rodash.isNode(m.container) and rodash.isNonEmptyString(m.container.id)
         morphObject[m.container.id] = {
             fields: {
-                translation: [m.container.translation[0], -translationY]
+                translation: trackTranslation
             }
         }
     end if
@@ -238,7 +255,7 @@ sub performMorph(options = {})
     if rodash.isNode(m.scrollKnob) and rodash.isNonEmptyString(m.scrollKnob.id)
         morphObject[m.scrollKnob.id] = {
             fields: {
-                translation: [m.scrollKnob.translation[0], scrollTranslationY]
+                translation: scrollKnobTranslation
             }
         }
     end if
@@ -275,31 +292,38 @@ namespace calculate
 
 
     function scrollTranslation(options = {})
-        direction = options.direction
-        maxTranslationY = options.maxTranslationY
+        axisIndex = options.axisIndex
+        horizontal = options.horizontal
+        maxTranslation = options.maxTranslation
         scrollKnob = options.scrollKnob
-        translationY = options.translationY
-        viewportHeight = options.viewportHeight
+        targetDimension = horizontal ? "width" : "height"
+        trackTranslation = options.trackTranslation
+        viewportDimensions = options.viewportDimensions
 
-        scrollableSize = viewportHeight - m.scrollKnob.height
-        scrollPercentage = translationY / maxTranslationY
-        scrollTranslationY = scrollPercentage * scrollableSize
+        scrollableSize = viewportDimensions[axisIndex] - m.scrollKnob[targetDimension]
+        ?"scrollableSize " scrollableSize
+        scrollPercentage = trackTranslation[axisIndex] / maxTranslation[axisIndex]
+        ?"scrollPercentage " scrollPercentage
+        scrollTrackTranslation = scrollPercentage * scrollableSize
 
-        if rodash.isInvalid(scrollKnob.margin) then return scrollTranslationY
+        ?"scrollTrackTranslation " scrollTrackTranslation
 
-        if scrollPercentage <> 1 and scrollPercentage <> 0 then return scrollTranslationY
+        if rodash.isInvalid(scrollKnob.margin) then return scrollTrackTranslation
+
+        if scrollPercentage <> 1 and scrollPercentage <> 0 then return scrollTrackTranslation
 
         margins = quadrupleMargins(scrollKnob.margin)
+        ?"margins " margins
 
         if scrollPercentage = 0
-            marginOffset = direction = "horizontal" ? margins.left : margins.top
-            scrollTranslationY += marginOffset
+            marginOffset = horizontal ? margins.left : margins.top
+            scrollTrackTranslation += marginOffset
         else if scrollPercentage = 1
-            marginOffset = direction = "horizontal" ? margins.right : margins.bottom
-            scrollTranslationY-= marginOffset
+            marginOffset = horizontal ? margins.right : margins.bottom
+            scrollTrackTranslation -= marginOffset
         end if
 
-        return scrollTranslationY
+        return scrollTrackTranslation
     end function
 
 
