@@ -7,6 +7,8 @@ sub init()
         m.scrollKnob = top().findNode("scrollKnob")
 
         defaultConfig = {
+            advanceKey: "down",
+            reverseKey: "up",
             direction: "vertical",
             flushEnd: false,
             maxSize: 0,
@@ -20,8 +22,12 @@ sub init()
             focusedItem: 0
         })
 
+        onConfigChange({ data: defaultConfig })
+
         safeObserve("config", onConfigChange)
         safeObserve("change", onChildChange)
+        safeObserve("width", onConfigChange)
+        safeObserve("height", onConfigChange)
     end sub)
 end sub
 
@@ -42,7 +48,7 @@ end function
 sub onConfigChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
 
-    defaultConfig = get("defaultConfig")
+    defaultConfig = get("defaultConfig") ?? {}
     config = {}
     config.append(defaultConfig)
     if rodash.isNonEmptyAA(options.data) then config.append(options.data)
@@ -340,7 +346,7 @@ namespace calculate
 
     function viewportSize(options = {})
         horizontal = options.horizontal
-        maxSize = options.maxSize
+        maxSize = options.maxSize ?? 0
         viewportHeight = top().height
         viewportWidth = top().width
 

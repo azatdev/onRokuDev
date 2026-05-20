@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="HomeScreen" extends="sgRouter_View">
+<component name="CatalogScreen" extends="sgRouter_View">
     <interface>
     </interface>
     <children>
         <_ord_scrollGroup id="scrollGroup" />
     </children>
-    <script type="text/brightscript" uri="HomeScreen.bs" />
+    <script type="text/brightscript" uri="CatalogScreen.bs" />
 </component>

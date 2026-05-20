@@ -7,7 +7,7 @@ sub init()
         sgRouter.initialize({ outlet: m.top.findNode("screenContainer") })
 
         sgRouter.addRoutes([
-            { pattern: "/", component: "HomeScreen" },
+            { pattern: "/", component: "CatalogScreen" },
             ' { pattern: "/shows", component: "CatalogScreen", clearStackOnResolve: true },
             ' { pattern: "/movies", component: "CatalogScreen", clearStackOnResolve: true },
             ' { pattern: "/details/series/:id", component: "DetailsScreen" },

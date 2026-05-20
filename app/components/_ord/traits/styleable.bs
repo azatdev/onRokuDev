@@ -42,7 +42,6 @@ class Styleable
         if rodash.indexOf(classNames, className) = -1 then classNames.push(className)
 
         m.setClassNames(node, classNames)
-
         m.redrawStyles()
     end sub
 
@@ -63,7 +62,6 @@ class Styleable
         end for
 
         m.setClassNames(node, filteredClassNames)
-
         m.redrawStyles()
     end sub
 
@@ -79,7 +77,21 @@ class Styleable
 
 
     sub onIdClassChange(options = {})
-        m.redrawStyles()
+        if not rodash.isNonEmptyAA(options) then return
+
+        field = options.field
+        if rodash.isEmptyString(field) then return
+
+        node = options.node
+        if not rodash.isNode(node) then return
+
+        styleObject = global()._ord_styles.getField(top().subType())
+
+        if field = "id"
+            m.setIdStyles(styleObject, node)
+        else if field = "class"
+            m.setClassStyles(styleObject, node)
+        end if
     end sub
 
 
@@ -157,15 +169,9 @@ class Styleable
             m.setStyles(childStyles, child)
         end for
 
-        idStyles = stylesheet[`&#${node.id ?? ""}`]
+        m.setIdStyles(stylesheet, node)
+        m.setClassStyles(stylesheet, node)
 
-        if rodash.isNonEmptyAA(idStyles) then m.setStyles(idStyles, node)
-
-        classNames = m.getClassNames(node)
-        for each className in classNames
-            classStyles = stylesheet[`&.${className}`]
-            if rodash.isNonEmptyAA(classStyles) then m.setStyles(classStyles, node)
-        end for
     end sub
 
 
@@ -184,6 +190,21 @@ class Styleable
                 updateObject[attribute.key] = attribute.value
                 node.update(updateObject, true)
             end if
+        end for
+    end sub
+
+
+    sub setIdStyles(stylesheet = {}, node = top())
+        idStyles = stylesheet[`&#${node.id ?? ""}`]
+        if rodash.isNonEmptyAA(idStyles) then m.setStyles(idStyles, node)
+    end sub
+
+
+    sub setClassStyles(stylesheet = {}, node = top())
+        classNames = m.getClassNames(node)
+        for each className in classNames
+            classStyles = stylesheet[`&.${className}`]
+            if rodash.isNonEmptyAA(classStyles) then m.setStyles(classStyles, node)
         end for
     end sub
 
