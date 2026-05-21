@@ -13,7 +13,7 @@ sub loadTopbar()
     list = top().findNode("topbarList")
 
     model = createObject("roSGNode", "TopbarModel")
-    model.rectConfig = {
+    model.config = {
         carouselType: "dynamicSize",
         focusType: "floating",
         itemComponentName: "NavigationItem",

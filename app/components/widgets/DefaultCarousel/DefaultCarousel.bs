@@ -12,7 +12,7 @@ sub loadList()
     list = top().findNode("defaultCarouselList")
 
     carouselModel = createObject("roSGNode", "DefaultCarouselModel")
-    carouselModel.rectConfig = {
+    carouselModel.config = {
         animationDuration: 0.3,
         carouselType: "default",
         clip: true,

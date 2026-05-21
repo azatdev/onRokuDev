@@ -72,6 +72,15 @@ class Safeable
 
         if rodash.isString(func)
             nodeSafeFunctions = top().getRef("_ord_safeFunctions")
+            if rodash.isInvalid(nodeSafeFunctions)
+                ?`
+
+                WARNING: Function ${func}
+                doesn't exist in ${top().subType()}
+
+                `
+                return invalid
+            end if
             nodeFunction = nodeSafeFunctions[func]
             targetFunction = nodeFunction
         end if

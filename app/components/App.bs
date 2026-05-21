@@ -13,11 +13,17 @@ sub init()
         ' m.dynamicCarousel = top().findNode("dynamicCarousel")
         ' m.flushCarousel = top().findNode("flushCarousel")
 
+        subscribe({
+            [events.EVENT_TASK_READY]: onEventTaskReady,
+            [events.APP_STARTED]: onAppStarted
+        })
+
         m.layout = top().findNode("layout")
         m.layout.setFocus(true)
 
         registerControllers([
-            "SocketController"
+            "LayoutController",
+            "SocketController",
             "StylesController"
         ])
 
@@ -55,8 +61,20 @@ sub init()
         '     ' m.scrollGroup.setFocus(true)
         ' end sub, 100, m.scrollGroup)
 
+        ' rodash.delay(sub(options = {})
 
+        ' end sub, 300)
     end sub)
+end sub
+
+
+sub onAppStarted(options = {})
+    dispatch(events.GET_SIDEBAR)
+end sub
+
+
+sub onEventTaskReady(options = {})
+    dispatch(events.APP_STARTED)
 end sub
 
 

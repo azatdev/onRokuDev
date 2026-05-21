@@ -40,11 +40,14 @@ class Eventable
             m.eventQueue = global()._ord_eventQueue
         else
             eventQueue = createObject("roSGNode", "_ord_eventQueue")
-            eventQueue.control = "RUN"
 
             global().addField("_ord_eventQueue", "node", false)
             global()._ord_eventQueue = eventQueue
+            m.eventQueue = eventQueue
         end if
+
+        safeObserve("ready", m.onTaskReady, m.eventQueue)
+        m.eventQueue.control = "RUN"
     end sub
 
 
@@ -65,6 +68,10 @@ class Eventable
         top().setRef("_ord_subscriptions", subscriptions)
     end sub
 
+    sub onTaskReady(options = {})
+        ?"onTaskReady " options.data
+        dispatch(events.EVENT_TASK_READY)
+    end sub
 
     sub subscribe(options = {})
         if rodash.isEmpty(options) then return

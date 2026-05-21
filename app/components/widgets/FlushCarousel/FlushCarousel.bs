@@ -12,7 +12,7 @@ sub loadList()
     list = top().findNode("flushCarouselList")
 
     carouselModel = createObject("roSGNode", "FlushCarouselModel")
-    carouselModel.rectConfig = {
+    carouselModel.config = {
         vertAlign: "bottom",
         clip: true,
         defaultVisibleIndex: 0,

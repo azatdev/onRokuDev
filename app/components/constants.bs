@@ -1,4 +1,8 @@
 namespace events
+    const APP_STARTED = "APP_STARTED"
+    const EVENT_TASK_READY = "EVENT_TASK_READY"
+    const GET_SIDEBAR = "GET_SIDEBAR"
+    const SIDEBAR_RECEIVED = "SIDEBAR_RECEIVED"
     const TEST_EVENT = "TEST_EVENT"
     const STYLES_UPDATE = "STYLES_UPDATE"
 end namespace

@@ -1,0 +1,71 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        setTaskFunction(runSidebarTask)
+    end sub)
+end sub
+
+
+function runSidebarTask(options = {})
+    ?"runSidebarTask "
+    response = rokurequests_Requests().post("http://192.168.88.31:1337/graphql", { json: { query: `query Sidebar {
+  sidebar {
+    documentId
+    screens(sort: "position") {
+      documentId
+      icon
+      name
+      position
+      slug
+    }
+  }
+}`}, headers: { "Authorization": "bearer 2565bfa9110281be16ee81c728b530cb45432c3f68e6eecde441b1a0a238f88412b7df4cd2913a0a295bc61f4d06b9e9d04de5860c5fa8efc983f49ac8b13cb882aa200ca8f84d99ebcd57c5ee7dbfa5f413050b82b48be01a44d0488aea7d5464e14aa64340d6ce3d33a292e93191c03ddeb383787684a82e3f09d93fa3cfca" }})
+
+    if rodash.isEmpty(response.text) then return true
+
+    sidebarModel = returnSidebarModel(parseJSON(response.text))
+
+    if rodash.isNode(sidebarModel)
+        dispatch(events.SIDEBAR_RECEIVED, { content: sidebarModel })
+    end if
+
+    return true
+end function
+
+function returnSidebarModel(options = {})
+    data = options.data ?? {}
+    sidebarData = data.sidebar ?? {}
+    screensData = sidebarData.screens ?? []
+    updateObjArray = []
+
+    for each screen in screensData
+        updateObject = {
+            dynamicWidth: true,
+            iconText: screen.icon ?? "",
+            title: screen.name ?? "",
+            subtype: "ContentNode"
+        }
+
+        updateObjArray.push(updateObject)
+    end for
+
+    model = createObject("roSGNode", "SidebarModel")
+    model.update(updateObjArray, true)
+    model.totalCount = model.getChildCount()
+    model.config = {
+        direction: "vertical",
+        carouselType: "dynamicSize",
+        focusType: "floating",
+        itemComponentName: "NavigationItem",
+        maxHeight: 1800,
+        visibleTiles: 999,
+        squareMargins: [0, 0, 0, 0],
+        startingPositionOffsets: [0, 0, 0, 0, 0, 0, 0, 149, 0],
+        uniformCrossAxisSize: true,
+        useUnfocusedTargetSet: true,
+        horizAlign: "left"
+    }
+
+    return model
+end function

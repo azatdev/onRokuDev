@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="SidebarTask" extends="Task">
+    <interface>
+        
+    </interface>
+    <children>
+        
+    </children>
+    <script type="text/brightscript" uri="SidebarTask.bs" />
+</component>

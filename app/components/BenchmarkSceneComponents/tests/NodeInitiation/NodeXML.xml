@@ -10,7 +10,7 @@
         <field id="itemSelected" type="integer" alwaysNotify="true" />
         <field id="itemUnfocused" type="integer" alwaysNotify="true" />
         <field id="lastvisibleindex" type="integer" />
-        <field id="rectConfig" type="assocarray" />
+        <field id="config" type="assocarray" />
         <field id="rects" type="array" />
         <field id="rectSizes" type="array" />
         <field id="reverseKey" type="string" value="left" />

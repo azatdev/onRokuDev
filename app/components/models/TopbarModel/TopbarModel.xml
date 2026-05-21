@@ -2,7 +2,7 @@
 <component name="TopbarModel" extends="ContentNode">
     <interface>
         <field id="iconText" type="string" />
-        <field id="rectConfig" type="assocarray" />
+        <field id="config" type="assocarray" />
         <field id="totalCount" type="integer" />
     </interface>
     <children>

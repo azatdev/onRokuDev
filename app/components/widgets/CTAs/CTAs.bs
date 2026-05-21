@@ -12,7 +12,7 @@ sub loadList()
     list = top().findNode("ctasList")
 
     ctasModel = createObject("roSGNode", "CTAsModel")
-    ctasModel.rectConfig = {
+    ctasModel.config = {
         carouselType: "dynamicSize",
         focusType: "floating",
         itemComponentName: "ButtonItem",

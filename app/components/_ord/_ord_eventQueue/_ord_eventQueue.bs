@@ -10,9 +10,10 @@ end sub
 function runQueue(options = {})
     messagePort = createObject("roMessagePort")
     safeObserve("eventData", messagePort)
+    top().ready = true
 
     while true
-        msg = wait(1000, messagePort)
+        msg = wait(0, messagePort)
         if msg = invalid then continue while
 
         field = msg.getField()

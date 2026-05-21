@@ -300,13 +300,13 @@ sub onDataSet(options = {})
     if not rodash.isNode(content) then return
 
     safeObserve("totalCount", onTotalCountChange, content)
-    safeObserve("rectConfig", processConfig, content)
+    safeObserve("config", processConfig, content)
 
     m.content = content
     m.carousel.content = content
-    m.carousel.itemComponentName = content.rectConfig.itemComponentName
+    m.carousel.itemComponentName = content.config.itemComponentName
 
-    if content.rectConfig.carouselType = "dynamicSize"
+    if content.config.carouselType = "dynamicSize"
         rects = []
         for x = 0 to m.content.getChildCount() -1
             rects.push({
@@ -322,7 +322,7 @@ sub onDataSet(options = {})
         })
         m.carousel.targetSet = unFocusedTargetSet
     else
-        processConfig({ data: content.rectConfig })
+        processConfig({ data: content.config })
     end if
 end sub
 
@@ -477,7 +477,7 @@ sub registerChildRect(options = {})
         bigSquare: options.bigSquare
     }
     if m.rectSizes.count() = m.content.getChildCount()
-        processConfig({ data: m.content.rectConfig })
+        processConfig({ data: m.content.config })
     end if
 end sub
 

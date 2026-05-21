@@ -3,35 +3,21 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(options = {})
         m.gradient = top().findNode("gradient")
+        m.list = top().findNode("sidebarList")
         loadSidebar()
+        safeObserve("data", onDataChange)
         safeObserve("focusedChild", onFocusedChildChange)
     end sub)
 end sub
 
 
+sub onDataChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    m.list.data = options.data
+end sub
+
+
 sub loadSidebar()
-    list = top().findNode("sidebarList")
-
-    model = createObject("roSGNode", "SidebarModel")
-    model.rectConfig = {
-        direction: "vertical",
-        carouselType: "dynamicSize",
-        focusType: "floating",
-        itemComponentName: "NavigationItem",
-        maxHeight: 1800,
-        visibleTiles: 999,
-        squareMargins: [0, 0, 0, 0],
-        startingPositionOffsets: [0, 0, 0, 0, 0, 0, 0, 149, 0],
-        uniformCrossAxisSize: true,
-        useUnfocusedTargetSet: true,
-        horizAlign: "left"
-    }
-
-    list.data = {
-        content: model
-    }
-
-    m.list = list
     safeObserve("width", onListWidthChange, m.list)
     safeObserve("focusPercent", onFocusPercentChange, m.list)
 end sub

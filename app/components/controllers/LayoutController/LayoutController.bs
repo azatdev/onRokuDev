@@ -1,0 +1,24 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+
+sub init()
+    exec(sub(options = {})
+        subscribe({
+            [events.GET_SIDEBAR]: getSidebar,
+            [events.SIDEBAR_RECEIVED]: onSidebarReceived
+        })
+    end sub)
+end sub
+
+
+sub getSidebar(options = {})
+    ?"getSidebar "
+    if rodash.isInvalid(m.sidebarTask) then m.sidebarTask = createObject("roSGNode", "SidebarTask")
+    m.sidebarTask.control = "RUN"
+end sub
+
+
+sub onSidebarReceived(options = {})
+    if rodash.isInvalid(m.sidebar) then m.sidebar = app().findNode("sidebar")
+    m.sidebar.data = options
+end sub

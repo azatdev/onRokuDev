@@ -12,7 +12,7 @@ sub loadList()
     list = top().findNode("dynamicCarouselList")
 
     carouselModel = createObject("roSGNode", "DynamicCarouselModel")
-    carouselModel.rectConfig = {
+    carouselModel.config = {
         animationDuration: 0.1,
         horizAlign: "left",
         carouselType: "dynamicSize",

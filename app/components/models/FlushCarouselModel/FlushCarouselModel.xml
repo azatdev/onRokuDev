@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="FlushCarouselModel" extends="ContentNode">
     <interface>
-        <field id="rectConfig" type="assocarray" />
+        <field id="config" type="assocarray" />
         <field id="totalCount" type="integer" />
     </interface>
     <children>
