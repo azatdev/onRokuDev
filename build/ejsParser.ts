@@ -1,10 +1,10 @@
 import fs from "fs-extra";
 import ejs from "ejs";
-import { parse, resolve } from "path";
 import { Plugin, SourceObj } from 'brighterscript';
 
 type Config = {
-    configsPath: string;
+    configsPath?: string;
+    queryPath?: string;
     stylesPath: string;
 }
 
@@ -44,15 +44,19 @@ import ejsHelpers from "./ejsHelpers";
 export function ejsParser(config: Config) {
 
     const styleData = JSON.parse(fs.readFileSync(config.stylesPath).toString("utf8"));
-    const configData = JSON.parse(fs.readFileSync(config.configsPath).toString("utf8"));
+    const configData = config.configsPath
+        ? JSON.parse(fs.readFileSync(config.configsPath).toString("utf8"))
+        : {};
+    const queryData = config.queryPath
+        ? JSON.parse(fs.readFileSync(config.queryPath).toString("utf8"))
+        : {};
 
     const data = {
         ...styleData,
         ...configData,
+        ...queryData,
         ...ejsHelpers
     };
-
-    console.log("data", data)
 
     return {
         name: 'parseEJS',

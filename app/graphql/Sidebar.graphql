@@ -1,0 +1,12 @@
+query Sidebar {
+  sidebar {
+    documentId
+    screens(sort: "position") {
+      documentId
+      icon
+      name
+      position
+      slug
+    }
+  }
+}

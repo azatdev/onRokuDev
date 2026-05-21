@@ -8,14 +8,16 @@
     "rootDir": "app"
   },
   "scripts": {
-    "dev": "concurrently --kill-others-on-fail --names socket,web,styles,configs --prefix-colors yellow,blue,green,magenta \"npm run socketserver\" \"npm run webserver\" \"npm run watch:styles\" \"npm run watch:configs\"",
+    "dev": "concurrently --kill-others-on-fail --names socket,web,styles,configs,graphql --prefix-colors yellow,blue,green,magenta,cyan \"npm run socketserver\" \"npm run webserver\" \"npm run watch:styles\" \"npm run watch:configs\" \"npm run watch:graphql\"",
     "webserver": "node build/webserver.js",
     "socketserver": "node build/socketserver.js",
     "build:configs": "node build/generate-configs.cjs",
+    "build:graphql": "node build/generate-graphql.cjs",
     "build:styles": "node build/generate-styles.cjs",
     "watch:configs": "node build/watch-configs.js",
+    "watch:graphql": "node build/watch-graphql.js",
     "watch:styles": "node build/watch-styles.js",
-    "pretranspile": "npm run build:styles && npm run build:configs",
+    "pretranspile": "npm run build:styles && npm run build:configs && npm run build:graphql",
     "transpile": "npx ts-node build/generate-brs.ts",
     "test": "npm run test:rooibos:build",
     "test:rooibos:build": "node build/run-rooibos.cjs"
@@ -35,10 +37,13 @@
     "ws": "^8.18.3"
   },
   "devDependencies": {
+    "@graphql-tools/graphql-file-loader": "^8.1.14",
+    "@graphql-tools/load": "^8.1.10",
     "@types/ejs": "^3.1.5",
     "@types/fs-extra": "^11.0.4",
     "concurrently": "^9.2.1",
     "fs-extra": "^11.3.4",
+    "graphql": "^16.14.0",
     "rooibos-roku": "^5.16.1",
     "ts-node": "^10.9.2"
   }

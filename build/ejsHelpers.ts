@@ -1,5 +1,5 @@
 function wrapQuotations(str: any) {
-    return `"${str}"`
+    return `"${String(str).replace(/"/g, '""')}"`
 }
 
 function htmlEntities(str: any) {

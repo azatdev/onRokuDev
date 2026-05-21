@@ -20,5 +20,6 @@
     "sourceMap": true,
     "stagingDir": "transpiled/build",
     "configsPath": "build/configs.json",
+    "queryPath": "build/query.json",
     "stylesPath": "build/styles.json"
 }
