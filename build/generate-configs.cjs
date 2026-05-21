@@ -1,6 +1,9 @@
 const fs = require("fs");
 const net = require("net");
 const path = require("path");
+const dotenv = require("dotenv");
+
+dotenv.config({ path: path.resolve(process.cwd(), ".env"), quiet: true });
 
 const configs = require(path.resolve(__dirname, "../app/configs/configs.js"));
 const outputPath = path.resolve(__dirname, "configs.json");
