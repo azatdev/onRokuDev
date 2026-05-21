@@ -8,12 +8,14 @@
     "rootDir": "app"
   },
   "scripts": {
-    "dev": "concurrently --kill-others-on-fail --names socket,web,styles --prefix-colors yellow,blue,green \"npm run socketserver\" \"npm run webserver\" \"npm run watch:styles\"",
+    "dev": "concurrently --kill-others-on-fail --names socket,web,styles,configs --prefix-colors yellow,blue,green,magenta \"npm run socketserver\" \"npm run webserver\" \"npm run watch:styles\" \"npm run watch:configs\"",
     "webserver": "node build/webserver.js",
     "socketserver": "node build/socketserver.js",
+    "build:configs": "node build/generate-configs.cjs",
     "build:styles": "node build/generate-styles.cjs",
+    "watch:configs": "node build/watch-configs.js",
     "watch:styles": "node build/watch-styles.js",
-    "pretranspile": "npm run build:styles",
+    "pretranspile": "npm run build:styles && npm run build:configs",
     "transpile": "npx ts-node build/generate-brs.ts",
     "test": "npm run test:rooibos:build",
     "test:rooibos:build": "node build/run-rooibos.cjs"

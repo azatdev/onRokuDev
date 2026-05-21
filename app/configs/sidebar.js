@@ -1,0 +1,15 @@
+module.exports = {
+    "Sidebar": {
+        direction: "vertical",
+        carouselType: "dynamicSize",
+        focusType: "floating",
+        itemComponentName: "NavigationItem",
+        maxHeight: 1800,
+        visibleTiles: 999,
+        squareMargins: [0, 0, 0, 0],
+        startingPositionOffsets: [0, 0, 0, 0, 0, 0, 0, 149, 0],
+        uniformCrossAxisSize: true,
+        useUnfocusedTargetSet: true,
+        horizAlign: "left"
+    }
+};

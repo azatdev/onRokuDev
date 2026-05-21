@@ -19,5 +19,6 @@
     "rootDir": "app",
     "sourceMap": true,
     "stagingDir": "transpiled/build",
+    "configsPath": "build/configs.json",
     "stylesPath": "build/styles.json"
 }

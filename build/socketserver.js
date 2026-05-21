@@ -6,7 +6,6 @@ require('dotenv').config();
 const socketBindHost = process.env.SOCKET_SERVER_BIND || '0.0.0.0';
 const socketPort = Number(process.env.SOCKET_SERVER_PORT || 54320);
 const welcomeMessage = process.env.SOCKET_MESSAGE || 'Hello from the Node socket server';
-const stylesPath = path.resolve(__dirname, 'styles.json');
 const clients = new Set();
 
 function createPayload(type, message, extra = {}) {
@@ -57,10 +56,29 @@ function broadcastStylesUpdate(excludeSocket = null) {
   return true;
 }
 
+function broadcastConfigsUpdate(excludeSocket = null) {
+  broadcastPayload(
+    'CONFIGS_UPDATE',
+    "",
+    {
+      filePath: 'build/configs.json',
+      messageFormat: 'json-string',
+    },
+    excludeSocket
+  );
+
+  return true;
+}
+
 function handleIncomingPayload(socket, payload) {
   if (payload?.type === 'styles-update-request') {
     console.log(`Received styles-update request from ${socket.clientLabel}`);
     return broadcastStylesUpdate(socket);
+  }
+
+  if (payload?.type === 'configs-update-request') {
+    console.log(`Received configs-update request from ${socket.clientLabel}`);
+    return broadcastConfigsUpdate(socket);
   }
 
   return false;

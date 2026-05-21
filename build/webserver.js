@@ -5,45 +5,47 @@ require('dotenv').config();
 
 const httpBindHost = process.env.HTTP_SERVER_BIND || '0.0.0.0';
 const httpPort = Number(process.env.HTTP_SERVER_PORT || 54323);
-const stylesRoute = normalizeRoute(process.env.HTTP_SERVER_STYLES_ROUTE || '/styles.json');
+const stylesRoute = normalizeRoute(process.env.HTTP_SERVER_STYLES_ROUTE, '/styles.json');
+const configsRoute = normalizeRoute(process.env.HTTP_SERVER_CONFIGS_ROUTE, '/configs.json');
 const stylesPath = path.resolve(__dirname, 'styles.json');
+const configsPath = path.resolve(__dirname, 'configs.json');
 
-function normalizeRoute(route) {
+function normalizeRoute(route, fallbackRoute) {
   if (typeof route !== 'string') {
-    return '/styles.json';
+    return fallbackRoute;
   }
 
   const trimmedRoute = route.trim();
   if (trimmedRoute.length === 0) {
-    return '/styles.json';
+    return fallbackRoute;
   }
 
   return trimmedRoute.startsWith('/') ? trimmedRoute : `/${trimmedRoute}`;
 }
 
-function readStylesPayload() {
-  let stylesMessage = '';
+function readJsonPayload(filePath, label) {
+  let payloadText = '';
 
   try {
-    stylesMessage = fs.readFileSync(stylesPath, 'utf8').trim();
+    payloadText = fs.readFileSync(filePath, 'utf8').trim();
   } catch (error) {
     return {
       ok: false,
-      error: `Unable to read styles payload from ${stylesPath}: ${error.message}`,
+      error: `Unable to read ${label} payload from ${filePath}: ${error.message}`,
     };
   }
 
-  if (stylesMessage.length === 0) {
+  if (payloadText.length === 0) {
     return {
       ok: false,
-      error: `Styles payload at ${stylesPath} is empty.`,
+      error: `${label} payload at ${filePath} is empty.`,
     };
   }
 
   return {
     ok: true,
-    stylesMessage,
-    byteLength: Buffer.byteLength(stylesMessage, 'utf8'),
+    payloadText,
+    byteLength: Buffer.byteLength(payloadText, 'utf8'),
   };
 }
 
@@ -68,6 +70,16 @@ const httpServer = http.createServer((request, response) => {
   const requestMethod = request.method || 'GET';
   const requestPath = (request.url || '/').split('?')[0];
   const sendBody = requestMethod !== 'HEAD';
+  const routeMap = {
+    [stylesRoute]: {
+      filePath: stylesPath,
+      label: 'Styles',
+    },
+    [configsRoute]: {
+      filePath: configsPath,
+      label: 'Configs',
+    },
+  };
 
   if (requestMethod !== 'GET' && requestMethod !== 'HEAD') {
     writeJsonResponse(
@@ -82,27 +94,29 @@ const httpServer = http.createServer((request, response) => {
     return;
   }
 
-  if (requestPath !== stylesRoute) {
+  const routeConfig = routeMap[requestPath];
+
+  if (!routeConfig) {
     writeJsonResponse(
       response,
       404,
       {
         error: 'Not Found',
-        availableRoute: stylesRoute,
+        availableRoutes: Object.keys(routeMap),
       },
       sendBody
     );
     return;
   }
 
-  const stylesPayload = readStylesPayload();
-  if (!stylesPayload.ok) {
-    console.error(stylesPayload.error);
+  const payload = readJsonPayload(routeConfig.filePath, routeConfig.label);
+  if (!payload.ok) {
+    console.error(payload.error);
     writeJsonResponse(
       response,
       500,
       {
-        error: stylesPayload.error,
+        error: payload.error,
       },
       sendBody
     );
@@ -111,7 +125,7 @@ const httpServer = http.createServer((request, response) => {
 
   response.writeHead(200, {
     'Content-Type': 'application/json; charset=utf-8',
-    'Content-Length': stylesPayload.byteLength,
+    'Content-Length': payload.byteLength,
     'Cache-Control': 'no-store',
   });
 
@@ -120,7 +134,7 @@ const httpServer = http.createServer((request, response) => {
     return;
   }
 
-  response.end(stylesPayload.stylesMessage);
+  response.end(payload.payloadText);
 });
 
 httpServer.on('error', (error) => {
@@ -128,5 +142,6 @@ httpServer.on('error', (error) => {
 });
 
 httpServer.listen(httpPort, httpBindHost, () => {
-  console.log(`HTTP styles server listening on http://${httpBindHost}:${httpPort}${stylesRoute}`);
+  console.log(`HTTP asset server listening on http://${httpBindHost}:${httpPort}`);
+  console.log(`Available routes: ${stylesRoute}, ${configsRoute}`);
 });

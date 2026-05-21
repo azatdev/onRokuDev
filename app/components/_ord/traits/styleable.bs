@@ -195,6 +195,7 @@ class Styleable
 
 
     sub setIdStyles(stylesheet = {}, node = top())
+        if not rodash.isNonEmptyAA(stylesheet) then return
         idStyles = stylesheet[`&#${node.id ?? ""}`]
         if rodash.isNonEmptyAA(idStyles) then m.setStyles(idStyles, node)
     end sub
