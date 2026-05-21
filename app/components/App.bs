@@ -14,8 +14,7 @@ sub init()
         ' m.flushCarousel = top().findNode("flushCarousel")
 
         subscribe({
-            [events.EVENT_TASK_READY]: onEventTaskReady,
-            [events.APP_STARTED]: onAppStarted
+            [events.EVENT_TASK_READY]: onEventTaskReady
         })
 
         m.layout = top().findNode("layout")
@@ -65,11 +64,6 @@ sub init()
 
         ' end sub, 300)
     end sub)
-end sub
-
-
-sub onAppStarted(options = {})
-    dispatch(events.GET_SIDEBAR)
 end sub
 
 

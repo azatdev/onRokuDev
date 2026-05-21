@@ -4,7 +4,8 @@ sub init()
     exec(sub(options = {})
         m.gradient = top().findNode("gradient")
         m.list = top().findNode("sidebarList")
-        loadSidebar()
+        safeObserve("width", onListWidthChange, m.list)
+        safeObserve("focusPercent", onFocusPercentChange, m.list)
         safeObserve("data", onDataChange)
         safeObserve("focusedChild", onFocusedChildChange)
     end sub)
@@ -14,12 +15,6 @@ end sub
 sub onDataChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     m.list.data = options.data
-end sub
-
-
-sub loadSidebar()
-    safeObserve("width", onListWidthChange, m.list)
-    safeObserve("focusPercent", onFocusPercentChange, m.list)
 end sub
 
 

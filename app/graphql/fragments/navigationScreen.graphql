@@ -1,0 +1,7 @@
+fragment navigationScreen on Screen {
+    documentId
+    icon
+    name
+    position
+    slug
+}

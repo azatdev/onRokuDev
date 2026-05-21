@@ -4,10 +4,19 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(options = {})
         subscribe({
+            [events.APP_STARTED]: onAppStarted,
             [events.GET_SIDEBAR]: getSidebar,
-            [events.SIDEBAR_RECEIVED]: onSidebarReceived
+            [events.GET_TOPBAR]: getTopbar,
+            [events.SIDEBAR_RECEIVED]: onSidebarReceived,
+            [events.TOPBAR_RECEIVED]: onTopbarReceived
         })
     end sub)
+end sub
+
+
+sub onAppStarted(options = {})
+    dispatch(events.GET_SIDEBAR)
+    dispatch(events.GET_TOPBAR)
 end sub
 
 
@@ -18,7 +27,20 @@ sub getSidebar(options = {})
 end sub
 
 
+sub getTopbar(options = {})
+    ?"getTopbar "
+    if rodash.isInvalid(m.topbarTask) then m.topbarTask = createObject("roSGNode", "TopbarTask")
+    m.topbarTask.control = "RUN"
+end sub
+
+
 sub onSidebarReceived(options = {})
     if rodash.isInvalid(m.sidebar) then m.sidebar = app().findNode("sidebar")
     m.sidebar.data = options
+end sub
+
+
+sub onTopbarReceived(options = {})
+    if rodash.isInvalid(m.topbar) then m.topbar = app().findNode("topbar")
+    m.topbar.data = options
 end sub

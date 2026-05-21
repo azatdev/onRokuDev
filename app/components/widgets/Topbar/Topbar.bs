@@ -3,9 +3,17 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(options = {})
         m.gradient = top().findNode("gradient")
-        loadTopbar()
+        m.list = top().findNode("topbarList")
+        ' loadTopbar()
+        safeObserve("data", onDataChange)
         safeObserve("focusedChild", onFocusedChildChange)
     end sub)
+end sub
+
+
+sub onDataChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    m.list.data = options.data
 end sub
 
 

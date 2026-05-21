@@ -1,7 +1,5 @@
-query Sidebar {
-  sidebar {
-    defaultSlug
-    documentId
+query Topbar {
+  topbar {
     screens(sort: "position") {
       ...navigationScreen
     }

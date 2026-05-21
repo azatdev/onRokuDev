@@ -2,35 +2,34 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(options = {})
-        setTaskFunction(runSidebarTask)
+        setTaskFunction(runTopbarTask)
     end sub)
 end sub
 
 
-function runSidebarTask(options = {})
-    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Sidebar) %>"}, headers: "<%- o(CONFIG.Headers) %>"})
+function runTopbarTask(options = {})
+    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Topbar) %>"}, headers: "<%- o(CONFIG.Headers) %>"})
 
     if rodash.isEmpty(response.text) then return true
 
-    sidebarModel = returnSidebarModel(parseJSON(response.text))
+    sidebarModel = returnTopbarModel(parseJSON(response.text))
 
     if rodash.isNode(sidebarModel)
-        dispatch(events.SIDEBAR_RECEIVED, { content: sidebarModel })
+        dispatch(events.TOPBAR_RECEIVED, { content: sidebarModel })
     end if
 
     return true
 end function
 
 
-function returnSidebarModel(options = {})
+function returnTopbarModel(options = {})
     data = options.data ?? {}
-    sidebarData = data.sidebar ?? {}
-    screensData = sidebarData.screens ?? []
+    topbarData = data.topbar ?? {}
+    screensData = topbarData.screens ?? []
     updateObjArray = []
 
     for each screen in screensData
         updateObject = {
-            dynamicWidth: true,
             iconText: getIcon(screen.icon),
             title: screen.name ?? "",
             subtype: "ContentNode"
@@ -39,10 +38,10 @@ function returnSidebarModel(options = {})
         updateObjArray.push(updateObject)
     end for
 
-    model = createObject("roSGNode", "SidebarModel")
+    model = createObject("roSGNode", "TopbarModel")
     model.update(updateObjArray, true)
     model.totalCount = model.getChildCount()
-    model.config = "<%- o(CONFIG.Sidebar) %>"
+    model.config = "<%- o(CONFIG.Topbar) %>"
 
     return model
 end function

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="Topbar" extends="Group">
     <interface>
+        <field id="data" type="assocArray" />
         <function name="safeFunc" />
     </interface>
     <children>

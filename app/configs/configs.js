@@ -3,6 +3,7 @@ module.exports = {
         ...require("./environment"),
         ...require("./headers"),
         ...require("./icons"),
-        ...require("./sidebar")
+        ...require("./sidebar"),
+        ...require("./topbar")
     }
 };

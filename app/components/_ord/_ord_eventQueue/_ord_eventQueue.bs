@@ -16,7 +16,6 @@ function runQueue(options = {})
         msg = wait(0, messagePort)
         if msg = invalid then continue while
 
-        field = msg.getField()
         messageData = msg.getData()
         if rodash.isEmpty(messageData) then continue while
 
@@ -24,7 +23,7 @@ function runQueue(options = {})
         eventOptions = messageData.options ?? {}
 
         if rodash.isEmpty(eventId) then continue while
-        ?"PUBLISHING EVENT " eventId
+        ?"--- EVENT: " eventId
         publish(eventId, eventOptions)
     end while
 
