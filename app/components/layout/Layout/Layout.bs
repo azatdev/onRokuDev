@@ -3,11 +3,10 @@ import "pkg:/source/roku_modules/sgrouter/router.brs"
 
 sub init()
     exec(sub(options = {})
-        ' Initialize the router at your main outlet
-        sgRouter.initialize({ outlet: m.top.findNode("screenContainer") })
+        sgRouter.initialize({ outlet: top().findNode("screenContainer") })
 
         sgRouter.addRoutes([
-            { pattern: "/", component: "CatalogScreen" },
+            { pattern: "/home", component: "CatalogScreen" },
             ' { pattern: "/shows", component: "CatalogScreen", clearStackOnResolve: true },
             ' { pattern: "/movies", component: "CatalogScreen", clearStackOnResolve: true },
             ' { pattern: "/details/series/:id", component: "DetailsScreen" },
@@ -17,12 +16,28 @@ sub init()
             ' { pattern: "/:screenName", component: "DefaultScreen" }
         ])
 
-        sgRouter.navigateTo("/") ' Go to the welcome view
+        safeFunctions({
+            "navigateTo": navigateTo
+        })
+
+        ' sgRouter.navigateTo("/home") ' Go to the welcome view
 
         ' set the focus to the router
         ' sgRouter.setFocus({ focus: true })
+
+        safeObserve("routerState", onRouterStateChanged, sgRouter.getRouter())
         safeObserve("focusedChild", onFocusedChildChange)
     end sub)
+end sub
+
+
+sub navigateTo(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    slug = options.slug ?? ""
+    if rodash.isEmptyString(slug) then return
+
+    sgRouter.navigateTo(slug)
 end sub
 
 
@@ -31,4 +46,12 @@ sub onFocusedChildChange(options = {})
     focusedChild = options.data
     if not rodash.isNode(focusedChild) then return
     sgRouter.setFocus({ focus: true })
+end sub
+
+
+sub onRouterStateChanged(options = {})
+    data = options.data
+    if data.type <> "ActivationStart" then return
+
+    dispatch(events.GET_SCREEN_DATA, { screenId: data.id, slug: data.url })
 end sub

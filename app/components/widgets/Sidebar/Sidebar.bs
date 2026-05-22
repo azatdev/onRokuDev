@@ -6,6 +6,9 @@ sub init()
         m.list = top().findNode("sidebarList")
         safeObserve("width", onListWidthChange, m.list)
         safeObserve("focusPercent", onFocusPercentChange, m.list)
+        safeObserve("itemSelected", onItemSelected, m.list)
+        safeObserve("itemFocused", onItemFocused, m.list)
+
         safeObserve("data", onDataChange)
         safeObserve("focusedChild", onFocusedChildChange)
     end sub)
@@ -15,6 +18,13 @@ end sub
 sub onDataChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     m.list.data = options.data
+
+    sidebarModel = options.data?.content
+    m.content = sidebarModel
+    defaultSlug = sidebarModel.defaultSlug
+    itemModel = sidebarModel.findNode(defaultSlug)
+    selectedItemIndex = rodash.indexOf(sidebarModel.getChildren(-1, 0), itemModel)
+    m.list.itemSelected = selectedItemIndex
 end sub
 
 
@@ -23,6 +33,25 @@ sub onFocusedChildChange(options = {})
     focusedChild = options.data
     if not rodash.isNode(focusedChild) then return
     m.list.setFocus(true)
+end sub
+
+
+sub onItemFocused(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    itemFocused = options.data
+    ?"onItemFocused " itemFocused
+end sub
+
+
+sub onItemSelected(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    if not rodash.isNode(m.content) then return
+
+    itemSelected = options.data
+    itemModel = m.content.getChild(itemSelected)
+    if not rodash.isNode(itemModel) then return
+
+    dispatch(events.NAVIGATE_TO, { slug: itemModel.id, documentId: itemModel.documentId })
 end sub
 
 

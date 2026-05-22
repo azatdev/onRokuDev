@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="CatalogScreen" extends="sgRouter_View">
     <interface>
+        <function name="safeFunc" />
     </interface>
     <children>
         <_ord_scrollGroup id="scrollGroup" />

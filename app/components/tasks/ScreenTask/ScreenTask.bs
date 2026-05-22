@@ -1,0 +1,60 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        setTaskFunction(runScreenTask)
+    end sub)
+end sub
+
+
+function runScreenTask(options = {})
+    screenVariables = top().screenVariables
+    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Screen) %>", variables: screenVariables }, headers: "<%- o(CONFIG.Headers) %>"})
+
+    if rodash.isEmpty(response.text) then return true
+
+    ?"runScreenTask " response.text
+
+    ' sidebarModel = returnSidebarModel(parseJSON(response.text))
+
+    ' if rodash.isNode(sidebarModel)
+    '     dispatch(events.SIDEBAR_RECEIVED, { content: sidebarModel })
+    ' end if
+
+    return true
+end function
+
+
+' function returnSidebarModel(options = {})
+'     data = options.data ?? {}
+'     sidebarData = data.sidebar ?? {}
+'     screensData = sidebarData.screens ?? []
+'     updateObjArray = []
+
+'     for each screen in screensData
+'         updateObject = {
+'             documentId: screen.documentId,
+'             dynamicWidth: true,
+'             iconText: getIcon(screen.icon),
+'             id: screen.slug,
+'             title: screen.name ?? "",
+'             subtype: "Model"
+'         }
+
+'         updateObjArray.push(updateObject)
+'     end for
+
+'     model = createObject("roSGNode", "SidebarModel")
+'     model.update(updateObjArray, true)
+'     model.defaultSlug = sidebarData.defaultSlug
+'     model.totalCount = model.getChildCount()
+'     model.config = "<%- o(CONFIG.Sidebar) %>"
+
+'     return model
+' end function
+
+
+' function getIcon(iconType)
+'     iconsDictionary = "<%- o(CONFIG.Icons) %>"
+'     return iconsDictionary[iconType] ?? ""
+' end function

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="TopbarModel" extends="ContentNode">
+<component name="TopbarModel" extends="Model">
     <interface>
-        <field id="iconText" type="string" />
         <field id="config" type="assocarray" />
-        <field id="totalCount" type="integer" />
     </interface>
     <children>
 

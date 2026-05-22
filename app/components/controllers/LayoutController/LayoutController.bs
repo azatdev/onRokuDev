@@ -5,8 +5,10 @@ sub init()
     exec(sub(options = {})
         subscribe({
             [events.APP_STARTED]: onAppStarted,
+            [events.GET_SCREEN_DATA]: getScreenData,
             [events.GET_SIDEBAR]: getSidebar,
             [events.GET_TOPBAR]: getTopbar,
+            [events.NAVIGATE_TO]: navigateTo,
             [events.SIDEBAR_RECEIVED]: onSidebarReceived,
             [events.TOPBAR_RECEIVED]: onTopbarReceived
         })
@@ -20,27 +22,114 @@ sub onAppStarted(options = {})
 end sub
 
 
+sub getScreenData(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    screenId = options.screenId
+    slug = options.slug
+
+    screenConfig = get(slug) ?? {}
+    ' documentId = screenConfig.documentId ?? ""
+    ' if rodash.isEmptyString(documentId) then return
+
+    screenConfig.screenId = screenId
+    ?"screenConfig " formatJSON(screenConfig)
+
+    screenVariables = screenConfig.variables ?? {}
+    ' documentId
+
+    saveObject = {}
+    saveObject[slug] = screenConfig
+    set(saveObject)
+
+    if rodash.isInvalid(m.screenTask) then m.screenTask = createObject("roSGNode", "ScreenTask")
+
+    screenPagination = getScreenPagination(screenVariables)
+    if not rodash.isNonEmptyAA(screenPagination) then return
+
+    screenVariables.pagination = screenPagination
+    m.screenTask.update({ screenVariables: screenVariables }, true)
+    m.screenTask.control = "RUN"
+    ' screenVariables = getScreenVariables(screenConfig)
+
+end sub
+
+
+function getScreenPagination(options = {})
+    if not rodash.isNonEmptyAA(options) then return invalid
+
+    paginationOptions = {}
+
+    if rodash.isNonEmptyAA(options.pagination)
+
+    else
+        paginationOptions = "<%- o(CONFIG.Pagination.Initial) %>"
+    end if
+
+    return paginationOptions
+end function
+
+
 sub getSidebar(options = {})
-    ?"getSidebar "
     if rodash.isInvalid(m.sidebarTask) then m.sidebarTask = createObject("roSGNode", "SidebarTask")
     m.sidebarTask.control = "RUN"
 end sub
 
 
 sub getTopbar(options = {})
-    ?"getTopbar "
     if rodash.isInvalid(m.topbarTask) then m.topbarTask = createObject("roSGNode", "TopbarTask")
     m.topbarTask.control = "RUN"
 end sub
 
 
+sub navigateTo(options = {})
+    ?"navigateTo " options
+
+    documentId = options.documentId
+    slug = options.slug
+
+    screenConfig = get(slug) ?? {}
+    screenVariables = screenConfig.variables ?? {}
+    screenVariables.SetModeCaseSensitive()
+    screenVariables["documentId"] = documentId
+    screenConfig.variables = screenVariables
+
+    saveObject = {}
+    saveObject[slug] = screenConfig
+    set(saveObject)
+
+    exec("navigateTo", options, layout())
+end sub
+
+
 sub onSidebarReceived(options = {})
-    if rodash.isInvalid(m.sidebar) then m.sidebar = app().findNode("sidebar")
-    m.sidebar.data = options
+    sidebar().data = options
 end sub
 
 
 sub onTopbarReceived(options = {})
-    if rodash.isInvalid(m.topbar) then m.topbar = app().findNode("topbar")
-    m.topbar.data = options
+    topbar().data = options
 end sub
+
+
+function layout()
+    return findNode("layout")
+end function
+
+
+function sidebar()
+    return findNode("sidebar")
+end function
+
+
+function topbar()
+    return findNode("topbar")
+end function
+
+
+function findNode(nodeId)
+    node = m[nodeId]
+    if rodash.isInvalid(node) then node = app().findNode(nodeId)
+    m[nodeId] = node
+    return node
+end function

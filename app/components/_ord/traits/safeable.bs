@@ -138,6 +138,10 @@ class Safeable
 
 
     sub safeObserve(fieldName = "", callbackFunc = "", node = getGlobalAA().top, infoFields = [])
+
+        if fieldName = "change"
+            ?"safeObserve " node.subtype()
+        end if
         if rodash.isEmptyString(fieldName) then return
 
         if role() = "Task" and rodash.isMessagePort(callbackFunc)

@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="SidebarModel" extends="ContentNode">
+<component name="SidebarModel" extends="Model">
     <interface>
         <field id="config" type="assocarray" />
-        <field id="totalCount" type="integer" />
-        <function name="safeFunc" />
+        <field id="defaultSlug" type="string" />
     </interface>
     <children>
 

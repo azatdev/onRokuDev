@@ -1,0 +1,10 @@
+query Screen($documentId: ID!, $pagination: PaginationArg) {
+  screen(documentId: $documentId) {
+    carousels(pagination: $pagination) {
+      carouselTitle
+      carouselType
+      documentId
+      thumbnailType
+    }
+  }
+}

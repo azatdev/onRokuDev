@@ -1,0 +1,18 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options)
+        safeObserve("change", onChildChange)
+    end sub)
+end sub
+
+sub onChildChange(options = {})
+    changeData = options.data
+    ?"onChildChange " changeData
+
+    if rodash.isEmpty(changeData) then return
+    operation = changeData.operation ?? ""
+    if operation <> "add" and operation <> "remove" then return
+
+    top().totalCount = top().getChildCount()
+end sub

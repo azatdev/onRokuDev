@@ -1,5 +1,3 @@
-import "pkg:/components/_ord/wrappers.bs"
-
 sub init()
     exec(sub(options)
     end sub)
