@@ -4,13 +4,14 @@ import "pkg:/source/roku_modules/promises/promises.brs"
 sub init()
     exec(sub(options = {})
         m.scrollGroup = top().findNode("scrollGroup")
-        ' m.scrollGroup.config = {
-        '     direction: "vertical",
-        '     flushEnd: true,
-        '     scrollbarPosition: "top",
-        '     showScrollbar: true
-        ' }
 
+        m.scrollGroup.config = {
+            direction: "vertical",
+            flushEnd: true,
+            showScrollbar: false
+        }
+
+        safeObserve("data", onDataSet)
         ' rodash.delay(sub(node)
         '     newRect = createObject("roSGNode", "Rectangle")
         '     newRect.width = 1650
@@ -34,3 +35,32 @@ function handleFocus(options = {})
         return true
     end function)
 end function
+
+
+sub onDataSet(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    data = options.data
+    content = data.content
+
+    for each model in content.getChildren(-1, 0)
+        processScrollItem({ model: model })
+    end for
+end sub
+
+
+sub processScrollItem(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    model = options.model
+    carouselType = model.carouselType ?? "INDEX"
+
+    if carouselType = "HEADER"
+        component = createObject("roSGNode", "Header")
+    else
+        component = createObject("roSGNode", "Carousel")
+    end if
+
+    m.scrollGroup.appendChild(component)
+end sub
+

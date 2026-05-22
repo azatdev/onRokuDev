@@ -5,12 +5,7 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <Rectangle id="container">
-            <Rectangle id="first" />
-            <Rectangle id="second" />
-            <Rectangle id="third" />
-            <Rectangle id="fourth" />
-        </Rectangle>
+        <Rectangle id="container" />
         <Poster id="scrollTrack">
             <Poster id="scrollKnob"/>
         </Poster>

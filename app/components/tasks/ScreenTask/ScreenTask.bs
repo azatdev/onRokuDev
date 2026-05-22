@@ -13,45 +13,45 @@ function runScreenTask(options = {})
 
     if rodash.isEmpty(response.text) then return true
 
-    ?"runScreenTask " response.text
+    screenModel = returnScreenModel(parseJSON(response.text))
 
-    ' sidebarModel = returnSidebarModel(parseJSON(response.text))
-
-    ' if rodash.isNode(sidebarModel)
-    '     dispatch(events.SIDEBAR_RECEIVED, { content: sidebarModel })
-    ' end if
+    if rodash.isNode(screenModel)
+        publish(events.SCREEN_DATA_RECEIVED, { content: screenModel })
+    end if
 
     return true
 end function
 
 
-' function returnSidebarModel(options = {})
-'     data = options.data ?? {}
-'     sidebarData = data.sidebar ?? {}
-'     screensData = sidebarData.screens ?? []
-'     updateObjArray = []
+function returnScreenModel(options = {})
+    data = options.data ?? {}
+    screenData = data.screen ?? {}
+    carouselsData = screenData.carousels ?? []
+    updateObjArray = []
 
-'     for each screen in screensData
-'         updateObject = {
-'             documentId: screen.documentId,
-'             dynamicWidth: true,
-'             iconText: getIcon(screen.icon),
-'             id: screen.slug,
-'             title: screen.name ?? "",
-'             subtype: "Model"
-'         }
+    for each carousel in carouselsData
+        updateObject = {
+            carouselTitle: carousel.carouselTitle,
+            carouselType: carousel.carouselType,
+            documentId: carousel.documentId,
+            id: carousel.documentId,
+            thumbnailType: carousel.thumbnailType ?? "LANDSCAPE",
+            subtype: "Model"
+        }
 
-'         updateObjArray.push(updateObject)
-'     end for
+        updateObjArray.push(updateObject)
+    end for
 
-'     model = createObject("roSGNode", "SidebarModel")
-'     model.update(updateObjArray, true)
-'     model.defaultSlug = sidebarData.defaultSlug
-'     model.totalCount = model.getChildCount()
-'     model.config = "<%- o(CONFIG.Sidebar) %>"
+    updateObject = {
+        slug: screenData.slug,
+        children: updateObjArray
+    }
 
-'     return model
-' end function
+    model = createObject("roSGNode", "Model")
+    model.update(updateObject, true)
+
+    return model
+end function
 
 
 ' function getIcon(iconType)

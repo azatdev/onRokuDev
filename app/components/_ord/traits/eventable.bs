@@ -109,6 +109,7 @@ class Eventable
 
     sub publish(options = {})
         if m.renderQueue = invalid then return
+        ?"### EVENT: " options.id
         m.renderQueue.postMessage(options.id, options.options)
     end sub
 

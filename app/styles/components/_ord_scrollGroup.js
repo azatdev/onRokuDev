@@ -1,7 +1,6 @@
 module.exports = {
     "_ord_scrollGroup": {
         "color": "#FFFFFF00",
-        "translation": [210, 360],
         "Poster": {
             "&#scrollTrack": {
                 blendColor: "#FFFFFF",

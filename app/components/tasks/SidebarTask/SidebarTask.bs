@@ -15,7 +15,7 @@ function runSidebarTask(options = {})
     sidebarModel = returnSidebarModel(parseJSON(response.text))
 
     if rodash.isNode(sidebarModel)
-        dispatch(events.SIDEBAR_RECEIVED, { content: sidebarModel })
+        publish(events.SIDEBAR_RECEIVED, { content: sidebarModel })
     end if
 
     return true

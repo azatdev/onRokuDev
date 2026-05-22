@@ -6,5 +6,6 @@ query Screen($documentId: ID!, $pagination: PaginationArg) {
       documentId
       thumbnailType
     }
+    slug
   }
 }

@@ -23,7 +23,6 @@ function runQueue(options = {})
         eventOptions = messageData.options ?? {}
 
         if rodash.isEmpty(eventId) then continue while
-        ?"--- EVENT: " eventId
         publish(eventId, eventOptions)
     end while
 

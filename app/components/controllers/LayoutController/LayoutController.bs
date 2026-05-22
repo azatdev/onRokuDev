@@ -9,6 +9,7 @@ sub init()
             [events.GET_SIDEBAR]: getSidebar,
             [events.GET_TOPBAR]: getTopbar,
             [events.NAVIGATE_TO]: navigateTo,
+            [events.SCREEN_DATA_RECEIVED]: onScreenDataReceived,
             [events.SIDEBAR_RECEIVED]: onSidebarReceived,
             [events.TOPBAR_RECEIVED]: onTopbarReceived
         })
@@ -29,14 +30,10 @@ sub getScreenData(options = {})
     slug = options.slug
 
     screenConfig = get(slug) ?? {}
-    ' documentId = screenConfig.documentId ?? ""
-    ' if rodash.isEmptyString(documentId) then return
-
     screenConfig.screenId = screenId
     ?"screenConfig " formatJSON(screenConfig)
 
     screenVariables = screenConfig.variables ?? {}
-    ' documentId
 
     saveObject = {}
     saveObject[slug] = screenConfig
@@ -48,7 +45,8 @@ sub getScreenData(options = {})
     if not rodash.isNonEmptyAA(screenPagination) then return
 
     screenVariables.pagination = screenPagination
-    m.screenTask.update({ screenVariables: screenVariables }, true)
+    m.screenTask.update({ screenVariables: screenVariables
+    }, true)
     m.screenTask.control = "RUN"
     ' screenVariables = getScreenVariables(screenConfig)
 
@@ -99,6 +97,25 @@ sub navigateTo(options = {})
     set(saveObject)
 
     exec("navigateTo", options, layout())
+end sub
+
+
+sub onScreenDataReceived(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    screenModel = options.content
+    slug = screenModel.slug ?? ""
+    screenConfig = get(slug) ?? {}
+    screenId = screenConfig.screenId
+    screen = layout().findNode(screenId)
+    if not rodash.isNode(screen) then return
+
+    screenConfig.totalCount = screenModel.totalCount
+    screen.data = options
+
+    saveObject = {}
+    saveObject[slug] = screenConfig
+    set(saveObject)
 end sub
 
 
