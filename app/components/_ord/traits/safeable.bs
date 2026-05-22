@@ -2,11 +2,7 @@ class Safeable
     publicFunctions = []
 
     sub new(options = {})
-        top().addField("_ord_safeFunctions", "assocarray", false)
-        top().addField("_ord_proxyData", "assocarray", true)
-        top().addField("_ord_callbacks", "assocarray", false)
-        top().setRef("_ord_safeFunctions", {})
-        top().setRef("_ord_proxyData", {})
+        top().addField("ord_proxyData", "assocarray", true)
 
         m.setExportFunctions(role())
     end sub
@@ -71,16 +67,7 @@ class Safeable
         end if
 
         if rodash.isString(func)
-            nodeSafeFunctions = top().getRef("_ord_safeFunctions")
-            if rodash.isInvalid(nodeSafeFunctions)
-                ?`
-
-                WARNING: Function ${func}
-                doesn't exist in ${top().subType()}
-
-                `
-                return invalid
-            end if
+            nodeSafeFunctions = getGlobalAA().ord_safeFunctions ?? {}
             nodeFunction = nodeSafeFunctions[func]
             targetFunction = nodeFunction
         end if
@@ -114,34 +101,38 @@ class Safeable
     function proxyFunc(functionName = "", options = {}, node = {})
         if not rodash.isNode(node) then return invalid
 
-        proxyData = node.getRef("_ord_proxyData") ?? {}
+        proxyData = node.ord_proxyData ?? {}
 
         if not rodash.isEmpty(options)
             proxyData.input = options
         end if
 
+        node.ord_proxyData = proxyData
+
+        ?"proxyData " proxyData
+
         node.callFunc("safeFunc", functionName)
 
         returnObj = proxyData.output ?? invalid
         proxyData.output = invalid
+
+        node.ord_proxyData = proxyData
         return returnObj
     end function
 
 
     sub processSafeFunc(functionName)
-        proxyData = top().getRef("_ord_proxyData") ?? {}
+        proxyData = top().ord_proxyData ?? {}
         options = proxyData.input
         returnData = exec(functionName, options, top())
         proxyData.input = invalid
         proxyData.output = returnData
+        top().ord_proxyData = proxyData
     end sub
 
 
     sub safeObserve(fieldName = "", callbackFunc = "", node = getGlobalAA().top, infoFields = [])
 
-        if fieldName = "change"
-            ?"safeObserve " node.subtype()
-        end if
         if rodash.isEmptyString(fieldName) then return
 
         if role() = "Task" and rodash.isMessagePort(callbackFunc)
@@ -173,11 +164,12 @@ class Safeable
     end sub
 
 
+    ' This function runs on node's m context
     sub safeCallback(event)
         fieldName = event.getField() ?? ""
         if rodash.isEmptyString(fieldName) then return
 
-        callbacks = top().getRef("_ord_callbacks") ?? {}
+        callbacks = getGlobalAA().ord_callbacks
         node = event.getRoSGNode()
         nodeIdentifier = node.isSameNode(getGlobalAA().top) ? "" : `_${node.subType()}_${node.id}`
         uniqueFieldName = `${fieldName}${nodeIdentifier}`
@@ -212,28 +204,28 @@ class Safeable
 
     sub safeFunctions(options = {})
         if not rodash.isAA(options) then return
-        allFunctions = top().getRef("_ord_safeFunctions") ?? {}
+        allFunctions = getGlobalAA().ord_safeFunctions ?? {}
         allFunctions.append(options)
+        getGlobalAA().ord_safeFunctions = allFunctions
     end sub
 
 
     sub removeCallback(options = {})
-        callbacks = top().getRef("_ord_callbacks") ?? {}
+        callbacks = getGlobalAA().ord_callbacks
 
         field = options.field
         callbacks.delete(field)
-        top().setRef("_ord_callbacks", callbacks)
     end sub
 
 
     sub storeCallback(options = {})
-        callbacks = top().getRef("_ord_callbacks") ?? {}
+        callbacks = getGlobalAA().ord_callbacks ?? {}
 
         field = options.field
         callback = options.callback
 
         callbacks[field] = callback
-        top().setRef("_ord_callbacks", callbacks)
+        getGlobalAA().ord_callbacks = callbacks
     end sub
 
 

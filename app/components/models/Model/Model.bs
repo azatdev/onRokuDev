@@ -8,7 +8,6 @@ end sub
 
 sub onChildChange(options = {})
     changeData = options.data
-    ?"onChildChange " changeData
 
     if rodash.isEmpty(changeData) then return
     operation = changeData.operation ?? ""

@@ -35,7 +35,7 @@ function returnSidebarModel(options = {})
             iconText: getIcon(screen.icon),
             id: screen.slug,
             title: screen.name ?? "",
-            subtype: "Model"
+            subtype: "ContentNode"
         }
 
         updateObjArray.push(updateObject)
@@ -44,7 +44,6 @@ function returnSidebarModel(options = {})
     model = createObject("roSGNode", "SidebarModel")
     model.update(updateObjArray, true)
     model.defaultSlug = sidebarData.defaultSlug
-    model.totalCount = model.getChildCount()
     model.config = "<%- o(CONFIG.Sidebar) %>"
 
     return model
