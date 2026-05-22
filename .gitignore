@@ -7,3 +7,5 @@ package-lock.json
 build/configs.json
 build/styles.json
 build/query.json
+app/components/roku_modules
+app/source/roku_modules
