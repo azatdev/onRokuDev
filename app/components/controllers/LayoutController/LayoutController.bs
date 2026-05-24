@@ -133,7 +133,7 @@ end sub
 sub paginateCarousel(options = {})
     if not rodash.isNonEmptyAA(options) then return
     collection = options.collection
-    
+
 end sub
 
 
