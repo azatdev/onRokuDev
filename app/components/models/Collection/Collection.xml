@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="Collection" extends="Model">
+    <interface>
+        <field id="pagination" type="assocArray" />
+    </interface>
+    <children>
+
+    </children>
+    <script type="text/brightscript" uri="Collection.bs" />
+</component>

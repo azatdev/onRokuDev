@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="Hero" extends="Rectangle">
+    <interface>
+
+    </interface>
+    <children>
+        <Div id="contentContainer">
+            <Poster id="contentLogo" />
+            <Div id="metadataContainer" />
+            
+        </Div>
+    </children>
+    <script type="text/brightscript" uri="Hero.bs" />
+</component>

@@ -15,7 +15,13 @@
     ],
     "lintConfig": "config/bslint.jsonc",
     "outputDir": "out",
-    "plugins": [ "@rokucommunity/bslint" ],
+    "require": [
+        "ts-node/register"
+    ],
+    "plugins": [
+        "./build/ejsParser.ts",
+        "@rokucommunity/bslint"
+    ],
     "rootDir": "app",
     "sourceMap": true,
     "stagingDir": "transpiled/build",

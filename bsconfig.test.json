@@ -17,7 +17,11 @@
         }
     ],
     "outFile": "out/rooibos-tests.zip",
-    "plugins": [ "@rokucommunity/bslint", "rooibos-roku" ],
+    "plugins": [
+        "./build/ejsParser.ts",
+        "@rokucommunity/bslint",
+        "rooibos-roku"
+    ],
     "rooibos": {
         "catchCrashes": true,
         "failFast": true,

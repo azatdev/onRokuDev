@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="CarouselItem" extends="Group">
+<component name="CarouselItem" extends="Poster">
     <interface>
         <field id="index" type="integer" />
         <field id="currRect" type="rect2d" />
@@ -8,11 +8,11 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <Rectangle id="container">
+        <Div id="container">
             <Poster id="thumbnail" />
             <Poster id="outline" />
             <Label id="label" />
-        </Rectangle>
+        </Div>
     </children>
     <script type="text/brightscript" uri="CarouselItem.bs" />
 </component>

@@ -3,7 +3,12 @@ import "pkg:/source/roku_modules/promises/promises.brs"
 
 sub init()
     exec(sub(options = {})
+        m.screenContainer = top().findNode("screenContainer")
+        m.headerContainer = top().findNode("headerContainer")
         m.scrollGroup = top().findNode("scrollGroup")
+
+        ' m.screenContainer.color = "#00000000"
+        ' ?"m.screenContainer " m.screenContainer.color
 
         m.scrollGroup.config = {
             direction: "vertical",
@@ -42,6 +47,7 @@ sub onDataSet(options = {})
 
     data = options.data
     content = data.content
+    headerContent = content.getChild(0)
 
     for each model in content.getChildren(-1, 0)
         processScrollItem({ model: model })
@@ -55,12 +61,15 @@ sub processScrollItem(options = {})
     model = options.model
     carouselType = model.carouselType ?? "INDEX"
 
-    if carouselType = "HEADER"
-        component = createObject("roSGNode", "Header")
+    if carouselType = "Hero"
+        component = createObject("roSGNode", "Hero")
+        m.headerContainer.appendChild(component)
     else
         component = createObject("roSGNode", "Carousel")
+        component.data = { content: model }
+        m.scrollGroup.appendChild(component)
     end if
 
-    m.scrollGroup.appendChild(component)
-end sub
+    stackChildren({ node: m.screenContainer, direction: "vertical" })
 
+end sub

@@ -5,7 +5,10 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <_ord_scrollGroup id="scrollGroup" />
+        <Div id="screenContainer">
+            <Div id="headerContainer" />
+            <_ord_scrollGroup id="scrollGroup" />
+        </Div>
     </children>
     <script type="text/brightscript" uri="CatalogScreen.bs" />
 </component>

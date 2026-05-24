@@ -401,42 +401,29 @@ class Animatable
 
     sub fadeIn(node = invalid, options = {})
         if not rodash.isNode(node) then return
-
-        options.opacity = 1
-        m.fade(node, options)
+        m.fade(node, { opacity: 1 }, options)
     end sub
 
 
     sub fadeOut(node = invalid, options = {})
         if not rodash.isNode(node) then return
-
-        options.opacity = 0
-        m.fade(node, options)
+        m.fade(node, { opacity: 0 }, options)
     end sub
 
 
-    sub fade(node = invalid, options = {})
+    sub fade(node = invalid, options = {}, sharedOptions = {})
         if not rodash.isNode(node) then return
 
         nodeId = node.id ?? ""
         if rodash.isEmptyString(nodeId) then return
 
-        morphObject = {
-            callbackFunc: options.callbackFunc ?? "",
-            callbackOpts: options.callbackOpts ?? {}
-        }
+        morphObject = {}
+
         morphObject[nodeId] = {
-            delay: options.delay ?? 0,
-            duration: options.duration ?? 0.3,
-            opacity: options.opacity,
-            callbackFunc: options.callbackFunc ?? ""
+            fields: options
         }
 
-        state = options.opacity = 0 ? "out" : "in"
-        payloadObject = {}
-        payloadObject[state] = morphObject
-
-        m.morph(state, payloadObject)
+        m.morph(morphObject, sharedOptions)
     end sub
 
 

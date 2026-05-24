@@ -2,5 +2,23 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(options = {})
+        m.carouselTitle = top().findNode("carouselTitle")
+        m.carouselList = top().findNode("carouselList")
+        m.titleContainer = top().findNode("titleContainer")
+        safeObserve("data", onDataSet)
     end sub)
+end sub
+
+
+sub onDataSet(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    data = options.data
+    content = data.content
+    m.carouselTitle.text = content.carouselTitle
+    m.carouselList.data = data
+    ?"m.top " m.top.subtype()
+
+    stackChildren({ node: m.top, direction: "vertical" })
+    dispatch(events.PAGINATE_CAROUSEL, { collection: content })
 end sub

@@ -1,8 +1,21 @@
+const mixins = require("../mixins");
+const dimensions = mixins["Dimensions"]
+const palette = mixins["Palette"]
+const viewport = dimensions["viewport"]
+
 module.exports = {
     "CatalogScreen": {
-        "_ord_scrollGroup":{
-            height: 700,
-            width: 1650
+        "Div": {
+            "&#screenContainer": {
+                "Div": {
+                    height: 591,
+                    width: viewport.width
+                },
+                "_ord_scrollGroup":{
+                    height: 1002,
+                    width: viewport.width
+                }
+            }
         }
     }
 };

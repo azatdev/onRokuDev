@@ -2,6 +2,7 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(options = {})
+        top().id = "carouselItem"
         setupItem()
     end sub)
 end sub
@@ -14,12 +15,40 @@ sub setupItem()
     m.thumbnail = m.top.findNode("thumbnail")
     safeObserve("currRect", onCurrentRectChange)
     safeObserve("focusPercent", onFocusPercentChange)
+    startLoadingAnimation()
+end sub
+
+
+sub startLoadingAnimation()
+    fadeOut(top(), { callback: onFadedOut, duration: 1 })
+end sub
+
+
+sub onFadedOut(options = {})
+    fadeIn(top(), { callback: onFadedIn, duration: 1 })
+end sub
+
+
+sub onFadedIn(options = {})
+    startLoadingAnimation()
+    ' if not rodash.isNode(m.content) then return
+    ' if rodash.isBoolean(m.content.hydrated) and not m.content.hydrated
+    ' end if
 end sub
 
 
 sub itemContentChanged(event)
     content = event.getData()
     if content = invalid then return
+
+    m.content = content
+
+    ?"content.hydrated " content.hydrated
+
+    ' if rodash.isBoolean(content.hydrated) and not content.hydrated
+    '     safeObserve("hydrated", onContentHydrated, m.content)
+
+    ' end if
 
     ' m.indexLabel.text = content.title
     if rodash.isNonEmptyString(content.HDPosterUrl)
@@ -30,7 +59,9 @@ end sub
 
 sub onCurrentRectChange(options = {})
     rect = options.data ?? {}
-    ' ?"onCurrentRectChange " m.top.index
+
+    top().height = rect.height
+    top().width = rect.width
 
     if rodash.isNode(m.container)
         m.container.height = rect.height
@@ -46,6 +77,11 @@ sub onCurrentRectChange(options = {})
         m.thumbnail.height = rect.height - 12
         m.thumbnail.width = rect.width - 12
     end if
+end sub
+
+
+sub onContentHydrated(options = {})
+
 end sub
 
 

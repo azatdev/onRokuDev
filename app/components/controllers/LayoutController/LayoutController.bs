@@ -9,6 +9,7 @@ sub init()
             [events.GET_SIDEBAR]: getSidebar,
             [events.GET_TOPBAR]: getTopbar,
             [events.NAVIGATE_TO]: navigateTo,
+            [events.PAGINATE_CAROUSEL]: paginateCarousel,
             [events.SCREEN_DATA_RECEIVED]: onScreenDataReceived,
             [events.SIDEBAR_RECEIVED]: onSidebarReceived,
             [events.TOPBAR_RECEIVED]: onTopbarReceived
@@ -126,6 +127,13 @@ end sub
 
 sub onTopbarReceived(options = {})
     topbar().data = options
+end sub
+
+
+sub paginateCarousel(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    collection = options.collection
+    
 end sub
 
 

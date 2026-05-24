@@ -245,32 +245,32 @@ sub stackChildren(options = {})
     horizontal = direction = "horizontal"
 
     for each child in children
-        if child.subType() <> "Animation" and child.subType() <> "Timer"
-            childMargins = quadrupleMargins(child.margin)
+        if not child.isSubtype("Group") then continue for
+        childMargins = quadrupleMargins(child.margin)
 
-            topMargin = childMargins.top
-            rightMargin = childMargins.right
-            bottomMargin = childMargins.bottom
-            leftMargin = childMargins.left
+        topMargin = childMargins.top
+        rightMargin = childMargins.right
+        bottomMargin = childMargins.bottom
+        leftMargin = childMargins.left
 
-            childHeight = child.boundingRect().height
-            childWidth = child.boundingRect().width
+        childHeight = child.boundingRect().height
+        childWidth = child.boundingRect().width
 
-            if horizontal
-                if childWidth = 0 then continue for
-                child.translation = [totalWidth + leftMargin, child.translation[1]]
+        if horizontal
+            if childWidth = 0 then continue for
+            child.translation = [totalWidth + leftMargin, child.translation[1]]
 
-                totalWidth += leftMargin
-                totalWidth += childWidth
-                totalWidth += rightMargin
-            else
-                if childHeight = 0 then continue for
-                child.translation = [child.translation[0], totalHeight + topMargin]
+            totalWidth += leftMargin
+            totalWidth += childWidth
+            totalWidth += rightMargin
+        else
+            if childHeight = 0 then continue for
 
-                totalHeight += topMargin
-                totalHeight += childHeight
-                totalHeight += bottomMargin
-            end if
+            child.translation = [child.translation[0], totalHeight + topMargin]
+
+            totalHeight += topMargin
+            totalHeight += childHeight
+            totalHeight += bottomMargin
         end if
     end for
 
