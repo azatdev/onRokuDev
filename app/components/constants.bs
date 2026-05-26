@@ -10,6 +10,7 @@ namespace events
     const SIDEBAR_RECEIVED = "SIDEBAR_RECEIVED"
     const TOPBAR_RECEIVED = "TOPBAR_RECEIVED"
     const TEST_EVENT = "TEST_EVENT"
+    const REQUEST_STYLES = "REQUEST_STYLES"
     const STYLES_UPDATE = "STYLES_UPDATE"
 end namespace
 

@@ -1,5 +1,6 @@
 class Styleable
     publicFunctions = []
+    hookFunctions = {}
 
     sub new(options = {})
         m.setExportFunctions(role())
@@ -22,9 +23,8 @@ class Styleable
             if rodash.isAA(appStyles) then styleNode.setField(top().subType(), appStyles[top().subType()])
         end if
 
-        styleNode.observeFieldScoped(top().subType(), rodash.getFunctionName(m.stylesUpdated))
-
         m.setStyles(styleNode[top().subType()])
+        safeObserve(top().subType(), "stylesUpdated", styleNode)
         safeObserve("change", "onChildChange")
         safeObserve("id", "onIdClassChange")
         safeObserve("class", "onIdClassChange")
@@ -98,14 +98,26 @@ class Styleable
     sub redrawStyles()
         styleObject = global()._ord_styles.getField(top().subType())
         if rodash.isEmpty(styleObject) then return
+
+        ?"redrawStyles " m.hookFunctions
+
         setStyles(styleObject)
     end sub
 
 
-    sub stylesUpdated(event)
-        styleObject = event.getData()
+    sub stylesUpdated(options = {})
+        styleObject = options.data
         if rodash.isEmpty(styleObject) then return
+
+        if rodash.isFunction(m.hookFunctions.before)
+            m.hookFunctions.before(styleObject)
+        end if
+
         setStyles(styleObject)
+
+        if rodash.isFunction(m.hookFunctions.after)
+            m.hookFunctions.after(styleObject)
+        end if
     end sub
 
 
@@ -123,8 +135,10 @@ class Styleable
         m.publicFunctions.push("removeClass")
         m.publicFunctions.push("redrawStyles")
         m.publicFunctions.push("setStyles")
+        m.publicFunctions.push("styleHooks")
         m.publicFunctions.push("onChildChange")
         m.publicFunctions.push("onIdClassChange")
+        m.publicFunctions.push("stylesUpdated")
     end sub
 
 
@@ -191,6 +205,12 @@ class Styleable
                 node.update(updateObject, true)
             end if
         end for
+    end sub
+
+
+    sub styleHooks(options = {})
+        if not rodash.isNonEmptyAA(options) then return
+        m.hookFunctions = options
     end sub
 
 

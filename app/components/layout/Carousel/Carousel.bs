@@ -6,6 +6,9 @@ sub init()
         m.carouselList = top().findNode("carouselList")
         m.titleContainer = top().findNode("titleContainer")
         safeObserve("data", onDataSet)
+        styleHooks({
+            after: afterStyling
+        })
     end sub)
 end sub
 
@@ -23,6 +26,12 @@ sub onDataSet(options = {})
 
     if rodash.isNonEmptyString(thumbnailType) then addClass(lcase(thumbnailType))
 
-    stackChildren({ node: m.top, direction: "vertical" })
+    afterStyling()
     dispatch(events.PAGINATE_CAROUSEL, { collection: content })
 end sub
+
+
+sub afterStyling(options = {})
+    stackChildren({ node: m.top, direction: "vertical" })
+end sub
+

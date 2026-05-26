@@ -12,7 +12,7 @@ sub init()
 
         m.scrollGroup.config = {
             direction: "vertical",
-            flushEnd: true,
+            flushEnd: false,
             showScrollbar: false
         }
 

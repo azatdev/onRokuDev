@@ -135,6 +135,13 @@ function redrawStyles()
 end function
 
 
+function styleHooks(options = {})
+    interface = m.interfaceFunctions["styleHooks"]
+    if interface = invalid then return invalid
+    return interface.styleHooks(options)
+end function
+
+
 function animate(animation, options = {})
     interface = m.interfaceFunctions["animate"]
     if interface = invalid then return invalid

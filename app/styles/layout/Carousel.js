@@ -8,7 +8,7 @@ module.exports = {
         margin: [0, 0, 27, 0],
         width: viewport.width,
         "Div": {
-            margin: [0, 0, 21, 0],
+            margin: [0, 0, 24, 0],
             "QuanticoBoldItalic": {
                 height: 33,
                 size: 27,
@@ -22,7 +22,10 @@ module.exports = {
         "&.portrait": {
             "Div": {
                 margin: [0, 0, 9, 0],
-            }
+            },
+            "_ord_flexList": {
+                translation: [147, 0]
+            },
         }
     }
 };

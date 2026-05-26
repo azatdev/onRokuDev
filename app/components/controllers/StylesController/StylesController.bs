@@ -6,8 +6,8 @@ sub init()
         m.stylesTask = createObject("roSGNode", "StyleTask")
 
         subscribe({
-            "STYLES_UPDATE": onStylesUpdate,
-            "REQUEST_STYLES": requestStyles
+            [events.STYLES_UPDATE]: onStylesUpdate,
+            [events.REQUEST_STYLES]: requestStyles
         })
     end sub)
 end sub
@@ -17,7 +17,9 @@ sub onStylesUpdate(options = {})
     globeStyles = global()._ord_styles
     newStyles = options.STYLES ?? {}
     for each style in newStyles.items()
-        if globeStyles[style.key] <> invalid and formatJSON(globeStyles[style.key]) <> formatJSON(style.value) then globeStyles[style.key] = style.value
+        if globeStyles[style.key] <> invalid and formatJSON(globeStyles[style.key]) <> formatJSON(style.value)
+            globeStyles[style.key] = style.value
+        end if
     end for
 end sub
 
