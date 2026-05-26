@@ -1,0 +1,16 @@
+query Carousel($documentId: ID!) {
+  carousel(documentId: $documentId) {
+    contents {
+        complimentaryColor
+        documentId
+        title
+        type
+        images {
+          imageType
+          data {
+            url
+          }
+        }
+    }
+  }
+}

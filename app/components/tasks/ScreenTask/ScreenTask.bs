@@ -3,6 +3,8 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(options = {})
         setTaskFunction(runScreenTask)
+        ' Needed to circumvent a Roku bug with callFunc
+        m.containerNode = createObject("roSGNode", "Node")
     end sub)
 end sub
 
@@ -15,8 +17,13 @@ function runScreenTask(options = {})
 
     screenModel = returnScreenModel(parseJSON(response.text))
 
+    ' Needed to circumvent a Roku bug with callFunc
+    m.containerNode.appendChild(screenModel)
+
     if rodash.isNode(screenModel)
-        publish(events.SCREEN_DATA_RECEIVED, { content: screenModel })
+        publish(events.SCREEN_DATA_RECEIVED, {
+            content: m.containerNode
+        })
     end if
 
     return true
@@ -26,8 +33,8 @@ end function
 function returnScreenModel(options = {})
     data = options.data ?? {}
     screenData = data.screen ?? {}
-    ' carouselsData = screenData.carousels ?? []
-    carouselsData =  [screenData.carousels[0]]
+    carouselsData = screenData.carousels ?? []
+    ' carouselsData =  [screenData.carousels[0]]
     updateObjArray = []
 
     for each carousel in carouselsData
@@ -37,7 +44,7 @@ function returnScreenModel(options = {})
             documentId: carousel.documentId,
             id: carousel.documentId,
             thumbnailType: carousel.thumbnailType ?? "LANDSCAPE",
-            subtype: "Model"
+            subtype: "Collection"
         }
 
         carouselConfig = {
@@ -77,10 +84,6 @@ function returnScreenModel(options = {})
 
     model = createObject("roSGNode", "Model")
     model.update(updateObject, true)
-
-    ' firstCarousel = model.getChild(0)
-
-
 
     return model
 end function

@@ -17,7 +17,6 @@ sub onDataSet(options = {})
     content = data.content
     m.carouselTitle.text = content.carouselTitle
     m.carouselList.data = data
-    ?"m.top " m.top.subtype()
 
     stackChildren({ node: m.top, direction: "vertical" })
     dispatch(events.PAGINATE_CAROUSEL, { collection: content })

@@ -111,6 +111,7 @@ class Safeable
 
         node.callFunc("safeFunc", functionName)
 
+        proxyData = node.ord_proxyData
         returnObj = proxyData.output ?? invalid
         proxyData.output = invalid
 

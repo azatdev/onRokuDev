@@ -104,7 +104,8 @@ end sub
 sub onScreenDataReceived(options = {})
     if not rodash.isNonEmptyAA(options) then return
 
-    screenModel = options.content
+    data = options.content
+    screenModel = data.getChild(0)
     slug = screenModel.slug ?? ""
     screenConfig = get(slug) ?? {}
     screenId = screenConfig.screenId
@@ -112,7 +113,11 @@ sub onScreenDataReceived(options = {})
     if not rodash.isNode(screen) then return
 
     screenConfig.totalCount = screenModel.totalCount
-    screen.data = options
+    screen.data = {
+        content: screenModel
+    }
+
+    screenModel.getChild(0).callFunc("testFunction")
 
     saveObject = {}
     saveObject[slug] = screenConfig
@@ -133,7 +138,15 @@ end sub
 sub paginateCarousel(options = {})
     if not rodash.isNonEmptyAA(options) then return
     collection = options.collection
+    paginationTask = createObject("roSGNode", "PaginationTask")
 
+    paginationTask.update({
+        options: {
+            collection: collection
+        }
+    }, true)
+
+    paginationTask.control = "RUN"
 end sub
 
 
