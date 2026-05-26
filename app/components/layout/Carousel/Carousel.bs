@@ -12,11 +12,16 @@ end sub
 
 sub onDataSet(options = {})
     if not rodash.isNonEmptyAA(options) then return
+    if rodash.isNode(m.content) then return
 
     data = options.data
     content = data.content
+    m.content = content
     m.carouselTitle.text = content.carouselTitle
     m.carouselList.data = data
+    thumbnailType = content.thumbnailType
+
+    if rodash.isNonEmptyString(thumbnailType) then addClass(lcase(thumbnailType))
 
     stackChildren({ node: m.top, direction: "vertical" })
     dispatch(events.PAGINATE_CAROUSEL, { collection: content })

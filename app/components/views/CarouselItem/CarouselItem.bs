@@ -9,10 +9,10 @@ end sub
 
 
 sub setupItem()
-    m.indexLabel = m.top.findNode("label")
-    m.container = m.top.findNode("container")
-    m.outline = m.top.findNode("outline")
-    m.thumbnail = m.top.findNode("thumbnail")
+    m.indexLabel = top().findNode("label")
+    m.container = top().findNode("container")
+    m.outline = top().findNode("outline")
+    m.thumbnail = top().findNode("thumbnail")
     safeObserve("currRect", onCurrentRectChange)
     safeObserve("focusPercent", onFocusPercentChange)
     startLoadingAnimation()
@@ -20,6 +20,11 @@ end sub
 
 
 sub startLoadingAnimation()
+    if rodash.isNode(m.content) and m.content.hydrated
+        fadeIn(m.container)
+        return
+    end if
+
     fadeOut(top(), { callback: onFadedOut, duration: 1 })
 end sub
 
@@ -40,19 +45,14 @@ end sub
 sub itemContentChanged(event)
     content = event.getData()
     if content = invalid then return
+    if rodash.isNode(m.content) then return
 
     m.content = content
 
-    ?"content.hydrated " content.hydrated
-
-    ' if rodash.isBoolean(content.hydrated) and not content.hydrated
-    '     safeObserve("hydrated", onContentHydrated, m.content)
-
-    ' end if
-
-    ' m.indexLabel.text = content.title
-    if rodash.isNonEmptyString(content.HDPosterUrl)
-        m.thumbnail.uri = content.HDPosterUrl
+    if rodash.isNonEmptyString(content.thumbnailImageUri)
+        setThumbailImage({ data: content.thumbnailImageUri })
+    else
+        safeObserve("thumbnailImageUri", setThumbailImage, m.content)
     end if
 end sub
 
@@ -80,13 +80,15 @@ sub onCurrentRectChange(options = {})
 end sub
 
 
-sub onContentHydrated(options = {})
-
-end sub
-
-
 sub onFocusPercentChange(options = {})
     focusPercentage = options.data ?? {}
     ' opacityPercentage = (0.5 * focusPercentage) * focusPercentage + 0.5
     ' m.container.opacity = opacityPercentage
+end sub
+
+
+sub setThumbailImage(options = {})
+    thumbnailImageUrl = options.data ?? ""
+    if rodash.isEmptyString(thumbnailImageUrl) then return
+    m.thumbnail.uri = thumbnailImageUrl
 end sub

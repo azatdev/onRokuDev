@@ -15,5 +15,12 @@ end sub
 
 
 function getPagination(options = {})
-    return { string: top().documentId }
+    existingPagination = top().pagination
+    if rodash.isNonEmptyAA(existingPagination)
+        newPagination = "<%- o(CONFIG.Pagination.Subsequent) %>"
+    else
+        newPagination = "<%- o(CONFIG.Pagination.Initial) %>"
+    end if
+
+    return newPagination
 end function

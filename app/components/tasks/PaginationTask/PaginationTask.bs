@@ -14,17 +14,94 @@ function runPaginationTask(options = {})
     collection = options.collection
     if not rodash.isNode(collection) then return true
 
-    variables = {
-        documentId: collection.documentId,
-        pagination: exec("getPagination", { test: "Input" }, collection)
-    }
+    pagination = exec("getPagination", { test: "Input" }, collection)
+
+    variables = {}
+    variables.setModeCaseSensitive()
+    variables["documentId"] = collection.documentId
+
+    if rodash.isNonEmptyAA(pagination)
+        variables["pagination"] = pagination
+        collection.pagination = pagination
+    end if
 
     ?"variables " formatJSON(variables)
 
-    ' response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Carousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Carousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
 
-    ' ?"response " response.text
+    responseJSON = parseJSON(response.text)
+    responseData = responseJSON.data ?? {}
+    carouselsData = responseData.carousel ?? {}
+    contentsData = carouselsData.contents ?? []
+
+    for each content in contentsData
+        documentId =  content.documentId ?? ""
+        if rodash.isEmptyString(documentId) then continue for
+
+        existingContentNode = collection.findNode(documentId)
+
+        if rodash.isNode(existingContentNode)
+            hydrateContentNode(existingContentNode, content)
+            continue for
+        end if
+
+        existingEmptyNode = rodash.find(collection.getChildren(-1, 0), function(cv)
+            return not cv.hydrated
+        end function)
+
+        if rodash.isNode(existingEmptyNode)
+            hydrateContentNode(existingEmptyNode, content)
+            continue for
+        end if
+
+        newContentNode = createObject("roSGNode", "Model")
+        hydrateContentNode(newContentNode, content)
+        collection.appendChild(newContentNode)
+    end for
+
 
     ' ?"collection " collection
     return true
+end function
+
+
+sub hydrateContentNode(node, options = {})
+    if not rodash.isNode(node) then return
+    if not rodash.isNonEmptyAA(options) then return
+
+    contentImages = options.images ?? []
+    imageFields = getImageFields(contentImages)
+
+    updateObject = {
+        hydrated: true,
+        id: options.documentId,
+        title: options.title,
+        type: options.type
+    }
+
+    updateObject.append(imageFields)
+    node.update(updateObject, true)
+end sub
+
+
+function getImageFields(images)
+    if not rodash.isNonEmptyArray(images) then return {}
+
+    imageFields = rodash.reduce(images, function(acc, cv)
+        imageType = lcase(cv.imageType ?? "")
+        if rodash.isEmptyString(imageType) then return acc
+        fieldName = imageType + "ImageUri"
+        imageURL = cv.data?.url ?? ""
+        serverPath = "<%- s(CONFIG.ENV.SERVER_URI) %>"
+        acc[fieldName] = serverPath + imageURL
+        return acc
+    end function, {})
+
+    if imageFields.landscapeImageUri <> invalid
+        imageFields.thumbnailImageUri = imageFields.landscapeImageUri
+    else if imageFields.portraitImageUri <> invalid
+        imageFields.thumbnailImageUri = imageFields.portraitImageUri
+    end if
+
+    return imageFields
 end function

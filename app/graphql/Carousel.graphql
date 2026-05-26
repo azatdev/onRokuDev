@@ -1,6 +1,6 @@
-query Carousel($documentId: ID!) {
+query Carousel($documentId: ID!, $pagination: PaginationArg) {
   carousel(documentId: $documentId) {
-    contents {
+    contents(pagination: $pagination) {
         complimentaryColor
         documentId
         title

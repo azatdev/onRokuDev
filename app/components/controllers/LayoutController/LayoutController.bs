@@ -89,7 +89,7 @@ sub navigateTo(options = {})
 
     screenConfig = get(slug) ?? {}
     screenVariables = screenConfig.variables ?? {}
-    screenVariables.SetModeCaseSensitive()
+    screenVariables.setModeCaseSensitive()
     screenVariables["documentId"] = documentId
     screenConfig.variables = screenVariables
 

@@ -61,7 +61,7 @@ sub processScrollItem(options = {})
     model = options.model
     carouselType = model.carouselType ?? "INDEX"
 
-    if carouselType = "Hero"
+    if carouselType = "HERO"
         component = createObject("roSGNode", "Hero")
         m.headerContainer.appendChild(component)
     else

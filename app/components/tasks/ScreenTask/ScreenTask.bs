@@ -33,44 +33,40 @@ end function
 function returnScreenModel(options = {})
     data = options.data ?? {}
     screenData = data.screen ?? {}
-    carouselsData = screenData.carousels ?? []
-    ' carouselsData =  [screenData.carousels[0]]
+    ' carouselsData = screenData.carousels ?? []
+    carouselsData =  [screenData.carousels[1], screenData.carousels[3]]
     updateObjArray = []
 
     for each carousel in carouselsData
+        thumbnailType = carousel.thumbnailType ?? "LANDSCAPE"
+
         updateObject = {
             carouselTitle: carousel.carouselTitle,
             carouselType: carousel.carouselType,
             documentId: carousel.documentId,
             id: carousel.documentId,
-            thumbnailType: carousel.thumbnailType ?? "LANDSCAPE",
+            thumbnailType: thumbnailType,
             subtype: "Collection"
         }
 
-        carouselConfig = {
-            animationDuration: 0.3,
-            carouselType: "default",
-            clip: true,
-            defaultVisibleIndex: 0,
-            focusType: "fixed",
-            itemComponentName: "CarouselItem",
-            visibleTiles: 5,
-            wrap: true,
-            bigSquare: [336, 189],
-            gutterSize: [153, 0],
-            smallSquare: [288, 162],
-            squareMargins: [0]
-        }
+        carouselConfig = {}
+
+        if thumbnailType = "LANDSCAPE"
+            carouselConfig = "<%- o(CONFIG.Carousels.Landscape) %>"
+        else if thumbnailType = "PORTRAIT"
+            carouselConfig = "<%- o(CONFIG.Carousels.Portrait) %>"
+        end if
 
         updateObject.config = carouselConfig
         updateObject.children = []
 
         ' Load initial carousel items
         ' for loading animation
-        for x = 0 to carouselConfig.visibleTiles - 1
+        for x = 0 to carouselConfig.visibleTiles
             updateObject.children.push({
                 hydrated: false,
-                subtype: "Model"
+                subtype: "Model",
+                thumbnailImageUri: ""
             })
         end for
 
