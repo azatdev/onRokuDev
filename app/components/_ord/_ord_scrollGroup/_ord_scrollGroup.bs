@@ -115,7 +115,10 @@ sub setGroupSizes()
 
     setClippingRect()
 
-    if not get("showScrollbar") then return
+    if not get("showScrollbar")
+        m.scrolltrack.visible = false
+        return
+    end if
 
     setupScrollbar({
         axisIndex: get("axisIndex"),

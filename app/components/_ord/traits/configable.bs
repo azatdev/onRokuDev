@@ -40,9 +40,6 @@ class Configable
         if rodash.isEmptyString(keyPath) then return
         if not rodash.isNode(node) then return
 
-        ?"liveConfig "
-
-
         config = rodash.get(m.appConfigs, keyPath)
         if not rodash.isNonEmptyAA(config) then return
         node[field] = config
@@ -53,19 +50,16 @@ class Configable
                 field: field,
                 node: node
             }
-            ?"keyPath " keyPath
             if configsNode[keyPath] = invalid
                 configsNode.addField(keyPath, "assocarray", false)
                 configsNode[keyPath] = config
             end if
-            ?"configsNode " configsNode
             safeObserve(keyPath, "configUpdated", configsNode)
         end if
     end sub
 
 
     sub configUpdated(options = {})
-        ?"configUpdated " options
         field = options.field
         configObject = m.configPaths[field]
         if not rodash.isNonEmptyAA(configObject) then return

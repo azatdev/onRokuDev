@@ -19,6 +19,7 @@ sub onDataSet(options = {})
 
     data = options.data
     content = data.content
+    setCarouselConfig(content)
     m.content = content
     m.carouselTitle.text = content.carouselTitle
     m.carouselList.data = data
@@ -33,4 +34,11 @@ end sub
 
 sub afterStyling(options = {})
     stackChildren({ node: m.top, direction: "vertical" })
+end sub
+
+
+sub setCarouselConfig(model)
+    thumbnailType = model.thumbnailType ?? "LANDSCAPE"
+    configKey = thumbnailType = "LANDSCAPE" ? "LandscapeCarousel" : "PortraitCarousel"
+    liveConfig({ field: "config", keyPath: configKey }, model)
 end sub

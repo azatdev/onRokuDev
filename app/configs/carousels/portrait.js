@@ -10,7 +10,7 @@ module.exports = {
         wrap: true,
         bigSquare: [242, 363],
         gutterSize: [153, 0],
-        smallSquare: [210, 315],
+        smallSquare: [210, 330],
         squareMargins: [18, 0]
     }
 };
