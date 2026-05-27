@@ -34,7 +34,7 @@ function returnScreenModel(options = {})
     data = options.data ?? {}
     screenData = data.screen ?? {}
     ' carouselsData = screenData.carousels ?? []
-    carouselsData =  [screenData.carousels[1], screenData.carousels[3]]
+    carouselsData =  [screenData.carousels[1], screenData.carousels[3], screenData.carousels[4], screenData.carousels[5]]
     updateObjArray = []
 
     for each carousel in carouselsData
@@ -52,9 +52,9 @@ function returnScreenModel(options = {})
         carouselConfig = {}
 
         if thumbnailType = "LANDSCAPE"
-            carouselConfig = "<%- o(CONFIG.Carousels.Landscape) %>"
+            carouselConfig = "<%- o(CONFIG.LandscapeCarousel) %>"
         else if thumbnailType = "PORTRAIT"
-            carouselConfig = "<%- o(CONFIG.Carousels.Portrait) %>"
+            carouselConfig = "<%- o(CONFIG.PortraitCarousel) %>"
         end if
 
         updateObject.config = carouselConfig

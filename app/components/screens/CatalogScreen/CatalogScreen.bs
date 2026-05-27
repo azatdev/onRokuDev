@@ -7,30 +7,20 @@ sub init()
         m.headerContainer = top().findNode("headerContainer")
         m.scrollGroup = top().findNode("scrollGroup")
 
-        ' m.screenContainer.color = "#00000000"
-        ' ?"m.screenContainer " m.screenContainer.color
-
-        m.scrollGroup.config = {
-            direction: "vertical",
-            flushEnd: false,
-            showScrollbar: false
-        }
+        liveConfig({ field: "config", keyPath: "CatalogScrollGroup" }, m.scrollGroup)
 
         safeObserve("data", onDataSet)
-        ' rodash.delay(sub(node)
-        '     newRect = createObject("roSGNode", "Rectangle")
-        '     newRect.width = 1650
-        '     newRect.height = 400
-        '     newRect.color = "#0000FFFF"
 
-        '     newRect2 = createObject("roSGNode", "Rectangle")
-        '     newRect2.width = 1650
-        '     newRect2.height = 200
-        '     newRect2.color = "#FF00FFFF"
-        '     node.appendChildren([newRect, newRect2])
-        '     ' node.appendChild(newRect)
-        ' end sub, 3000, m.scrollGroup)
+        styleHooks({
+            after: afterStyling
+        })
     end sub)
+end sub
+
+
+sub afterStyling()
+    if not rodash.isNode(m.screenContainer) then return
+    stackChildren({ node: m.screenContainer, direction: "vertical" })
 end sub
 
 
@@ -70,6 +60,5 @@ sub processScrollItem(options = {})
         m.scrollGroup.appendChild(component)
     end if
 
-    stackChildren({ node: m.screenContainer, direction: "vertical" })
-
+    afterStyling()
 end sub

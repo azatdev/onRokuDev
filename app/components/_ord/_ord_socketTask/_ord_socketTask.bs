@@ -93,13 +93,8 @@ sub receiveMessage(socketMessage as string)
 
     if messageObj.type = "STYLES_UPDATE"
         publish("REQUEST_STYLES")
+    else if messageObj.type = "CONFIGS_UPDATE"
+        publish("REQUEST_CONFIGS")
     end if
 end sub
 
-class NodeFunctions
-    sub onInit(options = {})
-    end sub
-
-
-
-end class

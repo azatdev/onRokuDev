@@ -34,4 +34,3 @@ end sub
 sub afterStyling(options = {})
     stackChildren({ node: m.top, direction: "vertical" })
 end sub
-

@@ -12,6 +12,8 @@ namespace events
     const TEST_EVENT = "TEST_EVENT"
     const REQUEST_STYLES = "REQUEST_STYLES"
     const STYLES_UPDATE = "STYLES_UPDATE"
+    const REQUEST_CONFIGS = "REQUEST_CONFIGS"
+    const CONFIGS_UPDATE = "CONFIGS_UPDATE"
 end namespace
 
 

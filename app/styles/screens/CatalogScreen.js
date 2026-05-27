@@ -8,11 +8,11 @@ module.exports = {
         "Div": {
             "&#screenContainer": {
                 "Div": {
-                    height: 501,
+                    height: 531,
                     width: viewport.width
                 },
                 "_ord_scrollGroup":{
-                    height: 1002,
+                    height: 549,
                     width: viewport.width
                 }
             }

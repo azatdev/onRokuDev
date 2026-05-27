@@ -1,0 +1,28 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+
+sub init()
+    exec(sub(options = {})
+        subscribe({
+            [events.CONFIGS_UPDATE]: onConfigsUpdate,
+            [events.REQUEST_CONFIGS]: requestConfigs
+        })
+    end sub)
+end sub
+
+
+sub onConfigsUpdate(options = {})
+    newConfig = options.CONFIG ?? {}
+    appConfigs = global().ord_configs
+    for each config in newConfig.items()
+        if appConfigs[config.key] <> invalid and formatJSON(appConfigs[config.key]) <> formatJSON(config.value)
+            appConfigs[config.key] = config.value
+        end if
+    end for
+end sub
+
+
+sub requestConfigs(options = {})
+    configsTask = createObject("roSGNode", "ConfigsTask")
+    configsTask.control = "RUN"
+end sub

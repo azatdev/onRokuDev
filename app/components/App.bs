@@ -21,6 +21,7 @@ sub init()
         m.layout.setFocus(true)
 
         registerControllers([
+            "ConfigsController",
             "LayoutController",
             "SocketController",
             "StylesController"

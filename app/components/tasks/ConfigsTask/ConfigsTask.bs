@@ -1,0 +1,17 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        setTaskFunction(runConfigsTask)
+    end sub)
+end sub
+
+
+function runConfigsTask(options = {})
+    response = rokurequests_Requests().get("http://192.168.88.31:54323/configs.json")
+    if not rodash.isEmpty(response.text)
+        dispatch(events.CONFIGS_UPDATE, parseJSON(response.text))
+    end if
+
+    return true
+end function

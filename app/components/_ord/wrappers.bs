@@ -222,6 +222,13 @@ function processFocus(key = "")
 end function
 
 
+function liveConfig(options = {}, node = top())
+    interface = m.interfaceFunctions["liveConfig"]
+    if interface = invalid then return invalid
+    return interface.liveConfig(options, node)
+end function
+
+
 function top()
     return getGlobalAA().top
 end function

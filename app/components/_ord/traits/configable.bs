@@ -1,0 +1,82 @@
+class Configable
+    publicFunctions = []
+    appConfigs = "<%- o(CONFIG) %>"
+    configPaths = {}
+
+    sub new(options = {})
+        m.setExportFunctions(role())
+
+        if not global().hasField("ord_configs")
+            m.setupGlobalConfigs()
+        end if
+
+        ' if not styleNode.hasField(top().subType())
+        '     styleNode.addField(top().subType(), "assocarray", false)
+        '     if rodash.isAA(appStyles) then styleNode.setField(top().subType(), appStyles[top().subType()])
+        ' end if
+
+        ' safeObserve(top().subType(), "configUpdated", styleNode)
+    end sub
+
+
+    sub setupGlobalConfigs()
+        global().addField("ord_configs", "node", true)
+        global().ord_configs = createObject("roSGNode", "Node")
+    end sub
+
+
+    sub setExportFunctions(componentRole)
+        if rodash.isEmptyString(componentRole) then return
+        m.publicFunctions.push("liveConfig")
+        m.publicFunctions.push("configUpdated")
+    end sub
+
+
+    sub liveConfig(options = {}, node = top())
+        field = options.field
+        keyPath = options.keyPath
+
+        if rodash.isEmptyString(field) then return
+        if rodash.isEmptyString(keyPath) then return
+        if not rodash.isNode(node) then return
+
+        ?"liveConfig "
+
+
+        config = rodash.get(m.appConfigs, keyPath)
+        if not rodash.isNonEmptyAA(config) then return
+        node[field] = config
+
+        if not rodash.isNonEmptyAA(m.configPaths[keyPath])
+            configsNode = global().ord_configs
+            m.configPaths[keyPath] = {
+                field: field,
+                node: node
+            }
+            ?"keyPath " keyPath
+            if configsNode[keyPath] = invalid
+                configsNode.addField(keyPath, "assocarray", false)
+                configsNode[keyPath] = config
+            end if
+            ?"configsNode " configsNode
+            safeObserve(keyPath, "configUpdated", configsNode)
+        end if
+    end sub
+
+
+    sub configUpdated(options = {})
+        ?"configUpdated " options
+        field = options.field
+        configObject = m.configPaths[field]
+        if not rodash.isNonEmptyAA(configObject) then return
+
+        configData = options.data ?? {}
+        node = configObject.node
+        nodeField = configObject.field ?? ""
+
+        if not rodash.isNode(node) then return
+        if rodash.isEmptyString(nodeField) then return
+
+        node[nodeField] = configData
+    end sub
+end class

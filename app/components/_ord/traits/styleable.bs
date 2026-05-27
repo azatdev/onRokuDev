@@ -99,8 +99,6 @@ class Styleable
         styleObject = global()._ord_styles.getField(top().subType())
         if rodash.isEmpty(styleObject) then return
 
-        ?"redrawStyles " m.hookFunctions
-
         setStyles(styleObject)
     end sub
 
@@ -185,7 +183,6 @@ class Styleable
 
         m.setIdStyles(stylesheet, node)
         m.setClassStyles(stylesheet, node)
-
     end sub
 
 
