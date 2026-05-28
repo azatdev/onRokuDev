@@ -49,8 +49,6 @@ sub getScreenData(options = {})
     m.screenTask.update({ screenVariables: screenVariables
     }, true)
     m.screenTask.control = "RUN"
-    ' screenVariables = getScreenVariables(screenConfig)
-
 end sub
 
 

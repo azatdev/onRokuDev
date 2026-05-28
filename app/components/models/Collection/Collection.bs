@@ -2,15 +2,7 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(options = {})
-        safeFunctions({
-            getPagination: getPagination
-        })
     end sub)
-end sub
-
-
-sub testFunction(options = {})
-    ?"COLLECTION testFunction" m
 end sub
 
 

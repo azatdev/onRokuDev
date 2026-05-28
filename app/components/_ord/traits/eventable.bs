@@ -8,8 +8,6 @@ class Eventable
         end if
 
         m.eventQueue = global()._ord_eventQueue
-
-        'bs:disable-next-line
         m.renderQueue = createObject("roRenderThreadQueue")
 
         top().addField("_ord_subscriptions", "assocarray", false)

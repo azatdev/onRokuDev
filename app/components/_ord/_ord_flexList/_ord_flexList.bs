@@ -297,6 +297,7 @@ sub onDataSet(options = {})
     data = options.data ?? {}
     content = data.content
     if not rodash.isNode(content) then return
+    if content.config = invalid then return
 
     safeObserve("totalCount", onTotalCountChange, content)
     safeObserve("config", processConfig, content)
@@ -355,12 +356,6 @@ end sub
 sub processConfig(options = {})
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.content) then return
-
-    ?"processConfig " formatJSON(options.data)
-
-    if m.carousel.targetSet <> invalid and m.unFocusedTargetSet <> invalid
-        ?"IS SAME " m.carousel.targetSet.isSameNode(m.unFocusedTargetSet)
-    end if
 
     defaultConfig = get("defaultConfig")
     config = {}
@@ -449,6 +444,7 @@ sub processConfig(options = {})
     })
 
     applyClippingRect({ percentage: 0 })
+    m.carousel.targetSet = m.unFocusedTargetSet
 end sub
 
 
@@ -553,7 +549,6 @@ sub generateRects(options = {})
 
     setUnfocusedTargetSet({
         defaultVisibleIndex: defaultVisibleIndex,
-        dynamicSize: dynamicSize,
         extraRects: extraRects,
         flushFocus: flushFocus,
         unfocusedRects: unfocusedRects
@@ -569,8 +564,6 @@ sub generateRects(options = {})
     })
     ' Array of targetsets for each focused position in the list.
     m.focusedTargetSetArray = m.focusedTargetSetArray ?? []
-
-    ?"m.focusedTargetSetArray " m.focusedTargetSetArray
 
     if focusType = "fixed"
         index = defaultVisibleIndex + extraRects
@@ -609,26 +602,23 @@ end sub
 
 sub setUnfocusedTargetSet(options = {})
     defaultVisibleIndex = options.defaultVisibleIndex
-    dynamicSize = options.dynamicSize
     extraRects = options.extraRects
     unfocusedRects = options.unfocusedRects
 
-    if dynamicSize or not rodash.isNode(m.carousel.targetSet)
-        targetSetOptions = {
-            focusIndex: defaultVisibleIndex + extraRects,
-            targetRects: unfocusedRects
-        }
-        if rodash.isNode(m.unFocusedTargetSet)
-            unFocusedTargetSet = m.unFocusedTargetSet
-            unFocusedTargetSet.update(targetSetOptions)
-        else
-            unFocusedTargetSet = createTargetSet(targetSetOptions)
-        end if
-
-        ' Set the initial targetset of the list to the unfocused one
-        m.carousel.targetSet = unFocusedTargetSet
-        m.unFocusedTargetSet = unFocusedTargetSet
+    targetSetOptions = {
+        focusIndex: defaultVisibleIndex + extraRects,
+        targetRects: unfocusedRects
+    }
+    if rodash.isNode(m.unFocusedTargetSet)
+        unFocusedTargetSet = m.unFocusedTargetSet
+        unFocusedTargetSet.update(targetSetOptions)
+    else
+        unFocusedTargetSet = createTargetSet(targetSetOptions)
     end if
+
+    ' Set the initial targetset of the list to the unfocused one
+    m.carousel.targetSet = unFocusedTargetSet
+    m.unFocusedTargetSet = unFocusedTargetSet
 end sub
 
 

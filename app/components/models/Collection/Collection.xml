@@ -3,9 +3,7 @@
     <interface>
         <field id="config" type="assocArray" />
         <field id="pagination" type="assocArray" />
+        <field id="thumbnailType" type="string" />
     </interface>
-    <children>
-
-    </children>
     <script type="text/brightscript" uri="Collection.bs" />
 </component>

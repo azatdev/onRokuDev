@@ -24,7 +24,7 @@ module.exports = {
                 margin: [0, 0, 9, 0],
             },
             "_ord_flexList": {
-                translation: [147, 0]
+                translation: [156, 0]
             },
         }
     }

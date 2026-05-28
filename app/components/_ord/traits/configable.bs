@@ -9,13 +9,6 @@ class Configable
         if not global().hasField("ord_configs")
             m.setupGlobalConfigs()
         end if
-
-        ' if not styleNode.hasField(top().subType())
-        '     styleNode.addField(top().subType(), "assocarray", false)
-        '     if rodash.isAA(appStyles) then styleNode.setField(top().subType(), appStyles[top().subType()])
-        ' end if
-
-        ' safeObserve(top().subType(), "configUpdated", styleNode)
     end sub
 
 
@@ -32,17 +25,24 @@ class Configable
     end sub
 
 
-    sub liveConfig(options = {}, node = top())
+    function liveConfig(options = {}, node = top())
+        if not node.isSameNode(top())
+            return exec("liveConfig", options, node)
+        end if
+
         field = options.field
         keyPath = options.keyPath
 
-        if rodash.isEmptyString(field) then return
-        if rodash.isEmptyString(keyPath) then return
-        if not rodash.isNode(node) then return
+        if rodash.isEmptyString(field) then return invalid
+        if rodash.isEmptyString(keyPath) then return invalid
+        if not rodash.isNode(node) then return invalid
 
         config = rodash.get(m.appConfigs, keyPath)
-        if not rodash.isNonEmptyAA(config) then return
-        node[field] = config
+        if not rodash.isNonEmptyAA(config) then return invalid
+
+        updateObject = {}
+        updateObject[field] = config
+        node.update(updateObject, true)
 
         if not rodash.isNonEmptyAA(m.configPaths[keyPath])
             configsNode = global().ord_configs
@@ -56,7 +56,9 @@ class Configable
             end if
             safeObserve(keyPath, "configUpdated", configsNode)
         end if
-    end sub
+
+        return config
+    end function
 
 
     sub configUpdated(options = {})
