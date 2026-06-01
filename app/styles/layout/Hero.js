@@ -12,10 +12,12 @@ module.exports = {
             translation: [189, 150],
             "Poster": {
                 height: 111,
+                uri: "pkg:/static/images/thinner_rect.9.png",
                 width: 507
             },
             "Metadata": {
                 height: 48,
+                margin: [30, 0, 0, 0],
                 width: 642
             },
             "Quantico": {
@@ -29,7 +31,7 @@ module.exports = {
             },
             "CTAs": {
                 height: 75,
-                margin: [0, 0, 0, -16],
+                margin: [12, 0, 0, -16],
                 width: 544
             }
         }

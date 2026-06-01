@@ -7,7 +7,7 @@ module.exports = {
     "CatalogHero": {
         color: "#22222200",
         "_ord_scrollGroup": {
-            height: 531,
+            height: 600,
             translation: [0, 0],
             width: viewport.width
         }

@@ -58,11 +58,6 @@ sub setMetadata(options = {})
     if not rodash.isNonEmptyAA(options) then return
     content = options.node
     metadataArray = []
-    ' fieldArray = ["genres", "copyrightYear", "duration", "rating"]
-
-    ' for each field in fieldArray
-
-    ' end for
 
     if rodash.isArray(content.genres)
         metadataArray.push({
