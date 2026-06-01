@@ -582,7 +582,7 @@ sub generateRects(options = {})
         for index = 0 to targetsetRects.count() - 1
             if index >= firstFocusableIndex and index <= lastFocusableIndex
                 targetSetOptions = {
-                    focusIndex: defaultVisibleIndex + extraRects,
+                    focusIndex: index,
                     targetRects: targetsetRects[index]
                 }
                 if rodash.isNode(m.focusedTargetSetArray[index])
