@@ -14,7 +14,7 @@ module.exports = {
                 height: 111,
                 width: 507
             },
-            "Div": {
+            "Metadata": {
                 height: 48,
                 width: 642
             },

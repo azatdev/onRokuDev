@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="ContentModel" extends="Model">
+    <interface>
+        <field id="copyrightYear" type="string" />
+        <field id="duration" type="integer" />
+        <field id="genres" type="array" />
+        <field id="headerImageUri" type="string" />
+        <field id="hydrated" type="boolean" />
+        <field id="logoImageUri" type="string" />
+        <field id="landscapeImageUri" type="string" />
+        <field id="portraitImageUri" type="string" />
+        <field id="rating" type="string" />
+        <field id="posterImageUri" type="string" />
+        <field id="thumbnailImageUri" type="string" />
+    </interface>
+    <children>
+
+    </children>
+    <script type="text/brightscript" uri="ContentModel.bs" />
+</component>

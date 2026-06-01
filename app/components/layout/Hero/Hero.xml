@@ -7,7 +7,7 @@
     <children>
         <Div id="container">
             <Poster id="contentLogo" />
-            <Div id="metadataContainer" />
+            <Metadata id="metadata" />
             <Quantico id="description" />
             <CTAs id="ctas" />
         </Div>

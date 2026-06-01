@@ -32,6 +32,9 @@ sub ord_init()
 
     top().addField("_ord_initiated", "boolean", false)
     top()._ord_initiated = true
+
+    top().addField("createdAt", "longinteger", false)
+    top().createdAt = rodash.now()
 end sub
 
 

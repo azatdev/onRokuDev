@@ -1,0 +1,93 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        m.container = top().findNode("container")
+        safeObserve("data", onDataSet)
+    end sub)
+end sub
+
+sub onDataSet(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    data = options.data
+    metadataArray = data.metadataArray
+    nodeArray = []
+
+    for each fieldObject in metadataArray
+        for each field in fieldObject.items()
+            node = returnNode(field.key, field.value)
+            if rodash.isNode(node) then nodeArray.push(node)
+        end for
+    end for
+
+    nodeFinalIndex = nodeArray.count() - 1
+
+    for x = 0 to nodeFinalIndex
+        node = nodeArray[x]
+        m.container.appendChild(node)
+        if x < nodeFinalIndex - 1
+            delimiterNode = createObject("roSGNode", "Delimiter")
+            m.container.appendChild(delimiterNode)
+        end if
+    end for
+
+    redrawStyles()
+    stackChildren({ node: m.container, direction: "horizontal" })
+end sub
+
+
+function returnNode(fieldName, fieldValue)
+    if not rodash.isString(fieldName) then return invalid
+    if rodash.isInvalid(fieldValue) then return invalid
+
+    nodeType = "Quantico"
+    updateField = "text"
+    updateValue = ""
+
+    if fieldName = "genres" and rodash.isNonEmptyArray(fieldValue)
+        updateValue = (fieldValue[0] ?? {}).name ?? ""
+    else if fieldName = "copyrightyear"
+        updateValue = fieldValue
+    else if fieldName = "duration"
+        updateValue = returnRuntime(fieldValue)
+    else if fieldName = "rating"
+        nodeType = "RatingPill"
+        updateValue = fieldValue
+    end if
+
+    node = createObject("roSGNode", nodeType)
+    if not rodash.isNode(node) then return invalid
+
+    node[updateField] = updateValue
+    return node
+end function
+
+
+function returnRuntime(timeDelta = 0)
+    if not rodash.isNumber(timeDelta) then return ""
+    timeStr = ""
+    iterationNumber = 0
+    iterationDivisors = [86400, 3600, 60]
+    iterationStrings = ["d", "h", "m"]
+    timeDelta% = timeDelta
+    stringArray = []
+
+    for each divisor in iterationDivisors
+        modProduct = int(timeDelta%) \ divisor
+        if modProduct <> 0
+            timeStr = `${modProduct}${iterationStrings[iterationNumber]}`
+            stringArray.push(timeStr)
+        end if
+
+        timeDelta% = timeDelta% - (modProduct * divisor)
+        iterationNumber++
+    end for
+
+    if timeDelta% <> 0
+        timeStr = `${timeDelta%}s`
+        stringArray.push(timeStr)
+    end if
+
+    return stringArray.join(":")
+end function

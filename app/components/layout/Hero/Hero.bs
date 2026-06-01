@@ -4,7 +4,7 @@ sub init()
     exec(sub(options = {})
         m.container = top().findNode("container")
         m.contentLogo = top().findNode("contentLogo")
-        m.metadataContainer = top().findNode("metadataContainer")
+        m.metadata = top().findNode("metadata")
         m.description = top().findNode("description")
         m.ctas = top().findNode("ctas")
         safeObserve("data", onDataSet)
@@ -16,10 +16,10 @@ end sub
 
 sub onDataSet(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    if rodash.isNode(m.content) then return
-
     data = options.data
     content = data.content
+    if rodash.isNode(m.content) and content.isSameNode(m.content) then return
+
     m.content = content
 
     if rodash.isEmptyString(content.description)
@@ -32,6 +32,12 @@ sub onDataSet(options = {})
         safeObserve("logoImageUri", setLogoImage, m.content)
     else
         setLogoImage({ data: content.logoImageUri})
+    end if
+
+    if not rodash.isArray(content.genres)
+        safeObserve("hydrated", setMetadata, m.content)
+    else
+        setMetadata({ node: content })
     end if
 end sub
 
@@ -46,3 +52,44 @@ sub setLogoImage(options = {})
     if not rodash.isNonEmptyAA(options) then return
     m.contentLogo.uri = options.data ?? ""
 end sub
+
+
+sub setMetadata(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    content = options.node
+    metadataArray = []
+    ' fieldArray = ["genres", "copyrightYear", "duration", "rating"]
+
+    ' for each field in fieldArray
+
+    ' end for
+
+    if rodash.isArray(content.genres)
+        metadataArray.push({
+            genres: content.genres
+    })
+    end if
+
+    if rodash.isNonEmptyString(content.copyrightYear)
+        metadataArray.push({
+            copyrightYear: content.copyrightYear
+        })
+    end if
+
+    if rodash.isNumber(content.duration)
+        metadataArray.push({
+            duration: content.duration
+        })
+    end if
+
+    if rodash.isNonEmptyString(content.rating)
+        metadataArray.push({
+            rating: content.rating
+        })
+    end if
+
+    m.metadata.data = {
+        metadataArray: metadataArray
+    }
+end sub
+

@@ -62,7 +62,7 @@ function returnScreenModel(options = {})
                 description: "",
                 hydrated: false,
                 logoImageUri: "",
-                subtype: "Model",
+                subtype: "ContentModel",
                 thumbnailImageUri: ""
             })
         end for

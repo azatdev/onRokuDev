@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="Metadata" extends="Div">
+    <interface>
+        <field id="data" type="assocArray" />
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <Div id="container" />
+    </children>
+    <script type="text/brightscript" uri="Metadata.bs" />
+</component>

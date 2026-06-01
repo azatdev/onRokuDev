@@ -55,11 +55,10 @@ function runPaginationTask(options = {})
             continue for
         end if
 
-        newContentNode = createObject("roSGNode", "Model")
+        newContentNode = createObject("roSGNode", "ContentModel")
         hydrateContentNode(newContentNode, content)
         collection.appendChild(newContentNode)
     end for
-
 
     ' ?"collection " collection
     return true
@@ -74,15 +73,19 @@ sub hydrateContentNode(node, options = {})
     imageFields = getImageFields(contentImages)
 
     updateObject = {
+        copyrightYear: options.copyrightYear,
         description: options.description,
-        hydrated: true,
+        duration: options.duration,
+        genres: options.v2genres,
         id: options.documentId,
+        rating: options.rating,
         title: options.title,
         type: options.type
     }
 
     updateObject.append(imageFields)
     node.update(updateObject, true)
+    node.hydrated = true
 end sub
 
 

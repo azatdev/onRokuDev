@@ -4,6 +4,8 @@ module.exports = {
     ...require("./ButtonItem"),
     ...require("./CarouselItem"),
     ...require("./DynamicItem"),
+    ...require("./Metadata"),
     ...require("./NavigationItem"),
+    ...require("./RatingPill"),
     ...require("./TestItem")
 };

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="RatingPill" extends="Div">
+    <interface>
+        <field id="text" type="string" />
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <Poster id="pill">
+            <QuanticoBold id="ratingText" />
+        </Poster>
+    </children>
+    <script type="text/brightscript" uri="RatingPill.bs" />
+</component>
