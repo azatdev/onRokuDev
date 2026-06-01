@@ -22,13 +22,31 @@ sub init()
             focusedItem: 0
         })
 
+        setFocusMap({
+            default: sub(options = {})
+                ?"SetFocusMap default " m.container.getChild(0)
+                focusRow = m.container.getChild(0)
+                setFocus(focusRow)
+            end sub
+        })
+
         onConfigChange({ data: defaultConfig })
 
+        safeObserve("focusedChild", onFocusedChildChange)
         safeObserve("config", onConfigChange)
         safeObserve("change", onChildChange)
         safeObserve("width", onConfigChange)
         safeObserve("height", onConfigChange)
     end sub)
+end sub
+
+
+sub onFocusedChildChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    focusedChild = options.data
+    if not rodash.isNode(focusedChild) then return
+
+    applyDefaultFocus()
 end sub
 
 
@@ -89,6 +107,12 @@ sub onChildChange(options = {})
     end for
 
     setGroupSizes()
+
+    ?"top().hasFocus() " top().id, top().hasFocus(), top().isInFocusChain()
+
+    if top().hasFocus()
+        applyDefaultFocus()
+    end if
 end sub
 
 

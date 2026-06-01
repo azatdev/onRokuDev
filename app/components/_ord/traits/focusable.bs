@@ -12,15 +12,47 @@ class Focusable
 
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
 
+        m.publicFunctions.push("applyDefaultFocus")
+        m.publicFunctions.push("setFocus")
         m.publicFunctions.push("processFocus")
         m.publicFunctions.push("setFocusMap")
     end sub
 
 
+    sub applyDefaultFocus()
+        defaultNode = m.focusMap.current ?? m.focusMap.default ?? ""
+        ' ?"applyDefaultFocus " defaultNode
+        if rodash.isFunction(defaultNode)
+            exec(defaultNode)
+            return
+        end if
+
+        if not rodash.isNode(defaultNode) and rodash.isString(defaultNode) then top().findNode(defaultNode)
+
+        if not rodash.isNode(defaultNode) then defaultNode = top().getChild(0)
+
+        if not rodash.isNode(defaultNode) then defaultNode = top()
+
+        m.setFocus(defaultNode)
+    end sub
+
+
+    function getFocusedChild(node = {})
+        if not rodash.isNode(node) then node = top()
+
+        focusedNode = node.focusedChild
+        if rodash.isNode(focusedNode.focusedChild) and not focusedNode.focusedChild.isSameNode(focusedNode)
+            return m.getFocusedChild(focusedNode.focusedChild)
+        else
+            return rodash.isNode(focusedNode) ? focusedNode : node
+        end if
+    end function
+
+
     function processFocus(key as string)
         handled = false
 
-        focusedChild = top().focusedChild
+        focusedChild = m.focusMap.current ?? m.focusMap.default ?? top()
         nodeMap = m.focusMap[focusedChild.id] ?? {}
         focusValue = nodeMap[key]
 
@@ -30,16 +62,31 @@ class Focusable
             exec(focusValue)
             handled = true
         else if rodash.isNode(focusValue)
-            focusValue.setFocus(true)
             handled = true
         else if rodash.isNonEmptyString(focusValue)
-            node = top().findNode(focusValue)
-            if rodash.isNode(node) then node.setFocus(true)
+            focusValue = top().findNode(focusValue)
             handled = true
         end if
 
+        m.setFocus(focusValue)
+
         return handled
     end function
+
+
+    sub setFocus(node = {})
+        if not rodash.isNode(node) then return
+
+        ' currentFocusedNode = m.focusMap.current
+        ' if rodash.isNode(currentFocusedNode) and not node.isSameNode(currentFocusedNode)
+        '     m.focusMap.current = node
+        '     ?"setFocus " node
+        '     node.setFocus(true)
+        ' end if
+        m.focusMap.current = node
+        ?"setFocus " node
+        node.setFocus(true)
+    end sub
 
 
     sub setFocusMap(options = {})

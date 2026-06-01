@@ -5,7 +5,7 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <Div id="screenContainer">
+        <Div id="screenContainer" focusable="false">
             <CatalogHero id="catalogHero" />
             <_ord_scrollGroup id="scrollGroup" />
         </Div>

@@ -25,12 +25,12 @@ sub startLoadingAnimation()
         return
     end if
 
-    fadeOut(top(), { callback: onFadedOut, duration: 1 })
+    fadeOut(top(), { callback: onFadedOut, duration: 0.5 })
 end sub
 
 
 sub onFadedOut(options = {})
-    fadeIn(top(), { callback: onFadedIn, duration: 1 })
+    fadeIn(top(), { callback: onFadedIn, duration: 0.5 })
 end sub
 
 

@@ -5,7 +5,21 @@ sub init()
         m.heroScrollGroup = top().findNode("heroScrollGroup")
         liveConfig({ field: "config", keyPath: "HeroScrollGroup" }, m.heroScrollGroup)
         safeObserve("data", onDataSet)
+        safeObserve("focusedChild", onFocusedChildChange)
+
+        setFocusMap({
+            "default": m.heroScrollGroup
+        })
     end sub)
+end sub
+
+
+sub onFocusedChildChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    focusedChild = options.data
+    if not rodash.isNode(focusedChild) then return
+
+    applyDefaultFocus()
 end sub
 
 
@@ -17,11 +31,10 @@ sub onDataSet(options = {})
     content = data.content
     m.content = content
 
-    ?"CatalogHero onDataSet " content
-
     for each model in content.getChildren(-1, 0)
         processScrollItem({ model: model })
     end for
+
     dispatch(events.PAGINATE_CAROUSEL, { collection: content })
 end sub
 

@@ -83,8 +83,8 @@ function onKeyEvent(key as string, press as boolean) as boolean
         key = options.key
         press = options.press
         if not press then return true
-        ?"onKeyEvent " key
         handled = processFocus(key)
+        ?"App onKeyEvent " key, handled
         return handled
     end function, { key: key, press: press })
 end function

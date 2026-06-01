@@ -222,6 +222,20 @@ function processFocus(key = "")
 end function
 
 
+function applyDefaultFocus()
+    interface = m.interfaceFunctions["applyDefaultFocus"]
+    if interface = invalid then return invalid
+    return interface.applyDefaultFocus()
+end function
+
+
+function setFocus(node)
+    interface = m.interfaceFunctions["setFocus"]
+    if interface = invalid then return invalid
+    return interface.setFocus(node)
+end function
+
+
 function liveConfig(options = {}, node = top())
     interface = m.interfaceFunctions["liveConfig"]
     if interface = invalid then return invalid

@@ -12,7 +12,6 @@ module.exports = {
             translation: [189, 150],
             "Poster": {
                 height: 111,
-                uri: "pkg:/static/images/thinner_rect.9.png",
                 width: 507
             },
             "Metadata": {
@@ -35,10 +34,5 @@ module.exports = {
                 width: 544
             }
         }
-        // "LoadingDiv": {
-        //     "Div": {
-
-        //     }
-        // }
     }
 };

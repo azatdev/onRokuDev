@@ -10,11 +10,32 @@ sub init()
         liveConfig({ field: "config", keyPath: "CatalogScrollGroup" }, m.scrollGroup)
 
         safeObserve("data", onDataSet)
+        safeObserve("focusedChild", onFocusedChildChange)
+
+        setFocusMap({
+            "default": m.catalogHero,
+            "catalogHero": {
+                "down": m.scrollGroup
+            },
+            "scrollGroup": {
+                "up": m.catalogHero
+            }
+        })
 
         styleHooks({
             after: afterStyling
         })
     end sub)
+end sub
+
+
+sub onFocusedChildChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    focusedChild = options.data
+    ?"CatalogScreen onFocusedChildChange " focusedChild
+    if not rodash.isNode(focusedChild) then return
+
+    ' applyDefaultFocus()
 end sub
 
 
@@ -26,7 +47,7 @@ end sub
 
 function handleFocus(options = {})
     return exec(function(options = {})
-        m.scrollGroup.setFocus(true)
+        applyDefaultFocus()
         return true
     end function)
 end function
@@ -62,3 +83,15 @@ sub processScrollItem(options = {})
 
     afterStyling()
 end sub
+
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    return exec(function(options = {})
+        key = options.key
+        press = options.press
+        if not press then return true
+        handled = processFocus(key)
+        ?"CatalogScreen onKeyEvent " key, handled
+        return handled
+    end function, { key: key, press: press })
+end function
