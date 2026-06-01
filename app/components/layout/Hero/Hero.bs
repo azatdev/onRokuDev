@@ -2,5 +2,47 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(options = {})
+        m.container = top().findNode("container")
+        m.contentLogo = top().findNode("contentLogo")
+        m.metadataContainer = top().findNode("metadataContainer")
+        m.description = top().findNode("description")
+        m.ctas = top().findNode("ctas")
+        safeObserve("data", onDataSet)
+        stackChildren({ node: m.container, direction: "vertical" })
+        redrawStyles()
     end sub)
+end sub
+
+
+sub onDataSet(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    if rodash.isNode(m.content) then return
+
+    data = options.data
+    content = data.content
+    m.content = content
+
+    if rodash.isEmptyString(content.description)
+        safeObserve("description", setDescription, m.content)
+    else
+        setDescription({ data: content.description})
+    end if
+
+    if rodash.isEmptyString(content.logoImageUri)
+        safeObserve("logoImageUri", setLogoImage, m.content)
+    else
+        setLogoImage({ data: content.logoImageUri})
+    end if
+end sub
+
+
+sub setDescription(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    m.description.text = options.data ?? ""
+end sub
+
+
+sub setLogoImage(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    m.contentLogo.uri = options.data ?? ""
 end sub

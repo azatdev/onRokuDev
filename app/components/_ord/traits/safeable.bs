@@ -111,7 +111,7 @@ class Safeable
 
         node.callFunc("safeFunc", functionName)
 
-        proxyData = node.ord_proxyData
+        proxyData = node.ord_proxyData ?? {}
         returnObj = proxyData.output ?? invalid
         proxyData.output = invalid
 
@@ -132,6 +132,7 @@ class Safeable
 
     sub safeObserve(fieldName = "", callbackFunc = "", node = getGlobalAA().top, infoFields = [])
         if rodash.isEmptyString(fieldName) then return
+        if not rodash.isNode(node) then return
 
         if role() = "Task" and rodash.isMessagePort(callbackFunc)
             node.observeFieldScopedEx(fieldName, callbackFunc, infoFields)
@@ -140,7 +141,7 @@ class Safeable
 
         if rodash.isEmptyString(callbackFunc) then return
 
-        nodeIdentifier = node.isSameNode(getGlobalAA().top) ? "" : `_${node.subType()}_${node.id}`
+        nodeIdentifier = node.isSameNode(getGlobalAA().top) ? "" : `_${node.subType()}_${node.createdAt}`
         uniqueFieldName = `${fieldName}${nodeIdentifier}`
 
         m.storeCallback({
@@ -155,7 +156,7 @@ class Safeable
 
     sub safeUnobserve(fieldName = "", node = getGlobalAA().top)
         if rodash.isEmptyString(fieldName) then return
-        nodeIdentifier = node.isSameNode(getGlobalAA().top) ? "" : `_${node.subType()}_${node.id}`
+        nodeIdentifier = node.isSameNode(getGlobalAA().top) ? "" : `_${node.subType()}_${node.createdAt}`
         uniqueFieldName = `${fieldName}${nodeIdentifier}`
         node.unObserveFieldScoped(fieldName)
         m.removeCallback({ field: uniqueFieldName })
@@ -169,7 +170,7 @@ class Safeable
 
         callbacks = getGlobalAA().ord_callbacks
         node = event.getRoSGNode()
-        nodeIdentifier = node.isSameNode(getGlobalAA().top) ? "" : `_${node.subType()}_${node.id}`
+        nodeIdentifier = node.isSameNode(getGlobalAA().top) ? "" : `_${node.subType()}_${node.createdAt}`
         uniqueFieldName = `${fieldName}${nodeIdentifier}`
 
         functionName = callbacks[uniqueFieldName] ?? ""
@@ -223,6 +224,7 @@ class Safeable
         callback = options.callback
 
         callbacks[field] = callback
+
         getGlobalAA().ord_callbacks = callbacks
     end sub
 
@@ -232,5 +234,4 @@ class Safeable
         taskFunction = options.function
         getGlobalAA()._ord_taskFunction = taskFunction
     end sub
-
 end class

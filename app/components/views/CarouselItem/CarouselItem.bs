@@ -36,9 +36,6 @@ end sub
 
 sub onFadedIn(options = {})
     startLoadingAnimation()
-    ' if not rodash.isNode(m.content) then return
-    ' if rodash.isBoolean(m.content.hydrated) and not m.content.hydrated
-    ' end if
 end sub
 
 

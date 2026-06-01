@@ -1,0 +1,46 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        m.container = top().findNode("container")
+        startLoadingAnimation()
+        safeObserve("change", onChildChange)
+    end sub)
+end sub
+
+
+sub onChildChange(options = {})
+    changeData = options.data
+    if rodash.isEmpty(changeData) then return
+
+    operation = changeData.operation ?? ""
+    if operation <> "add" and operation <> "remove" then return
+
+    numberOfNewNodes = changeData.index2 - changeData.index1 + 1
+    addedNodes = top().getChildren(numberOfNewNodes, changeData.index1)
+
+    for each child in addedNodes
+        if child.isSubtype("Group") then m.container.appendChild(child)
+    end for
+end sub
+
+
+sub startLoadingAnimation()
+    if rodash.isNode(m.content) and m.content.hydrated
+        fadeIn(m.container)
+        return
+    end if
+
+    fadeOut(top(), { callback: onFadedOut, duration: 1 })
+end sub
+
+
+sub onFadedOut(options = {})
+    fadeIn(top(), { callback: onFadedIn, duration: 1 })
+end sub
+
+
+sub onFadedIn(options = {})
+    startLoadingAnimation()
+end sub
+

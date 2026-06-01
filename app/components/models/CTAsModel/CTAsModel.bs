@@ -1,16 +1,18 @@
-import "pkg:/components/constants.bs"
+import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    updateObjArray = []
+    exec(sub(options = {})
+        updateObjArray = []
 
-    for each item in getItems()
-        updateObject = { subtype: "ContentNode"}
-        updateObject.append(item)
-        updateObjArray.push(updateObject)
-    end for
+        for each item in getItems()
+            updateObject = { subtype: "ContentNode" }
+            updateObject.append(item)
+            updateObjArray.push(updateObject)
+        end for
 
-    m.top.update(updateObjArray, true)
-    m.top.totalCount = m.top.getChildCount()
+        m.top.update(updateObjArray, true)
+        m.top.totalCount = m.top.getChildCount()
+    end sub)
 end sub
 
 

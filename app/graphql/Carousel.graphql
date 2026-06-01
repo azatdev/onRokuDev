@@ -2,7 +2,14 @@ query Carousel($documentId: ID!, $pagination: PaginationArg) {
   carousel(documentId: $documentId) {
     contents(pagination: $pagination) {
         complimentaryColor
+        copyrightYear
+        description
         documentId
+        duration
+        genres {
+          name
+        }
+        rating
         title
         type
         images {

@@ -76,8 +76,8 @@ end sub
 
 sub onChildChange(options = {})
     changeData = options.data
-
     if rodash.isEmpty(changeData) then return
+
     operation = changeData.operation ?? ""
     if operation <> "add" and operation <> "remove" then return
 

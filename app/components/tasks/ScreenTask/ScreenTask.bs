@@ -33,8 +33,8 @@ end function
 function returnScreenModel(options = {})
     data = options.data ?? {}
     screenData = data.screen ?? {}
-    ' carouselsData = screenData.carousels ?? []
-    carouselsData =  [screenData.carousels[1], screenData.carousels[3], screenData.carousels[4], screenData.carousels[5]]
+    carouselsData = screenData.carousels ?? []
+    ' carouselsData =  [screenData.carousels[1], screenData.carousels[3], screenData.carousels[4], screenData.carousels[5]]
     ' carouselsData =  [screenData.carousels[1]]
     updateObjArray = []
 
@@ -59,7 +59,9 @@ function returnScreenModel(options = {})
         ' for loading animation
         for x = 0 to carouselConfig.visibleTiles
             updateObject.children.push({
+                description: "",
                 hydrated: false,
+                logoImageUri: "",
                 subtype: "Model",
                 thumbnailImageUri: ""
             })

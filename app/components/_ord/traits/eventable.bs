@@ -66,10 +66,11 @@ class Eventable
         top().setRef("_ord_subscriptions", subscriptions)
     end sub
 
+
     sub onTaskReady(options = {})
-        ?"onTaskReady " options.data
         dispatch(events.EVENT_TASK_READY)
     end sub
+
 
     sub subscribe(options = {})
         if rodash.isEmpty(options) then return

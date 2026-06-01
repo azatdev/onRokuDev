@@ -7,7 +7,7 @@ module.exports = {
     "CatalogScreen": {
         "Div": {
             "&#screenContainer": {
-                "Div": {
+                "CatalogHero": {
                     height: 531,
                     width: viewport.width
                 },

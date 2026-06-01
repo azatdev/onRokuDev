@@ -1,0 +1,40 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        m.heroScrollGroup = top().findNode("heroScrollGroup")
+        liveConfig({ field: "config", keyPath: "HeroScrollGroup" }, m.heroScrollGroup)
+        safeObserve("data", onDataSet)
+    end sub)
+end sub
+
+
+sub onDataSet(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    if rodash.isNode(m.content) then return
+
+    data = options.data
+    content = data.content
+    m.content = content
+
+    ?"CatalogHero onDataSet " content
+
+    for each model in content.getChildren(-1, 0)
+        processScrollItem({ model: model })
+    end for
+    dispatch(events.PAGINATE_CAROUSEL, { collection: content })
+end sub
+
+
+sub processScrollItem(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    model = options.model
+    if not rodash.isNode(model) then return
+
+    component = createObject("roSGNode", "Hero")
+    component.data = { content: model }
+    m.heroScrollGroup.appendChild(component)
+
+    ' afterStyling()
+end sub

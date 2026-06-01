@@ -6,7 +6,7 @@
     </interface>
     <children>
         <Div id="screenContainer">
-            <Div id="headerContainer" />
+            <CatalogHero id="catalogHero" />
             <_ord_scrollGroup id="scrollGroup" />
         </Div>
     </children>

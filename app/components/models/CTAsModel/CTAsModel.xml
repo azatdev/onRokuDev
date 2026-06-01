@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="CTAsModel" extends="ContentNode">
+<component name="CTAsModel" extends="Model">
     <interface>
         <field id="dynamicWidth" type="boolean" />
         <field id="iconText" type="string" />
         <field id="config" type="assocarray" />
-        <field id="totalCount" type="integer" />
     </interface>
     <children>
     </children>

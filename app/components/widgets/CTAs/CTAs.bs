@@ -12,16 +12,7 @@ sub loadList()
     list = top().findNode("ctasList")
 
     ctasModel = createObject("roSGNode", "CTAsModel")
-    ctasModel.config = {
-        carouselType: "dynamicSize",
-        focusType: "floating",
-        itemComponentName: "ButtonItem",
-        maxWidth: 1800,
-        visibleTiles: 999,
-        squareMargins: [0, 16, 0, 0],
-        useUnfocusedTargetSet: true,
-        wrap: false
-    }
+    liveConfig({ field: "config", keyPath: "CTACarousel" }, ctasModel)
 
     list.data = {
         content: ctasModel

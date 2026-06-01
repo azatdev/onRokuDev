@@ -32,7 +32,6 @@ sub getScreenData(options = {})
 
     screenConfig = get(slug) ?? {}
     screenConfig.screenId = screenId
-    ?"screenConfig " formatJSON(screenConfig)
 
     screenVariables = screenConfig.variables ?? {}
 

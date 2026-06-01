@@ -797,6 +797,7 @@ end function
 function returnDynamicRects(options = {})
     direction = options.direction
     extraRects = options.extraRects
+    firstVisibleIndex = extraRects
     gutters = options.gutters
     horizAlign = options.horizAlign
     margins = options.margins
@@ -867,9 +868,25 @@ function returnDynamicRects(options = {})
             end if
 
             if horizontal
-                containerPosition[targetRectIndex] = startingPosition + margins.left + margins.right
+                if x <= firstVisibleIndex
+                    if horizAlign = "right"
+                        containerPosition[targetRectIndex] = startingPosition + margins.right
+                    else
+                        containerPosition[targetRectIndex] = startingPosition + margins.left
+                    end if
+                else
+                    containerPosition[targetRectIndex] = startingPosition + margins.left + margins.right
+                end if
             else
-                containerPosition[targetRectIndex] = startingPosition + margins.top + margins.bottom
+                if x <= firstVisibleIndex
+                    if vertAlign = "bottom"
+                        containerPosition[targetRectIndex] = startingPosition + margins.bottom
+                    else
+                        containerPosition[targetRectIndex] = startingPosition + margins.top
+                    end if
+                else
+                    containerPosition[targetRectIndex] = startingPosition + margins.top + margins.bottom
+                end if
             end if
 
             targetRect = {

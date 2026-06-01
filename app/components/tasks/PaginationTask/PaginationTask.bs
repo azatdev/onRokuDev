@@ -33,6 +33,7 @@ function runPaginationTask(options = {})
     responseData = responseJSON.data ?? {}
     carouselsData = responseData.carousel ?? {}
     contentsData = carouselsData.contents ?? []
+    collectionChildren = collection.getChildren(-1, 0)
 
     for each content in contentsData
         documentId =  content.documentId ?? ""
@@ -45,7 +46,7 @@ function runPaginationTask(options = {})
             continue for
         end if
 
-        existingEmptyNode = rodash.find(collection.getChildren(-1, 0), function(cv)
+        existingEmptyNode = rodash.find(collectionChildren, function(cv)
             return not cv.hydrated
         end function)
 
@@ -73,6 +74,7 @@ sub hydrateContentNode(node, options = {})
     imageFields = getImageFields(contentImages)
 
     updateObject = {
+        description: options.description,
         hydrated: true,
         id: options.documentId,
         title: options.title,

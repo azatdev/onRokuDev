@@ -1,3 +1,4 @@
 module.exports = {
-    ...require("./catalog")
+    ...require("./catalog"),
+    ...require("./hero")
 };

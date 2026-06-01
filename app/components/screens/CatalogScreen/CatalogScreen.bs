@@ -4,7 +4,7 @@ import "pkg:/source/roku_modules/promises/promises.brs"
 sub init()
     exec(sub(options = {})
         m.screenContainer = top().findNode("screenContainer")
-        m.headerContainer = top().findNode("headerContainer")
+        m.catalogHero = top().findNode("catalogHero")
         m.scrollGroup = top().findNode("scrollGroup")
 
         liveConfig({ field: "config", keyPath: "CatalogScrollGroup" }, m.scrollGroup)
@@ -34,10 +34,11 @@ end function
 
 sub onDataSet(options = {})
     if not rodash.isNonEmptyAA(options) then return
+    if rodash.isNode(m.content) then return
 
     data = options.data
     content = data.content
-    headerContent = content.getChild(0)
+    m.content = content
 
     for each model in content.getChildren(-1, 0)
         processScrollItem({ model: model })
@@ -52,8 +53,7 @@ sub processScrollItem(options = {})
     carouselType = model.carouselType ?? "INDEX"
 
     if carouselType = "HERO"
-        component = createObject("roSGNode", "Hero")
-        m.headerContainer.appendChild(component)
+        m.catalogHero.data = { content: model }
     else
         component = createObject("roSGNode", "Carousel")
         component.data = { content: model }

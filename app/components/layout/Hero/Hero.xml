@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="Hero" extends="Rectangle">
+<component name="Hero" extends="Div">
     <interface>
-
+        <field id="data" type="assocArray" />
+        <function name="safeFunc" />
     </interface>
     <children>
-        <Div id="contentContainer">
+        <Div id="container">
             <Poster id="contentLogo" />
             <Div id="metadataContainer" />
-            
+            <Quantico id="description" />
+            <CTAs id="ctas" />
         </Div>
     </children>
     <script type="text/brightscript" uri="Hero.bs" />

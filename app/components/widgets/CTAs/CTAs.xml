@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="CTAs" extends="Group">
+<component name="CTAs" extends="Div">
     <interface>
         <function name="safeFunc" />
     </interface>

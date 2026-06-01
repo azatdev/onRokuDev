@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="HeroContainer" extends="Div">
+    <interface>
+        <field id="data" type="assocArray" />
+    </interface>
+    <children>
+        <_ord_scrollGroup id="heroScrollGroup" />
+    </children>
+    <script type="text/brightscript" uri="HeroContainer.bs" />
+</component>
