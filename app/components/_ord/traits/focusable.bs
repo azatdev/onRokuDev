@@ -21,7 +21,6 @@ class Focusable
 
     sub applyDefaultFocus()
         defaultNode = m.focusMap.current ?? m.focusMap.default ?? ""
-        ' ?"applyDefaultFocus " defaultNode
         if rodash.isFunction(defaultNode)
             exec(defaultNode)
             return

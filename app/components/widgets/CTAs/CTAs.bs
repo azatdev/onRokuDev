@@ -25,6 +25,6 @@ end sub
 sub onFocusedChildChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     focusedChild = options.data
-    if not rodash.isNode(focusedChild) then return
+    if not rodash.isNode(focusedChild) or not top().isSameNode(focusedChild) then return
     m.list.setFocus(true)
 end sub

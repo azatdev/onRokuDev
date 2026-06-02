@@ -21,8 +21,7 @@ sub onFocusedChildChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     focusedChild = options.data
     if not rodash.isNode(focusedChild) then return
-
-    applyDefaultFocus()
+    if top().isSameNode(focusedChild) then applyDefaultFocus()
 end sub
 
 

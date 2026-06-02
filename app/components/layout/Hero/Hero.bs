@@ -21,10 +21,8 @@ end sub
 sub onFocusedChildChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     focusedChild = options.data
-    ?"Hero onFocusedChildChange " focusedChild
     if not rodash.isNode(focusedChild) then return
-
-    applyDefaultFocus()
+    if top().isSameNode(focusedChild) then applyDefaultFocus()
 end sub
 
 
@@ -101,7 +99,5 @@ sub setMetadata(options = {})
     m.metadata.data = {
         metadataArray: metadataArray
     }
-
-    applyDefaultFocus()
 end sub
 

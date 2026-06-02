@@ -32,10 +32,8 @@ end sub
 sub onFocusedChildChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     focusedChild = options.data
-    ?"CatalogScreen onFocusedChildChange " focusedChild
     if not rodash.isNode(focusedChild) then return
-
-    ' applyDefaultFocus()
+    if top().isSameNode(focusedChild) then applyDefaultFocus()
 end sub
 
 

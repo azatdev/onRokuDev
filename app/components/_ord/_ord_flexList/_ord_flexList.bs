@@ -278,6 +278,11 @@ sub onFocusedChildChange(options = {})
         return
     end if
 
+    if top().id = "ctasList"
+        ?"m.focusedTargetSetArray " m.focusedTargetSetArray
+        ?"m.carousel " m.carousel
+    end if
+
     if not rodash.isArray(m.focusedTargetSetArray) then return
 
     currentTargetSet = m.focusedTargetSetArray[top().focusedTargetsetIndex]
@@ -287,6 +292,7 @@ sub onFocusedChildChange(options = {})
         args[0].animateToTargetSet = args[1]
     end sub, 100, [m.carousel, currentTargetSet])
 
+    ?"flexslit " m.carousel
     m.carousel.setFocus(true)
 end sub
 
@@ -595,7 +601,9 @@ sub generateRects(options = {})
             end if
         end for
     end if
-
+    if top().id = "ctasList"
+        ?"GENERATE RECTS " m.focusedTargetSetArray
+    end if
     m.targetsetRects = targetsetRects
 end sub
 

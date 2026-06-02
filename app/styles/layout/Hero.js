@@ -9,7 +9,7 @@ module.exports = {
         translation: [0, 0],
         width: viewport.width,
         "Div": {
-            translation: [189, 150],
+            translation: [180, 150],
             "Poster": {
                 height: 111,
                 width: 507

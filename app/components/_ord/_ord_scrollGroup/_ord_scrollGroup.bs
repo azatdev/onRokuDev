@@ -45,8 +45,7 @@ sub onFocusedChildChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     focusedChild = options.data
     if not rodash.isNode(focusedChild) then return
-
-    applyDefaultFocus()
+    if top().isSameNode(focusedChild) then applyDefaultFocus()
 end sub
 
 
@@ -108,10 +107,11 @@ sub onChildChange(options = {})
 
     setGroupSizes()
 
-    ?"top().hasFocus() " top().id, top().hasFocus(), top().isInFocusChain()
-
-    if top().hasFocus()
-        applyDefaultFocus()
+    if rodash.isNode(top().focusedChild) and top().isSameNode(top().focusedChild)
+        currentFocusIndex = get("focusedItem") ?? 0
+        childToFocus = m.container.getChild(currentFocusIndex)
+        if rodash.isNode(childToFocus) and not childToFocus.isInFocusChain() then setFocus(childToFocus)
+        ?"AASDASDASDDASDASDSADSAD"
     end if
 end sub
 
@@ -227,11 +227,13 @@ function performScroll(key = "")
         trackTranslation: trackTranslation
     })
 
-    children[nextFocusedItem].setFocus(true)
+    nextFocusNode = children[nextFocusedItem]
+    ?"nextFocusNode " nextFocusedItem, nextFocusNode
 
-    set({
-        focusedItem: nextFocusedItem
-    })
+    if rodash.isNode(nextFocusNode)
+        setFocus(nextFocusNode)
+        set({ focusedItem: nextFocusedItem })
+    end if
 
     return true
 end function
