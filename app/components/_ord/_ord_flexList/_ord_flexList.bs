@@ -278,21 +278,22 @@ sub onFocusedChildChange(options = {})
         return
     end if
 
-    if top().id = "ctasList"
-        ?"m.focusedTargetSetArray " m.focusedTargetSetArray
-        ?"m.carousel " m.carousel
+    if rodash.isArray(m.focusedTargetSetArray)
+        focusOnCarousel()
+    else
+        waitToFocus(focusOnCarousel)
     end if
+end sub
 
-    if not rodash.isArray(m.focusedTargetSetArray) then return
 
+sub focusOnCarousel(options = {})
     currentTargetSet = m.focusedTargetSetArray[top().focusedTargetsetIndex]
-    m.carousel.animateToItem = currentIndex
+    m.carousel.animateToItem = top().focusedContentIndex ?? 0
 
     rodash.delay(sub(args)
         args[0].animateToTargetSet = args[1]
     end sub, 100, [m.carousel, currentTargetSet])
 
-    ?"flexslit " m.carousel
     m.carousel.setFocus(true)
 end sub
 
@@ -451,6 +452,7 @@ sub processConfig(options = {})
 
     applyClippingRect({ percentage: 0 })
     m.carousel.targetSet = m.unFocusedTargetSet
+    readyToFocus()
 end sub
 
 
@@ -601,9 +603,7 @@ sub generateRects(options = {})
             end if
         end for
     end if
-    if top().id = "ctasList"
-        ?"GENERATE RECTS " m.focusedTargetSetArray
-    end if
+
     m.targetsetRects = targetsetRects
 end sub
 

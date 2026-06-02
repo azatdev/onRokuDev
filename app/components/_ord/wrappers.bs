@@ -222,6 +222,20 @@ function processFocus(key = "")
 end function
 
 
+function waitToFocus(focusTarget)
+    interface = m.interfaceFunctions["waitToFocus"]
+    if interface = invalid then return invalid
+    return interface.waitToFocus(focusTarget)
+end function
+
+
+function readyToFocus()
+    interface = m.interfaceFunctions["readyToFocus"]
+    if interface = invalid then return invalid
+    return interface.readyToFocus()
+end function
+
+
 function applyDefaultFocus()
     interface = m.interfaceFunctions["applyDefaultFocus"]
     if interface = invalid then return invalid

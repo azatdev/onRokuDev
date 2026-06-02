@@ -8,9 +8,9 @@ end sub
 
 
 sub setupItem()
-    m.label = m.top.findNode("label")
-    m.icon = m.top.findNode("icon")
-    m.container = m.top.findNode("textContainer")
+    m.label = top().findNode("label")
+    m.icon = top().findNode("icon")
+    m.container = top().findNode("textContainer")
     m.background = top().findNode("background")
     m.highlight = top().findNode("highlight")
     m.parentList = top().getParent()

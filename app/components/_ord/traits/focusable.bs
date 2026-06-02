@@ -1,6 +1,9 @@
 class Focusable
-    publicFunctions = []
+    focusReady = false
     focusMap = {}
+    focusNode = invalid
+    focusFunction = invalid
+    publicFunctions = []
 
     sub new(options = {})
         m.setExportFunctions(role())
@@ -15,7 +18,9 @@ class Focusable
         m.publicFunctions.push("applyDefaultFocus")
         m.publicFunctions.push("setFocus")
         m.publicFunctions.push("processFocus")
+        m.publicFunctions.push("readyToFocus")
         m.publicFunctions.push("setFocusMap")
+        m.publicFunctions.push("waitToFocus")
     end sub
 
 
@@ -75,13 +80,6 @@ class Focusable
 
     sub setFocus(node = {})
         if not rodash.isNode(node) then return
-
-        ' currentFocusedNode = m.focusMap.current
-        ' if rodash.isNode(currentFocusedNode) and not node.isSameNode(currentFocusedNode)
-        '     m.focusMap.current = node
-        '     ?"setFocus " node
-        '     node.setFocus(true)
-        ' end if
         m.focusMap.current = node
         ?"setFocus " node
         node.setFocus(true)
@@ -90,5 +88,41 @@ class Focusable
 
     sub setFocusMap(options = {})
         m.focusMap.append(options)
+    end sub
+
+
+    sub waitToFocus(focusTarget)
+        if rodash.isNode(focusTarget)
+            if m.focusReady
+                m.setFocus(focusTarget)
+                return
+            end if
+
+            m.focusFunction = invalid
+            m.focusNode = focusTarget
+        else if rodash.isFunction(focusTarget)
+            if m.focusReady
+                exec(focusTarget)
+                return
+            end if
+
+            m.focusFunction = focusTarget
+            m.focusNode = invalid
+        end if
+    end sub
+
+
+    sub readyToFocus()
+        if m.focusReady then return
+        m.focusReady = true
+
+        focusFunction = m.focusFunction
+        focusNode = m.focusNode
+
+        if rodash.isNode(focusNode)
+            m.setFocus(focusNode)
+        else if rodash.isFunction(focusFunction)
+            exec(focusFunction)
+        end if
     end sub
 end class

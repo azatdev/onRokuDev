@@ -26,6 +26,7 @@ class Safeable
 
         if top().hasFunc("safeFunc") then return
 
+        'bs:disable-next-line
         ?`
 
         WARNING: Please add

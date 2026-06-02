@@ -26,6 +26,7 @@
         "unreachable-code": "error",
         "case-sensitivity": "warn",
         "unused-variable": "warn",
+        "unused-parameter": "off",
         "consistent-return": "error",
 
         "no-assocarray-component-field-type": "off",
