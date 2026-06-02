@@ -287,15 +287,20 @@ end sub
 
 
 sub focusOnCarousel(options = {})
-    m.carousel.animateToItem = top().focusedContentIndex ?? 0
+    if m.carousel.hasFocus() then return
     if not rodash.isArray(m.focusedTargetSetArray) then return
+
+    m.carousel.animateToItem = top().focusedContentIndex ?? 0
+    m.carousel.setFocus(true)
+
+    dynamicSize = get("dynamicSize") ?? false
+    if dynamicSize then return
 
     currentTargetSet = m.focusedTargetSetArray[top().focusedTargetsetIndex]
 
     rodash.delay(sub(args)
         args[0].animateToTargetSet = args[1]
     end sub, 100, [m.carousel, currentTargetSet])
-    m.carousel.setFocus(true)
 end sub
 
 
@@ -452,7 +457,7 @@ sub processConfig(options = {})
     })
 
     applyClippingRect({ percentage: 0 })
-    m.carousel.targetSet = m.unFocusedTargetSet
+    ' m.carousel.targetSet = m.unFocusedTargetSet
     readyToFocus()
 end sub
 
