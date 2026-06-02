@@ -108,6 +108,7 @@ class Eventable
 
     sub publish(options = {})
         if m.renderQueue = invalid then return
+        'bs:disable-next-line
         ?"### EVENT: " options.id
         m.renderQueue.postMessage(options.id, options.options)
     end sub

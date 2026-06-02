@@ -81,7 +81,6 @@ class Focusable
     sub setFocus(node = {})
         if not rodash.isNode(node) then return
         m.focusMap.current = node
-        ?"setFocus " node
         node.setFocus(true)
     end sub
 

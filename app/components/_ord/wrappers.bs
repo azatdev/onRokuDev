@@ -274,6 +274,7 @@ end function
 
 
 sub onError(e)
+    'bs:disable-next-line
     ?"ERROR: " formatJSON(e)
 end sub
 
@@ -369,6 +370,7 @@ function getVisibleHeight(node)
     nodeHeight = 0
     clippingRect = node.clippingRect
     boundingRect = node.boundingRect()
+    nodeMargins = quadrupleMargins(node.margin)
 
     if not rodash.isNonEmptyAA(clippingRect) then return 0
 
@@ -380,6 +382,9 @@ function getVisibleHeight(node)
         nodeHeight = boundingRect.height
     end if
 
+    nodeHeight += nodeMargins.top
+    nodeHeight += nodeMargins.bottom
+
     return nodeHeight
 end function
 
@@ -389,6 +394,7 @@ function getVisibleWidth(node)
     nodeWidth = 0
     clippingRect = node.clippingRect
     boundingRect = node.boundingRect()
+    nodeMargins = quadrupleMargins(node.margin)
 
     if not rodash.isNonEmptyAA(clippingRect) then return 0
 
@@ -399,6 +405,9 @@ function getVisibleWidth(node)
     else if rodash.isNonEmptyAA(boundingRect)
         nodeWidth = boundingRect.width
     end if
+
+    nodeWidth += nodeMargins.left
+    nodeWidth += nodeMargins.right
 
     return nodeWidth
 end function

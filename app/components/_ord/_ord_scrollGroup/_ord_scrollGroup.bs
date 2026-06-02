@@ -24,7 +24,6 @@ sub init()
 
         setFocusMap({
             default: sub(options = {})
-                ?"SetFocusMap default " m.container.getChild(0)
                 focusRow = m.container.getChild(0)
                 setFocus(focusRow)
             end sub
@@ -111,7 +110,6 @@ sub onChildChange(options = {})
         currentFocusIndex = get("focusedItem") ?? 0
         childToFocus = m.container.getChild(currentFocusIndex)
         if rodash.isNode(childToFocus) and not childToFocus.isInFocusChain() then setFocus(childToFocus)
-        ?"AASDASDASDDASDASDSADSAD"
     end if
 end sub
 
@@ -228,7 +226,6 @@ function performScroll(key = "")
     })
 
     nextFocusNode = children[nextFocusedItem]
-    ?"nextFocusNode " nextFocusedItem, nextFocusNode
 
     if rodash.isNode(nextFocusNode)
         setFocus(nextFocusNode)

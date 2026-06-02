@@ -89,7 +89,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
         press = options.press
         if not press then return true
         handled = processFocus(key)
-        ?"CatalogScreen onKeyEvent " key, handled
         return handled
     end function, { key: key, press: press })
 end function
