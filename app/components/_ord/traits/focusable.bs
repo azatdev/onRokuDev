@@ -56,8 +56,16 @@ class Focusable
     function processFocus(key as string)
         handled = false
 
-        focusedChild = m.focusMap.current ?? m.focusMap.default ?? top()
-        nodeMap = m.focusMap[focusedChild.id] ?? {}
+        focusTarget = m.focusMap.current ?? m.focusMap.default ?? top()
+
+        if rodash.isFunction(focusTarget)
+            exec(focusTarget)
+            return true
+        end if
+
+        if not rodash.isNode(focusTarget) then return false
+
+        nodeMap = m.focusMap[focusTarget.id] ?? {}
         focusValue = nodeMap[key]
 
         if focusValue = invalid then return handled
@@ -86,6 +94,7 @@ class Focusable
 
 
     sub setFocusMap(options = {})
+        if not rodash.isNonEmptyAA(options) then return
         m.focusMap.append(options)
     end sub
 

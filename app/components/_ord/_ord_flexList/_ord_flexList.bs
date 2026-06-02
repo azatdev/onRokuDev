@@ -287,13 +287,14 @@ end sub
 
 
 sub focusOnCarousel(options = {})
-    currentTargetSet = m.focusedTargetSetArray[top().focusedTargetsetIndex]
     m.carousel.animateToItem = top().focusedContentIndex ?? 0
+    if not rodash.isArray(m.focusedTargetSetArray) then return
+
+    currentTargetSet = m.focusedTargetSetArray[top().focusedTargetsetIndex]
 
     rodash.delay(sub(args)
         args[0].animateToTargetSet = args[1]
     end sub, 100, [m.carousel, currentTargetSet])
-
     m.carousel.setFocus(true)
 end sub
 

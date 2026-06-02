@@ -3,7 +3,10 @@ import "pkg:/source/roku_modules/sgrouter/router.brs"
 
 sub init()
     exec(sub(options = {})
-        sgRouter.initialize({ outlet: top().findNode("screenContainer") })
+        m.topbar = top().findNode("topbar")
+        m.sidebar = top().findNode("sidebar")
+        m.screenContainer = top().findNode("screenContainer")
+        sgRouter.initialize({ outlet: m.screenContainer })
 
         sgRouter.addRoutes([
             { pattern: "/home", component: "CatalogScreen" },
@@ -20,10 +23,16 @@ sub init()
             "navigateTo": navigateTo
         })
 
-        ' sgRouter.navigateTo("/home") ' Go to the welcome view
-
-        ' set the focus to the router
-        ' sgRouter.setFocus({ focus: true })
+        setFocusMap({
+            "default": m.screenContainer,
+            "sidebar": {
+                "right": focusOnScreen
+            },
+            "topbar": {
+                "down": focusOnScreen,
+                "left": m.sidebar
+            }
+        })
 
         safeObserve("routerState", onRouterStateChanged, sgRouter.getRouter())
         safeObserve("focusedChild", onFocusedChildChange)
@@ -45,13 +54,50 @@ sub onFocusedChildChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     focusedChild = options.data
     if not rodash.isNode(focusedChild) or not top().isSameNode(focusedChild) then return
-    sgRouter.setFocus({ focus: true })
+    focusOnScreen()
+end sub
+
+
+sub focusOnScreen(options = {})
+    ' activeView = sgRouter.getActiveView()
+    activeView = m.activeView
+    if not rodash.isNode(activeView) then return
+    setFocus(m.activeView)
+    ' setFocus(m.screenContainer)
 end sub
 
 
 sub onRouterStateChanged(options = {})
     data = options.data
-    if data.type <> "ActivationStart" then return
+    if data.type <> "ResolveEnd" then return
 
     dispatch(events.GET_SCREEN_DATA, { screenId: data.id, slug: data.url })
+    setActiveView(data.id)
 end sub
+
+
+sub setActiveView(screenId = "")
+    if rodash.isEmptyString(screenId) then return
+    m.activeView = top().findNode(screenId)
+    mapObject = {}
+
+    viewMapObject = {
+        "left": m.sidebar,
+        "up": m.topbar
+    }
+    mapObject[screenId] = viewMapObject
+    setFocusMap(mapObject)
+    setFocus(m.activeView)
+end sub
+
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    return exec(function(options = {})
+        key = options.key
+        press = options.press
+        if not press then return true
+        handled = processFocus(key)
+        ?"Layout onKeyEvent " key, handled
+        return handled
+    end function, { key: key, press: press })
+end function
