@@ -278,11 +278,8 @@ sub onFocusedChildChange(options = {})
         return
     end if
 
-    if rodash.isArray(m.focusedTargetSetArray)
-        focusOnCarousel()
-    else
-        waitToFocus(focusOnCarousel)
-    end if
+    focusOnCarousel()
+
 end sub
 
 
@@ -292,9 +289,6 @@ sub focusOnCarousel(options = {})
 
     m.carousel.animateToItem = top().focusedContentIndex ?? 0
     m.carousel.setFocus(true)
-
-    dynamicSize = get("dynamicSize") ?? false
-    if dynamicSize then return
 
     currentTargetSet = m.focusedTargetSetArray[top().focusedTargetsetIndex]
 
@@ -329,6 +323,7 @@ sub onDataSet(options = {})
                 y: 0
             })
         end for
+
         unFocusedTargetSet = createTargetSet({
             focusIndex: 0,
             targetRects: rects
@@ -367,6 +362,9 @@ end sub
 
 
 sub processConfig(options = {})
+    if top().id = "ctasList"
+        ?"processConfig " rodash.now()
+    end if
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.content) then return
 
@@ -457,8 +455,11 @@ sub processConfig(options = {})
     })
 
     applyClippingRect({ percentage: 0 })
-    ' m.carousel.targetSet = m.unFocusedTargetSet
-    readyToFocus()
+
+    m.carousel.targetSet = m.unFocusedTargetSet
+    if top().hasFocus()
+        m.carousel.setFocus(true)
+    end if
 end sub
 
 
@@ -630,8 +631,6 @@ sub setUnfocusedTargetSet(options = {})
         unFocusedTargetSet = createTargetSet(targetSetOptions)
     end if
 
-    ' Set the initial targetset of the list to the unfocused one
-    m.carousel.targetSet = unFocusedTargetSet
     m.unFocusedTargetSet = unFocusedTargetSet
 end sub
 
