@@ -2,5 +2,27 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(options = {})
+        safeFunctions({
+            setBackground: setBackground
+        })
     end sub)
+end sub
+
+
+sub onBackgroundFadeIn(options = {})
+    ?"onBackgroundFadeIn "
+    
+end sub
+
+
+sub setBackground(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    newUri = options.uri
+    newPoster = createObject("roSGNode", "Poster")
+    newPoster.id = rodash.now().toStr()
+    newPoster.opacity = 0
+    newPoster.uri = newUri
+    m.poster = newPoster
+    top().insertChild(newPoster, 0)
+    fadeIn(m.poster, { callback: onBackgroundFadeIn, duration: 0.5 })
 end sub

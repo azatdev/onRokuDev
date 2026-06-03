@@ -15,6 +15,8 @@ import "traits/styleable.bs"
 
 
 sub ord_init()
+    setCreatedAt(top())
+
     interfaces = [Safeable, Stateable, Eventable, Styleable, Animatable, Focusable, Configable, Loadable]
 
     m.interfaceFunctions = {}
@@ -33,8 +35,6 @@ sub ord_init()
 
     top().addField("_ord_initiated", "boolean", false)
     top()._ord_initiated = true
-
-    setCreatedAt(top())
 end sub
 
 
@@ -47,7 +47,7 @@ end sub
 
 function getNodeIdentifier(node)
     if not rodash.isNode(node) then return ""
-    if not node.hasField("createdAt") then setCreatedAt(node)
+    if rodash.isInvalid(node.createdAt) then setCreatedAt(node)
 
     return [node.subType(), node.createdAt.toStr()].join("_")
 end function

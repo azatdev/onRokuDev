@@ -11,6 +11,7 @@ sub init()
             [events.NAVIGATE_TO]: navigateTo,
             [events.PAGINATE_CAROUSEL]: paginateCarousel,
             [events.SCREEN_DATA_RECEIVED]: onScreenDataReceived,
+            [events.SET_BACKGROUND_IMAGE]: setBackgroundImage,
             [events.SIDEBAR_RECEIVED]: onSidebarReceived,
             [events.TOPBAR_RECEIVED]: onTopbarReceived
         })
@@ -145,6 +146,17 @@ sub paginateCarousel(options = {})
 
     paginationTask.control = "RUN"
 end sub
+
+
+sub setBackgroundImage(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    exec("setBackground", options, background())
+end sub
+
+
+function background()
+    return findNode("background")
+end function
 
 
 function layout()

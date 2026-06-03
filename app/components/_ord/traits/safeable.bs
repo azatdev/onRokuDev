@@ -168,25 +168,28 @@ class Safeable
     ' This function runs on node's m context
     sub safeCallback(event)
         fieldName = event.getField() ?? ""
+
         if rodash.isEmptyString(fieldName) then return
 
         callbacks = getGlobalAA().ord_callbacks
         node = event.getRoSGNode()
         nodeIdentifier = getNodeIdentifier(node)
         uniqueFieldName = `${fieldName}${nodeIdentifier}`
+        functionArrayName = callbacks[uniqueFieldName] ?? []
 
-        functionName = callbacks[uniqueFieldName] ?? ""
-        if rodash.isEmptyString(functionName) then return
+        for each functionName in functionArrayName
+            if not rodash.isFunction(functionName) and rodash.isEmptyString(functionName) then continue for
+            payload = {
+                data: event.getData(),
+                field: event.getField(),
+                info: event.getInfo(),
+                node: event.getRoSGNode(),
+                nodeId: event.getNode()
+            }
 
-        payload = {
-            data: event.getData(),
-            field: event.getField(),
-            info: event.getInfo(),
-            node: event.getRoSGNode(),
-            nodeId: event.getNode()
-        }
 
-        exec(functionName, payload)
+            exec(functionName, payload)
+        end for
     end sub
 
 
@@ -224,8 +227,11 @@ class Safeable
 
         field = options.field
         callback = options.callback
+        if not rodash.isFunction(callback) and rodash.isEmptyString(callback) then return
+        existingCallbacks = callbacks[field] ?? []
+        existingCallbacks.push(callback)
 
-        callbacks[field] = callback
+        callbacks[field] = existingCallbacks
 
         getGlobalAA().ord_callbacks = callbacks
     end sub

@@ -72,6 +72,7 @@ sub hydrateContentNode(node, options = {})
     imageFields = getImageFields(contentImages)
 
     updateObject = {
+        complimentaryColor: options.complimentaryColor,
         copyrightYear: options.copyrightYear,
         description: options.description,
         duration: options.duration,

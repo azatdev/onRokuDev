@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="ContentModel" extends="Model">
     <interface>
+        <field id="complimentaryColor" type="string" />
         <field id="copyrightYear" type="string" />
         <field id="duration" type="integer" />
         <field id="genres" type="array" />

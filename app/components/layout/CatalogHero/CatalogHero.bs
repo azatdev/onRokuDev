@@ -6,7 +6,7 @@ sub init()
         liveConfig({ field: "config", keyPath: "HeroScrollGroup" }, m.heroScrollGroup)
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
-
+        safeObserve("itemFocused", onItemFocused, m.heroScrollGroup)
         setFocusMap({
             "default": m.heroScrollGroup
         })
@@ -38,6 +38,12 @@ sub onDataSet(options = {})
 end sub
 
 
+sub onItemFocused(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    ?"onItemFocused " options.data
+end sub
+
+
 sub processScrollItem(options = {})
     if not rodash.isNonEmptyAA(options) then return
 
@@ -47,6 +53,4 @@ sub processScrollItem(options = {})
     component = createObject("roSGNode", "Hero")
     component.data = { content: model }
     m.heroScrollGroup.appendChild(component)
-
-    ' afterStyling()
 end sub

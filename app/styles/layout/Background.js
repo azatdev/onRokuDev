@@ -5,11 +5,8 @@ const viewport = dimensions["viewport"]
 module.exports = {
     "Background": {
         "Poster": {
-            "&#backgroundImage": {
-                "height": viewport.height,
-                "uri": "pkg:/static/images/backgrounds/memento.webp",
-                "width": viewport.width
-            },
+            "height": viewport.height,
+            "width": viewport.width,
             "&#bottomGradient": {
                 "blendColor": "#000000",
                 "height": 561,

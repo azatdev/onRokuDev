@@ -70,7 +70,7 @@ class Styleable
         changeData = options.data
         if rodash.isEmpty(changeData) then return
         operation = changeData.operation ?? ""
-        if operation = "add" or operation = "remove"
+        if operation = "add" or operation = "remove" or operation = "insert"
             m.redrawStyles()
         end if
     end sub

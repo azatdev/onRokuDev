@@ -29,6 +29,8 @@ sub onFocusedChildChange(options = {})
     focusedChild = options.data
     if not rodash.isNode(focusedChild) then return
     if top().isSameNode(focusedChild) then applyDefaultFocus()
+
+    ?"onFocusedChildChange " top().index, top().data.content.hydrated
 end sub
 
 
@@ -40,55 +42,53 @@ sub onDataSet(options = {})
 
     m.content = content
 
-    if rodash.isEmptyString(content.description)
-        safeObserve("description", setDescription, m.content)
+    if content.hydrated ?? false
+        onHydrated({ node: m.content })
     else
-        setDescription({ data: content.description})
-    end if
-
-    if rodash.isEmptyString(content.logoImageUri)
-        safeObserve("logoImageUri", setLogoImage, m.content)
-    else
-        setLogoImage({ data: content.logoImageUri})
-    end if
-
-    if not rodash.isArray(content.genres)
-        safeObserve("hydrated", setMetadata, m.content)
-    else
-        setMetadata({ node: content })
-    end if
-
-    if not rodash.isArray(content.heroCTAsModel)
-        safeObserve("heroCTAsModel", setCTAs, m.content)
-    else
-        setCTAs({ node: content })
+        safeObserve("hydrated", onHydrated, m.content)
     end if
 end sub
 
 
-sub setCTAs(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    node = options.node
-    if not rodash.isNode(node) then return
-    m.ctas.data = { content: node.heroCTAsModel }
-end sub
-
-
-sub setDescription(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    m.description.text = options.data ?? ""
-end sub
-
-
-sub setLogoImage(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    m.contentLogo.uri = options.data ?? ""
-end sub
-
-
-sub setMetadata(options = {})
+sub onHydrated(options = {})
     if not rodash.isNonEmptyAA(options) then return
     content = options.node
+
+    setDescription(content.description)
+    setLogoImage(content.logoImageUri)
+    setCTAs(content.heroCTAsModel)
+    setMetadata(content)
+    setHeaderImage(content)
+end sub
+
+
+sub setCTAs(heroCTAsModel = {})
+    if not rodash.isNode(heroCTAsModel) then return
+    m.ctas.data = { content: heroCTAsModel }
+end sub
+
+
+sub setDescription(description = "")
+    if rodash.isEmptyString(description) then return
+    m.description.text = description
+end sub
+
+
+sub setHeaderImage(headerImageUri = "")
+    if rodash.isEmptyString(headerImageUri) then return
+    if rodash.isEmpty(headerImageUri) then return
+    ' dispatch(events.SET_BACKGROUND_IMAGE, { uri: headerImageUri })
+end sub
+
+
+sub setLogoImage(logoImageUri = "")
+    if rodash.isEmptyString(logoImageUri) then return
+    m.contentLogo.uri = logoImageUri
+end sub
+
+
+sub setMetadata(content = {})
+    if not rodash.isNode(content) then return
     metadataArray = []
 
     if rodash.isArray(content.genres)
@@ -119,4 +119,3 @@ sub setMetadata(options = {})
         metadataArray: metadataArray
     }
 end sub
-

@@ -19,7 +19,7 @@ class Stateable
 
     function getStateValue(key = "", node = getGlobalAA().top)
         if rodash.isEmpty(key) then return invalid
-        if not rodash.isEmpty(node[key]) then return node[key]
+        if not rodash.isInvalid(node[key]) then return node[key]
 
         nodeState = node.getRef("_ord_State") ?? {}
         return nodeState[key]

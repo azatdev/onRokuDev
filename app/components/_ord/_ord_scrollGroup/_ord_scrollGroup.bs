@@ -19,7 +19,7 @@ sub init()
 
         set({
             defaultConfig: defaultConfig,
-            focusedItem: 0
+            itemFocused: 0
         })
 
         setFocusMap({
@@ -101,13 +101,20 @@ sub onChildChange(options = {})
     addedNodes = top().getChildren(numberOfNewNodes, changeData.index1)
 
     for each child in addedNodes
-        if child.isSubtype("Group") then m.container.appendChild(child)
+        if not child.isSubtype("Group") then continue for
+        childIndex = m.container.getChildCount()
+        updateObject = {
+            index: childIndex
+        }
+        ?"childIndex " childIndex
+        child.update(updateObject, true)
+        m.container.appendChild(child)
     end for
 
     setGroupSizes()
 
     if rodash.isNode(top().focusedChild) and top().isSameNode(top().focusedChild)
-        currentFocusIndex = get("focusedItem") ?? 0
+        currentFocusIndex = get("itemFocused") ?? 0
         childToFocus = m.container.getChild(currentFocusIndex)
         if rodash.isNode(childToFocus) and not childToFocus.isInFocusChain() then setFocus(childToFocus)
     end if
@@ -164,16 +171,16 @@ function performScroll(key = "")
 
     direction = get("direction")
     horizontal = direction = "horizontal"
-    focusedItem = get("focusedItem")
+    itemFocused = get("itemFocused")
     axisIndex = get("axisIndex")
 
     nextFocusedItem = calculate.nextIndex({
-        focusedItem: focusedItem,
+        itemFocused: itemFocused,
         key: key,
         maxIndex: children.count() - 1
     })
 
-    if nextFocusedItem = focusedItem then return false
+    if nextFocusedItem = itemFocused then return false
 
     scrollContainerDimensions = get("scrollContainerDimensions")
     viewportDimensions = get("viewportDimensions")
@@ -229,7 +236,7 @@ function performScroll(key = "")
 
     if rodash.isNode(nextFocusNode)
         setFocus(nextFocusNode)
-        set({ focusedItem: nextFocusedItem })
+        set({ itemFocused: nextFocusedItem })
     end if
 
     return true
@@ -314,15 +321,15 @@ end sub
 
 namespace calculate
     function nextIndex(options = {})
-        focusedItem = options.focusedItem
+        itemFocused = options.itemFocused
         key = options.key
         maxIndex = options.maxIndex
-        nextFocusedItem = focusedItem
+        nextFocusedItem = itemFocused
 
         if key = get("advanceKey")
-            if focusedItem < maxIndex then nextFocusedItem = focusedItem + 1
+            if itemFocused < maxIndex then nextFocusedItem = itemFocused + 1
         else if key = get("reverseKey")
-            if focusedItem > 0 then nextFocusedItem = focusedItem - 1
+            if itemFocused > 0 then nextFocusedItem = itemFocused - 1
         end if
 
         return nextFocusedItem
