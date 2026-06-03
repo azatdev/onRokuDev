@@ -1,0 +1,40 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        safeFunctions({
+            startLoadingAnimation: startLoadingAnimation
+        })
+        safeObserve("loading", onLoadingChange)
+    end sub)
+end sub
+
+
+sub onLoadingChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    loading = options.data
+    if loading
+        startLoadingAnimation()
+    else
+        safeUnobserve("loading")
+    end if
+end sub
+
+
+sub startLoadingAnimation(options = {})
+    if not top().loading
+        return
+    end if
+
+    fadeIn(top(), { callback: onFadedIn, duration: 0.5 })
+end sub
+
+
+sub onFadedOut(options = {})
+    startLoadingAnimation()
+end sub
+
+
+sub onFadedIn(options = {})
+    fadeOut(top(), { callback: onFadedOut, duration: 0.5 })
+end sub

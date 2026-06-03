@@ -15,7 +15,6 @@ sub setupItem()
     m.thumbnail = top().findNode("thumbnail")
     safeObserve("currRect", onCurrentRectChange)
     safeObserve("focusPercent", onFocusPercentChange)
-    startLoadingAnimation()
 end sub
 
 
@@ -24,7 +23,6 @@ sub startLoadingAnimation()
         fadeIn(m.container)
         return
     end if
-
     fadeOut(top(), { callback: onFadedOut, duration: 0.5 })
 end sub
 
@@ -59,6 +57,7 @@ sub onCurrentRectChange(options = {})
 
     top().height = rect.height
     top().width = rect.width
+    startLoadingAnimation()
 
     if rodash.isNode(m.container)
         m.container.height = rect.height

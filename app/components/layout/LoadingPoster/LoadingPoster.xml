@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="LoadingPoster" extends="Poster">
+    <interface>
+        <field id="loading" type="boolean" />
+        <function name="safeFunc" />
+    </interface>
+    <children>
+    </children>
+    <script type="text/brightscript" uri="LoadingPoster.bs" />
+</component>

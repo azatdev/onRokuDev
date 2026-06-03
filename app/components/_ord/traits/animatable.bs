@@ -202,8 +202,8 @@ class Animatable
         if not rodash.isNode(animationShell) then return
 
         safeUnobserve("state", animationShell)
-        top().removeChild(animationShell)
-        m.animations.delete(id)
+        ' top().removeChild(animationShell)
+        ' m.animations.delete(id)
     end sub
 
 
@@ -257,12 +257,20 @@ class Animatable
         callbackOptions = callback.options
 
         if rodash.isInvalid(callbackFunction) then return
+        ?"callback " top().subtype(), callback.options, animation.id, m.animations
 
-        if rodash.isFunction(callbackFunction)
-            callbackFunction(callbackOptions)
-        else if rodash.isNonEmptyString(callbackFunction)
+        if rodash.isFunction(callbackFunction) or rodash.isNonEmptyString(callbackFunction)
             exec(callbackFunction, callbackOptions)
         end if
+
+        animation.callback = invalid
+
+    end sub
+
+
+    sub runAnimationCallback(animation)
+        if not rodash.isNode(animation) then return
+
     end sub
 
 

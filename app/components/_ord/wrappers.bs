@@ -236,6 +236,13 @@ function readyToFocus()
 end function
 
 
+function setLoadable(options = {})
+    interface = m.interfaceFunctions["setLoadable"]
+    if interface = invalid then return invalid
+    return interface.setLoadable(options)
+end function
+
+
 function applyDefaultFocus()
     interface = m.interfaceFunctions["applyDefaultFocus"]
     if interface = invalid then return invalid

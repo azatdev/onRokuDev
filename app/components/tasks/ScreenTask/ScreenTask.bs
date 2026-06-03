@@ -33,9 +33,9 @@ end function
 function returnScreenModel(options = {})
     data = options.data ?? {}
     screenData = data.screen ?? {}
-    carouselsData = screenData.carousels ?? []
+    ' carouselsData = screenData.carousels ?? []
     ' carouselsData =  [screenData.carousels[3], screenData.carousels[4], screenData.carousels[5]]
-    ' carouselsData =  [screenData.carousels[1]]
+    carouselsData =  [screenData.carousels[0]]
     updateObjArray = []
 
     for each carousel in carouselsData

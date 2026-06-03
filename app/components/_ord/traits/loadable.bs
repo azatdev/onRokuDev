@@ -1,0 +1,98 @@
+class Loadable
+    publicFunctions = []
+    nodes = []
+
+    sub new(options = {})
+        m.setExportFunctions(role())
+    end sub
+
+
+    sub setExportFunctions(componentRole = "")
+        if rodash.isEmptyString(role) then return
+
+        if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
+
+        m.publicFunctions.push("onParentFadedIn")
+        m.publicFunctions.push("setLoadable")
+    end sub
+
+
+    sub onFieldUpdated(options = {})
+        if not rodash.isNonEmptyAA(options) then return
+        fieldValue = options.data
+        if rodash.isEmpty(fieldValue) then return
+
+        node = options.node
+        if not rodash.isNode(node) then return
+
+        poster = node.findNode("loadingPoster")
+        if not rodash.isNode(poster) then return
+
+        poster.loading = false
+
+        updatedField = options.field ?? ""
+        if rodash.isEmpty(updatedField) then return
+
+        safeUnobserve(updatedField, node)
+        safeUnobserve("renderTracking", node)
+
+        ?"onfieldUpdated " node.subtype()
+
+        fadeIn(node, { callback: "onParentFadedIn", callbackOptions: { node: node }, delay: 0.5, duration: 0.5 })
+    end sub
+
+
+    sub onNodeRenderTracking(options = {})
+        if not rodash.isNonEmptyAA(options) then return
+
+        renderTracking = options.data ?? "none"
+        node = options.node
+        if not rodash.isNode(node) then return
+        if renderTracking = "none" then return
+
+        poster = node.findNode("loadingPoster")
+
+        updateField = node.ord_loadingUpdateField ?? ""
+
+        if rodash.isEmptyString(updateField) then return
+        if not rodash.isEmpty(node[updateField]) then return
+
+        if not rodash.isNode(poster)
+            poster = createObject("roSGNode", "LoadingPoster")
+            poster.id = "loadingPoster"
+        end if
+
+        poster.width = options.width ?? node.width
+        poster.height = options.height ?? node.height
+        node.appendChild(poster)
+        node.opacity = 0.0001
+
+        poster.loading = true
+    end sub
+
+
+    sub onParentFadedIn(options = {})
+        node = options.node
+        if not rodash.isNode(node) then return
+        poster = node.findNode("loadingPoster")
+        if not rodash.isNode(poster) then return
+        ?"onParentFadedIn " node, poster, top()
+        node.removeChild(poster)
+    end sub
+
+
+    sub setLoadable(options = {})
+        if not rodash.isNonEmptyAA(options) then return
+        node = options.node
+        updateField = options.updateField ?? ""
+        if not rodash.isNode(node) then return
+        if rodash.isEmptyString(updateField) then return
+
+        node.enableRenderTracking = true
+        node.addField("ord_loadingUpdateField", "string", false)
+        node.ord_loadingUpdateField = updateField
+
+        safeObserve("renderTracking", m.onNodeRenderTracking, node)
+        safeObserve(updateField, m.onFieldUpdated, node)
+    end sub
+end class

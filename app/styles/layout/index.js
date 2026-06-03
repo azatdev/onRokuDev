@@ -6,5 +6,6 @@ module.exports = {
     ...require("./Hero"),
     ...require("./CatalogHero"),
     ...require("./Layout"),
+    ...require("./LoadingPoster"),
     ...require("./Navigation")
 };

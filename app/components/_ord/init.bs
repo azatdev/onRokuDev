@@ -8,13 +8,14 @@ import "traits/animatable.bs"
 import "traits/configable.bs"
 import "traits/eventable.bs"
 import "traits/focusable.bs"
+import "traits/loadable.bs"
 import "traits/safeable.bs"
 import "traits/stateable.bs"
 import "traits/styleable.bs"
 
 
 sub ord_init()
-    interfaces = [Safeable, Stateable, Eventable, Styleable, Animatable, Focusable, Configable]
+    interfaces = [Safeable, Stateable, Eventable, Styleable, Animatable, Focusable, Configable, Loadable]
 
     m.interfaceFunctions = {}
 
