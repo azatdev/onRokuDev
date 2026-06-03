@@ -361,9 +361,6 @@ end sub
 
 
 sub processConfig(options = {})
-    if top().id = "ctasList"
-        ?"processConfig " rodash.now()
-    end if
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.content) then return
 

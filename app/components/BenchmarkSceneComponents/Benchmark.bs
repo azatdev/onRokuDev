@@ -1,4 +1,3 @@
-import "pkg:/source/helpers/typeGuard.bs"
 ' import "pkg:/components/_ord/wrappers.bs"
 import "tests/AAvsRef.bs"
 import "tests/CallFuncVsSafeFunc.bs"
@@ -42,8 +41,6 @@ sub observeHelper(event)
 end sub
 
 sub onRun(event = {})
-    if not TypeGuard_isEvent(event) then return
-
     devMode = true
 
     sleep(1000)

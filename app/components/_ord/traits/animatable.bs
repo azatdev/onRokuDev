@@ -251,10 +251,11 @@ class Animatable
         end if
 
         callback = animation.hasField("callback") ? animation.getRef("callback") : invalid
+        if not rodash.isNonEmptyAA(callback) then return
+
         callbackFunction = callback.function
         callbackOptions = callback.options
 
-        if not rodash.isNonEmptyAA(callback) then return
 
         if animation.hasField("callback") then animation.setRef("callback", {})
 

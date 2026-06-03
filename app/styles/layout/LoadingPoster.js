@@ -3,6 +3,6 @@ module.exports = {
         blendColor: "#444444",
         inheritParentOpacity: false,
         opacity: 0,
-        uri: "pkg:/static/images/9patches/fill-6px.9.png"
+        uri: "pkg:/static/images/9patches/fill-9px.9.png"
     }
 };

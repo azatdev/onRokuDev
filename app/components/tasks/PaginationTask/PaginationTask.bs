@@ -60,7 +60,6 @@ function runPaginationTask(options = {})
         collection.appendChild(newContentNode)
     end for
 
-    ' ?"collection " collection
     return true
 end function
 

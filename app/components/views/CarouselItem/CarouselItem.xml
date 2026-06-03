@@ -4,7 +4,8 @@
         <field id="index" type="integer" />
         <field id="currRect" type="rect2d" />
         <field id="focusPercent" type="float" />
-        <field id="itemContent" type="node" onChange="itemContentChanged" />
+        <field id="loaded" type="boolean" />
+        <field id="itemContent" type="node" />
         <function name="safeFunc" />
     </interface>
     <children>

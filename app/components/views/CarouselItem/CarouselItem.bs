@@ -13,32 +13,16 @@ sub setupItem()
     m.container = top().findNode("container")
     m.outline = top().findNode("outline")
     m.thumbnail = top().findNode("thumbnail")
+    setLoadable({ node: top(), updateField: "loaded" })
     safeObserve("currRect", onCurrentRectChange)
     safeObserve("focusPercent", onFocusPercentChange)
+    safeObserve("itemContent", itemContentChanged)
+    safeObserve("loadStatus", onThumbnailLoadStatus, m.thumbnail)
 end sub
 
 
-sub startLoadingAnimation()
-    if rodash.isNode(m.content) and m.content.hydrated
-        fadeIn(m.container)
-        return
-    end if
-    fadeOut(top(), { callback: onFadedOut, duration: 0.5 })
-end sub
-
-
-sub onFadedOut(options = {})
-    fadeIn(top(), { callback: onFadedIn, duration: 0.5 })
-end sub
-
-
-sub onFadedIn(options = {})
-    startLoadingAnimation()
-end sub
-
-
-sub itemContentChanged(event)
-    content = event.getData()
+sub itemContentChanged(options = {})
+    content = options.data
     if content = invalid then return
     if rodash.isNode(m.content) then return
 
@@ -57,7 +41,6 @@ sub onCurrentRectChange(options = {})
 
     top().height = rect.height
     top().width = rect.width
-    startLoadingAnimation()
 
     if rodash.isNode(m.container)
         m.container.height = rect.height
@@ -80,6 +63,14 @@ sub onFocusPercentChange(options = {})
     focusPercentage = options.data ?? {}
     ' opacityPercentage = (0.5 * focusPercentage) * focusPercentage + 0.5
     ' m.container.opacity = opacityPercentage
+end sub
+
+
+sub onThumbnailLoadStatus(options)
+    if not rodash.isNonEmptyAA(options) then return
+    loadStatus = options.data ?? ""
+    if loadStatus <> "ready" then return
+    top().loaded = true
 end sub
 
 

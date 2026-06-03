@@ -34,6 +34,8 @@ class Loadable
         if rodash.isEmpty(updatedField) then return
 
         safeUnobserve(updatedField, node)
+        safeUnobserve("width", node)
+        safeUnobserve("height", node)
         safeUnobserve("renderTracking", node)
 
         fadeIn(node, { callback: "onParentFadedIn", callbackOptions: { node: node }, delay: 0.5, duration: 0.5 })
@@ -60,8 +62,12 @@ class Loadable
             poster.id = "loadingPoster"
         end if
 
-        poster.width = options.width ?? node.width
-        poster.height = options.height ?? node.height
+        poster.width = node.width
+        poster.height = node.height
+
+        safeObserve("width", m.onWidthHeightChange, node)
+        safeObserve("height", m.onWidthHeightChange, node)
+
         node.appendChild(poster)
         node.opacity = 0.0001
 
@@ -75,6 +81,20 @@ class Loadable
         poster = node.findNode("loadingPoster")
         if not rodash.isNode(poster) then return
         node.removeChild(poster)
+    end sub
+
+
+    sub onWidthHeightChange(options = {})
+        if not rodash.isNonEmptyAA(options) then return
+
+        node = options.node
+        if not rodash.isNode(node) then return
+
+        poster = node.findNode("loadingPoster")
+        if not rodash.isNode(poster) then return
+
+        poster.width = node.width
+        poster.height = node.height
     end sub
 
 
