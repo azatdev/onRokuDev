@@ -4,6 +4,7 @@
         <field id="copyrightYear" type="string" />
         <field id="duration" type="integer" />
         <field id="genres" type="array" />
+        <field id="heroCTAsModel" type="node" />
         <field id="headerImageUri" type="string" />
         <field id="hydrated" type="boolean" />
         <field id="logoImageUri" type="string" />

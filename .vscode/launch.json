@@ -15,6 +15,7 @@
             ],
             "files": [
                 "components/**/*.*",
+                "locale/**/*",
                 "manifest",
                 "static/**/*",
                 "source/**/*.*"

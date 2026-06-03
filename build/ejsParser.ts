@@ -101,7 +101,9 @@ export default function ejsParserPlugin(): Plugin {
                 });
             } catch (error) {
                 const message = error instanceof Error ? error.message : String(error);
-                throw new Error(`EJS preprocessing failed for ${sourceObj.srcPath}: ${message}`);
+
+                console.log(sourceObj.srcPath, error);
+                process.exit(1);
             }
         }
     };

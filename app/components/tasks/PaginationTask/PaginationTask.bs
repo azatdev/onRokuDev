@@ -78,6 +78,7 @@ sub hydrateContentNode(node, options = {})
         duration: options.duration,
         genres: options.v2genres,
         id: options.documentId,
+        heroCTAsModel: returnHeroCTAsModel(),
         rating: options.rating,
         title: options.title,
         type: options.type
@@ -109,4 +110,24 @@ function getImageFields(images)
     end if
 
     return imageFields
+end function
+
+function returnHeroCTAsModel()
+    model = createObject("roSGNode", "CTAsModel")
+    modelConfigArray = "<%- o(CONFIG.HeroCTAs) %>"
+    updateObject = {
+        children: []
+    }
+
+    for each item in modelConfigArray
+        updateObject.children.push({
+            dynamicWidth: item.dynamicWidth ?? false,
+            iconText: item.iconText ?? "",
+            title: (item.title ?? "").inStr("TKEY") <> -1 ? tr(item.title) : item.title,
+            subtype: "Model"
+        })
+    end for
+
+    model.update(updateObject, true)
+    return model
 end function

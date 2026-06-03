@@ -4,6 +4,7 @@ module.exports = {
         ...require("./environment"),
         ...require("./http"),
         ...require("./layout"),
+        ...require("./models"),
         ...require("./scrollgroups"),
         ...require("./layout")
     }

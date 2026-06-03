@@ -2,23 +2,26 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(options = {})
-        loadList()
+        m.list = top().findNode("ctasList")
+
         safeObserve("focusedChild", onFocusedChildChange)
+        safeObserve("data", onDataChange)
     end sub)
 end sub
 
 
-sub loadList()
-    list = top().findNode("ctasList")
+sub onDataChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    if not rodash.isNode(m.list) then return
 
-    ctasModel = createObject("roSGNode", "CTAsModel")
+    data = options.data
+    ctasModel = data.content
+
     liveConfig({ field: "config", keyPath: "CTACarousel" }, ctasModel)
 
-    list.data = {
+    m.list.data = {
         content: ctasModel
     }
-
-    m.list = list
 end sub
 
 
@@ -26,5 +29,6 @@ sub onFocusedChildChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     focusedChild = options.data
     if not rodash.isNode(focusedChild) or not top().isSameNode(focusedChild) then return
+    if not rodash.isNode(m.list) then return
     m.list.setFocus(true)
 end sub

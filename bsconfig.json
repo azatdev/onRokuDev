@@ -5,10 +5,12 @@
         "**/TrackerTask.xml",
         "./source/roku_modules/**/*",
         "./components/roku_modules/**/*",
-        "./tests/**/*"
+        "./tests/**/*",
+        "./locale/**/*"
     ],
     "files": [
         "components/**/*",
+        "locale/**/*",
         "manifest",
         "static/**/*",
         "source/**/*"

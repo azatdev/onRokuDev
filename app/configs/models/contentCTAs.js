@@ -1,31 +1,28 @@
-import "pkg:/components/_ord/wrappers.bs"
-
-sub init()
-exec(sub(options = {})
-    end sub)
-end sub
 
 
-function getItems() as object
-    return [
+const iconConfig = require("../layout/icons");
+const Icons = iconConfig["Icons"]
+
+module.exports = {
+    "ContentCTAs": [
         {
             iconText: Icons.play,
-            title: "Play Now"
+            title: "TK_PLAY_NOW"
         },
         {
             dynamicWidth: true,
             iconText: Icons.watchlist,
-            title: "Apdd to watchlist"
+            title: "TK_ADD_WATCHLIST"
         },
         {
             dynamicWidth: true,
             iconText: Icons.favorites,
-            title: "Add to favorites"
+            title: "TK_ADD_FAVORITES"
         },
         {
             dynamicWidth: true,
             iconText: Icons.ellipsisH,
-            title: "Details"
+            title: "TK_DETAILS"
         }
     ]
-end function
+};

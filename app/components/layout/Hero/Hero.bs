@@ -11,6 +11,7 @@ sub init()
         setLoadable({ node: m.contentLogo, updateField: "uri" })
         setLoadable({ node: m.description, updateField: "text" })
         setLoadable({ node: m.metadata, updateField: "data" })
+        setLoadable({ node: m.ctas, updateField: "data" })
 
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
@@ -57,6 +58,19 @@ sub onDataSet(options = {})
         setMetadata({ node: content })
     end if
 
+    if not rodash.isArray(content.heroCTAsModel)
+        safeObserve("heroCTAsModel", setCTAs, m.content)
+    else
+        setCTAs({ node: content })
+    end if
+end sub
+
+
+sub setCTAs(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    node = options.node
+    if not rodash.isNode(node) then return
+    m.ctas.data = { content: node.heroCTAsModel }
 end sub
 
 
