@@ -9,8 +9,8 @@ sub init()
         m.ctas = top().findNode("ctas")
 
         setLoadable({ node: m.contentLogo, updateField: "uri" })
-        ' setLoadable({ node: m.description, updateField: "text" })
-        ' setLoadable({ node: m.metadata, updateField: "data" })
+        setLoadable({ node: m.description, updateField: "text" })
+        setLoadable({ node: m.metadata, updateField: "data" })
 
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)

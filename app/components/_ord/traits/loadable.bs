@@ -36,8 +36,6 @@ class Loadable
         safeUnobserve(updatedField, node)
         safeUnobserve("renderTracking", node)
 
-        ?"onfieldUpdated " node.subtype()
-
         fadeIn(node, { callback: "onParentFadedIn", callbackOptions: { node: node }, delay: 0.5, duration: 0.5 })
     end sub
 
@@ -76,7 +74,6 @@ class Loadable
         if not rodash.isNode(node) then return
         poster = node.findNode("loadingPoster")
         if not rodash.isNode(poster) then return
-        ?"onParentFadedIn " node, poster, top()
         node.removeChild(poster)
     end sub
 

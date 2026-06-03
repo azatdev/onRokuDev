@@ -161,8 +161,7 @@ class Animatable
         animationCollection = []
 
         for each settings in animations
-            animationId = m.constructAnimationId([settings])
-            animation = m.createAnimation(animationId, settings)
+            animation = m.createAnimation(id, settings)
             if rodash.isNode(animation) then animationCollection.push(animation)
         end for
 
@@ -184,10 +183,11 @@ class Animatable
             end for
 
             animationShell.update({ duration: duration }, true)
-            animationShell.id = id
         else
             animationShell = animationCollection[0]
         end if
+
+        animationShell.id = id
 
         if not rodash.isNode(animationShell) then return
 
@@ -202,8 +202,8 @@ class Animatable
         if not rodash.isNode(animationShell) then return
 
         safeUnobserve("state", animationShell)
-        ' top().removeChild(animationShell)
-        ' m.animations.delete(id)
+        if animationShell.hasField("callback") then animationShell.setRef("callback", {})
+        m.animations.delete(id)
     end sub
 
 
@@ -246,31 +246,23 @@ class Animatable
 
         safeUnobserve("state", animation)
 
-        if rodash.isAA(m.continuousAnimations) and not m.continuousAnimations.doesExist(animation.id)
+        if rodash.isAA(m.continuousAnimations) and m.continuousAnimations.doesExist(animation.id)
             m.activeAnimations({ action: "delete", id: animation.id })
         end if
 
         callback = animation.hasField("callback") ? animation.getRef("callback") : invalid
-        if not rodash.isNonEmptyAA(callback) then return
-
         callbackFunction = callback.function
         callbackOptions = callback.options
 
+        if not rodash.isNonEmptyAA(callback) then return
+
+        if animation.hasField("callback") then animation.setRef("callback", {})
+
         if rodash.isInvalid(callbackFunction) then return
-        ?"callback " top().subtype(), callback.options, animation.id, m.animations
 
         if rodash.isFunction(callbackFunction) or rodash.isNonEmptyString(callbackFunction)
             exec(callbackFunction, callbackOptions)
         end if
-
-        animation.callback = invalid
-
-    end sub
-
-
-    sub runAnimationCallback(animation)
-        if not rodash.isNode(animation) then return
-
     end sub
 
 
@@ -376,7 +368,7 @@ class Animatable
     function constructAnimationId(options = []) as String
         if not rodash.isNonEmptyArray(options) then return ""
 
-        animationId = ""
+        animationId = top().createdAt.toStr() ?? ""
 
         for each nodeOptions in options
             nodeId = nodeOptions.nodeId ?? ""
@@ -398,7 +390,6 @@ class Animatable
         options = options.options
 
         if rodash.isInvalid(animation.callback) then animation.addField("callback", "assocarray", false)
-        if rodash.isInvalid(animation.callbackOptions) then animation.addField("callbackOptions", "assocarray", false)
 
         animation.setRef("callback", {
             function: callback,
@@ -407,23 +398,23 @@ class Animatable
     end sub
 
 
-    sub fadeIn(node = invalid, options = {})
-        if not rodash.isNode(node) then return
-        m.fade(node, { opacity: 1 }, options)
-    end sub
+    function fadeIn(node = invalid, options = {})
+        if not rodash.isNode(node) then return invalid
+        return m.fade(node, { opacity: 1 }, options)
+    end function
 
 
-    sub fadeOut(node = invalid, options = {})
-        if not rodash.isNode(node) then return
-        m.fade(node, { opacity: 0 }, options)
-    end sub
+    function fadeOut(node = invalid, options = {})
+        if not rodash.isNode(node) then return invalid
+        return m.fade(node, { opacity: 0 }, options)
+    end function
 
 
-    sub fade(node = invalid, options = {}, sharedOptions = {})
-        if not rodash.isNode(node) then return
+    function fade(node = invalid, options = {}, sharedOptions = {})
+        if not rodash.isNode(node) then return invalid
 
         nodeId = node.id ?? ""
-        if rodash.isEmptyString(nodeId) then return
+        if rodash.isEmptyString(nodeId) then return invalid
 
         morphObject = {}
 
@@ -431,8 +422,8 @@ class Animatable
             fields: options
         }
 
-        m.morph(morphObject, sharedOptions)
-    end sub
+        return m.morph(morphObject, sharedOptions)
+    end function
 
 
     function activeAnimations(options = {}) as Object
@@ -449,7 +440,7 @@ class Animatable
 
 
     function getNodeId() as String
-        return `${top().subType()}_${top().id ?? ""}`
+        return `${top().subType()}_${top().createdAt.toStr() ?? ""}`
     end function
 
 

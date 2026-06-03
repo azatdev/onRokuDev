@@ -34,9 +34,23 @@ sub ord_init()
     top().addField("_ord_initiated", "boolean", false)
     top()._ord_initiated = true
 
-    top().addField("createdAt", "longinteger", false)
-    top().createdAt = rodash.now()
+    setCreatedAt(top())
 end sub
+
+
+sub setCreatedAt(node)
+    if not rodash.isNode(node) then return
+    node.addField("createdAt", "longinteger", false)
+    node.createdAt = rodash.now()
+end sub
+
+
+function getNodeIdentifier(node)
+    if not rodash.isNode(node) then return ""
+    if not node.hasField("createdAt") then setCreatedAt(node)
+
+    return [node.subType(), node.createdAt.toStr()].join("_")
+end function
 
 
 function role()

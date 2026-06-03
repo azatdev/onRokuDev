@@ -24,6 +24,7 @@ class Safeable
 
         m.publicFunctions.push("safeFunc")
 
+        if not devMode() then return
         if top().hasFunc("safeFunc") then return
 
         'bs:disable-next-line
@@ -142,7 +143,7 @@ class Safeable
 
         if rodash.isEmptyString(callbackFunc) then return
 
-        nodeIdentifier = node.isSameNode(getGlobalAA().top) ? "" : `_${node.subType()}_${node.createdAt}`
+        nodeIdentifier = getNodeIdentifier(node)
         uniqueFieldName = `${fieldName}${nodeIdentifier}`
 
         m.storeCallback({
@@ -157,7 +158,7 @@ class Safeable
 
     sub safeUnobserve(fieldName = "", node = getGlobalAA().top)
         if rodash.isEmptyString(fieldName) then return
-        nodeIdentifier = node.isSameNode(getGlobalAA().top) ? "" : `_${node.subType()}_${node.createdAt}`
+        nodeIdentifier = getNodeIdentifier(node)
         uniqueFieldName = `${fieldName}${nodeIdentifier}`
         node.unObserveFieldScoped(fieldName)
         m.removeCallback({ field: uniqueFieldName })
@@ -171,7 +172,7 @@ class Safeable
 
         callbacks = getGlobalAA().ord_callbacks
         node = event.getRoSGNode()
-        nodeIdentifier = node.isSameNode(getGlobalAA().top) ? "" : `_${node.subType()}_${node.createdAt}`
+        nodeIdentifier = getNodeIdentifier(node)
         uniqueFieldName = `${fieldName}${nodeIdentifier}`
 
         functionName = callbacks[uniqueFieldName] ?? ""
