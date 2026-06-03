@@ -161,7 +161,8 @@ class Animatable
         animationCollection = []
 
         for each settings in animations
-            animation = m.createAnimation(id, settings)
+            animationId = m.constructAnimationId([settings])
+            animation = m.createAnimation(animationId, settings)
             if rodash.isNode(animation) then animationCollection.push(animation)
         end for
 
@@ -349,17 +350,9 @@ class Animatable
 
         animationId = m.constructAnimationId(animationOptionsArray)
 
-        if top().subType() = "_ord_scrollGroup"
-            ?"animationId "  m.animations[animationId]
-        end if
-
         m.addAnimation(animationId, animationOptionsArray)
 
         animation = m.animations[animationId] ?? invalid
-
-        if top().subType() = "_ord_scrollGroup"
-            ?"animation " animation
-        end if
 
         if not rodash.isNode(animation) then return invalid
 

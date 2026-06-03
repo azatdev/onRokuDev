@@ -39,22 +39,25 @@ end sub
 sub onCurrentRectChange(options = {})
     rect = options.data ?? {}
 
-    top().height = rect.height
-    top().width = rect.width
+    width = int(rect.width)
+    height = int(rect.height)
+
+    top().height = height
+    top().width = width
 
     if rodash.isNode(m.container)
-        m.container.height = rect.height
-        m.container.width = rect.width
+        m.container.height = height
+        m.container.width = width
     end if
 
     if rodash.isNode(m.outline)
-        m.outline.height = rect.height
-        m.outline.width = rect.width
+        m.outline.height = height
+        m.outline.width = width
     end if
 
     if rodash.isNode(m.thumbnail)
-        m.thumbnail.height = rect.height - 12
-        m.thumbnail.width = rect.width - 12
+        m.thumbnail.height = height - 12
+        m.thumbnail.width = width - 12
     end if
 end sub
 
