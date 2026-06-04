@@ -57,7 +57,7 @@ function returnScreenModel(options = {})
 
         ' Load initial carousel items
         ' for loading animation
-        for x = 0 to carouselConfig.visibleTiles
+        for x = 0 to carouselConfig.visibleTiles - 1
             updateObject.children.push({
                 description: "",
                 hydrated: false,

@@ -23,7 +23,7 @@ module.exports = {
                 size: 48,
                 height: 132,
                 lineSpacing: -12,
-                margin: [0, 0, 6, 0],
+                margin: [0, 0, 9, 0],
                 vertAlign: "center",
                 width: 900,
                 wrap: true

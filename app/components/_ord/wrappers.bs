@@ -20,7 +20,7 @@ end function
 
 
 function devMode()
-    return false
+    return true
 end function
 
 

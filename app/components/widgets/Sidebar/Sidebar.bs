@@ -58,7 +58,7 @@ end sub
 sub onFocusPercentChange(options = {})
     focusPercent = options.data ?? 0
     sidebarColor = top().openColor
-    maxSidebarColorOpacity = 0.8
+    maxSidebarColorOpacity = 0.9
     top().color = addOpacityToHexColor(sidebarColor, focusPercent * maxSidebarColorOpacity)
 
     minGradientOpacity = 0.7

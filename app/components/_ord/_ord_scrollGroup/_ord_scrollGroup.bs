@@ -8,6 +8,7 @@ sub init()
 
         defaultConfig = {
             advanceKey: "down",
+            animationType: "scroll",
             reverseKey: "up",
             direction: "vertical",
             flushEnd: false,
@@ -58,7 +59,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
         if not press then return true
         handled = rodash.indexOf([get("advanceKey"), get("reverseKey")], key) <> -1
 
-        if handled then return performScroll(key)
+        if handled then return performAnimation(key)
         return handled
     end function, { key: key, press: press })
 end function
@@ -94,8 +95,12 @@ end sub
 
 
 sub onChildChange(options = {})
+    if rodash.isEmpty(options) then return
     changeData = options.data
     if rodash.isEmpty(changeData) then return
+
+    animationType = get("animationType") ?? "scroll"
+    scrollAnimation = animationType = "scroll"
 
     operation = changeData.operation ?? ""
     if operation <> "add" and operation <> "remove" then return
@@ -107,8 +112,10 @@ sub onChildChange(options = {})
         if not child.isSubtype("Group") then continue for
         childIndex = m.container.getChildCount()
         updateObject = {
+            id: "scrollSlide-" + childIndex.toStr(),
             index: childIndex
         }
+        if not scrollAnimation then child.opacity = 0
         child.update(updateObject, true)
         m.container.appendChild(child)
     end for
@@ -121,6 +128,7 @@ sub onChildChange(options = {})
         childToFocus = m.container.getChild(currentFocusIndex)
         if rodash.isNode(childToFocus) and not childToFocus.isInFocusChain()
             set({ itemFocused: currentFocusIndex })
+            if not scrollAnimation then performFadeMorph([childToFocus])
             setFocus(childToFocus)
         end if
     end if
@@ -128,11 +136,13 @@ end sub
 
 
 sub setGroupSizes()
+    animationType = get("animationType") ?? "scroll"
+    scrollAnimation = animationType = "scroll"
     direction = get("direction") ?? "vertical"
     horizontal = get("horizontal") ?? false
     if rodash.isEmptyString(direction) then return
 
-    stackChildren({ node: m.container, direction: direction })
+    if scrollAnimation then stackChildren({ node: m.container, direction: direction })
 
     viewportDimensions = calculate.viewportSize({
         horizontal: horizontal,
@@ -169,16 +179,15 @@ sub setGroupSizes()
 end sub
 
 
-function performScroll(key = "")
-    if rodash.isEmptyString(key) then return false
+function performAnimation(key = "")
+if rodash.isEmptyString(key) then return false
 
     children = m.container.getChildren(-1, 0)
     if not rodash.isNonEmptyArray(children) then return false
 
-    direction = get("direction")
-    horizontal = direction = "horizontal"
     itemFocused = get("itemFocused")
-    axisIndex = get("axisIndex")
+    animationType = get("animationType") ?? "scroll"
+    scrollAnimation = animationType = "scroll"
 
     nextFocusedItem = calculate.nextIndex({
         itemFocused: itemFocused,
@@ -188,6 +197,39 @@ function performScroll(key = "")
 
     if nextFocusedItem = itemFocused then return false
 
+    currentFocusNode = children[itemFocused]
+    nextFocusNode = children[nextFocusedItem]
+    scrollPerformed = false
+
+    if scrollAnimation
+        scrollPerformed = performScroll({
+            children: children,
+            nextFocusedItem: nextFocusedItem,
+            nextFocusNode: nextFocusNode
+        })
+    else
+        scrollPerformed = performFadeMorph([ nextFocusNode, currentFocusNode])
+    end if
+
+    if not scrollPerformed then return false
+
+    if rodash.isNode(nextFocusNode)
+        setFocus(nextFocusNode)
+        set({ itemFocused: nextFocusedItem })
+    end if
+
+    return true
+end function
+
+
+function performScroll(options = {})
+    if rodash.isEmpty(options) then return false
+
+    axisIndex = get("axisIndex")
+    children = options.children ?? []
+    direction = get("direction")
+    horizontal = direction = "horizontal"
+    nextFocusedItem = options.nextFocusedItem ?? 0
     scrollContainerDimensions = get("scrollContainerDimensions")
     viewportDimensions = get("viewportDimensions")
 
@@ -238,20 +280,21 @@ function performScroll(key = "")
         trackTranslation: trackTranslation
     })
 
-    nextFocusNode = children[nextFocusedItem]
-
-    if rodash.isNode(nextFocusNode)
-        setFocus(nextFocusNode)
-        set({ itemFocused: nextFocusedItem })
-    end if
-
     return true
 end function
 
 
 sub setClippingRect(options = {})
+    animationType = get("animationType") ?? "scroll"
+    scrollAnimation = animationType = "scroll"
+
     top().clippingRect = [0, 0, top().width, top().height]
-    m.container.clippingRect = [0, 0, m.container.width, m.container.height]
+
+    if scrollAnimation
+        m.container.clippingRect = [0, 0, m.container.width, m.container.height]
+    else
+        m.container.clippingRect = [0, 0, top().width, top().height]
+    end if
 end sub
 
 
@@ -297,6 +340,18 @@ sub setupScrollbar(options = {})
     setClippingRect()
     m.scrolltrack.visible = true
 end sub
+
+
+function performFadeMorph(nodeArray = [])
+    if rodash.isEmpty(nodeArray) then return false
+    nodeToFadeIn = nodeArray[0]
+    nodeToFadeOut = nodeArray[1]
+
+    if rodash.isNode(nodeToFadeIn) then fadeIn(nodeToFadeIn, { duration: 0.3 })
+    if rodash.isNode(nodeToFadeOut) then fadeOut(nodeToFadeOut, { duration: 0.3 })
+
+    return true
+end function
 
 
 sub performMorph(options = {})

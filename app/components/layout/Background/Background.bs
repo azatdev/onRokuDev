@@ -60,7 +60,6 @@ end sub
 
 
 sub hideBackground(options = {})
-    ?"hideBackground "
     fadeOut(m.backgroundContainer, { duration: 0.3 })
 end sub
 

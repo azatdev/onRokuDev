@@ -344,7 +344,6 @@ end sub
 
 
 sub onItemFocused(options = {})
-    ?"flexlist onItemFocused "top().id, options
     if not rodash.isNonEmptyAA(options) then return
     m.top.itemFocused = options.data
 end sub
