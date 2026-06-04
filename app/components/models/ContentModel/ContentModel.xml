@@ -7,7 +7,6 @@
         <field id="genres" type="array" />
         <field id="heroCTAsModel" type="node" />
         <field id="headerImageUri" type="string" />
-        <field id="hydrated" type="boolean" />
         <field id="logoImageUri" type="string" />
         <field id="landscapeImageUri" type="string" />
         <field id="portraitImageUri" type="string" />

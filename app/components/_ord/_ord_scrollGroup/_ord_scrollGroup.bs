@@ -115,7 +115,9 @@ sub onChildChange(options = {})
     if rodash.isNode(top().focusedChild) and top().isSameNode(top().focusedChild)
         currentFocusIndex = get("itemFocused") ?? 0
         childToFocus = m.container.getChild(currentFocusIndex)
-        if rodash.isNode(childToFocus) and not childToFocus.isInFocusChain() then setFocus(childToFocus)
+        if rodash.isNode(childToFocus) and not childToFocus.isInFocusChain()
+            setFocus(childToFocus)
+        end if
     end if
 end sub
 

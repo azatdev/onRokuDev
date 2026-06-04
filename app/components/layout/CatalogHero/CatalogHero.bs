@@ -34,13 +34,27 @@ sub onDataSet(options = {})
         processScrollItem({ model: model })
     end for
 
+    safeObserve("hydrated", onCollectionHydrated, m.content)
+
     dispatch(events.PAGINATE_CAROUSEL, { collection: content })
+end sub
+
+
+sub onCollectionHydrated(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    onItemFocused({ data: m.heroScrollGroup.itemFocused })
 end sub
 
 
 sub onItemFocused(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    ?"onItemFocused " options.data
+    if not rodash.isNode(m.content) then return
+    itemFocused = options.data
+    itemFocusedModel = m.content.getChild(itemFocused)
+    if not rodash.isNode(itemFocusedModel) then return
+
+    dispatch(events.SET_BACKGROUND_IMAGE, { uri: itemFocusedModel.headerImageUri })
+    dispatch(events.SET_COMPLIMENTARY_COLOR, { blendColor: itemFocusedModel.complimentaryColor })
 end sub
 
 

@@ -60,6 +60,8 @@ function runPaginationTask(options = {})
         collection.appendChild(newContentNode)
     end for
 
+    collection.hydrated = true
+
     return true
 end function
 

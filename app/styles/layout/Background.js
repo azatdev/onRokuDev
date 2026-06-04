@@ -1,5 +1,6 @@
 const mixins = require("../mixins");
 const dimensions = mixins["Dimensions"]
+const palette = mixins["Palette"]
 const viewport = dimensions["viewport"]
 
 module.exports = {
@@ -15,7 +16,7 @@ module.exports = {
                 "width": viewport.width
             },
             "&#cornerGradient": {
-                "blendColor": "#3c1744",
+                "blendColor": palette.defaultCornerColor,
                 "height": viewport.height,
                 "uri": "pkg:/static/images/gradients/corner-gradient.webp",
                 "opacity": 1,

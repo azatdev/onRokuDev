@@ -29,8 +29,6 @@ sub onFocusedChildChange(options = {})
     focusedChild = options.data
     if not rodash.isNode(focusedChild) then return
     if top().isSameNode(focusedChild) then applyDefaultFocus()
-
-    ?"onFocusedChildChange " top().index, top().data.content.hydrated
 end sub
 
 
@@ -77,7 +75,6 @@ end sub
 sub setHeaderImage(headerImageUri = "")
     if rodash.isEmptyString(headerImageUri) then return
     if rodash.isEmpty(headerImageUri) then return
-    ' dispatch(events.SET_BACKGROUND_IMAGE, { uri: headerImageUri })
 end sub
 
 

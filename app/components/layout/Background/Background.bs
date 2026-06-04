@@ -2,16 +2,19 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(options = {})
+        m.cornerGradient = top().findNode("cornerGradient")
         safeFunctions({
-            setBackground: setBackground
+            setBackground: setBackground,
+            setComplimentaryColor: setComplimentaryColor
         })
     end sub)
 end sub
 
 
-sub onBackgroundFadeIn(options = {})
-    ?"onBackgroundFadeIn "
-    
+sub onBackgroundFadeOut(options = {})
+    oldPoster = options.node
+    if not rodash.isNode(oldPoster) then return
+    top().removeChild(oldPoster)
 end sub
 
 
@@ -22,7 +25,30 @@ sub setBackground(options = {})
     newPoster.id = rodash.now().toStr()
     newPoster.opacity = 0
     newPoster.uri = newUri
-    m.poster = newPoster
     top().insertChild(newPoster, 0)
-    fadeIn(m.poster, { callback: onBackgroundFadeIn, duration: 0.5 })
+    if rodash.isInvalid(m.poster)
+        m.poster = newPoster
+        fadeIn(newPoster, { duration: 0.5 })
+    else
+        newPoster.opacity = 1
+        oldPoster = m.poster
+        m.poster = newPoster
+        fadeOut(oldPoster, { callback: onBackgroundFadeOut, callbackOptions: { node: oldPoster }, duration: 0.5 })
+    end if
+end sub
+
+sub setComplimentaryColor(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    if not rodash.isNode(m.cornerGradient) then return
+    newBlendColor = options.blendColor
+    if rodash.isEmpty(newBlendColor) then newBlendColor = "<%- s(STYLES.Palette.defaultCornerColor) %>"
+
+    morphObject = {}
+    morphObject[m.cornerGradient.id] = {
+        fields: {
+            blendColor: newBlendColor
+        }
+    }
+
+    morph(morphObject)
 end sub

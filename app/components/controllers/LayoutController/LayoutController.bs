@@ -12,6 +12,7 @@ sub init()
             [events.PAGINATE_CAROUSEL]: paginateCarousel,
             [events.SCREEN_DATA_RECEIVED]: onScreenDataReceived,
             [events.SET_BACKGROUND_IMAGE]: setBackgroundImage,
+            [events.SET_COMPLIMENTARY_COLOR]: setComplimentaryColor,
             [events.SIDEBAR_RECEIVED]: onSidebarReceived,
             [events.TOPBAR_RECEIVED]: onTopbarReceived
         })
@@ -151,6 +152,12 @@ end sub
 sub setBackgroundImage(options = {})
     if not rodash.isNonEmptyAA(options) then return
     exec("setBackground", options, background())
+end sub
+
+
+sub setComplimentaryColor(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    exec("setComplimentaryColor", options, background())
 end sub
 
 
