@@ -106,7 +106,6 @@ sub onChildChange(options = {})
         updateObject = {
             index: childIndex
         }
-        ?"childIndex " childIndex
         child.update(updateObject, true)
         m.container.appendChild(child)
     end for

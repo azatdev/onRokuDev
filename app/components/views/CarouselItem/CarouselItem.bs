@@ -11,9 +11,11 @@ end sub
 sub setupItem()
     m.indexLabel = top().findNode("label")
     m.container = top().findNode("container")
+    m.container.addField("loaded", "boolean", false)
     m.outline = top().findNode("outline")
+    m.outline.visible = false
     m.thumbnail = top().findNode("thumbnail")
-    setLoadable({ node: top(), updateField: "loaded" })
+    setLoadable({ node: m.container, updateField: "loaded" })
     safeObserve("currRect", onCurrentRectChange)
     safeObserve("focusPercent", onFocusPercentChange)
     safeObserve("itemContent", itemContentChanged)
@@ -39,8 +41,8 @@ end sub
 sub onCurrentRectChange(options = {})
     rect = options.data ?? {}
 
-    width = int(rect.width)
-    height = int(rect.height)
+    width = int(rect.width / 3) * 3
+    height = int(rect.height / 3) * 3
 
     top().height = height
     top().width = width
@@ -73,7 +75,8 @@ sub onThumbnailLoadStatus(options)
     if not rodash.isNonEmptyAA(options) then return
     loadStatus = options.data ?? ""
     if loadStatus <> "ready" then return
-    top().loaded = true
+    if not rodash.isNode(m.outline) then return
+    m.outline.visible = true
 end sub
 
 
@@ -81,4 +84,5 @@ sub setThumbailImage(options = {})
     thumbnailImageUrl = options.data ?? ""
     if rodash.isEmptyString(thumbnailImageUrl) then return
     m.thumbnail.uri = thumbnailImageUrl
+    m.container.loaded = true
 end sub

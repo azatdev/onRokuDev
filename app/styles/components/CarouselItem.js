@@ -5,10 +5,9 @@ module.exports = {
     "CarouselItem": {
         "Div": {
             "&#container": {
-                color: "#84bef300",
-                opacity: 1,
                 "Poster": {
                     "&#thumbnail": {
+                        "loadSync": true,
                         "translation": [6, 6]
                     },
                     "&#outline": {
