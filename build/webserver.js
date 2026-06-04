@@ -6,8 +6,10 @@ require('dotenv').config();
 const httpBindHost = process.env.HTTP_SERVER_BIND || '0.0.0.0';
 const httpPort = Number(process.env.HTTP_SERVER_PORT || 54323);
 const stylesRoute = normalizeRoute(process.env.HTTP_SERVER_STYLES_ROUTE, '/styles.json');
+const stylesUpdateRoute = normalizeRoute(process.env.HTTP_SERVER_STYLES_UPDATE_ROUTE, '/styles-update.json');
 const configsRoute = normalizeRoute(process.env.HTTP_SERVER_CONFIGS_ROUTE, '/configs.json');
 const stylesPath = path.resolve(__dirname, 'styles.json');
+const stylesUpdatePath = path.resolve(__dirname, 'styles-update.json');
 const configsPath = path.resolve(__dirname, 'configs.json');
 
 function normalizeRoute(route, fallbackRoute) {
@@ -74,6 +76,10 @@ const httpServer = http.createServer((request, response) => {
     [stylesRoute]: {
       filePath: stylesPath,
       label: 'Styles',
+    },
+    [stylesUpdateRoute]: {
+      filePath: stylesUpdatePath,
+      label: 'Styles update',
     },
     [configsRoute]: {
       filePath: configsPath,
@@ -143,5 +149,5 @@ httpServer.on('error', (error) => {
 
 httpServer.listen(httpPort, httpBindHost, () => {
   console.log(`HTTP asset server listening on http://${httpBindHost}:${httpPort}`);
-  console.log(`Available routes: ${stylesRoute}, ${configsRoute}`);
+  console.log(`Available routes: ${stylesRoute}, ${stylesUpdateRoute}, ${configsRoute}`);
 });

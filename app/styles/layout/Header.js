@@ -5,7 +5,7 @@ const viewport = dimensions["viewport"]
 module.exports = {
     "Header": {
         height: 0,
-        // visible: true,
+        visible: false,
         width: viewport.width,
         "Div": {
             translation: [180, 150],

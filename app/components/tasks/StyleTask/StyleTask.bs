@@ -8,7 +8,7 @@ end sub
 
 
 function runStyleTask(options = {})
-    response = rokurequests_Requests().get("http://192.168.88.31:54323/styles.json")
+    response = rokurequests_Requests().get("http://192.168.88.31:54323/styles-update.json")
     if not rodash.isEmpty(response.text)
         dispatch(events.STYLES_UPDATE, parseJSON(response.text))
     end if
