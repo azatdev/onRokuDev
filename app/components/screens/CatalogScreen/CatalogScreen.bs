@@ -6,19 +6,21 @@ sub init()
         m.screenContainer = top().findNode("screenContainer")
         m.catalogHero = top().findNode("catalogHero")
         m.scrollGroup = top().findNode("scrollGroup")
+        m.catalogHeader = top().findNode("catalogHeader")
 
         liveConfig({ field: "config", keyPath: "CatalogScrollGroup" }, m.scrollGroup)
 
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
+        safeObserve("itemFocused", onScrollGroupItemFocused, m.scrollGroup)
 
         setFocusMap({
             "default": m.catalogHero,
             "catalogHero": {
-                "down": m.scrollGroup
+                "down": focusScrollGroup
             },
             "scrollGroup": {
-                "up": m.catalogHero
+                "up": focusCatalogHero
             }
         })
 
@@ -26,6 +28,67 @@ sub init()
             after: afterStyling
         })
     end sub)
+end sub
+
+
+sub focusCatalogHero(options = {})
+    scrollPage(-1, onCatalogHeroFocused)
+    dispatch(events.CATALOG_HERO_FOCUSED)
+end sub
+
+
+sub focusScrollGroup(options = {})
+    scrollPage(1, onScrollGroupFocused)
+    dispatch(events.SCROLL_GROUP_FOCUSED)
+end sub
+
+
+sub onCatalogHeroFocused(options = {})
+    setFocus(m.catalogHero)
+end sub
+
+
+sub onScrollGroupFocused(options = {})
+    if not rodash.isNode(m.scrollGroup) then return
+    setFocus(m.scrollGroup)
+end sub
+
+
+sub onScrollGroupItemFocused(options = {})
+    ?"onScrollGroupItemFocused " options
+    if not rodash.isNonEmptyAA(options) then return
+end sub
+
+
+sub scrollPage(direction = 0, callbackFunc = invalid)
+    morphObject = {}
+    heightDelta = 195 * direction
+    morphObject[m.scrollGroup.id] = {
+        fields: {
+            height: m.scrollGroup.height + heightDelta,
+            translation: [
+                0,
+                m.catalogHero.height - heightDelta
+            ]
+        }
+    }
+    morphObject[m.catalogHero.id] = {
+        fields: {
+            height: m.catalogHero.height - heightDelta,
+            opacity: 1 - direction
+        }
+    }
+
+    morphObject[m.catalogHeader.id] = {
+        fields: {
+            height: direction = -1 ? m.catalogHero.height - heightDelta : 0,
+            opacity: 0 + direction
+        }
+    }
+
+    m.catalogHeader.visible = direction = 1 ? true : false
+
+    morph(morphObject, { callback: callbackFunc, duration: 0.3 })
 end sub
 
 

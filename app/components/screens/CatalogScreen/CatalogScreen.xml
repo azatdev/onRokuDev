@@ -7,6 +7,7 @@
     <children>
         <Div id="screenContainer" focusable="false">
             <CatalogHero id="catalogHero" />
+            <Header id="catalogHeader" />
             <_ord_scrollGroup id="scrollGroup" />
         </Div>
     </children>

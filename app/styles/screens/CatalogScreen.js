@@ -11,6 +11,9 @@ module.exports = {
                     height: 600,
                     width: viewport.width
                 },
+                "Hero": {
+                    height: 0
+                },
                 "_ord_scrollGroup":{
                     height: 480,
                     width: viewport.width

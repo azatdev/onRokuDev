@@ -5,7 +5,7 @@
         <field id="focusedContentIndex" type="integer" />
         <field id="focusedTargetsetIndex" type="integer" />
         <field id="focusPercent" type="float" />
-        <field id="itemFocused" type="integer" alwaysNotify="true" />
+        <field id="itemFocused" type="integer" value="-1" />
         <field id="itemSelected" type="integer" value="-1" alwaysNotify="true" />
         <field id="itemUnfocused" type="integer" alwaysNotify="true" />
         <field id="advanceKey" type="string" value="right" />

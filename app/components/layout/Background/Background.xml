@@ -4,8 +4,11 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <Poster id="bottomGradient" />
-        <Poster id="cornerGradient" />
+        <Div id="backgroundContainer" />
+        <Div id="catalogGradientContainer">
+            <Poster id="bottomGradient" />
+            <Poster id="cornerGradient" />
+        </Div>
     </children>
     <script type="text/brightscript" uri="Background.bs" />
 </component>

@@ -2,5 +2,62 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(options = {})
+        m.container = top().findNode("container")
+        m.contentLogo = top().findNode("contentLogo")
+        m.metadata = top().findNode("metadata")
+        ' setLoadable({ node: m.contentLogo, updateField: "uri" })
+        ' setLoadable({ node: m.description, updateField: "text" })
+        safeObserve("data", onDataSet)
+        stackChildren({ node: m.container, direction: "vertical" })
+        redrawStyles()
     end sub)
+end sub
+
+
+sub onDataSet(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    data = options.data
+    content = data.content
+    setLogoImage(content.logoImageUri)
+    setMetadata(content)
+end sub
+
+
+sub setLogoImage(logoImageUri = "")
+    if rodash.isEmptyString(logoImageUri) then return
+    m.contentLogo.uri = logoImageUri
+end sub
+
+
+sub setMetadata(content = {})
+    if not rodash.isNode(content) then return
+    metadataArray = []
+
+    if rodash.isArray(content.genres)
+        metadataArray.push({
+            genres: content.genres
+    })
+    end if
+
+    if rodash.isNonEmptyString(content.copyrightYear)
+        metadataArray.push({
+            copyrightYear: content.copyrightYear
+        })
+    end if
+
+    if rodash.isNumber(content.duration)
+        metadataArray.push({
+            duration: content.duration
+        })
+    end if
+
+    if rodash.isNonEmptyString(content.rating)
+        metadataArray.push({
+            rating: content.rating
+        })
+    end if
+
+    m.metadata.data = {
+        metadataArray: metadataArray
+    }
 end sub

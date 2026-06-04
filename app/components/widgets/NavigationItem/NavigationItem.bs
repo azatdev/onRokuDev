@@ -72,7 +72,7 @@ end sub
 
 function getFocusedRectSize(options = {})
     if not rodash.isNode(m.label) then return [0,0]
-
+    m.label.visible = true
     m.label.text = ucase(top().itemContent.title)
     labelSquare = [getVisibleWidth(m.label), getVisibleHeight(m.label)]
     set({ "labelSquare": labelSquare })
@@ -88,6 +88,7 @@ function getUnfocusedRectSize(options = {})
     if get("dynamicWidth")
         m.label.width = 0
         m.label.text = ""
+        m.label.visible = false
     end if
 
     stackChildren({ node: m.container, direction: "horizontal" })

@@ -1,7 +1,37 @@
+const mixins = require("../mixins");
+const dimensions = mixins["Dimensions"]
+const viewport = dimensions["viewport"]
+
 module.exports = {
     "Header": {
-        color: "#00000080",
-        height: 591,
-        width: 800
+        height: 0,
+        visible: false,
+        width: viewport.width,
+        "Div": {
+            translation: [180, 150],
+            "Poster": {
+                height: 111,
+                width: 507
+            },
+            "Metadata": {
+                height: 48,
+                margin: [30, 0, 0, 0],
+                width: 642
+            },
+            "Quantico": {
+                lineSpacing: 0,
+                numLines: 2,
+                size: 24,
+                height: 90,
+                margin: [0, 12],
+                width: 687,
+                wrap: true
+            },
+            "CTAs": {
+                height: 75,
+                margin: [12, 0, 0, -16],
+                width: 544
+            }
+        }
     }
 };

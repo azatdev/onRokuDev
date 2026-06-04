@@ -14,6 +14,8 @@ sub onDataSet(options = {})
     metadataArray = data.metadataArray
     nodeArray = []
 
+    if m.container.getChildCount() > 0 then rodash.removeNodeChildren(m.container)
+
     for each fieldObject in metadataArray
         for each field in fieldObject.items()
             node = returnNode(field.key, field.value)

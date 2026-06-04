@@ -2,10 +2,13 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(options = {})
+        m.backgroundContainer = top().findNode("backgroundContainer")
         m.cornerGradient = top().findNode("cornerGradient")
         safeFunctions({
+            hideBackground: hideBackground,
             setBackground: setBackground,
-            setComplimentaryColor: setComplimentaryColor
+            setComplimentaryColor: setComplimentaryColor,
+            showBackground: showBackground
         })
     end sub)
 end sub
@@ -14,7 +17,7 @@ end sub
 sub onBackgroundFadeOut(options = {})
     oldPoster = options.node
     if not rodash.isNode(oldPoster) then return
-    top().removeChild(oldPoster)
+    m.backgroundContainer.removeChild(oldPoster)
 end sub
 
 
@@ -25,7 +28,9 @@ sub setBackground(options = {})
     newPoster.id = rodash.now().toStr()
     newPoster.opacity = 0
     newPoster.uri = newUri
-    top().insertChild(newPoster, 0)
+    newPoster.width = "<%- s(STYLES.Dimensions.viewport.width) %>"
+    newPoster.height = "<%- s(STYLES.Dimensions.viewport.height) %>"
+    m.backgroundContainer.insertChild(newPoster, 0)
     if rodash.isInvalid(m.poster)
         m.poster = newPoster
         fadeIn(newPoster, { duration: 0.5 })
@@ -52,3 +57,15 @@ sub setComplimentaryColor(options = {})
 
     morph(morphObject)
 end sub
+
+
+sub hideBackground(options = {})
+    ?"hideBackground "
+    fadeOut(m.backgroundContainer, { duration: 0.3 })
+end sub
+
+
+sub showBackground(options = {})
+    fadeIn(m.backgroundContainer, { duration: 0.3 })
+end sub
+

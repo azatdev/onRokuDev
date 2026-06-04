@@ -5,12 +5,15 @@ sub init()
     exec(sub(options = {})
         subscribe({
             [events.APP_STARTED]: onAppStarted,
+            [events.CATALOG_HERO_FOCUSED]: onCatalogHeroFocused,
+            [events.CAROUSEL_ITEM_FOCUSED]: onCarouselItemFocused,
             [events.GET_SCREEN_DATA]: getScreenData,
             [events.GET_SIDEBAR]: getSidebar,
             [events.GET_TOPBAR]: getTopbar,
             [events.NAVIGATE_TO]: navigateTo,
             [events.PAGINATE_CAROUSEL]: paginateCarousel,
             [events.SCREEN_DATA_RECEIVED]: onScreenDataReceived,
+            [events.SCROLL_GROUP_FOCUSED]: onScrollGroupFocused,
             [events.SET_BACKGROUND_IMAGE]: setBackgroundImage,
             [events.SET_COMPLIMENTARY_COLOR]: setComplimentaryColor,
             [events.SIDEBAR_RECEIVED]: onSidebarReceived,
@@ -23,6 +26,14 @@ end sub
 sub onAppStarted(options = {})
     dispatch(events.GET_SIDEBAR)
     dispatch(events.GET_TOPBAR)
+end sub
+
+
+sub onCarouselItemFocused(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    itemHeader = catalogHeader()
+    if not rodash.isNode(itemHeader) then return
+    itemHeader.data = options
 end sub
 
 
@@ -81,8 +92,6 @@ end sub
 
 
 sub navigateTo(options = {})
-    ?"navigateTo " options
-
     documentId = options.documentId
     slug = options.slug
 
@@ -97,6 +106,16 @@ sub navigateTo(options = {})
     set(saveObject)
 
     exec("navigateTo", options, layout())
+end sub
+
+
+sub onCatalogHeroFocused(options = {})
+    exec("showBackground", options, background())
+end sub
+
+
+sub onScrollGroupFocused(options = {})
+    exec("hideBackground", options, background())
 end sub
 
 
@@ -163,6 +182,11 @@ end sub
 
 function background()
     return findNode("background")
+end function
+
+
+function catalogHeader()
+    return findNode("catalogHeader")
 end function
 
 

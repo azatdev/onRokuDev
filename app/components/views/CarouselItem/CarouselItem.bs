@@ -41,11 +41,11 @@ end sub
 sub onCurrentRectChange(options = {})
     rect = options.data ?? {}
 
-    width = int(rect.width / 3) * 3
-    height = int(rect.height / 3) * 3
+    width = int(rect.width)
+    height = int(rect.height)
 
-    top().height = height
-    top().width = width
+    top().height = int(height / 3) * 3
+    top().width = int(width / 3) * 3
 
     if rodash.isNode(m.container)
         m.container.height = height

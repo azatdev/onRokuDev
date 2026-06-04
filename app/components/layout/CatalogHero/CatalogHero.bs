@@ -6,7 +6,7 @@ sub init()
         liveConfig({ field: "config", keyPath: "HeroScrollGroup" }, m.heroScrollGroup)
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
-        safeObserve("itemFocused", onItemFocused, m.heroScrollGroup)
+        safeObserve("itemFocused", onHeroItemFocused, m.heroScrollGroup)
         setFocusMap({
             "default": m.heroScrollGroup
         })
@@ -42,14 +42,15 @@ end sub
 
 sub onCollectionHydrated(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    onItemFocused({ data: m.heroScrollGroup.itemFocused })
+    onHeroItemFocused({ data: m.heroScrollGroup.itemFocused })
 end sub
 
 
-sub onItemFocused(options = {})
+sub onHeroItemFocused(options = {})
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.content) then return
     itemFocused = options.data
+    ?"onHeroItemFocused " itemFocused
     itemFocusedModel = m.content.getChild(itemFocused)
     if not rodash.isNode(itemFocusedModel) then return
 

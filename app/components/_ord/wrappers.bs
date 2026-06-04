@@ -299,28 +299,19 @@ sub stackChildren(options = {})
         childMargins = quadrupleMargins(child.margin)
 
         topMargin = childMargins.top
-        rightMargin = childMargins.right
-        bottomMargin = childMargins.bottom
         leftMargin = childMargins.left
 
-        childHeight = child.boundingRect().height
-        childWidth = child.boundingRect().width
+        childHeight = getVisibleHeight(child)
+        childWidth = getVisibleWidth(child)
 
         if horizontal
             if childWidth = 0 then continue for
             child.translation = [totalWidth + leftMargin, child.translation[1]]
-
-            totalWidth += leftMargin
             totalWidth += childWidth
-            totalWidth += rightMargin
         else
             if childHeight = 0 then continue for
-
             child.translation = [child.translation[0], totalHeight + topMargin]
-
-            totalHeight += topMargin
             totalHeight += childHeight
-            totalHeight += bottomMargin
         end if
     end for
 
@@ -379,6 +370,7 @@ function getVisibleHeight(node)
     boundingRect = node.boundingRect()
     nodeMargins = quadrupleMargins(node.margin)
 
+    if not node.visible then return 0
     if not rodash.isNonEmptyAA(clippingRect) then return 0
 
     if clippingRect.height > 0
@@ -403,6 +395,7 @@ function getVisibleWidth(node)
     boundingRect = node.boundingRect()
     nodeMargins = quadrupleMargins(node.margin)
 
+    if not node.visible then return 0
     if not rodash.isNonEmptyAA(clippingRect) then return 0
 
     if clippingRect.width > 0

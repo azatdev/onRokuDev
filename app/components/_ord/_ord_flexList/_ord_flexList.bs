@@ -275,6 +275,7 @@ sub onFocusedChildChange(options = {})
             args[0].animateToTargetSet = args[1]
         end sub, 100, [m.carousel, unFocusedTargetSet])
         m.carousel.animateToItem = currentIndex
+        top().itemFocused = -1
         return
     end if
 
@@ -343,6 +344,7 @@ end sub
 
 
 sub onItemFocused(options = {})
+    ?"flexlist onItemFocused "top().id, options
     if not rodash.isNonEmptyAA(options) then return
     m.top.itemFocused = options.data
 end sub
