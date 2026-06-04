@@ -6,6 +6,7 @@
     </interface>
     <children>
         <Div id="container">
+            <QuanticoBold id="title" />
             <Poster id="contentLogo" />
             <Metadata id="metadata" />
         </Div>

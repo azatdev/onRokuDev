@@ -5,32 +5,28 @@ const viewport = dimensions["viewport"]
 module.exports = {
     "Header": {
         height: 0,
-        visible: false,
+        // visible: true,
         width: viewport.width,
         "Div": {
             translation: [180, 150],
             "Poster": {
                 height: 111,
+                margin: [0, 0, 30, 0],
                 width: 507
             },
             "Metadata": {
                 height: 48,
-                margin: [30, 0, 0, 0],
                 width: 642
             },
-            "Quantico": {
-                lineSpacing: 0,
-                numLines: 2,
-                size: 24,
-                height: 90,
-                margin: [0, 12],
-                width: 687,
+            "QuanticoBold": {
+                maxLines: 2,
+                size: 48,
+                height: 132,
+                lineSpacing: -12,
+                margin: [0, 0, 6, 0],
+                vertAlign: "center",
+                width: 900,
                 wrap: true
-            },
-            "CTAs": {
-                height: 75,
-                margin: [12, 0, 0, -16],
-                width: 544
             }
         }
     }
