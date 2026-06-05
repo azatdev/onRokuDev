@@ -32,6 +32,6 @@ end sub
 
 sub playSound(soundSource)
     ?"main playSound " soundSource
-    sound = createObject("roAudioResource", soundSource)
-    sound.trigger(50)
+    ' sound = createObject("roAudioResource", soundSource)
+    ' sound.trigger(50)
 end sub

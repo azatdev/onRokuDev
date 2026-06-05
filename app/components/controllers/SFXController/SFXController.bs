@@ -34,4 +34,3 @@ end sub
 sub selectSound(options = {})
     ' playSound(sounds.SELECT)
 end sub
-
