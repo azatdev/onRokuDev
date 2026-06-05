@@ -1,0 +1,36 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        subscribe({
+            [events.CAROUSEL_FOCUSED]: navSound,
+            [events.CAROUSEL_ITEM_FOCUSED]: navSound
+        })
+    end sub)
+end sub
+
+
+sub endSound(options = {})
+    playSound(sounds.DEADEND)
+end sub
+
+
+sub ffSound(options = {})
+    playSound(sounds.NAVMULTI)
+end sub
+
+
+sub playSound(name, volume = 50)
+    ' sound = createObject("roAudioResource", name)
+    ' sound.trigger(volume)
+end sub
+
+
+sub navSound(options = {})
+    playSound(sounds.NAVSINGLE)
+end sub
+
+
+sub selectSound(options = {})
+    playSound(sounds.SELECT)
+end sub

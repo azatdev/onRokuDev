@@ -1,6 +1,7 @@
 namespace events
     const APP_STARTED = "APP_STARTED"
     const CATALOG_HERO_FOCUSED = "CATALOG_HERO_FOCUSED"
+    const CAROUSEL_FOCUSED = "CAROUSEL_FOCUSED"
     const CAROUSEL_ITEM_FOCUSED = "CAROUSEL_ITEM_FOCUSED"
     const EVENT_TASK_READY = "EVENT_TASK_READY"
     const GET_SCREEN_DATA = "GET_SCREEN_DATA"
@@ -12,7 +13,6 @@ namespace events
     const SCREEN_DATA_RECEIVED = "SCREEN_DATA_RECEIVED"
     const SIDEBAR_RECEIVED = "SIDEBAR_RECEIVED"
     const TOPBAR_RECEIVED = "TOPBAR_RECEIVED"
-    const TEST_EVENT = "TEST_EVENT"
     const REQUEST_STYLES = "REQUEST_STYLES"
     const SCROLL_GROUP_FOCUSED = "SCROLL_GROUP_FOCUSED"
     const STYLES_UPDATE = "STYLES_UPDATE"
@@ -24,6 +24,14 @@ end namespace
 namespace sections
     const CAROUSEL = "CAROUSEL"
     const HERO = "HERO"
+end namespace
+
+
+namespace sounds
+    const SELECT = "select"
+    const NAVSINGLE = "navsingle"
+    const NAVMULTI = "navmulti"
+    const DEADEND = "deadend"
 end namespace
 
 

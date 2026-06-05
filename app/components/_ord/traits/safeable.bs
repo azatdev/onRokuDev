@@ -58,7 +58,7 @@ class Safeable
         functionArgument = options.options ?? {}
         node = options.node ?? top()
 
-        if not node.isSameNode(top())
+        if not top().isSameNode(node)
             return m.proxyFunc(func, functionArgument, node)
         end if
 

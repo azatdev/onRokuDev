@@ -5,6 +5,7 @@ import "testdata.bs"
 sub init()
     exec(sub(options = {})
         top().setFocus(true)
+        ' ?CreateObject("roAudioResource", "navsingle")
 
         ' m.sidebar = top().findNode("sidebar")
         ' m.topbar = top().findNode("topbar")
@@ -23,6 +24,7 @@ sub init()
         registerControllers([
             "ConfigsController",
             "LayoutController",
+            "SFXController",
             "SocketController",
             "StylesController"
         ])

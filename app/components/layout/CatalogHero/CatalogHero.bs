@@ -47,7 +47,6 @@ end sub
 
 
 sub onHeroItemFocused(options = {})
-    ?"onHeroItemFocused " 
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.content) then return
     itemFocused = options.data
