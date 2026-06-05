@@ -13,6 +13,7 @@ sub init()
             [events.HERO_ITEM_FOCUSED]: updateBackgroundAssets,
             [events.NAVIGATE_TO]: navigateTo,
             [events.PAGINATE_CAROUSEL]: paginateCarousel,
+            [events.PAGINATE_SCREEN]: getScreenData,
             [events.SCREEN_DATA_RECEIVED]: onScreenDataReceived,
             [events.SCROLL_GROUP_FOCUSED]: onScrollGroupFocused,
             [events.SIDEBAR_RECEIVED]: onSidebarReceived,
@@ -49,43 +50,36 @@ end sub
 sub getScreenData(options = {})
     if not rodash.isNonEmptyAA(options) then return
 
-    screenId = options.screenId
-    slug = options.slug
+    slug = options.slug ?? ""
+    screenId = options.screenId ?? ""
+    collection = options.collection
+
+    ?"getScreenData " collection
 
     screenConfig = get(slug) ?? {}
-    screenConfig.screenId = screenId
 
-    screenVariables = screenConfig.variables ?? {}
+    if not rodash.isNode(collection)
+        documentId = screenConfig.documentId ?? ""
+        collection = createObject("roSGNode", "Collection")
+        collection.update({
+            documentId: documentId,
+            screenId: screenId,
+            slug: slug
+        }, true)
+    end if
 
+
+    screenConfig.collection = collection
     saveObject = {}
     saveObject[slug] = screenConfig
     set(saveObject)
 
-    if rodash.isInvalid(m.screenTask) then m.screenTask = createObject("roSGNode", "ScreenTask")
-
-    screenPagination = getScreenPagination(screenVariables)
-    if not rodash.isNonEmptyAA(screenPagination) then return
-
-    screenVariables.pagination = screenPagination
-    m.screenTask.update({ screenVariables: screenVariables
+    screenTask = createObject("roSGNode", "ScreenTask")
+    ' ?"getscreenData " collection
+    screenTask.update({ collection: collection
     }, true)
-    m.screenTask.control = "RUN"
+    screenTask.control = "RUN"
 end sub
-
-
-function getScreenPagination(options = {})
-    if not rodash.isNonEmptyAA(options) then return invalid
-
-    paginationOptions = {}
-
-    if rodash.isNonEmptyAA(options.pagination)
-
-    else
-        paginationOptions = "<%- o(CONFIG.Pagination.Initial) %>"
-    end if
-
-    return paginationOptions
-end function
 
 
 sub getSidebar(options = {})
@@ -105,10 +99,10 @@ sub navigateTo(options = {})
     slug = options.slug
 
     screenConfig = get(slug) ?? {}
-    screenVariables = screenConfig.variables ?? {}
-    screenVariables.setModeCaseSensitive()
-    screenVariables["documentId"] = documentId
-    screenConfig.variables = screenVariables
+    ' screenVariables = screenConfig.variables ?? {}
+    ' screenVariables.setModeCaseSensitive()
+    screenConfig["documentId"] = documentId
+    ' screenConfig.variables = screenVariables
 
     saveObject = {}
     saveObject[slug] = screenConfig
@@ -133,24 +127,21 @@ end sub
 sub onScreenDataReceived(options = {})
     if not rodash.isNonEmptyAA(options) then return
 
-    data = options.content
-    screenModel = data.getChild(0)
-    slug = screenModel.slug ?? ""
-    screenConfig = get(slug) ?? {}
-    screenId = screenConfig.screenId
+    screenModel = options.content
+    if not rodash.isNode(screenModel) then return
+
+    screenId = screenModel.screenId ?? ""
+    if rodash.isEmpty(screenId) then return
+
     screen = layout().findNode(screenId)
     if not rodash.isNode(screen) then return
 
-    screenConfig.totalCount = screenModel.totalCount
-    screen.data = {
-        content: screenModel
-    }
-
-    screenModel.getChild(0).callFunc("testFunction")
-
-    saveObject = {}
-    saveObject[slug] = screenConfig
-    set(saveObject)
+    ' screenConfig.totalCount = screenModel.totalCount
+    if rodash.isEmpty(screen.data)
+        screen.data = {
+            content: screenModel
+        }
+    end if
 end sub
 
 

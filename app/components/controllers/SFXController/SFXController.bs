@@ -21,8 +21,7 @@ end sub
 
 
 sub playSound(name, volume = 50)
-    ?"playSound " name
-    app().playSound = name
+    ' app().playSound = name
 end sub
 
 

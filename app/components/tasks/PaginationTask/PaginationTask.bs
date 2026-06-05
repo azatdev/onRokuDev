@@ -15,6 +15,7 @@ function runPaginationTask(options = {})
     if not rodash.isNode(collection) then return true
 
     pagination = exec("getPagination", { test: "Input" }, collection)
+    ?"runPaginationTask " pagination
 
     variables = {}
     variables.setModeCaseSensitive()

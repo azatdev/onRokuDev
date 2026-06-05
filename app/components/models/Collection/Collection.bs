@@ -3,7 +3,7 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(options = {})
         safeFunctions({
-            getPagination: getPagination
+            getVariables: getVariables
         })
     end sub)
 end sub
@@ -11,11 +11,26 @@ end sub
 
 function getPagination(options = {})
     existingPagination = top().pagination
+    ?"existingPagination " existingPagination
     if rodash.isNonEmptyAA(existingPagination)
         newPagination = "<%- o(CONFIG.Pagination.Subsequent) %>"
+        newPagination.start = top().totalCount
     else
         newPagination = "<%- o(CONFIG.Pagination.Initial) %>"
     end if
 
+    ?"newPagination " newPagination
+
+    top().pagination = newPagination
+
     return newPagination
+end function
+
+
+function getVariables(options = {})
+    returnObj = {}
+    returnObj.setModeCaseSensitive()
+    returnObj["documentId"] = top().documentId
+    returnObj["pagination"] = getPagination()
+    return returnObj
 end function
