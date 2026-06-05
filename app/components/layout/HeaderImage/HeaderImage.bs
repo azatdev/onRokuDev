@@ -1,0 +1,46 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        m.headerImageContainer = top().findNode("headerImageContainer")
+        safeObserve("newUri", setImage)
+        m.headerImageGradients = top().findNode("headerImageGradients")
+        m.headerImageMask = top().findNode("headerImageMask")
+
+        rokuDevice = createObject("roDeviceInfo")
+        if rokuDevice.getGraphicsPlatform() <> "opengl"
+            m.headerImageGradients.visible = true
+            m.headerImageMask.maskuri = ""
+        end if
+    end sub)
+end sub
+
+
+sub onImageFadeOut(options = {})
+    oldPoster = options.node
+    if not rodash.isNode(oldPoster) then return
+    m.headerImageContainer.removeChild(oldPoster)
+end sub
+
+
+sub setImage(options = {})
+    if rodash.isEmpty(options) then return
+    newUri = options.data
+    if rodash.isEmpty(newUri) then return
+    newPoster = createObject("roSGNode", "Poster")
+    newPoster.id = rodash.now().toStr()
+    newPoster.opacity = 0
+    newPoster.uri = newUri
+    newPoster.width = top().width
+    newPoster.height = top().height
+    m.headerImageContainer.insertChild(newPoster, 0)
+    if rodash.isInvalid(m.poster)
+        m.poster = newPoster
+        fadeIn(newPoster, { duration: 0.5 })
+    else
+        newPoster.opacity = 1
+        oldPoster = m.poster
+        m.poster = newPoster
+        fadeOut(oldPoster, { callback: onImageFadeOut, callbackOptions: { node: oldPoster }, duration: 0.5 })
+    end if
+end sub

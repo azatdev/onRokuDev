@@ -47,15 +47,14 @@ end sub
 
 
 sub onHeroItemFocused(options = {})
+    ?"onHeroItemFocused " 
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.content) then return
     itemFocused = options.data
-    ?"onHeroItemFocused " itemFocused
     itemFocusedModel = m.content.getChild(itemFocused)
     if not rodash.isNode(itemFocusedModel) then return
 
-    dispatch(events.SET_BACKGROUND_IMAGE, { uri: itemFocusedModel.headerImageUri })
-    dispatch(events.SET_COMPLIMENTARY_COLOR, { blendColor: itemFocusedModel.complimentaryColor })
+    dispatch(events.HERO_ITEM_FOCUSED, { content: itemFocusedModel, section: sections.HERO })
 end sub
 
 

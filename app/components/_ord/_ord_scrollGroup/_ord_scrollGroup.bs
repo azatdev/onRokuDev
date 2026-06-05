@@ -44,10 +44,20 @@ end sub
 sub onFocusedChildChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     focusedChild = options.data
-    if not rodash.isNode(focusedChild) then return
+    unfocused = focusedChild = invalid
+
     if top().isSameNode(focusedChild) then applyDefaultFocus()
+
+    if unfocused
+        set({
+            itemfocused: -1,
+            lastFocused: get("itemfocused")
+        })
+        return
+    end if
+
     if get("itemFocused") = -1
-        set({ itemFocused: 0 })
+        set({ itemFocused: get("lastFocused") ?? 0 })
     end if
 end sub
 
@@ -180,7 +190,7 @@ end sub
 
 
 function performAnimation(key = "")
-if rodash.isEmptyString(key) then return false
+    if rodash.isEmptyString(key) then return false
 
     children = m.container.getChildren(-1, 0)
     if not rodash.isNonEmptyArray(children) then return false

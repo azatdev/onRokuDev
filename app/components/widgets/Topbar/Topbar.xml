@@ -5,7 +5,7 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <MaskGroup id ="exampleMaskGroup">
+        <MaskGroup id="topbarMaskgroup">
             <_ord_flexList id="topbarList" />
             <Poster id="gradient" />
         </MaskGroup>

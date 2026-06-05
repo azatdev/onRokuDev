@@ -59,11 +59,9 @@ end sub
 
 
 sub focusOnScreen(options = {})
-    ' activeView = sgRouter.getActiveView()
     activeView = m.activeView
     if not rodash.isNode(activeView) then return
     setFocus(m.activeView)
-    ' setFocus(m.screenContainer)
 end sub
 
 

@@ -255,11 +255,11 @@ end sub
 
 
 sub onFocusedChildChange(options = {})
-    node = options.data
+    focusedChild = options.data
     currentIndex = top().focusedContentIndex
     if m.content = invalid then return
 
-    unfocused = node = invalid or not node.isSameNode(m.top) and not top().isInFocusChain()
+    unfocused = focusedChild = invalid or not top().isSameNode(focusedChild) and not top().isInFocusChain()
 
     if not rodash.isNode(m.carousel.targetSet) then return
 
@@ -275,7 +275,7 @@ sub onFocusedChildChange(options = {})
             args[0].animateToTargetSet = args[1]
         end sub, 100, [m.carousel, unFocusedTargetSet])
         m.carousel.animateToItem = currentIndex
-        top().itemFocused = -1
+        set({ itemfocused: -1 })
         return
     end if
 
@@ -345,7 +345,7 @@ end sub
 
 sub onItemFocused(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    m.top.itemFocused = options.data
+    set({ itemfocused: options.data })
 end sub
 
 

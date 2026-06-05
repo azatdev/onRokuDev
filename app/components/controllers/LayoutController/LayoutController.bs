@@ -10,12 +10,11 @@ sub init()
             [events.GET_SCREEN_DATA]: getScreenData,
             [events.GET_SIDEBAR]: getSidebar,
             [events.GET_TOPBAR]: getTopbar,
+            [events.HERO_ITEM_FOCUSED]: updateBackgroundAssets,
             [events.NAVIGATE_TO]: navigateTo,
             [events.PAGINATE_CAROUSEL]: paginateCarousel,
             [events.SCREEN_DATA_RECEIVED]: onScreenDataReceived,
             [events.SCROLL_GROUP_FOCUSED]: onScrollGroupFocused,
-            [events.SET_BACKGROUND_IMAGE]: setBackgroundImage,
-            [events.SET_COMPLIMENTARY_COLOR]: setComplimentaryColor,
             [events.SIDEBAR_RECEIVED]: onSidebarReceived,
             [events.TOPBAR_RECEIVED]: onTopbarReceived
         })
@@ -34,6 +33,16 @@ sub onCarouselItemFocused(options = {})
     itemHeader = catalogHeader()
     if not rodash.isNode(itemHeader) then return
     itemHeader.data = options
+
+    updateBackgroundAssets(options)
+end sub
+
+
+sub updateBackgroundAssets(options = {})
+    if rodash.isEmpty(options) then return
+    appBackground = background()
+    if rodash.isEmpty(appBackground) then return
+    exec("updateAssets", options, background())
 end sub
 
 
@@ -111,11 +120,13 @@ end sub
 
 sub onCatalogHeroFocused(options = {})
     exec("showBackground", options, background())
+    exec("hideHeaderImage", options, background())
 end sub
 
 
 sub onScrollGroupFocused(options = {})
     exec("hideBackground", options, background())
+    exec("showHeaderImage", options, background())
 end sub
 
 
@@ -165,18 +176,6 @@ sub paginateCarousel(options = {})
     }, true)
 
     paginationTask.control = "RUN"
-end sub
-
-
-sub setBackgroundImage(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    exec("setBackground", options, background())
-end sub
-
-
-sub setComplimentaryColor(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    exec("setComplimentaryColor", options, background())
 end sub
 
 

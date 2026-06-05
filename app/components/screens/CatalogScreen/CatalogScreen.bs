@@ -55,7 +55,6 @@ end sub
 
 
 sub onScrollGroupItemFocused(options = {})
-    ?"onScrollGroupItemFocused " options
     if not rodash.isNonEmptyAA(options) then return
 end sub
 

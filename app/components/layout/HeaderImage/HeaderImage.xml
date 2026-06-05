@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="HeaderImage" extends="Div">
+    <interface>
+        <field id="newUri" type="string" />
+    </interface>
+    <children>
+        <MaskGroup id="headerImageMask">
+            <Div id="headerImageContainer" />
+        </MaskGroup>
+        <Div id="headerImageGradients">
+            <Poster id="topGradient" />
+            <Poster id="leftGradient" />
+            <Poster id="bottomGradient" />
+        </Div>
+    </children>
+    <script type="text/brightscript" uri="HeaderImage.bs" />
+</component>

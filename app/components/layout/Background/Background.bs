@@ -3,12 +3,14 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(options = {})
         m.backgroundContainer = top().findNode("backgroundContainer")
+        m.headerImage = top().findNode("headerImage")
         m.cornerGradient = top().findNode("cornerGradient")
         safeFunctions({
             hideBackground: hideBackground,
-            setBackground: setBackground,
-            setComplimentaryColor: setComplimentaryColor,
-            showBackground: showBackground
+            hideHeaderImage: hideHeaderImage,
+            showBackground: showBackground,
+            showHeaderImage: showHeaderImage,
+            updateAssets: updateAssets
         })
     end sub)
 end sub
@@ -21,9 +23,8 @@ sub onBackgroundFadeOut(options = {})
 end sub
 
 
-sub setBackground(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    newUri = options.uri
+sub setBackground(newUri = "")
+    if rodash.isEmpty(newUri) then return
     newPoster = createObject("roSGNode", "Poster")
     newPoster.id = rodash.now().toStr()
     newPoster.opacity = 0
@@ -42,10 +43,28 @@ sub setBackground(options = {})
     end if
 end sub
 
-sub setComplimentaryColor(options = {})
-    if not rodash.isNonEmptyAA(options) then return
+
+sub updateAssets(options = {})
+    if rodash.isEmpty(options) then return
+    content = options.content
+    if rodash.isEmpty(content) then return
+
+    setComplimentaryColor(content.complimentaryColor)
+
+    section = options.section
+    if rodash.isEmpty(section) then return
+
+    if section = sections.HERO
+        setBackground(content.headerImageUri)
+    else if section = sections.CAROUSEL
+        m.headerImage.newUri = content.posterImageUri
+    end if
+end sub
+
+
+sub setComplimentaryColor(newBlendColor = "")
+    if rodash.isEmpty(newBlendColor) then return
     if not rodash.isNode(m.cornerGradient) then return
-    newBlendColor = options.blendColor
     if rodash.isEmpty(newBlendColor) then newBlendColor = "<%- s(STYLES.Palette.defaultCornerColor) %>"
 
     morphObject = {}
@@ -68,3 +87,12 @@ sub showBackground(options = {})
     fadeIn(m.backgroundContainer, { duration: 0.3 })
 end sub
 
+
+sub hideHeaderImage(options = {})
+    fadeOut(m.headerImage, { duration: 0.3 })
+end sub
+
+
+sub showHeaderImage(options = {})
+    fadeIn(m.headerImage, { duration: 0.3 })
+end sub
