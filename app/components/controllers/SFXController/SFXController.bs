@@ -3,8 +3,8 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(options = {})
         subscribe({
-            [events.CAROUSEL_FOCUSED]: navSound,
-            [events.CAROUSEL_ITEM_FOCUSED]: navSound
+            [events.CAROUSEL_FOCUSED]: navSound
+            ' [events.CAROUSEL_ITEM_FOCUSED]: navSound
         })
     end sub)
 end sub
@@ -21,11 +21,8 @@ end sub
 
 
 sub playSound(name, volume = 50)
-    ' sfxTask = createObject("roSGNode", "SFXTask")
-    ' sfxTask.source = name
-    ' sfxTask.control = "RUN"
-    ' sound = createObject("roAudioResource", name)
-    ' sound.trigger(volume)
+    ?"playSound " name
+    app().playSound = name
 end sub
 
 

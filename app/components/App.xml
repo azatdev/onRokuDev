@@ -5,6 +5,7 @@
         <field id="testFunctions" type="assocarray" />
         <field id="drink" type="string" />
         <field id="styles" type="assocarray" />
+        <field id="playSound" type="string" alwaysNotify="true" />
         <function name="safeFunc" />
     </interface>
     <children>

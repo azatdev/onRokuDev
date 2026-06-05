@@ -2,6 +2,7 @@
 <component name="HeaderImage" extends="Div">
     <interface>
         <field id="newUri" type="string" />
+        <function name="safeFunc" />
     </interface>
     <children>
         <MaskGroup id="headerImageMask">
