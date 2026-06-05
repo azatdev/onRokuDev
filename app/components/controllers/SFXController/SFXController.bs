@@ -21,6 +21,9 @@ end sub
 
 
 sub playSound(name, volume = 50)
+    ' sfxTask = createObject("roSGNode", "SFXTask")
+    ' sfxTask.source = name
+    ' sfxTask.control = "RUN"
     ' sound = createObject("roAudioResource", name)
     ' sound.trigger(volume)
 end sub
@@ -32,5 +35,6 @@ end sub
 
 
 sub selectSound(options = {})
-    playSound(sounds.SELECT)
+    ' playSound(sounds.SELECT)
 end sub
+
