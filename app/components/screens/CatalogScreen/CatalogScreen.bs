@@ -34,14 +34,11 @@ end sub
 sub checkPagination(options = {})
     if rodash.isEmpty(m.content) then return
     itemFocused = options.itemFocused ?? 0
-    ?"checkPagination itemFocused " itemFocused
     lastPaginatedIndex = m.content.totalCount - 1
     paginationDelta = lastPaginatedIndex - itemFocused
-    ?"paginationDelta " paginationDelta
 
-    needsPaginating = paginationDelta <= 3
-    ?"needsPaginating " needsPaginating
-    if needsPaginating then dispatch(events.PAGINATE_SCREEN, { collection: m.content })
+    needsPaginating = paginationDelta <= 3 and m.content.canPaginate and not m.content.paginating
+    ' if needsPaginating then dispatch(events.PAGINATE_SCREEN, { collection: m.content })
 end sub
 
 
@@ -53,6 +50,7 @@ end sub
 
 sub focusScrollGroup(options = {})
     scrollPage(1, onScrollGroupFocused)
+    onScrollGroupFocused()
     dispatch(events.SCROLL_GROUP_FOCUSED)
 end sub
 
@@ -141,6 +139,8 @@ sub onDataSet(options = {})
         processScrollItem({ model: model })
     end for
 
+    afterStyling()
+
     safeObserve("change", onCollectionChildChange, content)
 end sub
 
@@ -155,13 +155,11 @@ sub onCollectionChildChange(options = {})
 
     numberOfNewNodes = changeData.index2 - changeData.index1 + 1
     addedNodes = collection.getChildren(numberOfNewNodes, changeData.index1)
-
     if operation = "add"
         for each model in addedNodes
             processScrollItem({ model: model })
         end for
     end if
-
 end sub
 
 
@@ -178,8 +176,6 @@ sub processScrollItem(options = {})
         component.data = { content: model }
         m.scrollGroup.appendChild(component)
     end if
-
-    afterStyling()
 end sub
 
 

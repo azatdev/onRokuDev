@@ -2,6 +2,7 @@
 <component name="CarouselItem" extends="Div">
     <interface>
         <field id="index" type="integer" />
+        <field id="content" type="node" />
         <field id="currRect" type="rect2d" />
         <field id="focusPercent" type="float" />
         <field id="loaded" type="boolean" />

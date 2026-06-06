@@ -26,7 +26,6 @@ end sub
 
 sub onCurrentRectChange(options = {})
     rect = options.data ?? {}
-    ' ?"onCurrentRectChange " m.top.index
 
     if rodash.isNode(m.container)
         m.container.height = rect.height

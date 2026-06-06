@@ -12,11 +12,9 @@ end sub
 function runScreenTask(options = {})
     collection = top().collection
     if not rodash.isNode(collection) then return true
-    ?"runScreenTask " collection
 
     variables = exec("getVariables", {}, collection)
     if rodash.isEmpty(variables) then return true
-    ?"variables " variables
 
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Screen) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
 
@@ -24,10 +22,7 @@ function runScreenTask(options = {})
 
     updateObject = returnUpdateObject(parseJSON(response.text))
     collection.update(updateObject, true)
-    ' screenModel.pagination = screenVariables.pagination
-
-    ' Needed to circumvent a Roku bug with callFunc
-    ' m.containerNode.appendChild(screenModel)
+    collection.totalCount = collection.getChildCount()
 
     publish(events.SCREEN_DATA_RECEIVED, {
         content: collection
@@ -40,9 +35,9 @@ end function
 function returnUpdateObject(options = {})
     data = options.data ?? {}
     screenData = data.screen ?? {}
-    carouselsData = screenData.carousels ?? []
+    ' carouselsData = screenData.carousels ?? []
     ' carouselsData =  [screenData.carousels[3], screenData.carousels[4], screenData.carousels[5]]
-    ' carouselsData =  [screenData.carousels[0]]
+    carouselsData =  [screenData.carousels[0], screenData.carousels[1]]
     updateObjArray = []
 
     for each carousel in carouselsData
@@ -69,6 +64,7 @@ function returnUpdateObject(options = {})
                 description: "",
                 hydrated: false,
                 logoImageUri: "",
+                observed: false,
                 subtype: "ContentModel",
                 thumbnailImageUri: ""
             })
@@ -80,10 +76,11 @@ function returnUpdateObject(options = {})
     end for
 
     updateObject = {
+        canPaginate: not rodash.isEmpty(updateObjArray),
+        children: updateObjArray,
         documentId: screenData.documentId,
         slug: screenData.slug,
-        children: updateObjArray,
-        totalCount: updateObjArray.count()
+        paginating: false
     }
 
     ' model = createObject("roSGNode", "Collection")

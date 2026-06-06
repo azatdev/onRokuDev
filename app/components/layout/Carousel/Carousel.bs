@@ -25,6 +25,8 @@ sub onCarouselItemFocused(options = {})
     itemModel = m.content.getChild(carouselItemFocused)
     if not rodash.isNode(itemModel) then return
     dispatch(events.CAROUSEL_ITEM_FOCUSED, { content: itemModel, section: sections.CAROUSEL })
+    ' ?"onCarouselItemFocused " itemModel
+    checkPagination({ itemFocused: options.data })
 end sub
 
 
@@ -58,3 +60,12 @@ sub afterStyling(options = {})
     stackChildren({ node: m.top, direction: "vertical" })
 end sub
 
+sub checkPagination(options = {})
+    if rodash.isEmpty(m.content) then return
+    itemFocused = options.itemFocused ?? 0
+    lastPaginatedIndex = m.content.totalCount - 1
+    paginationDelta = lastPaginatedIndex - itemFocused
+
+    needsPaginating = paginationDelta <= 5 and m.content.canPaginate and not m.content.paginating
+    if needsPaginating then dispatch(events.PAGINATE_CAROUSEL, { collection: m.content })
+end sub

@@ -2,7 +2,7 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(options = {})
-        top().id = "carouselItem"
+        ' top().id = "carouselItem"
         setupItem()
     end sub)
 end sub
@@ -19,22 +19,22 @@ sub setupItem()
     safeObserve("currRect", onCurrentRectChange)
     safeObserve("focusPercent", onFocusPercentChange)
     safeObserve("itemContent", itemContentChanged)
-    safeObserve("loadStatus", onThumbnailLoadStatus, m.thumbnail)
 end sub
 
 
 sub itemContentChanged(options = {})
     content = options.data
     if content = invalid then return
-    if rodash.isNode(m.content) then return
+    ' if content.observed then return
 
-    m.content = content
+    setThumbailImage({ data: content.thumbnailImageUri })
+    ' if rodash.isNonEmptyString(content.thumbnailImageUri)
+    '     setThumbailImage({ data: content.thumbnailImageUri })
+    ' else
+    '     safeObserve("thumbnailImageUri", setThumbailImage, content)
+    ' end if
 
-    if rodash.isNonEmptyString(content.thumbnailImageUri)
-        setThumbailImage({ data: content.thumbnailImageUri })
-    else
-        safeObserve("thumbnailImageUri", setThumbailImage, m.content)
-    end if
+    ' content.observed = true
 end sub
 
 
@@ -71,18 +71,10 @@ sub onFocusPercentChange(options = {})
 end sub
 
 
-sub onThumbnailLoadStatus(options)
-    if not rodash.isNonEmptyAA(options) then return
-    loadStatus = options.data ?? ""
-    if loadStatus <> "ready" then return
-    if not rodash.isNode(m.outline) then return
-    m.outline.visible = true
-end sub
-
-
 sub setThumbailImage(options = {})
     thumbnailImageUrl = options.data ?? ""
     if rodash.isEmptyString(thumbnailImageUrl) then return
     m.thumbnail.uri = thumbnailImageUrl
     m.container.loaded = true
+    m.outline.visible = true
 end sub

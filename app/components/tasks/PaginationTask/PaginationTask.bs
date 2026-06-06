@@ -14,20 +14,7 @@ function runPaginationTask(options = {})
     collection = options.collection
     if not rodash.isNode(collection) then return true
 
-    pagination = exec("getPagination", { test: "Input" }, collection)
-    ?"runPaginationTask " pagination
-
-    variables = {}
-    variables.setModeCaseSensitive()
-    variables["documentId"] = collection.documentId
-
-    if rodash.isNonEmptyAA(pagination)
-        variables["pagination"] = pagination
-        collection.pagination = pagination
-    end if
-
-    ?"variables " formatJSON(variables)
-
+    variables = exec("getVariables", {}, collection)
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Carousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
 
     responseJSON = parseJSON(response.text)
@@ -43,7 +30,7 @@ function runPaginationTask(options = {})
         existingContentNode = collection.findNode(documentId)
 
         if rodash.isNode(existingContentNode)
-            hydrateContentNode(existingContentNode, content)
+            hydrateContentNode({ node: existingContentNode, data: content, newNode: false })
             continue for
         end if
 
@@ -52,44 +39,52 @@ function runPaginationTask(options = {})
         end function)
 
         if rodash.isNode(existingEmptyNode)
-            hydrateContentNode(existingEmptyNode, content)
+            hydrateContentNode({ node: existingEmptyNode, data: content, newNode: false })
             continue for
         end if
 
         newContentNode = createObject("roSGNode", "ContentModel")
-        hydrateContentNode(newContentNode, content)
+        hydrateContentNode({ node: newContentNode, data: content, newNode: true })
         collection.appendChild(newContentNode)
     end for
 
     collection.hydrated = true
+    collection.paginating = false
 
     return true
 end function
 
 
-sub hydrateContentNode(node, options = {})
-    if not rodash.isNode(node) then return
+sub hydrateContentNode(options = {})
     if not rodash.isNonEmptyAA(options) then return
 
-    contentImages = options.images ?? []
+    node = options.node
+    data = options.data
+    newNode = options.newNode ?? true
+
+    if not rodash.isNode(node) then return
+    if not rodash.isNonEmptyAA(data) then return
+
+    contentImages = data.images ?? []
     imageFields = getImageFields(contentImages)
 
     updateObject = {
-        complimentaryColor: options.complimentaryColor,
-        copyrightYear: options.copyrightYear,
-        description: options.description,
-        duration: options.duration,
-        genres: options.v2genres,
-        id: options.documentId,
+        complimentaryColor: data.complimentaryColor,
+        copyrightYear: data.copyrightYear,
+        description: data.description,
+        duration: data.duration,
+        genres: data.v2genres,
         heroCTAsModel: returnHeroCTAsModel(),
-        rating: options.rating,
-        title: options.title,
-        type: options.type
+        id: data.documentId,
+        rating: data.rating,
+        title: data.title,
+        type: data.type
     }
 
     updateObject.append(imageFields)
     node.update(updateObject, true)
     node.hydrated = true
+    node.observed = newNode ? false : true
 end sub
 
 

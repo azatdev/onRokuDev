@@ -68,6 +68,7 @@ sub getScreenData(options = {})
         }, true)
     end if
 
+    collection.paginating = true
 
     screenConfig.collection = collection
     saveObject = {}
@@ -158,6 +159,8 @@ end sub
 sub paginateCarousel(options = {})
     if not rodash.isNonEmptyAA(options) then return
     collection = options.collection
+    collection.paginating = true
+
     paginationTask = createObject("roSGNode", "PaginationTask")
 
     paginationTask.update({

@@ -20,10 +20,7 @@ module.exports = {
             }
         },
         "Rectangle": {
-            "color": "#00000000",
-            "&#container": {
-                "translation": [0, 0]
-            }
+            "color": "#00000000"
         }
     }
 };

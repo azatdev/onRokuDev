@@ -19,8 +19,6 @@ sub onDataSet(options = {})
     for each model in content.getChildren(-1, 0)
         processScrollItem({ model: model })
     end for
-    ' ?"onDataSet " content, content.getChild(0)
-    ' dispatch(events.PAGINATE_CAROUSEL, { collection: content })
 end sub
 
 

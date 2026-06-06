@@ -9,6 +9,7 @@
         <field id="headerImageUri" type="string" />
         <field id="logoImageUri" type="string" />
         <field id="landscapeImageUri" type="string" />
+        <field id="observed" type="boolean" />
         <field id="portraitImageUri" type="string" />
         <field id="rating" type="string" />
         <field id="posterImageUri" type="string" />
