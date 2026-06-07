@@ -8,6 +8,7 @@ module.exports = {
         itemComponentName: "CarouselItem",
         visibleTiles: 7,
         wrap: true,
+        wrapFirstToLast: false,
         bigSquare: [242, 363],
         gutterSize: [153, 0],
         smallSquare: [210, 315],

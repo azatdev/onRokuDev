@@ -42,7 +42,8 @@ sub init()
             useUnfocusedTargetSet: false,
             vertAlign: "center",
             visibleTiles: 0,
-            wrap: false
+            wrap: false,
+            wrapFirstToLast: true
         }})
 
         safeObserve("data", onDataSet)
@@ -67,7 +68,6 @@ end function
 
 
 sub onCarouselFocusedChildChange(options = {})
-    ?"onCarouselFocusedChildChange "
     if not rodash.isNode(m.focusTimer) then return
     safeUnobserve("fraction", m.focusTimer)
     safeObserve("fraction", onFocusTimerFired, m.focusTimer)
@@ -116,11 +116,16 @@ function onKeyEvent(key as string, press as boolean) as boolean
 
         if carousel.content.getChild(nextIndex) = invalid
             if not get("wrap") then return false
+            wrap = get("wrap")
+            wrapFirstToLast = get("wrapFirstToLast")
 
             if direction = 1
                 nextIndex = 0
                 nextTargetSetIndex = 0
             else
+                wrapFirstToLast = get("wrapFirstToLast")
+                firstToLast = nextIndex = -1
+                if firstToLast and not wrapFirstToLast then return false
                 collection = carousel.content
                 if not rodash.isNode(collection) then return true
                 nextIndex = collection.getChildCount() - 1
@@ -450,7 +455,8 @@ sub processConfig(options = {})
         gutters: gutters,
         lastFocusableIndex: lastFocusableIndex,
         useUnfocusedTargetSet: config.useUnfocusedTargetSet,
-        wrap: config.wrap
+        wrap: config.wrap,
+        wrapFirstToLast: config.wrapFirstToLast
     })
 
     applyClippingRect({ percentage: 0 })
