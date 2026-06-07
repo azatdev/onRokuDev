@@ -130,12 +130,13 @@ function onKeyEvent(key as string, press as boolean) as boolean
 
         nextTargetSet = m.focusedTargetSetArray[nextTargetSetIndex]
 
+        carousel.animateToItem = nextIndex
+
         if nextTargetSet <> invalid and carousel.currTargetSet <> invalid and nextTargetSet.focusIndex <> carousel.currTargetSet.focusIndex
             carousel.animateToTargetSet = nextTargetSet
             top().focusedTargetsetIndex = nextTargetSetIndex
         end if
 
-        carousel.animateToItem = nextIndex
         top().focusedContentIndex = nextIndex
 
         return true

@@ -15,6 +15,7 @@ sub setupItem()
     m.outline = top().findNode("outline")
     m.outline.visible = false
     m.thumbnail = top().findNode("thumbnail")
+    m.defaultUnfocusedOpacity = 0.2
     setLoadable({ node: m.container, updateField: "loaded" })
     safeObserve("currRect", onCurrentRectChange)
     safeObserve("focusPercent", onFocusPercentChange)
@@ -26,6 +27,12 @@ sub itemContentChanged(options = {})
     content = options.data
     if content = invalid then return
     setThumbailImage({ data: content.thumbnailImageUri })
+
+    if top().index < top().getParent().animateToItem
+        top().opacity = m.defaultUnfocusedOpacity
+    else
+        top().opacity = 1
+    end if
 end sub
 
 
@@ -37,6 +44,12 @@ sub onCurrentRectChange(options = {})
 
     top().height = int(height / 3) * 3
     top().width = int(width / 3) * 3
+
+    if rect.x + width <= 0
+        top().opacity = m.defaultUnfocusedOpacity
+    else if rect.x > width
+        top().opacity = 1
+    end if
 
     if rodash.isNode(m.container)
         m.container.height = height
@@ -56,9 +69,10 @@ end sub
 
 
 sub onFocusPercentChange(options = {})
-    focusPercentage = options.data ?? {}
-    ' opacityPercentage = (0.5 * focusPercentage) * focusPercentage + 0.5
-    ' m.container.opacity = opacityPercentage
+    listCurrFocusIndex = top().getParent().currFocusItemIndex
+    modifiedFocusIndex = abs(m.top.index - listCurrFocusIndex)
+    opacityPercentage = abs(1 - modifiedFocusIndex)
+    changeOpacity(listCurrFocusIndex > top().index, opacityPercentage)
 end sub
 
 
@@ -68,4 +82,13 @@ sub setThumbailImage(options = {})
     m.thumbnail.uri = thumbnailImageUrl
     m.container.loaded = true
     m.outline.visible = true
+end sub
+
+
+sub changeOpacity(hide = false, percentage = 0)
+    if hide
+        top().opacity = m.defaultUnfocusedOpacity + (percentage * (1 - m.defaultUnfocusedOpacity))
+    else
+        top().opacity = 1
+    end if
 end sub

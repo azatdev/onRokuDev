@@ -53,9 +53,6 @@ sub getScreenData(options = {})
     slug = options.slug ?? ""
     screenId = options.screenId ?? ""
     collection = options.collection
-
-    ?"getScreenData " collection
-
     screenConfig = get(slug) ?? {}
 
     if not rodash.isNode(collection)
@@ -76,7 +73,6 @@ sub getScreenData(options = {})
     set(saveObject)
 
     screenTask = createObject("roSGNode", "ScreenTask")
-    ' ?"getscreenData " collection
     screenTask.update({ collection: collection
     }, true)
     screenTask.control = "RUN"
