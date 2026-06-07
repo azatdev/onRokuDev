@@ -15,6 +15,7 @@ function runPaginationTask(options = {})
     if not rodash.isNode(collection) then return true
 
     variables = exec("getVariables", {}, collection)
+    ?"runPaginationTask " formatJSON(variables)
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Carousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
 
     responseJSON = parseJSON(response.text)
@@ -30,7 +31,7 @@ function runPaginationTask(options = {})
         existingContentNode = collection.findNode(documentId)
 
         if rodash.isNode(existingContentNode)
-            hydrateContentNode({ node: existingContentNode, data: content, newNode: false })
+            hydrateContentNode({ node: existingContentNode, data: content })
             continue for
         end if
 
@@ -39,17 +40,20 @@ function runPaginationTask(options = {})
         end function)
 
         if rodash.isNode(existingEmptyNode)
-            hydrateContentNode({ node: existingEmptyNode, data: content, newNode: false })
+            hydrateContentNode({ node: existingEmptyNode, data: content })
             continue for
         end if
 
         newContentNode = createObject("roSGNode", "ContentModel")
-        hydrateContentNode({ node: newContentNode, data: content, newNode: true })
+        hydrateContentNode({ node: newContentNode, data: content, thumbnailType: collection.thumbnailType })
         collection.appendChild(newContentNode)
     end for
 
-    collection.hydrated = true
+    collection.canPaginate = not rodash.isEmpty(contentsData)
+    exec("generateCarouselCollection", {}, collection)
     collection.paginating = false
+    collection.hydrated = true
+
 
     return true
 end function
@@ -60,7 +64,7 @@ sub hydrateContentNode(options = {})
 
     node = options.node
     data = options.data
-    newNode = options.newNode ?? true
+    thumbnailType = options.thumbnailType ?? "LANDSCAPE"
 
     if not rodash.isNode(node) then return
     if not rodash.isNonEmptyAA(data) then return
@@ -83,8 +87,9 @@ sub hydrateContentNode(options = {})
 
     updateObject.append(imageFields)
     node.update(updateObject, true)
+
+    exec("generateCarouselModel", { thumbnailType: thumbnailType }, node)
     node.hydrated = true
-    node.observed = newNode ? false : true
 end sub
 
 

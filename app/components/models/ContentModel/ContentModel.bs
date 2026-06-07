@@ -2,5 +2,26 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(options = {})
+        safeFunctions({
+            generateCarouselModel: generateCarouselModel
+        })
     end sub)
+end sub
+
+
+sub generateCarouselModel(options = {})
+    thumbnailType = options.thumbnailType
+    fields = []
+    if thumbnailType = "LANDSCAPE" or thumbnailType = "PORTRAIT"
+        fields = ["id", "thumbnailImageUri"]
+    end if
+
+    carouselItemModel = top().carouselItemModel
+    if not rodash.isNode(carouselItemModel) then carouselItemModel = createObject("roSGNode", "ContentModel")
+
+    for each field in fields
+        carouselItemModel[field] = top()[field]
+    end for
+
+    top().carouselItemModel = carouselItemModel
 end sub

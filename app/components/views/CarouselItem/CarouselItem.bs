@@ -25,16 +25,7 @@ end sub
 sub itemContentChanged(options = {})
     content = options.data
     if content = invalid then return
-    ' if content.observed then return
-
     setThumbailImage({ data: content.thumbnailImageUri })
-    ' if rodash.isNonEmptyString(content.thumbnailImageUri)
-    '     setThumbailImage({ data: content.thumbnailImageUri })
-    ' else
-    '     safeObserve("thumbnailImageUri", setThumbailImage, content)
-    ' end if
-
-    ' content.observed = true
 end sub
 
 

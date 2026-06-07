@@ -2,28 +2,59 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(options = {})
+        m.paginationConfigs = "<%- o(CONFIG.Pagination) %>"
         safeFunctions({
-            getVariables: getVariables
+            generateCarouselCollection: generateCarouselCollection,
+            getVariables: getVariables,
+            returnInitialPagination: returnInitialPagination
         })
     end sub)
 end sub
 
 
+sub generateCarouselCollection(options = {})
+    children = top().getChildren(-1, 0)
+    carouselCollection = top().carouselCollection
+    if not rodash.isNode(carouselCollection) then carouselCollection = createObject("roSGNode", "Collection")
+
+    for each child in children
+        existingModel = child.carouselItemModel
+        if rodash.isNode(existingModel) and carouselCollection.findNode(existingModel.id) = invalid then carouselCollection.appendChild(existingModel)
+    end for
+    top().carouselCollection = carouselCollection
+end sub
+
+
 function getPagination(options = {})
     existingPagination = top().pagination
-    ?"existingPagination " existingPagination
     if rodash.isNonEmptyAA(existingPagination)
-        newPagination = "<%- o(CONFIG.Pagination.Subsequent) %>"
+        newPagination = returnSubsequentPagination()
         newPagination.start = top().totalCount
     else
-        newPagination = "<%- o(CONFIG.Pagination.Initial) %>"
+        newPagination = returnInitialPagination()
     end if
-
-    ?"newPagination " newPagination
 
     top().pagination = newPagination
 
     return newPagination
+end function
+
+
+function returnInitialPagination(options = {})
+    if m.top.carouselType = "HERO"
+        return m.paginationConfigs["HeroInitial"]
+    else
+        return m.paginationConfigs["Initial"]
+    end if
+end function
+
+
+function returnSubsequentPagination(options = {})
+    if m.top.carouselType = "HERO"
+        return m.paginationConfigs["HeroSubsequent"]
+    else
+        return m.paginationConfigs["Subsequent"]
+    end if
 end function
 
 

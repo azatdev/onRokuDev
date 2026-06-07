@@ -22,6 +22,7 @@ function runScreenTask(options = {})
 
     updateObject = returnUpdateObject(parseJSON(response.text))
     collection.update(updateObject, true)
+    ?"runSCreenTask " collection.carouselCollection
     collection.totalCount = collection.getChildCount()
 
     publish(events.SCREEN_DATA_RECEIVED, {
@@ -42,35 +43,18 @@ function returnUpdateObject(options = {})
 
     for each carousel in carouselsData
         carouselModel = createObject("roSGNode", "Collection")
-        thumbnailType = carousel.thumbnailType ?? "LANDSCAPE"
 
         updateObject = {
             carouselTitle: carousel.carouselTitle,
-            carouselType: carousel.carouselType,
+            carouselType: carousel.carouselType ?? "INDEX",
             documentId: carousel.documentId,
             id: carousel.documentId,
-            thumbnailType: thumbnailType
+            thumbnailType: carousel.thumbnailType ?? "LANDSCAPE"
         }
 
-        configKey = thumbnailType = "LANDSCAPE" ? "LandscapeCarousel" : "PortraitCarousel"
-        carouselConfig = liveConfig({ field: "config", keyPath: configKey }, carouselModel)
-
-        updateObject.children = []
-
-        ' Load initial carousel items
-        ' for loading animation
-        for x = 0 to carouselConfig.visibleTiles - 1
-            updateObject.children.push({
-                description: "",
-                hydrated: false,
-                logoImageUri: "",
-                observed: false,
-                subtype: "ContentModel",
-                thumbnailImageUri: ""
-            })
-        end for
-
         carouselModel.update(updateObject, true)
+        generateDefaultModels(carouselModel)
+        exec("generateCarouselCollection", {}, carouselModel)
 
         updateObjArray.push(carouselModel)
     end for
@@ -83,9 +67,28 @@ function returnUpdateObject(options = {})
         paginating: false
     }
 
-    ' model = createObject("roSGNode", "Collection")
-    ' model.appendChildren(updateObjArray)
-    ' model.update(updateObject, true)
-
     return updateObject
 end function
+
+
+sub generateDefaultModels(carouselModel)
+    if not rodash.isNode(carouselModel) then return
+
+    initialPagination = exec("returnInitialPagination", {}, carouselModel)
+
+    ' Load initial carousel items
+    ' for loading animation
+    for x = 0 to initialPagination.pageSize - 1
+        updateObject = {
+            description: "",
+            hydrated: false,
+            logoImageUri: "",
+            thumbnailImageUri: ""
+        }
+        model = createObject("roSGNode", "ContentModel")
+        model.update(updateObject, true)
+        exec("generateCarouselModel", { thumbnailType: carouselModel.thumbnailType }, model)
+
+        carouselModel.appendChild(model)
+    end for
+end sub

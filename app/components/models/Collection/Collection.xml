@@ -2,6 +2,7 @@
 <component name="Collection" extends="Model">
     <interface>
         <field id="canPaginate" type="boolean" value="true" />
+        <field id="carouselCollection" type="node" />
         <field id="paginating" type="boolean" />
         <field id="config" type="assocArray" />
         <field id="pagination" type="assocArray" />

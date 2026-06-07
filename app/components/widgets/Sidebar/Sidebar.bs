@@ -39,7 +39,7 @@ end sub
 sub onItemFocused(options = {})
     if not rodash.isNonEmptyAA(options) then return
     itemFocused = options.data
-    ?"onItemFocused " itemFocused
+    ?"sidebar onItemFocused " itemFocused
 end sub
 
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="ContentModel" extends="Model">
     <interface>
+        <field id="carouselItemModel" type="node" />
         <field id="complimentaryColor" type="string" />
         <field id="copyrightYear" type="string" />
         <field id="duration" type="integer" />
@@ -9,7 +10,6 @@
         <field id="headerImageUri" type="string" />
         <field id="logoImageUri" type="string" />
         <field id="landscapeImageUri" type="string" />
-        <field id="observed" type="boolean" />
         <field id="portraitImageUri" type="string" />
         <field id="rating" type="string" />
         <field id="posterImageUri" type="string" />

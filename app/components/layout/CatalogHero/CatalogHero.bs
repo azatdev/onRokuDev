@@ -37,7 +37,28 @@ sub onDataSet(options = {})
     safeObserve("hydrated", onCollectionHydrated, m.content)
 
     dispatch(events.PAGINATE_CAROUSEL, { collection: content })
+    safeObserve("change", onCollectionChildChange, content)
 end sub
+
+
+
+sub onCollectionChildChange(options = {})
+    changeData = options.data
+    collection = options.node
+
+    if rodash.isEmpty(changeData) then return
+    operation = changeData.operation ?? ""
+    if operation <> "add" and operation <> "remove" then return
+
+    numberOfNewNodes = changeData.index2 - changeData.index1 + 1
+    addedNodes = collection.getChildren(numberOfNewNodes, changeData.index1)
+    if operation = "add"
+        for each model in addedNodes
+            processScrollItem({ model: model })
+        end for
+    end if
+end sub
+
 
 
 sub onCollectionHydrated(options = {})
@@ -54,6 +75,7 @@ sub onHeroItemFocused(options = {})
     if not rodash.isNode(itemFocusedModel) then return
 
     dispatch(events.HERO_ITEM_FOCUSED, { content: itemFocusedModel, section: sections.HERO })
+    checkPagination({ itemFocused: options.data })
 end sub
 
 
@@ -67,3 +89,14 @@ sub processScrollItem(options = {})
     component.data = { content: model }
     m.heroScrollGroup.appendChild(component)
 end sub
+
+
+sub checkPagination(options = {})
+    if rodash.isEmpty(m.content) then return
+    itemFocused = options.itemFocused ?? 0
+    lastPaginatedIndex = m.content.totalCount - 1
+    paginationDelta = lastPaginatedIndex - itemFocused
+    needsPaginating = paginationDelta <= 1 and m.content.canPaginate and not m.content.paginating
+    if needsPaginating then dispatch(events.PAGINATE_CAROUSEL, { collection: m.content })
+end sub
+

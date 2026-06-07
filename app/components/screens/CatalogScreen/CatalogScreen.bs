@@ -38,7 +38,7 @@ sub checkPagination(options = {})
     paginationDelta = lastPaginatedIndex - itemFocused
 
     needsPaginating = paginationDelta <= 3 and m.content.canPaginate and not m.content.paginating
-    ' if needsPaginating then dispatch(events.PAGINATE_SCREEN, { collection: m.content })
+    if needsPaginating then dispatch(events.PAGINATE_SCREEN, { collection: m.content })
 end sub
 
 
