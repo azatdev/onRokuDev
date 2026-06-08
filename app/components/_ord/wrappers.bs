@@ -4,10 +4,10 @@ sub registerControllers(controllers = [])
     if not rodash.isNonEmptyArray(controllers) then return
     if not m.top.isSubtype("Scene") then return
 
-    m.controllers = []
-
     for each controllerName in controllers
-        m.controllers.push(createObject("roSGNode", controllerName))
+        updateObject = {}
+        updateObject[controllerName] = createObject("roSGNode", controllerName)
+        set(updateObject)
     end for
 end sub
 
@@ -26,6 +26,11 @@ end function
 
 function app()
     return m.global.getScene()
+end function
+
+
+function user()
+    return get("UserController", app())
 end function
 
 

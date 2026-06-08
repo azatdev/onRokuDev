@@ -10,7 +10,10 @@ end sub
 
 
 function runScreenTask(options = {})
-    collection = top().collection
+    options = top().options ?? {}
+    if not rodash.isNonEmptyAA(options) then return true
+
+    collection = options.collection
     if not rodash.isNode(collection) then return true
 
     variables = exec("getVariables", {}, collection)
@@ -22,7 +25,6 @@ function runScreenTask(options = {})
 
     updateObject = returnUpdateObject(parseJSON(response.text))
     collection.update(updateObject, true)
-    ?"runSCreenTask " collection.carouselCollection
     collection.totalCount = collection.getChildCount()
 
     publish(events.SCREEN_DATA_RECEIVED, {
@@ -36,13 +38,15 @@ end function
 function returnUpdateObject(options = {})
     data = options.data ?? {}
     screenData = data.screen ?? {}
-    ' carouselsData = screenData.carousels ?? []
+    carouselsData = screenData.carousels ?? []
     ' carouselsData =  [screenData.carousels[3], screenData.carousels[4], screenData.carousels[5]]
-    carouselsData =  [screenData.carousels[0], screenData.carousels[1]]
+    ' carouselsData =  [screenData.carousels[0], screenData.carousels[2]]
     updateObjArray = []
 
     for each carousel in carouselsData
         carouselModel = createObject("roSGNode", "Collection")
+
+        if not rodash.isNode(carouselModel) then continue for
 
         updateObject = {
             carouselTitle: carousel.carouselTitle,
@@ -53,6 +57,7 @@ function returnUpdateObject(options = {})
         }
 
         carouselModel.update(updateObject, true)
+
         generateDefaultModels(carouselModel)
         exec("generateCarouselCollection", {}, carouselModel)
 

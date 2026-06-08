@@ -73,8 +73,13 @@ sub getScreenData(options = {})
     set(saveObject)
 
     screenTask = createObject("roSGNode", "ScreenTask")
-    screenTask.update({ collection: collection
+    screenTask.update({
+        options: {
+            collection: collection,
+            userCollections: get("collections", user())
+        }
     }, true)
+
     screenTask.control = "RUN"
 end sub
 
@@ -157,15 +162,15 @@ sub paginateCarousel(options = {})
     collection = options.collection
     collection.paginating = true
 
-    paginationTask = createObject("roSGNode", "PaginationTask")
+    carouselTask = createObject("roSGNode", "CarouselTask")
 
-    paginationTask.update({
+    carouselTask.update({
         options: {
             collection: collection
         }
     }, true)
 
-    paginationTask.control = "RUN"
+    carouselTask.control = "RUN"
 end sub
 
 

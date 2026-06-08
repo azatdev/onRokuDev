@@ -1,0 +1,58 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        setTaskFunction(runCarouselTask)
+    end sub)
+end sub
+
+
+function runCarouselTask(options = {})
+    options = top().options ?? {}
+    if not rodash.isNonEmptyAA(options) then return true
+
+    collection = options.collection
+    if not rodash.isNode(collection) then return true
+
+    variables = exec("getVariables", {}, collection)
+    ?"runCarouselTask " formatJSON(variables)
+    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Carousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+
+    responseJSON = parseJSON(response.text)
+    responseData = responseJSON.data ?? {}
+    carouselsData = responseData.carousel ?? {}
+    contentsData = carouselsData.contents ?? []
+    collectionChildren = collection.getChildren(-1, 0)
+
+    for each content in contentsData
+        documentId =  content.documentId ?? ""
+        if rodash.isEmptyString(documentId) then continue for
+
+        existingContentNode = collection.findNode(documentId)
+
+        if rodash.isNode(existingContentNode)
+            exec("processContent", { data: content, thumbnailType: collection.thumbnailType }, existingContentNode)
+            continue for
+        end if
+
+        existingEmptyNode = rodash.find(collectionChildren, function(cv)
+            return not cv.hydrated
+        end function)
+
+        if rodash.isNode(existingEmptyNode)
+            exec("processContent", { data: content, thumbnailType: collection.thumbnailType }, existingEmptyNode)
+            continue for
+        end if
+
+        newContentNode = createObject("roSGNode", "ContentModel")
+        exec("processContent", { data: content, thumbnailType: collection.thumbnailType }, newContentNode)
+        collection.appendChild(newContentNode)
+    end for
+
+    collection.canPaginate = not rodash.isEmpty(contentsData)
+    exec("generateCarouselCollection", {}, collection)
+    collection.paginating = false
+    collection.hydrated = true
+
+    return true
+end function

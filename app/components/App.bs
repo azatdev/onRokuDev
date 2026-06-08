@@ -25,7 +25,8 @@ sub init()
             "LayoutController",
             "SFXController",
             "SocketController",
-            "StylesController"
+            "StylesController",
+            "UserController"
         ])
 
         setFocusMap({

@@ -9,6 +9,7 @@ module.exports = {
         "caretRight": "R",
         "caretUp": "U",
         "cc": "6",
+        "continueWatching": "c",
         "documentaries": "d",
         "ellipsisV": "E",
         "ellipsisH": "e",

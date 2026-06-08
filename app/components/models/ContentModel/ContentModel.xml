@@ -11,6 +11,7 @@
         <field id="logoImageUri" type="string" />
         <field id="landscapeImageUri" type="string" />
         <field id="portraitImageUri" type="string" />
+        <field id="position" type="int" />
         <field id="rating" type="string" />
         <field id="posterImageUri" type="string" />
         <field id="thumbnailImageUri" type="string" />

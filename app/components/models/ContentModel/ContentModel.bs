@@ -3,7 +3,8 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(options = {})
         safeFunctions({
-            generateCarouselModel: generateCarouselModel
+            generateCarouselModel: generateCarouselModel,
+            processContent: processContent
         })
     end sub)
 end sub
@@ -25,3 +26,80 @@ sub generateCarouselModel(options = {})
 
     top().carouselItemModel = carouselItemModel
 end sub
+
+
+sub processContent(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    data = options.data
+    thumbnailType = options.thumbnailType ?? "LANDSCAPE"
+
+    if not rodash.isNonEmptyAA(data) then return
+
+    contentImages = data.images ?? []
+    imageFields = getImageFields(contentImages)
+
+    updateObject = {
+        complimentaryColor: data.complimentaryColor,
+        copyrightYear: data.copyrightYear,
+        description: data.description,
+        duration: data.duration,
+        genres: data.v2genres,
+        heroCTAsModel: returnHeroCTAsModel(),
+        id: data.documentId,
+        rating: data.rating,
+        position: data.position ?? 0,
+        title: data.title,
+        type: data.type
+    }
+
+    updateObject.append(imageFields)
+    top().update(updateObject, true)
+
+    generateCarouselModel({ thumbnailType: thumbnailType })
+    top().hydrated = true
+end sub
+
+
+function returnHeroCTAsModel()
+    model = createObject("roSGNode", "CTAsModel")
+    modelConfigArray = "<%- o(CONFIG.HeroCTAs) %>"
+    updateObject = {
+        children: []
+    }
+
+    for each item in modelConfigArray
+        updateObject.children.push({
+            dynamicWidth: item.dynamicWidth ?? false,
+            iconText: item.iconText ?? "",
+            title: (item.title ?? "").inStr("TKEY") <> -1 ? tr(item.title) : item.title,
+            subtype: "Model"
+        })
+    end for
+
+    model.update(updateObject, true)
+    return model
+end function
+
+
+function getImageFields(images)
+    if not rodash.isNonEmptyArray(images) then return {}
+
+    imageFields = rodash.reduce(images, function(acc, cv)
+        imageType = lcase(cv.imageType ?? "")
+        if rodash.isEmptyString(imageType) then return acc
+        fieldName = imageType + "ImageUri"
+        imageURL = cv.data?.url ?? ""
+        serverPath = "<%- s(CONFIG.ENV.SERVER_URI) %>"
+        acc[fieldName] = serverPath + imageURL
+        return acc
+    end function, {})
+
+    if imageFields.landscapeImageUri <> invalid
+        imageFields.thumbnailImageUri = imageFields.landscapeImageUri
+    else if imageFields.portraitImageUri <> invalid
+        imageFields.thumbnailImageUri = imageFields.portraitImageUri
+    end if
+
+    return imageFields
+end function

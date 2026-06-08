@@ -1,0 +1,35 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        subscribe({
+            [events.APP_STARTED]: getUserCarousels,
+            [events.USER_CAROUSELS_RECEIVED]: userCarouselsReceived
+        })
+    end sub)
+end sub
+
+
+sub getUserCarousels(options = {})
+    collections = {
+        "CONTINUE_WATCHING": createObject("roSGNode", "Collection"),
+        "FAVORITES": createObject("roSGNode", "Collection"),
+        "WATCHLIST": createObject("roSGNode", "Collection")
+    }
+    set({ collections: collections })
+
+    userCarouselsTask = createObject("roSGNode", "UserCarouselsTask")
+    userCarouselsTask.update({
+        options: {
+            collections: collections
+        }
+    }, true)
+
+    userCarouselsTask.control = "RUN"
+end sub
+
+
+sub userCarouselsReceived(options = {})
+    collections = get("collections")
+    ?"userCarouselsReceived " collections["CONTINUE_WATCHING"]
+end sub
