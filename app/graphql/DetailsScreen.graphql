@@ -1,0 +1,27 @@
+query DetailsScreen($documentId: ID!) {
+  content(documentId: $documentId) {
+    complimentaryColor
+    copyrightYear
+    description
+    documentId
+    duration
+    v2genres {
+      name
+    }
+    rating
+    title
+    type
+    images {
+      imageType
+      data {
+        url
+      }
+    }
+    carousels {
+      carouselTitle
+      carouselType
+      documentId
+      thumbnailType
+    }
+  }
+}

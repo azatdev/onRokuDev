@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="CTAs" extends="Div">
     <interface>
+        <field id="ctaSelected" type="string" alwaysNotify="true" />
         <field id="data" type="assocarray" />
         <function name="safeFunc" />
     </interface>

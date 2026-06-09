@@ -1,11 +1,12 @@
 module.exports = {
     ...require("./Background"),
     ...require("./Carousel"),
+    ...require("./CatalogHero"),
     ...require("./Delimiter"),
+    ...require("./DetailsHero"),
     ...require("./Header"),
     ...require("./HeaderImage"),
     ...require("./Hero"),
-    ...require("./CatalogHero"),
     ...require("./Layout"),
     ...require("./LoadingPoster"),
     ...require("./Navigation")

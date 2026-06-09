@@ -1,4 +1,6 @@
 import "pkg:/components/_ord/wrappers.bs"
+import "pkg:/components/tasks/shared/carousels.bs"
+import "pkg:/components/tasks/shared/content.bs"
 
 sub init()
     exec(sub(options = {})
@@ -15,7 +17,6 @@ function runCarouselTask(options = {})
     if not rodash.isNode(collection) then return true
 
     variables = exec("getVariables", {}, collection)
-    ?"runCarouselTask " formatJSON(variables)
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Carousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
 
     responseJSON = parseJSON(response.text)
@@ -31,7 +32,7 @@ function runCarouselTask(options = {})
         existingContentNode = collection.findNode(documentId)
 
         if rodash.isNode(existingContentNode)
-            exec("processContent", { data: content, thumbnailType: collection.thumbnailType }, existingContentNode)
+            processContent({ model: existingContentNode, data: content, thumbnailType: collection.thumbnailType })
             continue for
         end if
 
@@ -40,12 +41,12 @@ function runCarouselTask(options = {})
         end function)
 
         if rodash.isNode(existingEmptyNode)
-            exec("processContent", { data: content, thumbnailType: collection.thumbnailType }, existingEmptyNode)
+            processContent({ model: existingEmptyNode, data: content, thumbnailType: collection.thumbnailType })
             continue for
         end if
 
         newContentNode = createObject("roSGNode", "ContentModel")
-        exec("processContent", { data: content, thumbnailType: collection.thumbnailType }, newContentNode)
+        processContent({ model: newContentNode, data: content, thumbnailType: collection.thumbnailType })
         collection.appendChild(newContentNode)
     end for
 

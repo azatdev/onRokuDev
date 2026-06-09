@@ -25,7 +25,7 @@ module.exports = {
                 lineSpacing: -12,
                 margin: [0, 0, 9, 0],
                 vertAlign: "center",
-                width: 900,
+                width: 810,
                 wrap: true
             }
         }

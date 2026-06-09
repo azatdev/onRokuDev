@@ -8,10 +8,10 @@ sub init()
         m.description = top().findNode("description")
         m.ctas = top().findNode("ctas")
 
-        setLoadable({ node: m.contentLogo, updateField: "uri" })
-        setLoadable({ node: m.description, updateField: "text" })
-        setLoadable({ node: m.metadata, updateField: "data" })
-        setLoadable({ node: m.ctas, updateField: "data" })
+        ' setLoadable({ node: m.contentLogo, updateField: "uri" })
+        ' setLoadable({ node: m.description, updateField: "text" })
+        ' setLoadable({ node: m.metadata, updateField: "data" })
+        ' setLoadable({ node: m.ctas, updateField: "data" })
 
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
@@ -19,6 +19,7 @@ sub init()
             "default": m.ctas
         })
         stackChildren({ node: m.container, direction: "vertical" })
+        ?"m.container " m.container
         safeObserve("ctaSelected", onCTASelected, m.ctas)
         redrawStyles()
     end sub)

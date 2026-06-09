@@ -1,0 +1,31 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        m.list = top().findNode("tabList")
+        safeObserve("focusedChild", onFocusedChildChange)
+        safeObserve("data", onDataChange)
+    end sub)
+end sub
+
+
+sub onDataChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    if not rodash.isNode(m.list) then return
+
+    data = options.data
+    m.model = data.content
+
+    liveConfig({ field: "config", keyPath: "CTACarousel" }, m.model)
+
+    m.list.data = {
+        content: m.model
+    }
+end sub
+
+
+sub onFocusedChildChange(options = {})
+
+end sub
+
+

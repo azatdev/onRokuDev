@@ -12,8 +12,8 @@ sub init()
             { pattern: "/home", component: "CatalogScreen" },
             ' { pattern: "/shows", component: "CatalogScreen", clearStackOnResolve: true },
             ' { pattern: "/movies", component: "CatalogScreen", clearStackOnResolve: true },
-            ' { pattern: "/details/series/:id", component: "DetailsScreen" },
             ' { pattern: "/details/series/:id/cast", component: "CastDetailsScreen" },
+            { pattern: "/details/:id", component: "DetailsScreen" },
             ' { pattern: "/details/movies/:id", component: "DetailsScreen" },
             ' { pattern: "/details/movies/:id/cast", component: "CastDetailsScreen" },
             ' { pattern: "/:screenName", component: "DefaultScreen" }
@@ -46,7 +46,7 @@ sub navigateTo(options = {})
     slug = options.slug ?? ""
     if rodash.isEmptyString(slug) then return
 
-    sgRouter.navigateTo(slug)
+    sgRouter.navigateTo(slug, { context: options })
 end sub
 
 
@@ -68,8 +68,6 @@ end sub
 sub onRouterStateChanged(options = {})
     data = options.data
     if data.type <> "ResolveEnd" then return
-
-    dispatch(events.GET_SCREEN_DATA, { screenId: data.id, slug: data.url })
     setActiveView(data.id)
 end sub
 

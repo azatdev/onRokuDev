@@ -1,0 +1,42 @@
+import "pkg:/components/_ord/wrappers.bs"
+import "pkg:/components/tasks/shared/carousels.bs"
+import "pkg:/components/tasks/shared/content.bs"
+
+sub init()
+    exec(sub(options = {})
+        setTaskFunction(runDetailsTask)
+    end sub)
+end sub
+
+
+function runDetailsTask(options = {})
+    options = top().options ?? {}
+    if not rodash.isNonEmptyAA(options) then return true
+
+    model = options.content
+    if not rodash.isNode(model) then return true
+
+    documentId = model.id
+
+    variables = {}
+    variables.setModeCaseSensitive()
+    variables = {
+        "documentId": documentId
+    }
+    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.DetailsScreen) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+    responseJSON = parseJSON(response.text)
+    responseData = responseJSON.data ?? {}
+    content = responseData.content
+
+    processContent({ model: model, data: content })
+
+    carouselsArray = content.carousels ?? []
+    updateObject = returnCarouselsArray(carouselsArray)
+
+    model.update(updateObject, true)
+    model.carousels = updateObject.children
+
+
+    publish(events.DETAILS_DATA_RECEIVED, { content: model })
+    return true
+end function

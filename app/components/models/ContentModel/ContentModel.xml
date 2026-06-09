@@ -2,6 +2,7 @@
 <component name="ContentModel" extends="Model">
     <interface>
         <field id="carouselItemModel" type="node" />
+        <field id="carousels" type="nodearray" />
         <field id="complimentaryColor" type="string" />
         <field id="copyrightYear" type="string" />
         <field id="duration" type="integer" />

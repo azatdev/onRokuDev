@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="TabItem" extends="Div">
+    <interface>
+        <field id="index" type="integer" />
+        <field id="currRect" type="rect2d" />
+        <field id="focusPercent" type="float" />
+        <field id="groupHasFocus" type="boolean" />
+        <field id="itemContent" type="node" />
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <Poster id="tabTop" />
+        <Poster id="tabBottom" />
+        <Rectangle id="textContainer">
+            <QuanticoBold id="label" />
+        </Rectangle>
+        <ColorFieldInterpolator id="focusColorInterpolator" />
+    </children>
+    <script type="text/brightscript" uri="TabItem.bs" />
+</component>

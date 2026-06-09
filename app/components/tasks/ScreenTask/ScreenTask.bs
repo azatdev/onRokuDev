@@ -1,4 +1,6 @@
 import "pkg:/components/_ord/wrappers.bs"
+import "pkg:/components/tasks/shared/carousels.bs"
+import "pkg:/components/tasks/shared/content.bs"
 
 sub init()
     exec(sub(options = {})
@@ -23,7 +25,17 @@ function runScreenTask(options = {})
 
     if rodash.isEmpty(response.text) then return true
 
-    updateObject = returnUpdateObject(parseJSON(response.text))
+    responseJSON = parseJSON(response.text)
+    data = responseJSON.data ?? {}
+    screenData = data.screen ?? {}
+    carouselsArray = screenData.carousels ?? []
+    ' carouselsArray =  [screenData.carousels[3], screenData.carousels[4], screenData.carousels[5]]
+    ' carouselsArray =  [screenData.carousels[0], screenData.carousels[2]]
+    updateObject = returnCarouselsArray(carouselsArray)
+    updateObject.append({
+        documentId: screenData.documentId,
+        slug: screenData.slug
+    })
     collection.update(updateObject, true)
     collection.totalCount = collection.getChildCount()
 
@@ -33,67 +45,3 @@ function runScreenTask(options = {})
 
     return true
 end function
-
-
-function returnUpdateObject(options = {})
-    data = options.data ?? {}
-    screenData = data.screen ?? {}
-    carouselsData = screenData.carousels ?? []
-    ' carouselsData =  [screenData.carousels[3], screenData.carousels[4], screenData.carousels[5]]
-    ' carouselsData =  [screenData.carousels[0], screenData.carousels[2]]
-    updateObjArray = []
-
-    for each carousel in carouselsData
-        carouselModel = createObject("roSGNode", "Collection")
-
-        if not rodash.isNode(carouselModel) then continue for
-
-        updateObject = {
-            carouselTitle: carousel.carouselTitle,
-            carouselType: carousel.carouselType ?? "INDEX",
-            documentId: carousel.documentId,
-            id: carousel.documentId,
-            thumbnailType: carousel.thumbnailType ?? "LANDSCAPE"
-        }
-
-        carouselModel.update(updateObject, true)
-
-        generateDefaultModels(carouselModel)
-        exec("generateCarouselCollection", {}, carouselModel)
-
-        updateObjArray.push(carouselModel)
-    end for
-
-    updateObject = {
-        canPaginate: not rodash.isEmpty(updateObjArray),
-        children: updateObjArray,
-        documentId: screenData.documentId,
-        slug: screenData.slug,
-        paginating: false
-    }
-
-    return updateObject
-end function
-
-
-sub generateDefaultModels(carouselModel)
-    if not rodash.isNode(carouselModel) then return
-
-    initialPagination = exec("returnInitialPagination", {}, carouselModel)
-
-    ' Load initial carousel items
-    ' for loading animation
-    for x = 0 to initialPagination.pageSize - 1
-        updateObject = {
-            description: "",
-            hydrated: false,
-            logoImageUri: "",
-            thumbnailImageUri: ""
-        }
-        model = createObject("roSGNode", "ContentModel")
-        model.update(updateObject, true)
-        exec("generateCarouselModel", { thumbnailType: carouselModel.thumbnailType }, model)
-
-        carouselModel.appendChild(model)
-    end for
-end sub

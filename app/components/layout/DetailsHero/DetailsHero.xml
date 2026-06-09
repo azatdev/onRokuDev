@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="DetailsHero" extends="Div">
+    <interface>
+        <field id="data" type="assocArray" />
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <Div id="container">
+            <Poster id="contentLogo" />
+            <Metadata id="metadata" />
+            <Quantico id="description" />
+            <CTAs id="ctas" />
+        </Div>
+    </children>
+    <script type="text/brightscript" uri="DetailsHero.bs" />
+</component>

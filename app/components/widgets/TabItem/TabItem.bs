@@ -1,0 +1,82 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        setupItem()
+    end sub)
+end sub
+
+
+sub setupItem()
+    m.label = m.top.findNode("label")
+    m.container = m.top.findNode("textContainer")
+    m.tabTop = top().findNode("tabTop")
+    m.tabBottom = top().findNode("tabBottom")
+    m.colorFieldInterpolator = top().findNode("focusColorInterpolator")
+    m.parentList = top().getParent()
+    m.flexList = m.parentList.getParent()
+
+    safeObserve("focusPercent", onFocusPercentChange)
+    safeObserve("itemContent", itemContentChanged, top())
+    safeObserve("currRect", onCurrRectChange, top())
+    safeObserve("focusPercent", onGroupFocusPercentChange, m.parentList)
+end sub
+
+
+sub itemContentChanged(options = {})
+    content = options.data
+    m.label.text = ucase(content.title)
+    onTextChange()
+end sub
+
+
+sub onTextChange(options = {})
+    stackChildren({ node: m.container, direction: "horizontal" })
+    m.container.width = m.container.boundingRect().width
+    m.container.height = m.container.boundingRect().height
+end sub
+
+
+sub onCurrRectChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    rect = options.data
+
+    for each node in [m.background, m.tabTop, m.tabBottom]
+        node.width = rect.width
+        node.height = node.id = "tabTop" ? (rect.height / 3) * 2 : rect.height
+    end for
+end sub
+
+
+sub onGroupFocusPercentChange(options = {})
+    ' percentage = options.data ?? {}
+    ' labelSquare = get("labelSquare") ?? [0,0]
+    ' labelWidth = labelSquare[0]
+    ' labelHeight = labelSquare[1]
+    ' if m.parentList.itemFocused = top().index then m.colorFieldInterpolator.fraction = percentage
+
+    ' if m.parentList.itemFocused = top().index and get("dynamicWidth")
+    '     m.label.clippingRect = [0, 0, labelWidth * percentage, labelHeight]
+    ' end if
+end sub
+
+
+sub onFocusPercentChange(options = {})
+    percentage = options.data ?? {}
+    ' runFocusTransformation(percentage)
+    ?"onFocusPercentageChange " percentage
+end sub
+
+
+sub runFocusTransformation(percentage)
+    ' labelSquare = get("labelSquare") ?? [0,0]
+    ' labelWidth = labelSquare[0]
+    ' labelHeight = labelSquare[1]
+
+    ' if top().groupHasFocus then m.colorFieldInterpolator.fraction = percentage
+
+    ' if get("dynamicWidth")
+    '     m.label.clippingRect = [0, 0, labelWidth * percentage, labelHeight]
+    ' end if
+end sub
+

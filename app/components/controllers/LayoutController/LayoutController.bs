@@ -7,13 +7,15 @@ sub init()
             [events.APP_STARTED]: onAppStarted,
             [events.CATALOG_HERO_FOCUSED]: onCatalogHeroFocused,
             [events.CAROUSEL_ITEM_FOCUSED]: onCarouselItemFocused,
-            [events.GET_SCREEN_DATA]: getScreenData,
+            [events.DETAILS_DATA_RECEIVED]: onScreenDataReceived,
+            [events.GET_CATALOG_DATA]: getCatalogData,
+            [events.GET_DETAILS_DATA]: getDetailsData,
             [events.GET_SIDEBAR]: getSidebar,
             [events.GET_TOPBAR]: getTopbar,
             [events.HERO_ITEM_FOCUSED]: updateBackgroundAssets,
             [events.NAVIGATE_TO]: navigateTo,
             [events.PAGINATE_CAROUSEL]: paginateCarousel,
-            [events.PAGINATE_SCREEN]: getScreenData,
+            [events.PAGINATE_SCREEN]: getCatalogData,
             [events.SCREEN_DATA_RECEIVED]: onScreenDataReceived,
             [events.SCROLL_GROUP_FOCUSED]: onScrollGroupFocused,
             [events.SIDEBAR_RECEIVED]: onSidebarReceived,
@@ -44,12 +46,17 @@ sub updateBackgroundAssets(options = {})
     appBackground = background()
     if rodash.isEmpty(appBackground) then return
     exec("updateAssets", options, background())
+    content = options.content
+
+    rodash.delay(sub(options = {})
+        dispatch(events.NAVIGATE_TO, { slug: `/details/${options.content.id}`, content: options.content })
+    end sub, 1000, { content: content })
 end sub
 
 
-sub getScreenData(options = {})
+sub getCatalogData(options = {})
     if not rodash.isNonEmptyAA(options) then return
-
+    ?"getCatalogData " options
     slug = options.slug ?? ""
     screenId = options.screenId ?? ""
     collection = options.collection
@@ -75,8 +82,39 @@ sub getScreenData(options = {})
     screenTask = createObject("roSGNode", "ScreenTask")
     screenTask.update({
         options: {
-            collection: collection,
-            userCollections: get("collections", user())
+            collection: collection
+        }
+    }, true)
+
+    screenTask.control = "RUN"
+end sub
+
+
+sub getDetailsData(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    ?"getDetailsData " options
+    slug = options.slug ?? ""
+    screenId = options.screenId ?? ""
+    content = options.content
+    ' screenConfig = get(slug) ?? {}
+
+    if not rodash.isNode(content)
+        content = createObject("roSGNode", "ContentModel")
+    end if
+
+    content.update({
+        screenId: screenId,
+        slug: slug
+    }, true)
+
+    ' saveObject = {}
+    ' saveObject[slug] = screenConfig
+    ' set(saveObject)
+
+    screenTask = createObject("roSGNode", "DetailsTask")
+    screenTask.update({
+        options: {
+            content: content
         }
     }, true)
 
@@ -85,26 +123,25 @@ end sub
 
 
 sub getSidebar(options = {})
-    if rodash.isInvalid(m.sidebarTask) then m.sidebarTask = createObject("roSGNode", "SidebarTask")
-    m.sidebarTask.control = "RUN"
+    sidebarTask = createObject("roSGNode", "SidebarTask")
+    sidebarTask.control = "RUN"
 end sub
 
 
 sub getTopbar(options = {})
-    if rodash.isInvalid(m.topbarTask) then m.topbarTask = createObject("roSGNode", "TopbarTask")
-    m.topbarTask.control = "RUN"
+    topbarTask = createObject("roSGNode", "TopbarTask")
+    topbarTask.control = "RUN"
 end sub
 
 
 sub navigateTo(options = {})
     documentId = options.documentId
     slug = options.slug
+    content = options.content
 
     screenConfig = get(slug) ?? {}
-    ' screenVariables = screenConfig.variables ?? {}
-    ' screenVariables.setModeCaseSensitive()
     screenConfig["documentId"] = documentId
-    ' screenConfig.variables = screenVariables
+    screenConfig["content"] = content
 
     saveObject = {}
     saveObject[slug] = screenConfig
@@ -138,7 +175,6 @@ sub onScreenDataReceived(options = {})
     screen = layout().findNode(screenId)
     if not rodash.isNode(screen) then return
 
-    ' screenConfig.totalCount = screenModel.totalCount
     if rodash.isEmpty(screen.data)
         screen.data = {
             content: screenModel

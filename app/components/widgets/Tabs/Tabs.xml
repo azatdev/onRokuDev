@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="Tabs" extends="Div">
+    <interface>
+
+    </interface>
+    <children>
+        <_ord_flexList id="tabList" />
+    </children>
+    <script type="text/brightscript" uri="Tabs.bs" />
+</component>

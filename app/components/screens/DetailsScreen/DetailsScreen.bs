@@ -1,0 +1,98 @@
+import "pkg:/components/_ord/wrappers.bs"
+import "pkg:/source/roku_modules/promises/promises.brs"
+
+sub init()
+    exec(sub(options = {})
+        m.screenContainer = top().findNode("screenContainer")
+        m.scrollGroup = top().findNode("scrollGroup")
+        m.detailsHero = top().findNode("detailsHero")
+        m.tabs = top().findNode("tabs")
+
+        liveConfig({ field: "config", keyPath: "CatalogScrollGroup" }, m.scrollGroup)
+        safeObserve("data", onDataSet)
+        safeObserve("focusedChild", onFocusedChildChange)
+
+        setFocusMap({
+            "default": m.detailsHero,
+            "catalogHero": {
+                "down": "focusScrollGroup"
+            },
+            "scrollGroup": {
+                "up": "focusCatalogHero"
+            }
+        })
+
+        styleHooks({
+            after: afterStyling
+        })
+    end sub)
+end sub
+
+
+function beforeViewOpen(options = {}) as dynamic
+    ?"beforeViewOPen " options.route.context, options.route.queryParams, options.route.routeParams
+    routeData = options.route
+    if not rodash.isNode(routeData) then return promises.resolve(invalid)
+    context = routeData.context ?? {}
+    content = context.content
+    if not rodash.isNode(content) then return promises.resolve(invalid)
+
+    dispatch(events.GET_DETAILS_DATA, { screenId: routeData.id, slug: routeData.path, content: content })
+    return promises.resolve(invalid)
+end function
+
+
+sub onDataSet(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    if rodash.isNode(m.content) then return
+
+    data = options.data
+    content = data.content
+    m.content = content
+    carousels = content.carousels
+    ?"onDataset " content.carousels
+    m.detailsHero.data = { content: m.content }
+
+    for each model in carousels
+        processScrollItem({ model: model })
+    end for
+
+    afterStyling()
+end sub
+
+
+sub afterStyling(options = {})
+    if not rodash.isNode(m.screenContainer) then return
+    stackChildren({ node: m.screenContainer, direction: "vertical" })
+end sub
+
+
+sub onFocusedChildChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    focusedChild = options.data
+    if not rodash.isNode(focusedChild) then return
+    if top().isSameNode(focusedChild) then applyDefaultFocus()
+end sub
+
+
+' sub focusCatalogHero(options = {})
+'     scrollPage(-1, onCatalogHeroFocused)
+'     dispatch(events.CATALOG_HERO_FOCUSED)
+' end sub
+
+
+' sub focusScrollGroup(options = {})
+'     scrollPage(1, onScrollGroupFocused)
+'     onScrollGroupFocused()
+'     dispatch(events.SCROLL_GROUP_FOCUSED)
+' end sub
+
+
+sub processScrollItem(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    model = options.model
+    component = createObject("roSGNode", "Carousel")
+    component.data = { content: model }
+    m.scrollGroup.appendChild(component)
+end sub

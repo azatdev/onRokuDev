@@ -1,0 +1,57 @@
+function returnCarouselsArray(carouselsArray = [])
+    if not rodash.isArray(carouselsArray) then return []
+
+    updateObjArray = []
+
+    for each carousel in carouselsArray
+        carouselModel = createObject("roSGNode", "Collection")
+
+        if not rodash.isNode(carouselModel) then continue for
+
+        updateObject = {
+            carouselTitle: carousel.carouselTitle,
+            carouselType: carousel.carouselType ?? "INDEX",
+            documentId: carousel.documentId,
+            id: carousel.documentId,
+            thumbnailType: carousel.thumbnailType ?? "LANDSCAPE"
+        }
+
+        carouselModel.update(updateObject, true)
+
+        generateDefaultModels(carouselModel)
+        exec("generateCarouselCollection", {}, carouselModel)
+
+        updateObjArray.push(carouselModel)
+    end for
+
+    updateObject = {
+        canPaginate: not rodash.isEmpty(updateObjArray),
+        children: updateObjArray,
+        paginating: false
+    }
+
+    return updateObject
+end function
+
+
+sub generateDefaultModels(carouselModel)
+    if not rodash.isNode(carouselModel) then return
+
+    initialPagination = exec("returnInitialPagination", {}, carouselModel)
+
+    ' Load initial carousel items
+    ' for loading animation
+    for x = 0 to initialPagination.pageSize - 1
+        updateObject = {
+            description: "",
+            hydrated: false,
+            logoImageUri: "",
+            thumbnailImageUri: ""
+        }
+        model = createObject("roSGNode", "ContentModel")
+        model.update(updateObject, true)
+        generateCarouselModel({ model: model, thumbnailType: carouselModel.thumbnailType })
+
+        carouselModel.appendChild(model)
+    end for
+end sub

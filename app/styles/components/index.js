@@ -7,5 +7,6 @@ module.exports = {
     ...require("./Metadata"),
     ...require("./NavigationItem"),
     ...require("./RatingPill"),
+    ...require("./TabItem"),
     ...require("./TestItem")
 };

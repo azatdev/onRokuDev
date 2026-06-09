@@ -392,6 +392,7 @@ function getVisibleHeight(node)
     return nodeHeight
 end function
 
+
 function getVisibleWidth(node)
     if not rodash.isNode(node) then return 0
 
