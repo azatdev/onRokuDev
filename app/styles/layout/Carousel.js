@@ -26,6 +26,12 @@ module.exports = {
             "_ord_flexList": {
                 translation: [156, 0]
             },
+        },
+        "&.noTitle": {
+            "Div": {
+                visible: false
+            }
         }
+
     }
 };

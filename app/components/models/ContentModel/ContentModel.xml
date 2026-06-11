@@ -15,10 +15,10 @@
         <field id="position" type="int" />
         <field id="rating" type="string" />
         <field id="posterImageUri" type="string" />
+        <field id="tabsModel" type="node" />
         <field id="thumbnailImageUri" type="string" />
     </interface>
     <children>
-
     </children>
     <script type="text/brightscript" uri="ContentModel.bs" />
 </component>

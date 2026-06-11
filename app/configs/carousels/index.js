@@ -1,5 +1,6 @@
 module.exports = {
     ...require("./cta"),
     ...require("./landscape"),
-    ...require("./portrait")
+    ...require("./portrait"),
+    ...require("./tabs")
 };

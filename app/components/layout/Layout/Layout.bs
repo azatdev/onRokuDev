@@ -3,13 +3,15 @@ import "pkg:/source/roku_modules/sgrouter/router.brs"
 
 sub init()
     exec(sub(options = {})
+        m.background = top().findNode("background")
+        m.navigation = top().findNode("navigation")
         m.topbar = top().findNode("topbar")
         m.sidebar = top().findNode("sidebar")
         m.screenContainer = top().findNode("screenContainer")
         sgRouter.initialize({ outlet: m.screenContainer })
 
         sgRouter.addRoutes([
-            { pattern: "/home", component: "CatalogScreen" },
+            { pattern: "/home", component: "CatalogScreen", keepVisible: true},
             ' { pattern: "/shows", component: "CatalogScreen", clearStackOnResolve: true },
             ' { pattern: "/movies", component: "CatalogScreen", clearStackOnResolve: true },
             ' { pattern: "/details/series/:id/cast", component: "CastDetailsScreen" },
@@ -20,6 +22,8 @@ sub init()
         ])
 
         safeFunctions({
+            "showDetailsUI": showDetailsUI,
+            "showCatalogUI": showCatalogUI,
             "navigateTo": navigateTo
         })
 
@@ -34,9 +38,43 @@ sub init()
             }
         })
 
+        set({
+            catalogUIHidden: false,
+            detailsUIHidden: true,
+            navigationHidden: false
+        })
+
         safeObserve("routerState", onRouterStateChanged, sgRouter.getRouter())
         safeObserve("focusedChild", onFocusedChildChange)
     end sub)
+end sub
+
+
+sub showCatalogUI(options = {})
+    if get("navigationHidden")
+        set({ navigationHidden: false })
+        fadeIn(m.navigation, { duration: 1 })
+    end if
+
+    if get("catalogUIHidden")
+        set({ catalogUIHidden: false, detailsUIHidden: true })
+        exec("showCatalogGradients", options, m.background)
+        exec("hideDetailsGradients", options, m.background)
+    end if
+end sub
+
+
+sub showDetailsUI(options = {})
+    if not get("navigationHidden")
+        set({ navigationHidden: true })
+        fadeOut(m.navigation, { duration: 1 })
+    end if
+
+    if get("detailsUIHidden")
+        set({ catalogUIHidden: true, detailsUIHidden: false })
+        exec("hideCatalogGradients", options, m.background)
+        exec("showDetailsGradients", options, m.background)
+    end if
 end sub
 
 
@@ -67,7 +105,7 @@ end sub
 
 sub onRouterStateChanged(options = {})
     data = options.data
-    if data.type <> "ResolveEnd" then return
+    if data.type <> "NavigationEnd" then return
     setActiveView(data.id)
 end sub
 

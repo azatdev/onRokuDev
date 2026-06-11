@@ -3,16 +3,22 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(options = {})
         setupItem()
+        styleHooks({
+            after: afterStyling
+        })
     end sub)
 end sub
 
+
+sub afterStyling(options = {})
+    stackChildren({ node: m.container, direction: "horizontal" })
+end sub
 
 sub setupItem()
     m.label = m.top.findNode("label")
     m.container = m.top.findNode("textContainer")
     m.tabTop = top().findNode("tabTop")
     m.tabBottom = top().findNode("tabBottom")
-    m.colorFieldInterpolator = top().findNode("focusColorInterpolator")
     m.parentList = top().getParent()
     m.flexList = m.parentList.getParent()
 
@@ -34,16 +40,29 @@ sub onTextChange(options = {})
     stackChildren({ node: m.container, direction: "horizontal" })
     m.container.width = m.container.boundingRect().width
     m.container.height = m.container.boundingRect().height
+
+    exec("registerChildRect", {
+        smallSquare: getFocusedRectSize(),
+        bigSquare: getFocusedRectSize(),
+        index: m.top.index
+    }, top().getParent().getParent())
 end sub
+
+
+function getFocusedRectSize(options = {})
+    if not rodash.isNode(m.container) then return [0,0]
+
+    return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
+end function
 
 
 sub onCurrRectChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     rect = options.data
 
-    for each node in [m.background, m.tabTop, m.tabBottom]
+    for each node in [m.container, m.tabTop, m.tabBottom]
         node.width = rect.width
-        node.height = node.id = "tabTop" ? (rect.height / 3) * 2 : rect.height
+        node.height = rect.height
     end for
 end sub
 

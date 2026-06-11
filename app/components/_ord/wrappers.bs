@@ -369,13 +369,13 @@ end function
 
 function getVisibleHeight(node)
     if not rodash.isNode(node) then return 0
+    if not node.visible then return 0
 
     nodeHeight = 0
     clippingRect = node.clippingRect
     boundingRect = node.boundingRect()
     nodeMargins = quadrupleMargins(node.margin)
 
-    if not node.visible then return 0
     if not rodash.isNonEmptyAA(clippingRect) then return 0
 
     if clippingRect.height > 0

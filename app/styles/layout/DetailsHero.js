@@ -21,16 +21,15 @@ module.exports = {
             },
             "Quantico": {
                 lineSpacing: 0,
-                numLines: 2,
+                maxLines: 7,
                 size: 24,
-                height: 90,
                 margin: [0, 12],
                 width: 687,
                 wrap: true
             },
             "CTAs": {
                 height: 75,
-                margin: [12, 0, 0, -16],
+                margin: [36, 0, 0, -16],
                 width: 544
             }
         }

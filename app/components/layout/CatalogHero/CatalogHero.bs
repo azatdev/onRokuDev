@@ -60,7 +60,6 @@ sub onCollectionChildChange(options = {})
 end sub
 
 
-
 sub onCollectionHydrated(options = {})
     if not rodash.isNonEmptyAA(options) then return
     onHeroItemFocused({ data: m.heroScrollGroup.itemFocused })
@@ -68,6 +67,7 @@ end sub
 
 
 sub onHeroItemFocused(options = {})
+    ?"onHeroItemFocused " options
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.content) then return
     itemFocused = options.data

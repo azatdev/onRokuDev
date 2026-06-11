@@ -16,8 +16,10 @@ sub init()
             [events.NAVIGATE_TO]: navigateTo,
             [events.PAGINATE_CAROUSEL]: paginateCarousel,
             [events.PAGINATE_SCREEN]: getCatalogData,
-            [events.SCREEN_DATA_RECEIVED]: onScreenDataReceived,
+            [events.SCREEN_DATA_RECEIVED]: [onScreenDataReceived],
             [events.SCROLL_GROUP_FOCUSED]: onScrollGroupFocused,
+            [events.SHOW_CATALOG_UI]: showCatalogUI,
+            [events.SHOW_DETAILS_UI]: showDetailsUI,
             [events.SIDEBAR_RECEIVED]: onSidebarReceived,
             [events.TOPBAR_RECEIVED]: onTopbarReceived
         })
@@ -49,14 +51,13 @@ sub updateBackgroundAssets(options = {})
     content = options.content
 
     rodash.delay(sub(options = {})
-        dispatch(events.NAVIGATE_TO, { slug: `/details/${options.content.id}`, content: options.content })
+        ' dispatch(events.NAVIGATE_TO, { slug: `/details/${options.content.id}`, content: options.content })
     end sub, 1000, { content: content })
 end sub
 
 
 sub getCatalogData(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    ?"getCatalogData " options
     slug = options.slug ?? ""
     screenId = options.screenId ?? ""
     collection = options.collection
@@ -180,6 +181,16 @@ sub onScreenDataReceived(options = {})
             content: screenModel
         }
     end if
+end sub
+
+
+sub showCatalogUI(options = {})
+    exec("showCatalogUi", {}, layout())
+end sub
+
+
+sub showDetailsUI(options = {})
+    exec("showDetailsUi", {}, layout())
 end sub
 
 

@@ -124,7 +124,7 @@ class Safeable
 
     sub processSafeFunc(functionName)
         proxyData = top().ord_proxyData ?? {}
-        options = proxyData.input
+        options = proxyData.input ?? {}
         returnData = exec(functionName, options, top())
         proxyData.input = invalid
         proxyData.output = returnData

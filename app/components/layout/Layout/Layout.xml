@@ -10,8 +10,10 @@
         <DynamicCarousel id="dynamicCarousel" />
         <FlushCarousel id="flushCarousel" /> -->
         <sgRouter_Outlet id="screenContainer" />
-        <Topbar id="topbar" />
-        <Sidebar id="sidebar" />
+        <Div id="navigation">
+            <Topbar id="topbar" />
+            <Sidebar id="sidebar" />
+        </Div>
     </children>
     <script type="text/brightscript" uri="Layout.bs" />
 </component>

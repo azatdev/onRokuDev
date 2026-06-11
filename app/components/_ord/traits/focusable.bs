@@ -9,7 +9,6 @@ class Focusable
         m.setExportFunctions(role())
     end sub
 
-
     sub setExportFunctions(componentRole = "")
         if rodash.isEmptyString(role) then return
 

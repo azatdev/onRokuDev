@@ -16,16 +16,17 @@ sub onDataChange(options = {})
     data = options.data
     m.model = data.content
 
-    liveConfig({ field: "config", keyPath: "CTACarousel" }, m.model)
+    liveConfig({ field: "config", keyPath: "TabsCarousel" }, m.model)
 
     m.list.data = {
         content: m.model
     }
+    ?"tabs ondataset " getVisibleHeight(m.list)
 end sub
 
 
 sub onFocusedChildChange(options = {})
-
+    
 end sub
 
 

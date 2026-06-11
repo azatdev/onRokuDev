@@ -11,7 +11,7 @@ module.exports = {
                         "translation": [6, 6]
                     },
                     "&#outline": {
-                        "blendColor": "#b8bca4",
+                        "blendColor": palette.highlightColor,
                         "uri": "pkg:/static/images/9patches/9px-outline-18px.9.png",
                     }
                 }

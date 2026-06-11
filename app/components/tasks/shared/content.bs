@@ -1,4 +1,3 @@
-
 sub generateCarouselModel(options = {})
     model = options.model
     if not rodash.isNode(model) then return
@@ -18,6 +17,29 @@ sub generateCarouselModel(options = {})
 
     model.carouselItemModel = carouselItemModel
 end sub
+
+
+function getImageFields(images)
+    if not rodash.isNonEmptyArray(images) then return {}
+
+    imageFields = rodash.reduce(images, function(acc, cv)
+        imageType = lcase(cv.imageType ?? "")
+        if rodash.isEmptyString(imageType) then return acc
+        fieldName = imageType + "ImageUri"
+        imageURL = cv.data?.url ?? ""
+        serverPath = "<%- s(CONFIG.ENV.SERVER_URI) %>"
+        acc[fieldName] = serverPath + imageURL
+        return acc
+    end function, {})
+
+    if imageFields.landscapeImageUri <> invalid
+        imageFields.thumbnailImageUri = imageFields.landscapeImageUri
+    else if imageFields.portraitImageUri <> invalid
+        imageFields.thumbnailImageUri = imageFields.portraitImageUri
+    end if
+
+    return imageFields
+end function
 
 
 sub processContent(options = {})
@@ -78,24 +100,17 @@ function returnHeroCTAsModel()
 end function
 
 
-function getImageFields(images)
-    if not rodash.isNonEmptyArray(images) then return {}
+function returnTabsModel(carousels = [])
+    if not rodash.isArray(carousels) then return invalid
+    model = createObject("roSGNode", "Model")
 
-    imageFields = rodash.reduce(images, function(acc, cv)
-        imageType = lcase(cv.imageType ?? "")
-        if rodash.isEmptyString(imageType) then return acc
-        fieldName = imageType + "ImageUri"
-        imageURL = cv.data?.url ?? ""
-        serverPath = "<%- s(CONFIG.ENV.SERVER_URI) %>"
-        acc[fieldName] = serverPath + imageURL
-        return acc
-    end function, {})
+    for each carousel in carousels
+        carouselType = carousel.carouselType
+        if rodash.isEmpty(carouselType) then continue for
+        tabModel = createObject("roSGNode", "Model")
+        tabModel.title = carouselType
+        model.appendChild(tabModel)
+    end for
 
-    if imageFields.landscapeImageUri <> invalid
-        imageFields.thumbnailImageUri = imageFields.landscapeImageUri
-    else if imageFields.portraitImageUri <> invalid
-        imageFields.thumbnailImageUri = imageFields.portraitImageUri
-    end if
-
-    return imageFields
+    return model
 end function

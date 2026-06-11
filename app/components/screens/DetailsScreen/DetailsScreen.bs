@@ -4,20 +4,21 @@ import "pkg:/source/roku_modules/promises/promises.brs"
 sub init()
     exec(sub(options = {})
         m.screenContainer = top().findNode("screenContainer")
-        m.scrollGroup = top().findNode("scrollGroup")
+        m.bottomContainer = top().findNode("bottomContainer")
+        m.detailsScrollGroup = top().findNode("detailsScrollGroup")
         m.detailsHero = top().findNode("detailsHero")
         m.tabs = top().findNode("tabs")
 
-        liveConfig({ field: "config", keyPath: "CatalogScrollGroup" }, m.scrollGroup)
+        liveConfig({ field: "config", keyPath: "CatalogDetailsScrollGroup" }, m.detailsScrollGroup)
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
 
         setFocusMap({
             "default": m.detailsHero,
             "catalogHero": {
-                "down": "focusScrollGroup"
+                "down": "focusDetailsScrollGroup"
             },
-            "scrollGroup": {
+            "detailsScrollGroup": {
                 "up": "focusCatalogHero"
             }
         })
@@ -37,7 +38,25 @@ function beforeViewOpen(options = {}) as dynamic
     content = context.content
     if not rodash.isNode(content) then return promises.resolve(invalid)
 
+    top().opacity = 0
+    fadeIn(top(), { duration: 1 })
+
     dispatch(events.GET_DETAILS_DATA, { screenId: routeData.id, slug: routeData.path, content: content })
+    return promises.resolve(invalid)
+end function
+
+
+function onViewOpen(options = {})
+    ?"onViewOPen "  top().subtype()
+    dispatch(events.SHOW_DETAILS_UI)
+
+    return promises.resolve(invalid)
+end function
+
+
+function onViewResume(options = {})
+    ?"onViewResume "  top().subtype()
+    dispatch(events.SHOW_DETAILS_UI)
     return promises.resolve(invalid)
 end function
 
@@ -50,8 +69,8 @@ sub onDataSet(options = {})
     content = data.content
     m.content = content
     carousels = content.carousels
-    ?"onDataset " content.carousels
     m.detailsHero.data = { content: m.content }
+    m.tabs.data = { content: content. tabsModel }
 
     for each model in carousels
         processScrollItem({ model: model })
@@ -63,6 +82,8 @@ end sub
 
 sub afterStyling(options = {})
     if not rodash.isNode(m.screenContainer) then return
+    if not rodash.isNode(m.bottomContainer) then return
+    stackChildren({ node: m.bottomContainer, direction: "vertical" })
     stackChildren({ node: m.screenContainer, direction: "vertical" })
 end sub
 
@@ -75,17 +96,17 @@ sub onFocusedChildChange(options = {})
 end sub
 
 
-' sub focusCatalogHero(options = {})
-'     scrollPage(-1, onCatalogHeroFocused)
-'     dispatch(events.CATALOG_HERO_FOCUSED)
-' end sub
+sub focusCatalogHero(options = {})
+    ' scrollPage(-1, onCatalogHeroFocused)
+    ' dispatch(events.CATALOG_HERO_FOCUSED)
+end sub
 
 
-' sub focusScrollGroup(options = {})
-'     scrollPage(1, onScrollGroupFocused)
-'     onScrollGroupFocused()
-'     dispatch(events.SCROLL_GROUP_FOCUSED)
-' end sub
+sub focusDetailsScrollGroup(options = {})
+    ' scrollPage(1, onDetailsScrollGroupFocused)
+    ' onDetailsScrollGroupFocused()
+    ' dispatch(events.SCROLL_GROUP_FOCUSED)
+end sub
 
 
 sub processScrollItem(options = {})
@@ -93,6 +114,39 @@ sub processScrollItem(options = {})
 
     model = options.model
     component = createObject("roSGNode", "Carousel")
+    addClass("noTitle", component)
     component.data = { content: model }
-    m.scrollGroup.appendChild(component)
+    m.detailsScrollGroup.appendChild(component)
+end sub
+
+
+sub scrollPage(direction = 0, callbackFunc = invalid)
+    morphObject = {}
+    heightDelta = 195 * direction
+    morphObject[m.detailsScrollGroup.id] = {
+        fields: {
+            height: m.detailsScrollGroup.height + heightDelta,
+            translation: [
+                0,
+                m.catalogHero.height - heightDelta
+            ]
+        }
+    }
+    morphObject[m.catalogHero.id] = {
+        fields: {
+            height: m.catalogHero.height - heightDelta,
+            opacity: 1 - direction
+        }
+    }
+
+    morphObject[m.catalogHeader.id] = {
+        fields: {
+            height: direction = -1 ? m.catalogHero.height - heightDelta : 0,
+            opacity: 0 + direction
+        }
+    }
+
+    m.catalogHeader.visible = direction = 1 ? true : false
+
+    morph(morphObject, { callback: callbackFunc, duration: 0.3 })
 end sub

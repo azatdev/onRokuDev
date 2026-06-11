@@ -5,14 +5,40 @@ sub init()
         m.backgroundContainer = top().findNode("backgroundContainer")
         m.headerImage = top().findNode("headerImage")
         m.cornerGradient = top().findNode("cornerGradient")
+        m.catalogGradientContainer = top().findNode("catalogGradientContainer")
+        m.detailsGradientContainer = top().findNode("detailsGradientContainer")
         safeFunctions({
             hideBackground: hideBackground,
+            hideCatalogGradients: hideCatalogGradients,
+            hideDetailsGradients: hideDetailsGradients,
             hideHeaderImage: hideHeaderImage,
             showBackground: showBackground,
+            showCatalogGradients: showCatalogGradients,
+            showDetailsGradients: showDetailsGradients,
             showHeaderImage: showHeaderImage,
             updateAssets: updateAssets
         })
     end sub)
+end sub
+
+
+sub hideCatalogGradients(options = {})
+    fadeOut(m.catalogGradientContainer, { duration: 1 })
+end sub
+
+
+sub showCatalogGradients(options = {})
+    fadeIn(m.catalogGradientContainer, { duration: 1 })
+end sub
+
+
+sub showDetailsGradients(options = {})
+    fadeIn(m.detailsGradientContainer, { duration: 1 })
+end sub
+
+
+sub hideDetailsGradients(options = {})
+    fadeOut(m.detailsGradientContainer, { duration: 1 })
 end sub
 
 
@@ -56,6 +82,8 @@ sub updateAssets(options = {})
 
     if section = sections.HERO
         setBackground(content.headerImageUri)
+    else if section = sections.DETAILS_HERO
+        setBackground(content.posterImageUri)
     else if section = sections.CAROUSEL
         m.headerImage.newUri = content.posterImageUri
     end if

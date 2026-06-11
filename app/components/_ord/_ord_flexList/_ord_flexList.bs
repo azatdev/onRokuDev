@@ -182,10 +182,12 @@ sub applyClippingRect(options = {})
     end if
 
     if get("debugClippingRect")
+        m.clippingRectOutline = top().findNode("clippingRectOutline")
         if m.clippingRectOutline = invalid
-            m.clippingRectOutline = top().findNode("clippingRectOutline")
-            m.clippingRectOutline.visible = true
+            m.clippingRectOutline = createObject("roSGNode", "Poster")
+            m.clippingRectOutline.id = "clippingRectOutline"
         end if
+        m.clippingRectOutline.visible = true
         m.clippingRectOutline.width = newClippingRect[2]
         m.clippingRectOutline.height = newClippingRect[3]
         m.clippingRectOutline.translation = [newClippingRect[0], newClippingRect[1]]

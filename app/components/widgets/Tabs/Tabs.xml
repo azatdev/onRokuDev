@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="Tabs" extends="Div">
     <interface>
-
+        <field id="tabSelected" type="string" alwaysNotify="true" />
+        <field id="data" type="assocarray" />
+        <function name="safeFunc" />
     </interface>
     <children>
         <_ord_flexList id="tabList" />

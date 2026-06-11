@@ -23,7 +23,7 @@ function runDetailsTask(options = {})
     variables = {
         "documentId": documentId
     }
-    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.DetailsScreen) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.DetailsScreen) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>" })
     responseJSON = parseJSON(response.text)
     responseData = responseJSON.data ?? {}
     content = responseData.content
@@ -35,7 +35,7 @@ function runDetailsTask(options = {})
 
     model.update(updateObject, true)
     model.carousels = updateObject.children
-
+    model.tabsModel = returnTabsModel(carouselsArray)
 
     publish(events.DETAILS_DATA_RECEIVED, { content: model })
     return true

@@ -32,7 +32,7 @@ sub onCTASelected(options = {})
     if actionType = "play"
 
     else if actionType = "more_info"
-        ' dispatch(events.NAVIGATE_TO, { slug: `/details/${m.content.id}`, content: m.content })
+        dispatch(events.NAVIGATE_TO, { slug: `/details/${m.content.id}`, content: m.content })
     end if
 end sub
 

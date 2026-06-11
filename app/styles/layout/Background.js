@@ -24,6 +24,30 @@ module.exports = {
                         "width": 1161
                     }
                 }
+            },
+            "&#detailsGradientContainer": {
+                opacity: 0,
+                "Poster": {
+                    "&#bottomDetailsGradient": {
+                        "blendColor": "#000000",
+                        "height": 561,
+                        "translation": [0, viewport.height - 561],
+                        "uri": "pkg:/static/images/gradients/details-bottom-gradient.webp",
+                        "width": viewport.width
+                    },
+                    "&#topDetailsGradient": {
+                        "blendColor": "#000000",
+                        "height": 330,
+                        "uri": "pkg:/static/images/gradients/details-top-gradient.webp",
+                        "width": viewport.width
+                    },
+                    "&#leftDetailsGradient": {
+                        "blendColor": "#000000",
+                        "height": viewport.height,
+                        "uri": "pkg:/static/images/gradients/details-left-gradient.webp",
+                        "width": 1293
+                    },
+                }
             }
         }
     }

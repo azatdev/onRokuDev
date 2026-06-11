@@ -10,6 +10,11 @@
             <Poster id="bottomGradient" />
             <Poster id="cornerGradient" />
         </Div>
+        <Div id="detailsGradientContainer">
+            <Poster id="topDetailsGradient" />
+            <Poster id="bottomDetailsGradient" />
+            <Poster id="leftDetailsGradient" />
+        </Div>
     </children>
     <script type="text/brightscript" uri="Background.bs" />
 </component>

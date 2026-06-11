@@ -18,8 +18,6 @@ sub init()
         setFocusMap({
             "default": m.ctas
         })
-        stackChildren({ node: m.container, direction: "vertical" })
-        ?"m.container " m.container
         safeObserve("ctaSelected", onCTASelected, m.ctas)
         redrawStyles()
     end sub)
@@ -54,11 +52,9 @@ sub onDataSet(options = {})
 
     m.content = content
 
-    if content.hydrated ?? false
-        onHydrated({ node: m.content })
-    else
-        safeObserve("hydrated", onHydrated, m.content)
-    end if
+    onHydrated({ node: m.content })
+    stackChildren({ node: m.container, direction: "vertical" })
+    dispatch(events.HERO_ITEM_FOCUSED, { content: content, section: sections.DETAILS_HERO })
 end sub
 
 

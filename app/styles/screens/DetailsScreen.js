@@ -8,14 +8,20 @@ module.exports = {
         "Div": {
             "&#screenContainer": {
                 "DetailsHero": {
-                    height: 600,
+                    height: 780,
                     width: viewport.width
                 },
                 "Div": {
                     "&#bottomContainer": {
+                        "margin": [24, 0, 0, 0],
+                        "Tabs": {
+                            "height": 51,
+                            "margin": [0, 0, 24, 0],
+                            "translation": [174, 0]
+                        },
                         "_ord_scrollGroup":{
-                            height: 480,
-                            width: viewport.width
+                            "height": 480,
+                            "width": viewport.width
                         }
                     }
                 }
