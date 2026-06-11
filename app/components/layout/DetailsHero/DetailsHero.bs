@@ -8,11 +8,6 @@ sub init()
         m.description = top().findNode("description")
         m.ctas = top().findNode("ctas")
 
-        ' setLoadable({ node: m.contentLogo, updateField: "uri" })
-        ' setLoadable({ node: m.description, updateField: "text" })
-        ' setLoadable({ node: m.metadata, updateField: "data" })
-        ' setLoadable({ node: m.ctas, updateField: "data" })
-
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
         setFocusMap({
@@ -29,7 +24,7 @@ sub onCTASelected(options = {})
     if not rodash.isNode(m.content) then return
     actionType = options.data
     if actionType = "play"
-
+        
     else if actionType = "more_info"
         ' dispatch(events.NAVIGATE_TO, { slug: `/details/${m.content.id}`, content: m.content })
     end if
@@ -64,7 +59,7 @@ sub onHydrated(options = {})
 
     setDescription(content.description)
     setLogoImage(content.logoImageUri)
-    setCTAs(content.heroCTAsModel)
+    setCTAs(content.detailsCTAsModel)
     setMetadata(content)
     setHeaderImage(content)
 end sub

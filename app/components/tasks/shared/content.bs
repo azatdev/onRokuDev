@@ -63,6 +63,7 @@ sub processContent(options = {})
         duration: data.duration,
         genres: data.v2genres,
         heroCTAsModel: returnHeroCTAsModel(),
+        detailsCTAsModel: returnDetailsCTAsModel(),
         id: data.documentId,
         rating: data.rating,
         position: data.position ?? 0,
@@ -81,6 +82,28 @@ end sub
 function returnHeroCTAsModel()
     model = createObject("roSGNode", "CTAsModel")
     modelConfigArray = "<%- o(CONFIG.HeroCTAs) %>"
+    updateObject = {
+        children: []
+    }
+
+    for each item in modelConfigArray
+        updateObject.children.push({
+            id: item.id,
+            dynamicWidth: item.dynamicWidth ?? false,
+            iconText: item.iconText ?? "",
+            title: (item.title ?? "").inStr("TKEY") <> -1 ? tr(item.title) : item.title,
+            subtype: "Model"
+        })
+    end for
+
+    model.update(updateObject, true)
+    return model
+end function
+
+
+function returnDetailsCTAsModel()
+    model = createObject("roSGNode", "CTAsModel")
+    modelConfigArray = "<%- o(CONFIG.DetailsCTAs) %>"
     updateObject = {
         children: []
     }
