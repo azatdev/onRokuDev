@@ -5,6 +5,7 @@
     </interface>
     <children>
         <Div id="backgroundContainer" />
+        <VideoPlayer id="videoPlayer" />
         <HeaderImage id="headerImage" />
         <Div id="catalogGradientContainer">
             <Poster id="bottomGradient" />

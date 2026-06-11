@@ -66,6 +66,7 @@ sub processContent(options = {})
         detailsCTAsModel: returnDetailsCTAsModel(),
         id: data.documentId,
         rating: data.rating,
+        playlistUrl: data.playlistUrl,
         position: data.position ?? 0,
         title: data.title,
         type: data.type

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="VideoPlayer" extends="Div">
+    <interface>
+
+    </interface>
+    <children>
+        <Video id="video" />
+    </children>
+    <script type="text/brightscript" uri="VideoPlayer.bs" />
+</component>

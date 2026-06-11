@@ -1,0 +1,22 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        m.video = top().findNode("video")
+        safeFunctions({
+            setStreamURL: setStreamURL
+        })
+        playerModel = createObject("roSGNode", "ContentModel")
+        playerModel.url = "http://192.168.88.31/vod/Kill_John_G.mp4/index.m3u8"
+        m.video.content = playerModel
+        m.video.control = "play"
+    end sub)
+end sub
+
+
+sub setStreamURL(options = {})
+    playerModel = createObject("roSGNode", "ContentModel")
+    playerModel.url = "http://192.168.88.31/vod/Kill_John_G.mp4/index.m3u8"
+    m.video.content = playerModel
+    m.video.control = "start"
+end sub

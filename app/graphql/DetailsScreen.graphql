@@ -5,6 +5,7 @@ query DetailsScreen($documentId: ID!) {
     description
     documentId
     duration
+    playlistUrl
     v2genres {
       name
     }
