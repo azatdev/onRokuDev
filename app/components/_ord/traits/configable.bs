@@ -38,7 +38,7 @@ class Configable
         if not rodash.isNode(node) then return invalid
 
         config = rodash.get(m.appConfigs, keyPath)
-        if not rodash.isNonEmptyAA(config) then return invalid
+        if rodash.isEmpty(config) then return invalid
 
         updateObject = {}
         updateObject[field] = config
@@ -51,8 +51,9 @@ class Configable
                 node: node
             }
             if configsNode[keyPath] = invalid
-                configsNode.addField(keyPath, "assocarray", false)
-                configsNode[keyPath] = config
+                nodeUpdateObj = {}
+                nodeUpdateObj[keyPath] = config
+                configsNode.update(nodeUpdateObj, true)
             end if
             safeObserve(keyPath, "configUpdated", configsNode)
         end if

@@ -1,0 +1,20 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+
+sub init()
+    exec(sub(options = {})
+        subscribe({
+            [events.PLAY_VIDEO]: playVideo
+        })
+    end sub)
+end sub
+
+
+sub playVideo(options = {})
+    exec("playVideo", options, layout())
+end sub
+
+
+function layout(options = {})
+    return app().findNode("layout")
+end function

@@ -2,11 +2,16 @@ module.exports = {
     ...require("./_ord_flexList"),
     ...require("./_ord_scrollGroup"),
     ...require("./ButtonItem"),
-    ...require("./CarouselItem"), 
+    ...require("./CarouselItem"),
+    ...require("./Controls"),
+    ...require("./ControlItem"),
     ...require("./DynamicItem"),
     ...require("./Metadata"),
     ...require("./NavigationItem"),
     ...require("./RatingPill"),
+    ...require("./ScrubBar"),
     ...require("./TabItem"),
-    ...require("./TestItem")
+    ...require("./TestItem"),
+    ...require("./VideoControls"),
+    ...require("./VideoPlayer")
 };

@@ -1,5 +1,3 @@
-
-
 const iconConfig = require("../layout/icons");
 const Icons = iconConfig["Icons"]
 

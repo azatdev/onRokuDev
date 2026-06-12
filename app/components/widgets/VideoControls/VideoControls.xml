@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="VideoControls" extends="Div">
+    <interface>
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <Div id="gradients">
+            <Poster id="topGradient" />
+            <Poster id="bottomGradient" />
+        </Div>
+        <ScrubBar id="scrubBar" />
+        <Div id="info">
+            <Quantico id="positionLabel" />
+            <Quantico id="durationLabel" />
+        </Div>
+        <Controls id="controls" />
+    </children>
+    <script type="text/brightscript" uri="VideoControls.bs" />
+</component>

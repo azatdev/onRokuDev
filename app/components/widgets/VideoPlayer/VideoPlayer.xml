@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="VideoPlayer" extends="Div">
     <interface>
-
+        <field id="data" type="assocarray" />
+        <function name="safeFunc" />
     </interface>
     <children>
         <Video id="video" />
+        <VideoControls id="videoControls" />
     </children>
     <script type="text/brightscript" uri="VideoPlayer.bs" />
 </component>

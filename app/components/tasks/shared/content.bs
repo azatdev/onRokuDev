@@ -66,6 +66,7 @@ sub processContent(options = {})
         detailsCTAsModel: returnDetailsCTAsModel(),
         id: data.documentId,
         rating: data.rating,
+        playerModel: returnPlayerModel(data.playlistUrl),
         playlistUrl: data.playlistUrl,
         position: data.position ?? 0,
         title: data.title,
@@ -99,6 +100,14 @@ function returnHeroCTAsModel()
 
     model.update(updateObject, true)
     return model
+end function
+
+
+function returnPlayerModel(playlistURL = "")
+    if rodash.isEmpty(playlistURL) then return invalid
+    playerModel = createObject("roSGNode", "ContentModel")
+    playerModel.url = playlistURL
+    return playerModel
 end function
 
 

@@ -6,6 +6,7 @@ module.exports = {
         ...require("./layout"),
         ...require("./models"),
         ...require("./scrollgroups"),
-        ...require("./layout")
+        ...require("./layout"),
+        ...require("./player")
     }
 };

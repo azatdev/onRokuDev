@@ -8,6 +8,7 @@ sub init()
         m.topbar = top().findNode("topbar")
         m.sidebar = top().findNode("sidebar")
         m.screenContainer = top().findNode("screenContainer")
+        m.videoPlayer = top().findNode("videoPlayer")
         sgRouter.initialize({ outlet: m.screenContainer })
 
         sgRouter.addRoutes([
@@ -24,7 +25,8 @@ sub init()
         safeFunctions({
             "showDetailsUI": showDetailsUI,
             "showCatalogUI": showCatalogUI,
-            "navigateTo": navigateTo
+            "navigateTo": navigateTo,
+            "playVideo": playVideo
         })
 
         setFocusMap({
@@ -35,6 +37,9 @@ sub init()
             "topbar": {
                 "down": focusOnScreen,
                 "left": m.sidebar
+            },
+            "videoPlayer": {
+                "back": hideVideoPlayer
             }
         })
 
@@ -107,6 +112,62 @@ sub onRouterStateChanged(options = {})
     data = options.data
     if data.type <> "NavigationEnd" then return
     setActiveView(data.id)
+end sub
+
+
+sub hideVideoPlayer(options = {})
+    morphObject = {}
+    morphObject[m.videoPlayer.id] = {
+        fields: {
+            translation: [0, -1080]
+        }
+    }
+    morphObject[m.screenContainer.id] = {
+        fields: {
+            opacity: 1
+        }
+    }
+    morphObject[m.background.id] = {
+        fields: {
+            opacity: 1
+        }
+    }
+    morphObject[m.navigation.id] = {
+        fields: {
+            opacity: 1
+        }
+    }
+    morph(morphObject)
+    setFocus(m.activeView)
+end sub
+
+
+sub playVideo(options = {})
+    if not rodash.isNode(m.videoPlayer) then return
+    m.videoPlayer.data = options
+    morphObject = {}
+    morphObject[m.videoPlayer.id] = {
+        fields: {
+            translation: [0, 0]
+        }
+    }
+    morphObject[m.screenContainer.id] = {
+        fields: {
+            opacity: 0
+        }
+    }
+    morphObject[m.background.id] = {
+        fields: {
+            opacity: 0
+        }
+    }
+    morphObject[m.navigation.id] = {
+        fields: {
+            opacity: 0
+        }
+    }
+    morph(morphObject)
+    setFocus(m.videoPlayer)
 end sub
 
 

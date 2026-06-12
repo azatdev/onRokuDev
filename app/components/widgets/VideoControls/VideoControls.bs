@@ -1,0 +1,56 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        m.scrubBar = top().findNode("scrubBar")
+        m.positionLabel = top().findNode("positionLabel")
+        m.durationLabel = top().findNode("durationLabel")
+        m.controls = top().findNode("controls")
+        liveConfig({ field: "config", keyPath: "DefaultControls" }, m.controls)
+        ?"m.controls " m.controls
+
+        safeFunctions({
+            onPositionChange: onPositionChange
+        })
+        stackChildren({ node: top(), direction: "vertical" })
+    end sub)
+end sub
+
+
+sub onPositionChange(options = {})
+    if rodash.isEmpty(options) then return
+    position = options.data ?? 0
+    duration = options.info?.duration ?? 0
+    exec("updateProgress", { position: position, duration: duration }, m.scrubBar)
+
+    m.positionLabel.text = formatSeekText(position)
+    m.durationLabel.text = formatSeekText(duration)
+end sub
+
+
+function formatSeekText(timeDelta = 0)
+    if not rodash.isNumber(timeDelta) then return ""
+    timeStr = ""
+    iterationNumber = 0
+    iterationDivisors = [3600, 60]
+    template = ["00", "00", "00"]
+    timeDelta% = timeDelta
+
+    for each divisor in iterationDivisors
+        modProduct = int(timeDelta%) \ divisor
+        if modProduct <> 0
+            timeStr = `0${modProduct}`
+            template[iterationNumber] = right(timeStr, 2)
+        end if
+
+        timeDelta% = timeDelta% - (modProduct * divisor)
+        iterationNumber++
+    end for
+
+    if timeDelta% <> 0
+        timeStr = `0${timeDelta%}`
+        template[2] = right(timeStr, 2)
+    end if
+
+    return template.join(":")
+end function

@@ -6,13 +6,6 @@ sub init()
     exec(sub(options = {})
         top().setFocus(true)
 
-        ' m.sidebar = top().findNode("sidebar")
-        ' m.topbar = top().findNode("topbar")
-        ' m.ctas = top().findNode("ctas")
-        ' m.defaultCarousel = top().findNode("defaultCarousel")
-        ' m.dynamicCarousel = top().findNode("dynamicCarousel")
-        ' m.flushCarousel = top().findNode("flushCarousel")
-
         subscribe({
             [events.EVENT_TASK_READY]: onEventTaskReady
         })
@@ -23,49 +16,12 @@ sub init()
         registerControllers([
             "ConfigsController",
             "LayoutController",
+            "PlayerController",
             "SFXController",
             "SocketController",
             "StylesController",
             "UserController"
         ])
-
-        setFocusMap({
-            "ctas": {
-                "down": m.dynamicCarousel,
-                "up": "topbar",
-                "left": "sidebar"
-            },
-            "dynamicCarousel": {
-                "down": "defaultCarousel",
-                "up": "ctas",
-                "left": "sidebar"
-            },
-            "defaultCarousel": {
-                "down": "flushCarousel",
-                "up": "dynamicCarousel",
-                "left": "sidebar"
-            },
-            "flushCarousel": {
-                "down": "flushCarousel",
-                "up": "defaultCarousel",
-                "left": "sidebar"
-            },
-            "topbar": {
-                "down": "ctas"
-            },
-            "sidebar": {
-                "right": "ctas"
-            }
-        })
-
-        ' rodash.delay(sub(node)
-        '     node.setFocus(true)
-        '     ' m.scrollGroup.setFocus(true)
-        ' end sub, 100, m.scrollGroup)
-
-        ' rodash.delay(sub(options = {})
-
-        ' end sub, 300)
     end sub)
 end sub
 
@@ -73,11 +29,6 @@ end sub
 sub onEventTaskReady(options = {})
     dispatch(events.APP_STARTED)
 end sub
-
-
-function onTheNose(options = {})
-    return { result: options.name + " success" }
-end function
 
 
 function onKeyEvent(key as string, press as boolean) as boolean

@@ -4,7 +4,8 @@
         <function name="safeFunc" />
     </interface>
     <children>
-       <Background id="background" />
+        <VideoPlayer id="videoPlayer" />
+        <Background id="background" />
         <!-- <CTAs id="ctas" />
         <DefaultCarousel id="defaultCarousel" />
         <DynamicCarousel id="dynamicCarousel" />

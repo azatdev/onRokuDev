@@ -9,6 +9,7 @@ query Carousel($documentId: ID!, $pagination: PaginationArg) {
       v2genres {
         name
       }
+      playlistUrl
       rating
       title
       type

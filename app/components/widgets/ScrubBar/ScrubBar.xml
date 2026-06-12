@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="ScrubBar" extends="Div">
+    <interface>
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <Rectangle id="scrubTrack">
+            <Rectangle id="progressBar" />
+            <Rectangle id="scrubber" />
+        </Rectangle>
+    </children>
+    <script type="text/brightscript" uri="ScrubBar.bs" />
+</component>

@@ -309,6 +309,10 @@ sub stackChildren(options = {})
         childHeight = getVisibleHeight(child)
         childWidth = getVisibleWidth(child)
 
+        if node.id = "iconsContainer"
+            ?"childWidth " child, childWidth
+        end if
+
         if horizontal
             if childWidth = 0 then continue for
             child.translation = [totalWidth + leftMargin, child.translation[1]]
@@ -322,6 +326,10 @@ sub stackChildren(options = {})
 
     minWidth = node.minWidth ?? 0
     minHeight = node.minHeight ?? 0
+
+    if node.id = "iconsContainer"
+        ?"totalWidth " totalWidth
+    end if
 
     if horizontal
         node.width = totalWidth > minWidth ? totalWidth : minWidth

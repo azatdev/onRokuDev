@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="ControlItem" extends="Div">
+    <interface>
+        <field id="config" type="assocarray" />
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <Div id="iconsContainer" />
+        <QuanticoBold id="title" />
+    </children>
+    <script type="text/brightscript" uri="ControlItem.bs" />
+</component>

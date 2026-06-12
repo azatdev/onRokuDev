@@ -2,6 +2,7 @@ const mixins = require("../mixins");
 const dimensions = mixins["Dimensions"]
 const palette = mixins["Palette"]
 const viewport = dimensions["viewport"]
+const gradients = mixins["Gradients"]
 
 module.exports = {
     "Background": {
@@ -29,17 +30,10 @@ module.exports = {
                 opacity: 0,
                 "Poster": {
                     "&#bottomDetailsGradient": {
-                        "blendColor": "#000000",
-                        "height": 561,
-                        "translation": [0, viewport.height - 561],
-                        "uri": "pkg:/static/images/gradients/details-bottom-gradient.webp",
-                        "width": viewport.width
+                        ...gradients.BottomGradient
                     },
                     "&#topDetailsGradient": {
-                        "blendColor": "#000000",
-                        "height": 330,
-                        "uri": "pkg:/static/images/gradients/details-top-gradient.webp",
-                        "width": viewport.width
+                        ...gradients.TopGradient
                     },
                     "&#leftDetailsGradient": {
                         "blendColor": "#000000",

@@ -11,6 +11,7 @@
         <field id="headerImageUri" type="string" />
         <field id="logoImageUri" type="string" />
         <field id="landscapeImageUri" type="string" />
+        <field id="playerModel" type="node" />
         <field id="playlistUrl" type="string" />
         <field id="portraitImageUri" type="string" />
         <field id="position" type="int" />
