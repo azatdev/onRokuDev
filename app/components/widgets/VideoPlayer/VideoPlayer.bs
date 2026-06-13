@@ -6,24 +6,46 @@ sub init()
         m.video = top().findNode("video")
         m.video.enableUI = false
         m.video.notificationInterval = 1
-        safeFunctions({
-            ' setStreamURL: setStreamURL
-        })
+        m.video.seekMode = "accurate"
+
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
         safeObserve("state", onVideoStateChange, m.video)
         safeObserve("position", onVideoPositionChange, m.video, ["duration"])
+
+        setFocusMap({
+            "default": m.videoControls,
+            "videoControls": {
+                "left": scrubLeft,
+                "right": scrubRight,
+                "up": showOverlay,
+                "down": exitPlayer,
+                "rewind": seekRewind,
+                "fastforward": seekForward,
+                "play": togglePlayback,
+                "back": hideOverlay,
+                "replay": restartPlayback
+            }
+        })
+
+        set({
+            overlayOpen: true
+        })
     end sub)
 end sub
 
 
 sub onDataSet(options = {})
     if rodash.isEmpty(options) then return
+    if not rodash.isNode(m.video) then return
+    if not rodash.isNode(m.videoControls) then return
+
     data = options.data
     content = data.content
     playerModel = content.playerModel
     m.video.content = playerModel
     m.video.control = "play"
+    m.videoControls.data = data
 end sub
 
 
@@ -47,3 +69,71 @@ sub onVideoStateChange(options = {})
         dispatch(events.VIDEO_PLAYING)
     end if
 end sub
+
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    return exec(function(options = {})
+        if not options.press then return true
+        handled = processFocus(options.key)
+        ?"VideoPlayer onKeyEvent " options.key, handled
+        return handled
+    end function, { key: key, press: press })
+end function
+
+
+sub scrubLeft(options = {})
+    if rodash.isEmpty(options) then return
+end sub
+
+
+sub scrubRight(options = {})
+    if rodash.isEmpty(options) then return
+end sub
+
+
+sub hideOverlay(options = {})
+    ?"hideOverlay " options
+    if not get("overlayOpen") then return
+    fadeOut(m.videoControls)
+    set({ overlayOpen: true })
+end sub
+
+
+sub showOverlay(options = {})
+    if get("overlayOpen") then return
+    ?"hideOverlay " options
+    fadeIn(m.videoControls)
+    set({ overlayOpen: true })
+end sub
+
+
+sub exitPlayer(options = {})
+    if rodash.isEmpty(options) then return
+end sub
+
+
+sub seekForward(options = {})
+    if rodash.isEmpty(options) then return
+end sub
+
+
+sub seekRewind(options = {})
+    if rodash.isEmpty(options) then return
+end sub
+
+
+sub togglePlayback(options = {})
+    if rodash.isEmpty(options) then return
+end sub
+
+
+sub restartPlayback(options = {})
+    if rodash.isEmpty(options) then return
+end sub
+
+
+
+
+
+
+

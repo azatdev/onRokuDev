@@ -3,10 +3,13 @@
     <interface>
         <field id="data" type="assocarray" />
         <function name="safeFunc" />
+        CONTENT DETAILS
+        PLAYER CONTROLS
     </interface>
     <children>
         <Video id="video" />
         <VideoControls id="videoControls" />
+        <Separator id="separator" />
     </children>
     <script type="text/brightscript" uri="VideoPlayer.bs" />
 </component>

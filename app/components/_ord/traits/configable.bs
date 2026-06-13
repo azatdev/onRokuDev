@@ -4,7 +4,9 @@ class Configable
     configPaths = {}
 
     sub new(options = {})
-        m.setExportFunctions(role())
+        if getGlobalAA().ord_role = "Task" or getGlobalAA().ord_role = "Model" then return
+
+        m.setExportFunctions(getGlobalAA().ord_role)
 
         if not global().hasField("ord_configs")
             m.setupGlobalConfigs()
@@ -26,10 +28,6 @@ class Configable
 
 
     function liveConfig(options = {}, node = top())
-        if not node.isSameNode(top())
-            return exec("liveConfig", options, node)
-        end if
-
         field = options.field
         keyPath = options.keyPath
 

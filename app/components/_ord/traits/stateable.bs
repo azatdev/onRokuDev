@@ -4,7 +4,7 @@ class Stateable
     sub new(options = {})
         top().addField("_ord_State", "assocarray", false)
 
-        m.setExportFunctions(role())
+        m.setExportFunctions(getGlobalAA().ord_role)
     end sub
 
     sub setExportFunctions(componentRole = "")

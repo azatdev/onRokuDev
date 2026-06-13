@@ -4,7 +4,7 @@ class Safeable
     sub new(options = {})
         top().addField("ord_proxyData", "assocarray", true)
 
-        m.setExportFunctions(role())
+        m.setExportFunctions(getGlobalAA().ord_role)
     end sub
 
 
@@ -136,7 +136,7 @@ class Safeable
         if rodash.isEmptyString(fieldName) then return
         if not rodash.isNode(node) then return
 
-        if role() = "Task" and rodash.isMessagePort(callbackFunc)
+        if getGlobalAA().ord_role = "Task" and rodash.isMessagePort(callbackFunc)
             node.observeFieldScopedEx(fieldName, callbackFunc, infoFields)
             return
         end if

@@ -17,13 +17,18 @@ end sub
 
 sub onDataChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    m.list.data = options.data
+    data = options.data
+    content = data.content
+    if not rodash.isNode(content) then return
 
-    sidebarModel = options.data?.content
-    m.content = sidebarModel
-    defaultSlug = sidebarModel.defaultSlug
-    itemModel = sidebarModel.findNode(defaultSlug)
-    selectedItemIndex = rodash.indexOf(sidebarModel.getChildren(-1, 0), itemModel)
+    m.content = content
+
+    liveConfig({ field: "config", keyPath: "Sidebar" }, content)
+    m.list.data = data
+
+    defaultSlug = content.defaultSlug
+    itemModel = content.findNode(defaultSlug)
+    selectedItemIndex = rodash.indexOf(content.getChildren(-1, 0), itemModel)
     m.list.itemSelected = selectedItemIndex
 end sub
 

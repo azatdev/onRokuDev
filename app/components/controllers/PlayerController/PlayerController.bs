@@ -4,9 +4,15 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(options = {})
         subscribe({
-            [events.PLAY_VIDEO]: playVideo
+            [events.PLAY_VIDEO]: playVideo,
+            [events.VIDEO_PLAYING]: onVideoPlaying
         })
     end sub)
+end sub
+
+
+sub onVideoPlaying(options = {})
+    ?"onVideoPlaying " rodash.now()
 end sub
 
 

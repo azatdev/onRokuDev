@@ -1,8 +1,5 @@
-const mixins = require("./index");
-const dimensions = mixins["Dimensions"];
+const { Dimensions: dimensions } = require("./Dimensions");
 const viewport = dimensions["viewport"];
-
-require("./Dimensions")
 
 module.exports = {
     "Gradients": {

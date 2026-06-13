@@ -13,7 +13,11 @@ end sub
 
 sub onDataChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    m.list.data = options.data
+    data = options.data
+    content = data.content
+    if not rodash.isNode(content) then return
+    liveConfig({ field: "config", keyPath: "Topbar" }, content)
+    m.list.data = data
 end sub
 
 

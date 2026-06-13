@@ -1,5 +1,6 @@
 module.exports = {
     ...require("./contentCTAs"),
     ...require("./detailsCTAs"),
-    ...require("./heroCTAs")
+    ...require("./heroCTAs"),
+    ...require("./separatorTab")
 };

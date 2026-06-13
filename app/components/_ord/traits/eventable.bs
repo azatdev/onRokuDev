@@ -3,21 +3,22 @@ class Eventable
     publicFunctions = []
 
     sub new(options = {})
-        if role() <> "Task" and global()._ord_eventQueue = invalid
+        m.renderQueue = createObject("roRenderThreadQueue")
+        m.setExportFunctions(getGlobalAA().ord_role)
+
+        if getGlobalAA().ord_role = "Task" or getGlobalAA().ord_role = "Model" then return
+
+        if global()._ord_eventQueue = invalid
             m.setupEventQueue()
         end if
 
         m.eventQueue = global()._ord_eventQueue
-        m.renderQueue = createObject("roRenderThreadQueue")
-
         top().addField("_ord_subscriptions", "assocarray", false)
-
-        m.setExportFunctions(role())
     end sub
 
 
     sub setExportFunctions(componentRole = "")
-        if rodash.isEmptyString(role) then return
+        if rodash.isEmptyString(componentRole) then return
 
         if rodash.findIndex(["Scene", "View", "Model", "Controller", "Task"], componentRole) <> -1
             m.publicFunctions.push("dispatch")
@@ -34,6 +35,7 @@ class Eventable
 
 
     sub setupEventQueue()
+        ?"setupEventQueue "
         if rodash.isNode(global()._ord_eventQueue)
             m.eventQueue = global()._ord_eventQueue
         else

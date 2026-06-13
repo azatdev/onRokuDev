@@ -5,9 +5,9 @@ module.exports = {
     "DefaultControls": [
         {
             id: "playControl",
-            icons: [Icons.playSquare],
+            icons: [Icons.pause],
             opacity: 0.6,
-            title: "TKEY_PLAY"
+            title: "TKEY_PAUSE"
         },
         {
             id: "seekControl",

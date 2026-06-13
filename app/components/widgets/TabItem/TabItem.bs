@@ -11,41 +11,54 @@ end sub
 
 
 sub afterStyling(options = {})
-    stackChildren({ node: m.container, direction: "horizontal" })
+    onTextChange()
 end sub
 
 sub setupItem()
     m.label = m.top.findNode("label")
+    m.icon = m.top.findNode("icon")
     m.container = m.top.findNode("textContainer")
     m.tabTop = top().findNode("tabTop")
     m.tabBottom = top().findNode("tabBottom")
     m.parentList = top().getParent()
-    m.flexList = m.parentList.getParent()
 
     safeObserve("focusPercent", onFocusPercentChange)
     safeObserve("itemContent", itemContentChanged, top())
     safeObserve("currRect", onCurrRectChange, top())
-    safeObserve("focusPercent", onGroupFocusPercentChange, m.parentList)
+    safeObserve("width", onCurrRectChange, top())
+    safeObserve("height", onCurrRectChange, top())
+    if rodash.isNode(m.parentList) then safeObserve("focusPercent", onGroupFocusPercentChange, m.parentList)
 end sub
 
 
 sub itemContentChanged(options = {})
     content = options.data
     m.label.text = ucase(content.title)
+    m.icon.text = content.iconText ?? ""
+    if not rodash.isEmpty(m.icon.text)
+        m.icon.visible = true
+    end if
+
     onTextChange()
 end sub
 
 
 sub onTextChange(options = {})
     stackChildren({ node: m.container, direction: "horizontal" })
-    m.container.width = m.container.boundingRect().width
-    m.container.height = m.container.boundingRect().height
+    tabWidth = m.container.boundingRect().width
+    tabHeight = m.container.boundingRect().height
+    m.container.width = tabWidth
+    m.container.height = tabHeight
+    top().width = tabWidth
+    top().height = tabHeight
+
+    if not rodash.isNode(m.parentList) then return
 
     exec("registerChildRect", {
         smallSquare: getFocusedRectSize(),
         bigSquare: getFocusedRectSize(),
         index: m.top.index
-    }, top().getParent().getParent())
+    }, m.parentList.getParent())
 end sub
 
 
@@ -58,7 +71,12 @@ end function
 
 sub onCurrRectChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    rect = options.data
+    field = options.field
+    if field = "currRect"
+        rect = options.data
+    else
+        rect = top()
+    end if
 
     for each node in [m.container, m.tabTop, m.tabBottom]
         node.width = rect.width

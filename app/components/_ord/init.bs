@@ -16,6 +16,7 @@ import "traits/styleable.bs"
 
 sub ord_init()
     setCreatedAt(top())
+    setRole()
 
     interfaces = [Safeable, Stateable, Eventable, Styleable, Animatable, Focusable, Configable, Loadable]
 
@@ -29,7 +30,7 @@ sub ord_init()
         end for
     end for
 
-    if role() = "Task"
+    if getGlobalAA().ord_role = "Task"
         top().functionName = "runTask"
     end if
 
@@ -53,7 +54,7 @@ function getNodeIdentifier(node)
 end function
 
 
-function role()
+sub setRole()
     componentRole = "Controller"
 
     if m.top.isSubtype("Group")
@@ -64,12 +65,5 @@ function role()
         componentRole = "Model"
     end if
 
-    return componentRole
-end function
-
-
-function timer()
-    if m.timer = invalid then m.timer = createObject("roTimespan")
-
-    return m.timer
-end function
+    m.ord_role = componentRole
+end sub

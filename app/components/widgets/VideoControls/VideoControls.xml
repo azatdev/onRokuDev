@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="VideoControls" extends="Div">
     <interface>
+        <field id="data" type="assocarray" />
         <function name="safeFunc" />
     </interface>
     <children>
@@ -8,12 +9,18 @@
             <Poster id="topGradient" />
             <Poster id="bottomGradient" />
         </Div>
-        <ScrubBar id="scrubBar" />
-        <Div id="info">
-            <Quantico id="positionLabel" />
-            <Quantico id="durationLabel" />
+        <Div id="contentContainer">
+            <ControlItem id="hideOverlay" />
+            <PlayerHeader id="playerHeader" />
         </Div>
-        <Controls id="controls" />
+        <Div id="container">
+            <ScrubBar id="scrubBar" />
+            <Div id="info">
+                <Quantico id="positionLabel" />
+                <Quantico id="durationLabel" />
+            </Div>
+            <Controls id="controls" />
+        </Div>
     </children>
     <script type="text/brightscript" uri="VideoControls.bs" />
 </component>

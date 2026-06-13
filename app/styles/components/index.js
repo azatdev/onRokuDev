@@ -9,6 +9,7 @@ module.exports = {
     ...require("./Metadata"),
     ...require("./NavigationItem"),
     ...require("./RatingPill"),
+    ...require("./Separator"),
     ...require("./ScrubBar"),
     ...require("./TabItem"),
     ...require("./TestItem"),

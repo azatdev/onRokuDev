@@ -3,6 +3,11 @@ module.exports = {
         viewport: {
             height: 1080,
             width: 1920
+        },
+        player: {
+            controlsHeight: 204,
+            seekbarHeight: 15,
+            sideMargin: 84
         }
     }
 };

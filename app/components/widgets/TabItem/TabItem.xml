@@ -12,6 +12,7 @@
         <Poster id="tabTop" />
         <Poster id="tabBottom" />
         <Rectangle id="textContainer">
+            <Icon id="icon" />
             <QuanticoBold id="label" />
         </Rectangle>
     </children>

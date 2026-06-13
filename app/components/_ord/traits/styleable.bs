@@ -3,9 +3,9 @@ class Styleable
     hookFunctions = {}
 
     sub new(options = {})
-        m.setExportFunctions(role())
+        m.setExportFunctions(getGlobalAA().ord_role)
 
-        if rodash.findIndex(["Scene", "View"], role()) = -1 then return
+        if rodash.findIndex(["Scene", "View"], getGlobalAA().ord_role) = -1 then return
 
         if not top().hasField("class")
             top().addField("class", "string", true)

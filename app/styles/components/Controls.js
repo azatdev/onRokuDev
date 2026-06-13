@@ -3,7 +3,6 @@ const palette = mixins["Palette"]
 const dimensions = mixins["Dimensions"]
 const viewport = dimensions["viewport"]
 
-
 module.exports = {
     "Controls": {
         height: 45,

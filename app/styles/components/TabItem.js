@@ -6,14 +6,21 @@ module.exports = {
         "Rectangle": {
             "&#textContainer": {
                 color: "#33333300",
-                // "uri": "pkg:/static/images/9patches/fill-18px.9.png",
+                "Icon": {
+                    color: palette.primaryColor,
+                    height: 75,
+                    margin: [0, 27, 0, 36],
+                    size: 33,
+                    vertAlign: "center",
+                    visible: false
+                },
                 "QuanticoBold": {
                     "&#label": {
                         color: palette.primaryColor,
-                        height: 51,
-                        margin: [24, 42, 0, 42],
+                        height: 75,
+                        margin: [24, 42, 0, 0],
                         size: 24,
-                        vertAlign: "bottom"
+                        vertAlign: "center"
                     }
                 }
             }

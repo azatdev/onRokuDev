@@ -15,13 +15,13 @@ sub onConfigChange(options = {})
     if not rodash.isNonEmptyAA(config) then return
     if rodash.isNonEmptyArray(config.icons) then populateIcons(config.icons)
     m.title.text = tr(config.title)
+    top().opacity = config.opacity ?? 1
     stackChildren({ node: top(), direction: "horizontal" })
 end sub
 
 
 sub populateIcons(iconArray = [])
     if not rodash.isNode(m.iconsContainer) then return
-    ?"populateIcons " iconArray
     rodash.removeNodeChildren(m.iconsContainer)
     for each icon in iconArray
         iconComponent = createObject("roSGNode", "Icon")

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="PlayerHeader" extends="Div">
+    <interface>
+        <field id="data" type="assocArray" />
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <Div id="container">
+            <QuanticoBold id="title" />
+            <Poster id="contentLogo" />
+            <Metadata id="metadata" />
+        </Div>
+    </children>
+    <script type="text/brightscript" uri="PlayerHeader.bs" />
+</component>

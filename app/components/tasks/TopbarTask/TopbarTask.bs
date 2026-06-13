@@ -40,8 +40,6 @@ function returnTopbarModel(options = {})
 
     model = createObject("roSGNode", "TopbarModel")
     model.update(updateObjArray, true)
-    liveConfig({ field: "config", keyPath: "Topbar" }, model)
-
 
     return model
 end function

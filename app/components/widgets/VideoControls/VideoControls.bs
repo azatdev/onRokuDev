@@ -6,14 +6,39 @@ sub init()
         m.positionLabel = top().findNode("positionLabel")
         m.durationLabel = top().findNode("durationLabel")
         m.controls = top().findNode("controls")
-        liveConfig({ field: "config", keyPath: "DefaultControls" }, m.controls)
-        ?"m.controls " m.controls
+        m.container = top().findNode("container")
+        m.contentContainer = top().findNode("contentContainer")
+        m.hideOverlay = top().findNode("hideOverlay")
+        m.playerHeader = top().findNode("playerHeader")
+
+        m.controls.config = "<%- o(CONFIG.DefaultControls) %>"
+        m.hideOverlay.config = "<%- o(CONFIG.ControlItems.hideOverlay) %>"
+
+        safeObserve("data", onDataSet)
 
         safeFunctions({
             onPositionChange: onPositionChange
         })
-        stackChildren({ node: top(), direction: "vertical" })
+
+        styleHooks({
+            after: afterStyling
+        })
+
+        afterStyling()
     end sub)
+end sub
+
+
+sub afterStyling(options = {})
+    stackChildren({ node: m.container, direction: "vertical" })
+    stackChildren({ node: m.contentContainer, direction: "vertical" })
+end sub
+
+
+sub onDataSet(options = {})
+    if rodash.isEmpty(options) then return
+    if not rodash.isNode(m.playerHeader) then return
+    m.playerHeader.data = options.data
 end sub
 
 

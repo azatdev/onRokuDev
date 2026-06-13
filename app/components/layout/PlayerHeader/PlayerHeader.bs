@@ -3,7 +3,6 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(options = {})
         m.container = top().findNode("container")
-        m.contentLogo = top().findNode("contentLogo")
         m.metadata = top().findNode("metadata")
         m.title = top().findNode("title")
         safeObserve("data", onDataSet)
@@ -15,25 +14,13 @@ sub onDataSet(options = {})
     if not rodash.isNonEmptyAA(options) then return
     data = options.data
     content = data.content
-    if not rodash.isEmpty(content.logoImageUri)
-        m.contentLogo.visible = true
-        m.title.visible = false
-        setLogoImage(content.logoImageUri)
-    else if not rodash.isEmpty(content.title)
-        m.contentLogo.visible = false
+    if not rodash.isEmpty(content.title)
         m.title.visible = true
         setLogoTitle(content.title)
     end if
 
     setMetadata(content)
-
     stackChildren({ node: m.container, direction: "vertical" })
-end sub
-
-
-sub setLogoImage(logoImageUri = "")
-    if rodash.isEmptyString(logoImageUri) then return
-    m.contentLogo.uri = logoImageUri
 end sub
 
 

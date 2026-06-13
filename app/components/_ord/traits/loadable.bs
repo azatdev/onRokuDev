@@ -3,12 +3,12 @@ class Loadable
     nodes = []
 
     sub new(options = {})
-        m.setExportFunctions(role())
+        m.setExportFunctions(getGlobalAA().ord_role)
     end sub
 
 
     sub setExportFunctions(componentRole = "")
-        if rodash.isEmptyString(role) then return
+        if rodash.isEmptyString(componentRole) then return
 
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
 

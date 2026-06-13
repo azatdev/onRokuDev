@@ -1,0 +1,26 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        m.leftLine = top().findNode("leftLine")
+        m.tabItem = top().findNode("tabItem")
+        m.rightLine = top().findNode("rightLine")
+
+        tabModel = createObject("roSGNode", "Model")
+        tabModel.update("<%- o(CONFIG.SeparatorTab) %>", true)
+        tabModel.title = tr(tabModel.title)
+
+        m.tabItem.itemContent = tabModel
+
+        styleHooks({
+            after: afterStyling
+        })
+
+        afterStyling()
+    end sub)
+end sub
+
+
+sub afterStyling(options = {})
+    stackChildren({ node: top(), direction: "horizontal" })
+end sub
