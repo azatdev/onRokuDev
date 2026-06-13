@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<component name="Benchmarks" extends="Scene">
-    <interface>
-    </interface>
-    <children>
-    </children>
-    <script type="text/brightscript" uri="BenchmarkScene.bs" />
-</component>
