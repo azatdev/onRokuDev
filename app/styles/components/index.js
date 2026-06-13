@@ -13,6 +13,7 @@ module.exports = {
     ...require("./ScrubBar"),
     ...require("./TabItem"),
     ...require("./TestItem"),
+    ...require("./Trickplay"),
     ...require("./VideoControls"),
     ...require("./VideoPlayer")
 };

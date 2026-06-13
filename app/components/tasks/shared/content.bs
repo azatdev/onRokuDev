@@ -19,6 +19,23 @@ sub generateCarouselModel(options = {})
 end sub
 
 
+function getBifFields(bifs)
+    if not rodash.isNonEmptyArray(bifs) then return {}
+
+    imageFields = rodash.reduce(bifs, function(acc, cv)
+        bifType = lcase(cv.bifType ?? "")
+        if rodash.isEmptyString(bifType) then return acc
+        fieldName = bifType = "SD" ? "sdbifurl" : "hdbifurl"
+        bifURL = cv.bif?.url ?? ""
+        serverPath = "<%- s(CONFIG.ENV.SERVER_URI) %>"
+        acc[fieldName] = serverPath + bifURL
+        return acc
+    end function, {})
+
+    return imageFields
+end function
+
+
 function getImageFields(images)
     if not rodash.isNonEmptyArray(images) then return {}
 
@@ -66,7 +83,7 @@ sub processContent(options = {})
         detailsCTAsModel: returnDetailsCTAsModel(),
         id: data.documentId,
         rating: data.rating,
-        playerModel: returnPlayerModel(data.playlistUrl),
+        playerModel: returnPlayerModel(data),
         playlistUrl: data.playlistUrl,
         position: data.position ?? 0,
         title: data.title,
@@ -103,10 +120,23 @@ function returnHeroCTAsModel()
 end function
 
 
-function returnPlayerModel(playlistURL = "")
-    if rodash.isEmpty(playlistURL) then return invalid
+function returnPlayerModel(options = {})
+    if rodash.isEmpty(options) then return invalid
+    playlistUrl = options.playlistUrl
+    if rodash.isEmpty(playlistUrl) then return invalid
+
     playerModel = createObject("roSGNode", "ContentModel")
-    playerModel.url = playlistURL
+
+    bifs = options.bifs ?? []
+    bifFields = getBifFields(bifs) ?? {}
+
+    updateObj = {
+        url: playlistUrl
+    }
+
+    updateObj.append(bifFields)
+    playerModel.update(updateObj, true)
+
     return playerModel
 end function
 

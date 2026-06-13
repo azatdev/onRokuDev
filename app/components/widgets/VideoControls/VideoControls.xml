@@ -14,6 +14,7 @@
             <PlayerHeader id="playerHeader" />
         </Div>
         <Div id="container">
+            <Trickplay id="trickplay" />
             <ScrubBar id="scrubBar" />
             <Div id="info">
                 <Quantico id="positionLabel" />

@@ -1,0 +1,26 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(options = {})
+        m.trickplayThumbnail = top().findNode("trickplayThumbnail")
+
+        safeFunctions({
+            updateProgress: updateProgress
+        })
+    end sub)
+end sub
+
+
+sub updateProgress(options = {})
+    if rodash.isEmpty(options) then return
+    position = options.position ?? 0
+    duration = options.duration ?? 0
+    if position = 0 or duration = 0 then return
+
+    ' totalWidth = top().width
+    ' scrubberWidth = m.scrubber.width
+    ' progressPercentage = position / duration
+    ' progressWidth = totalWidth * progressPercentage
+    ' m.progressBar.width = progressWidth
+    ' m.scrubber.translation = [progressWidth - scrubberWidth, 0]
+end sub

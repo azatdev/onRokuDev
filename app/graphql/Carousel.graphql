@@ -1,6 +1,12 @@
 query Carousel($documentId: ID!, $pagination: PaginationArg) {
   carousel(documentId: $documentId) {
     contents(pagination: $pagination) {
+      bifs {
+        bifType
+        bif {
+          url
+        }
+      }
       complimentaryColor
       copyrightYear
       description

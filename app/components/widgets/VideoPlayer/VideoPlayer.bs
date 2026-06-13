@@ -4,7 +4,7 @@ sub init()
     exec(sub(options = {})
         m.videoControls = top().findNode("videoControls")
         m.video = top().findNode("video")
-        m.video.enableUI = false
+        m.video.enableUI = true
         m.video.notificationInterval = 1
         m.video.seekMode = "accurate"
 
@@ -67,18 +67,16 @@ sub onVideoStateChange(options = {})
     state = options.data
     if state = "playing"
         dispatch(events.VIDEO_PLAYING)
+    else if state = "paused"
+        dispatch(events.VIDEO_PAUSED)
+    else if state = "buffering"
+        dispatch(events.VIDEO_BUFFERING)
+    else if state = "finished"
+        dispatch(events.VIDEO_FINISHED)
+    else if state = "error"
+        dispatch(events.VIDEO_ERROR)
     end if
 end sub
-
-
-function onKeyEvent(key as string, press as boolean) as boolean
-    return exec(function(options = {})
-        if not options.press then return true
-        handled = processFocus(options.key)
-        ?"VideoPlayer onKeyEvent " options.key, handled
-        return handled
-    end function, { key: key, press: press })
-end function
 
 
 sub scrubLeft(options = {})
@@ -92,16 +90,14 @@ end sub
 
 
 sub hideOverlay(options = {})
-    ?"hideOverlay " options
     if not get("overlayOpen") then return
     fadeOut(m.videoControls)
-    set({ overlayOpen: true })
+    set({ overlayOpen: false })
 end sub
 
 
 sub showOverlay(options = {})
     if get("overlayOpen") then return
-    ?"hideOverlay " options
     fadeIn(m.videoControls)
     set({ overlayOpen: true })
 end sub
@@ -113,27 +109,40 @@ end sub
 
 
 sub seekForward(options = {})
-    if rodash.isEmpty(options) then return
+    if not rodash.isNode(m.video) then return
+    ' m.video.control = "pause"
+    m.video.seek = m.video.position + 30
 end sub
 
 
 sub seekRewind(options = {})
-    if rodash.isEmpty(options) then return
+    if not rodash.isNode(m.video) then return
+    m.video.seek = m.video.position - 30
 end sub
 
 
 sub togglePlayback(options = {})
-    if rodash.isEmpty(options) then return
+    if not rodash.isNode(m.video) then return
+    if m.video.state = "paused"
+        m.video.control = "play"
+    else if m.video.state = "playing"
+        m.video.control = "pause"
+    end if
 end sub
 
 
 sub restartPlayback(options = {})
-    if rodash.isEmpty(options) then return
+    if not rodash.isNode(m.video) then return
+    dispatch(events.VIDEO_RESTARTING)
+    m.video.seek = 0
 end sub
 
 
-
-
-
-
-
+function onKeyEvent(key as string, press as boolean) as boolean
+    return exec(function(options = {})
+        if not options.press then return true
+        handled = processFocus(options.key)
+        ?"VideoPlayer onKeyEvent " options.key, handled
+        return handled
+    end function, { key: key, press: press })
+end function

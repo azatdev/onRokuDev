@@ -1,5 +1,11 @@
 query DetailsScreen($documentId: ID!) {
   content(documentId: $documentId) {
+    bifs {
+      bifType
+      bif {
+        url
+      }
+    }
     complimentaryColor
     copyrightYear
     description

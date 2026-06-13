@@ -3,7 +3,6 @@ import "testdata.bs"
 
 
 sub init()
-    ?"APP START " rodash.now()
     exec(sub(options = {})
         top().setFocus(true)
 
