@@ -10,7 +10,7 @@ module.exports = {
         translation: [921, 60],
         width: 999,
         "MaskGroup": {
-            "maskuri": "pkg:/static/images/gradients/header-image-mask-test.webp"
+            "maskuri": "pkg:/static/images/gradients/header-image-mask.webp"
         },
         "Div": {
             "&#headerImageGradients": {
