@@ -9,5 +9,30 @@ const scrubBarWidth = viewport.width - (player.sideMargin * 2)
 
 module.exports = {
     "Trickplay": {
+        height: 195,
+        opacity: 0,
+        width: scrubBarWidth,
+        "Poster": {
+            "&#frame": {
+                blendColor: "#0e0d0dff",
+                height: 180,
+                uri: "pkg:/static/images/white-block.webp",
+                translation: [0, 0],
+                width: 312,
+                "Poster": {
+                    height: 156,
+                    loadDisplayMode: "scaleToZoom",
+                    translation: [12, 12],
+                    width: 288
+                }
+            },
+            "&#tip": {
+                blendColor: "#131212ff",
+                height: 18,
+                translation: [0, 0],
+                uri: "pkg:/static/images/playhead.webp",
+                width: 24
+            }
+        }
     }
 };

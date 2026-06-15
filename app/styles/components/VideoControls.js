@@ -9,6 +9,7 @@ const controlsWidth = viewport.width - (player.sideMargin * 2)
 
 module.exports = {
     "VideoControls": {
+        
         "Div": {
             "&#contentContainer": {
                 translation: [player.sideMargin, 66],

@@ -5,19 +5,19 @@ sub init()
         m.scrubBar = top().findNode("scrubBar")
         m.positionLabel = top().findNode("positionLabel")
         m.durationLabel = top().findNode("durationLabel")
-        m.controls = top().findNode("controls")
+        m.trickplay = top().findNode("trickplay")
         m.container = top().findNode("container")
         m.contentContainer = top().findNode("contentContainer")
         m.hideOverlay = top().findNode("hideOverlay")
         m.playerHeader = top().findNode("playerHeader")
 
-        m.controls.config = "<%- o(CONFIG.DefaultControls) %>"
         m.hideOverlay.config = "<%- o(CONFIG.ControlItems.hideOverlay) %>"
 
         safeObserve("data", onDataSet)
 
         safeFunctions({
-            onPositionChange: onPositionChange
+            onPositionChange: onPositionChange,
+            setPositionLabel: setPositionLabel
         })
 
         styleHooks({
@@ -48,8 +48,15 @@ sub onPositionChange(options = {})
     duration = options.info?.duration ?? 0
     exec("updateProgress", { position: position, duration: duration }, m.scrubBar)
 
-    m.positionLabel.text = formatSeekText(position)
+    setPositionLabel({ position: position })
     m.durationLabel.text = formatSeekText(duration)
+end sub
+
+
+sub setPositionLabel(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    position = options.position
+    m.positionLabel.text = formatSeekText(position)
 end sub
 
 

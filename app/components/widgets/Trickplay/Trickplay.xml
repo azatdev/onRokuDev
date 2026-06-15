@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="Trickplay" extends="Div">
     <interface>
+        <field id="position" type="integer" />
         <function name="safeFunc" />
     </interface>
     <children>
-        <Poster id="trickplayThumbnail" />
+        <Poster id="frame">
+            <Poster id="trickplayThumbnail" />
+        </Poster>
+        <Poster id="tip" />
     </children>
     <script type="text/brightscript" uri="Trickplay.bs" />
 </component>

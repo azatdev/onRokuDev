@@ -23,6 +23,7 @@ module.exports = {
                     "&#scrubber": {
                         color: "#8f9483",
                         height: player.seekbarHeight,
+                        translation: [-6, 0],
                         width: 6
                     }
                 }

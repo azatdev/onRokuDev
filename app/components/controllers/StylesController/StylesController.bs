@@ -3,8 +3,6 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(options = {})
-        m.stylesTask = createObject("roSGNode", "StyleTask")
-
         subscribe({
             [events.STYLES_UPDATE]: onStylesUpdate,
             [events.REQUEST_STYLES]: requestStyles
@@ -25,6 +23,7 @@ end sub
 
 
 sub requestStyles(options = {})
-    m.stylesTask.control = "RUN"
+    stylesTask = createObject("roSGNode", "StyleTask")
+    stylesTask.control = "RUN"
 end sub
 

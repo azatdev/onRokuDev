@@ -46,11 +46,18 @@ sub setCreatedAt(node)
 end sub
 
 
+sub setUUID(node)
+    if not rodash.isNode(node) then return
+    node.addField("ord_uuid", "string", false)
+    node.ord_uuid = CreateObject("roDeviceInfo").getRandomUUID()
+end sub
+
+
 function getNodeIdentifier(node)
     if not rodash.isNode(node) then return ""
-    if rodash.isInvalid(node.createdAt) then setCreatedAt(node)
+    if rodash.isInvalid(node.ord_uuid) then setUUID(node)
 
-    return [node.subType(), node.createdAt.toStr()].join("_")
+    return node.ord_uuid
 end function
 
 

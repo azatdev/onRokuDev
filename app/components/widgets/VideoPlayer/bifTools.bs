@@ -1,0 +1,6 @@
+function getNearestFrameFromPosition(position = 0)
+    if rodash.isInvalid(position) then return invalid
+    if not rodash.isNode(m.video) then return invalid
+    m.video.bifDisplay.getNearestFrame = position
+    return m.video.bifDisplay.NearestFrame
+end function

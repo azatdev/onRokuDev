@@ -3,24 +3,96 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(options = {})
         m.trickplayThumbnail = top().findNode("trickplayThumbnail")
+        m.frame = top().findNode("frame")
+        m.tip = top().findNode("tip")
+
+        safeObserve("position", onPositionChange)
 
         safeFunctions({
-            updateProgress: updateProgress
+            setTrickplayInfo: setTrickplayInfo,
+            hideTrickplay: hideTrickplay
         })
+
+        styleHooks({
+            after: afterStyling
+        })
+
+        set({
+            active: false
+        })
+
+        afterStyling()
+
     end sub)
 end sub
 
 
-sub updateProgress(options = {})
-    if rodash.isEmpty(options) then return
-    position = options.position ?? 0
-    duration = options.duration ?? 0
-    if position = 0 or duration = 0 then return
-
-    ' totalWidth = top().width
-    ' scrubberWidth = m.scrubber.width
-    ' progressPercentage = position / duration
-    ' progressWidth = totalWidth * progressPercentage
-    ' m.progressBar.width = progressWidth
-    ' m.scrubber.translation = [progressWidth - scrubberWidth, 0]
+sub afterStyling(options = {})
+    stackChildren({ node: top(), direction: "vertical" })
 end sub
+
+
+sub hideTrickplay(options = {})
+    ?"hideTrickplay " get("active")
+    if not get("active") then return
+    fadeOut(top())
+    set({ active: false })
+end sub
+
+
+sub onPositionChange(options = {})
+    if rodash.isEmpty(options) then return
+    ' m.trickplayThumbnail.uri =
+end sub
+
+
+sub setTrickplayInfo(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    ?"setTrickplayInfo " get("active")
+    if not get("active")
+        fadeIn(top())
+        set({ active: true })
+    end if
+
+    setThumbnail(options)
+    setPosition(options)
+end sub
+
+
+sub setThumbnail(options = {})
+    if not rodash.isNode(m.trickplayThumbnail) then return
+    trickplayFrame = options.trickplayFrame ?? ""
+    m.trickplayThumbnail.uri = trickplayFrame
+end sub
+
+
+sub setPosition(options = {})
+    if not rodash.isNode(m.frame) then return
+    if not rodash.isNode(m.tip) then return
+
+    position = options.trickplayPosition ?? 0
+    duration = options.duration
+    if position > duration then position = duration
+    tipWidth = getVisibleWidth(m.tip)
+    tipHalfWidth = tipWidth / 2
+    totalWidth = top().width
+    minPosition = tipHalfWidth * -1
+    maxPosition = totalWidth + tipHalfWidth
+    progressPercentage = position / duration
+    progressWidth = totalWidth * progressPercentage
+    frameWidth = m.frame.width
+    frameHalfWidth = frameWidth / 2
+
+    frameTranslation = progressWidth - frameHalfWidth
+    if frameTranslation <= minPosition then frameTranslation = minPosition
+    if frameTranslation + frameWidth > maxPosition then frameTranslation = maxPosition - frameWidth
+
+    tipTranslation = progressWidth - tipHalfWidth
+    if tipTranslation <= (tipHalfWidth * -1) then tipTranslation = minPosition
+    if tipTranslation + tipWidth > maxPosition then tipTranslation = maxPosition - tipHalfWidth
+
+    tipVertTranslation = m.tip.translation[1]
+    m.tip.translation = [tipTranslation, tipVertTranslation]
+    m.frame.translation = [frameTranslation, 0]
+end sub
+

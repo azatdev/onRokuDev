@@ -5,7 +5,7 @@ module.exports = {
             width: 1920
         },
         player: {
-            controlsHeight: 204,
+            controlsHeight: 399,
             seekbarHeight: 15,
             sideMargin: 84
         }
