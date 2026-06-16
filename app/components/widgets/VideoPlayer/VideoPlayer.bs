@@ -27,6 +27,8 @@ sub init()
         controlsConfig = "<%- o(CONFIG.DefaultControls) %>"
         m.controls.config = controlsConfig
 
+        activeControlsConfig = "<%- o(CONFIG.ActiveControls) %>"
+
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
         safeObserve("state", onVideoStateChange, m.video)
@@ -35,20 +37,22 @@ sub init()
         setFocusMap({
             "default": m.videoControls,
             "videoControls": {
-                "left": scrubLeft,
-                "right": scrubRight,
+                "left": [showOverlay, scrubLeft],
+                "right": [showOverlay, scrubRight],
                 "up": showOverlay,
                 "down": exitPlayer,
                 "ok": onSelection,
-                "rewind": seekRewind,
-                "fastforward": seekForward,
-                "play": togglePlayback,
+                "options": onOptions,
+                "rewind": [showOverlay, seekRewind],
+                "fastforward": [showOverlay, seekForward],
+                "play": [showOverlay, togglePlayback],
                 "back": onBackButton,
-                "replay": restartPlayback
+                "replay": [showOverlay, restartPlayback]
             }
         })
 
         set({
+            activeControlsConfig: activeControlsConfig,
             controlsConfig: controlsConfig,
             scrubInterval: 10,
             scrubPosition: 0,
@@ -60,6 +64,12 @@ sub init()
         })
     end sub)
 end sub
+
+
+function onOptions(options = {})
+    ?"onOptions "
+    return false
+end function
 
 
 sub onDataSet(options = {})
@@ -87,10 +97,10 @@ end sub
 sub onScrubTimerFired(options = {})
     if not rodash.isNode(m.trickplay) then return
     if not rodash.isNode(m.video) then return
-    ?"onScrubTimerFired "
     m.video.control = "resume"
     set({ scrubPosition: m.video.position })
     exec("hideTrickplay", {}, m.trickplay)
+    resetControls()
 end sub
 
 
@@ -114,6 +124,8 @@ sub onSeekTimerFired(options = {})
 
     if nextPosition = duration then m.seekTimer.control = "stop"
     if nextPosition <= 0 then m.seekTimer.control = "stop"
+
+    updateControl({ controlId: "seekControl" })
 end sub
 
 
@@ -150,8 +162,10 @@ sub onVideoStateChange(options = {})
     if rodash.isEmpty(options) then return
     state = options.data
     if state = "playing"
+        resetControls()
         dispatch(events.VIDEO_PLAYING)
     else if state = "paused"
+        updateControl({ controlId: "playControl" })
         dispatch(events.VIDEO_PAUSED)
     else if state = "buffering"
         dispatch(events.VIDEO_BUFFERING)
@@ -180,6 +194,7 @@ sub performScrub(options = {})
     set({ scrubPosition: nextPosition })
     m.scrubTimer.control = "start"
     sendTrickplayInfo({ trickplayPosition: nextPosition })
+    updateControl({ controlId: "scrubControl" })
 end sub
 
 
@@ -238,6 +253,7 @@ end sub
 
 
 sub showOverlay(options = {})
+    ?"showOverlay " get("overlayOpen")
     if get("overlayOpen") then return
     fadeIn(m.videoControls)
     set({ overlayOpen: true })
@@ -302,6 +318,12 @@ end sub
 
 sub togglePlayback(options = {})
     if not rodash.isNode(m.video) then return
+
+    if get("seeking")
+        onSelection()
+        return
+    end if
+
     if m.video.state = "paused"
         m.video.control = "resume"
     else if m.video.state = "playing"
@@ -314,6 +336,31 @@ sub restartPlayback(options = {})
     if not rodash.isNode(m.video) then return
     dispatch(events.VIDEO_RESTARTING)
     m.video.seek = 0
+    updateControl({ controlId: "restartControl" })
+end sub
+
+
+sub resetControls(options = {})
+    rodash.delay(sub(controls)
+        if not rodash.isNode(controls) then return
+        controls.config = get("controlsConfig")
+    end sub, 500, m.controls)
+end sub
+
+
+sub updateControl(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    controlId = options.controlId ?? ""
+    if rodash.isEmpty(controlId) then return
+
+    activeControls = get("activeControlsConfig") ?? {}
+    newControlConfig = activeControls[controlId]
+    if not rodash.isNonEmptyAA(newControlConfig) then return
+
+    newControl = {}
+    newControl.append(newControlConfig)
+
+    m.controls.config = [newControl]
 end sub
 
 

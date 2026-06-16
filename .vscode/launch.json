@@ -19,7 +19,12 @@
                 "manifest",
                 "static/**/*",
                 "source/**/*.*"
-            ]
+            ],
+            "profiling": {
+                "tracing": {
+                    "enable": true,
+                }
+            }
         }
     ],
     "version": "0.2.0"

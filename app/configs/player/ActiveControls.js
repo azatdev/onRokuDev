@@ -2,36 +2,36 @@ const iconConfig = require("../layout/icons");
 const Icons = iconConfig["Icons"]
 
 module.exports = {
-    "DefaultControls": [
-        {
+    "ActiveControls": {
+        "playControl": {
             id: "playControl",
-            icons: [Icons.pause],
-            opacity: 0.6,
-            title: "TKEY_PAUSE"
+            icons: [Icons.playSquare],
+            opacity: 1,
+            title: "TKEY_PLAY"
         },
-        {
+        "seekControl": {
             id: "seekControl",
             icons: [Icons.seekRW, Icons.seekFF],
-            opacity: 0.6,
-            title: "TKEY_SEEK"
+            opacity: 1,
+            title: "TKEY_SEEKING"
         },
-        {
+        "scrubControl": {
             id: "scrubControl",
-            icons: [Icons.caretLeft, Icons.caretRight],
-            opacity: 0.6,
-            title: "TKEY_SCRUB"
+            icons: [Icons.seekRW, Icons.seekFF],
+            opacity: 1,
+            title: "TKEY_SCRUBBING"
         },
-        {
+        "restartControl": {
             id: "restartControl",
             icons: [Icons.replay],
-            opacity: 0.6,
+            opacity: 1,
             title: "TKEY_RESTART"
         },
-        {
+        "ccControl": {
             id: "ccControl",
             icons: [Icons.cc],
-            opacity: 0.6,
+            opacity: 1,
             title: "TKEY_CCOPTIONS"
         }
-    ]
+    }
 };

@@ -52,34 +52,50 @@ class Focusable
     end function
 
 
+    function processFocusFunction(focusFunction = {})
+        if not rodash.isFunction(focusFunction) then return false
+
+        functionHandled = exec(focusFunction)
+        ' Supporting subs
+        if functionHandled = invalid then return true
+        if rodash.isBoolean(functionHandled) then return functionHandled
+        return true
+    end function
+
+
     function processFocus(key as string)
         handled = false
 
         focusTarget = m.focusMap.current ?? m.focusMap.default ?? top()
-
         if rodash.isFunction(focusTarget)
-            exec(focusTarget)
-            return true
+            handled = m.processFocusFunction(focusTarget)
+            return handled
         end if
-
-        if not rodash.isNode(focusTarget) then return false
 
         nodeMap = m.focusMap[focusTarget.id] ?? {}
-        focusValue = nodeMap[key]
+        focusArray = nodeMap[key]
 
-        if focusValue = invalid then return handled
+        if rodash.isInvalid(focusArray) then return handled
+        if not rodash.isArray(focusArray) then focusArray = [focusArray]
 
-        if rodash.isFunction(focusValue)
-            exec(focusValue)
-            handled = true
-        else if rodash.isNode(focusValue)
-            handled = true
-        else if rodash.isNonEmptyString(focusValue)
-            focusValue = top().findNode(focusValue)
-            handled = true
-        end if
+        for each target in focusArray
+            if rodash.isFunction(target)
+                functionHandled = m.processFocusFunction(target)
+                if not handled then handled = functionHandled
+                continue for
+            end if
 
-        m.setFocus(focusValue)
+            if rodash.isInvalid(target) then continue for
+
+            if not rodash.isNode(target) and rodash.isNonEmptyString(target)
+                target = top().findNode(target)
+            end if
+
+            if not rodash.isNode(target) then continue for
+
+            m.setFocus(target)
+            if not handled then handled = true
+        end for
 
         return handled
     end function

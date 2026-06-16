@@ -14,7 +14,7 @@ sub onConfigChange(options = {})
     config = options.data ?? {}
     if not rodash.isNonEmptyAA(config) then return
     if rodash.isNonEmptyArray(config.icons) then populateIcons(config.icons)
-    m.title.text = tr(config.title)
+    m.title.text = ucase(tr(config.title))
     top().opacity = config.opacity ?? 1
     stackChildren({ node: top(), direction: "horizontal" })
 end sub

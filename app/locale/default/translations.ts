@@ -15,7 +15,7 @@
         </message>
         <message>
             <source>TKEY_CCOPTIONS</source>
-            <translation>CC OPTIONS</translation>
+            <translation>CC options</translation>
         </message>
         <message>
             <source>TKEY_CONTENT_DETAILS</source>
@@ -35,11 +35,11 @@
         </message>
         <message>
             <source>TKEY_PAUSE</source>
-            <translation>PAUSE</translation>
+            <translation>Pause</translation>
         </message>
         <message>
             <source>TKEY_PLAY</source>
-            <translation>PLAY</translation>
+            <translation>Play</translation>
         </message>
         <message>
             <source>TKEY_PLAY_NOW</source>
@@ -47,15 +47,23 @@
         </message>
         <message>
             <source>TKEY_RESTART</source>
-            <translation>RESTART</translation>
+            <translation>Restart</translation>
+        </message>
+        <message>
+            <source>TKEY_SCRUBBING</source>
+            <translation>Scrubbing</translation>
         </message>
         <message>
             <source>TKEY_SCRUB</source>
-            <translation>SCRUB</translation>
+            <translation>Scrub</translation>
         </message>
         <message>
-            <source>TKEY_SEEK15S</source>
-            <translation>SEEK 15s</translation>
+            <source>TKEY_SEEK</source>
+            <translation>Seek</translation>
+        </message>
+        <message>
+            <source>TKEY_SEEKING</source>
+            <translation>Seeking</translation>
         </message>
     </context>
 </TS>
