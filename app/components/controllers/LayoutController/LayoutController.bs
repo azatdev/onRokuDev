@@ -51,7 +51,7 @@ sub updateBackgroundAssets(options = {})
     content = options.content
 
     rodash.delay(sub(options = {})
-        dispatch(events.PLAY_VIDEO, { content: options.content })
+        ' dispatch(events.PLAY_VIDEO, { content: options.content })
         ' dispatch(events.NAVIGATE_TO, { slug: `/details/${options.content.id}`, content: options.content })
     end sub, 1000, { content: content })
 end sub

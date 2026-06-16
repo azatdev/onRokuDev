@@ -8,7 +8,7 @@ module.exports = {
                 color: "#33333300",
                 "Icon": {
                     color: palette.primaryColor,
-                    height: 75,
+                    height: 0,
                     margin: [0, 27, 0, 36],
                     size: 33,
                     vertAlign: "center",
@@ -17,10 +17,10 @@ module.exports = {
                 "QuanticoBold": {
                     "&#label": {
                         color: palette.primaryColor,
-                        height: 75,
-                        margin: [24, 42, 0, 0],
+                        height: 60,
+                        margin: [0, 42, 0, 42],
                         size: 24,
-                        vertAlign: "center"
+                        vertAlign: "bottom"
                     }
                 }
             }

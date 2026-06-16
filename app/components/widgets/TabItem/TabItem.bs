@@ -15,9 +15,9 @@ sub afterStyling(options = {})
 end sub
 
 sub setupItem()
-    m.label = m.top.findNode("label")
-    m.icon = m.top.findNode("icon")
-    m.container = m.top.findNode("textContainer")
+    m.label = top().findNode("label")
+    m.icon = top().findNode("icon")
+    m.container = top().findNode("textContainer")
     m.tabTop = top().findNode("tabTop")
     m.tabBottom = top().findNode("tabBottom")
     m.parentList = top().getParent()
@@ -57,7 +57,7 @@ sub onTextChange(options = {})
     exec("registerChildRect", {
         smallSquare: getFocusedRectSize(),
         bigSquare: getFocusedRectSize(),
-        index: m.top.index
+        index: top().index
     }, m.parentList.getParent())
 end sub
 

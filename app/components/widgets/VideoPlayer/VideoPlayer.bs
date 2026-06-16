@@ -6,7 +6,7 @@ sub init()
         m.videoOverlay = top().findNode("videoOverlay")
         m.trickplay = top().findNode("trickplay")
         m.video = top().findNode("video")
-        m.video.enableUI = true
+        m.video.enableUI = false
         m.video.notificationInterval = 1
         m.video.seekMode = "accurate"
 
@@ -127,6 +127,7 @@ end sub
 sub onSelection(options = {})
     if not rodash.isNode(m.seekTimer) then return
     if not rodash.isNode(m.scrubTimer) then return
+    if not rodash.isNode(m.video) then return
 
     scrubbing = m.scrubTimer.control = "start"
     seeking = get("seeking") ?? false
@@ -138,6 +139,7 @@ sub onSelection(options = {})
         exec("hideTrickplay", {}, m.trickplay)
         m.video.seek = get("scrubPosition")
         set({
+            scrubPosition: m.video.position,
             seekDirection: 0,
             seeking: false,
             seekSpeed: 0
@@ -168,6 +170,8 @@ sub onVideoStateChange(options = {})
         dispatch(events.VIDEO_FINISHED)
     else if state = "error"
         dispatch(events.VIDEO_ERROR)
+    else if state = "stopped"
+        dispatch(events.VIDEO_STOPPED)
     end if
 end sub
 
@@ -216,13 +220,17 @@ sub scrubRight(options = {})
 end sub
 
 
-sub onBackButton(options = {})
+function onBackButton(options = {})
     if get("seeking")
-        onSeekCancel()
+        return onSeekCancel()
     else if get("overlayOpen")
-        hideOverlay()
+        return hideOverlay()
     end if
-end sub
+
+    if not rodash.isNode(m.video) then return false
+    m.video.control = "stop"
+    return false
+end function
 
 
 sub onSeekCancel()

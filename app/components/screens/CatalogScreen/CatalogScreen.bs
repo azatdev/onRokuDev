@@ -38,21 +38,12 @@ end function
 
 
 function onViewSuspend(options = {}) as dynamic
-    ?"onViewSuspend "
     fadeOut(top(), { duration: 1 })
-
-    return promises.resolve(invalid)
-end function
-
-
-function onViewOpen(options = {})
-    ?"onViewOPen " top().subtype()
     return promises.resolve(invalid)
 end function
 
 
 function onViewResume(options = {})
-    ?"onViewResume "  top().subtype()
     dispatch(events.SHOW_CATALOG_UI)
     fadeIn(top(), { duration: 1 })
     return promises.resolve(invalid)

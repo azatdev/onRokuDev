@@ -119,7 +119,7 @@ sub hideVideoPlayer(options = {})
     morphObject = {}
     morphObject[m.videoPlayer.id] = {
         fields: {
-            translation: [0, -1080]
+            opacity: 0
         }
     }
     morphObject[m.screenContainer.id] = {
@@ -132,13 +132,17 @@ sub hideVideoPlayer(options = {})
             opacity: 1
         }
     }
-    morphObject[m.navigation.id] = {
-        fields: {
-            opacity: 1
+
+    if get("detailsUIHidden")
+        morphObject[m.navigation.id] = {
+            fields: {
+                opacity: 1
+            }
         }
-    }
+    end if
+
     morph(morphObject)
-    setFocus(m.activeView)
+    focusOnScreen()
 end sub
 
 
@@ -148,7 +152,7 @@ sub playVideo(options = {})
     morphObject = {}
     morphObject[m.videoPlayer.id] = {
         fields: {
-            translation: [0, 0]
+            opacity: 1
         }
     }
     morphObject[m.screenContainer.id] = {

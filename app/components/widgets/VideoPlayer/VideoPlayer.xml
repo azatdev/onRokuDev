@@ -3,8 +3,6 @@
     <interface>
         <field id="data" type="assocarray" />
         <function name="safeFunc" />
-        CONTENT DETAILS
-        PLAYER CONTROLS
     </interface>
     <children>
         <Video id="video" />

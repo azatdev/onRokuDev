@@ -8,6 +8,8 @@ sub init()
         m.detailsScrollGroup = top().findNode("detailsScrollGroup")
         m.detailsHero = top().findNode("detailsHero")
         m.tabs = top().findNode("tabs")
+        m.description = top().findNode("description")
+        m.ctas = top().findNode("ctas")
 
         liveConfig({ field: "config", keyPath: "CatalogDetailsScrollGroup" }, m.detailsScrollGroup)
         safeObserve("data", onDataSet)
@@ -15,11 +17,11 @@ sub init()
 
         setFocusMap({
             "default": m.detailsHero,
-            "catalogHero": {
-                "down": "focusDetailsScrollGroup"
+            "detailsHero": {
+                "down": focusDetailsScrollGroup
             },
             "detailsScrollGroup": {
-                "up": "focusCatalogHero"
+                "up": focusDetailsHero
             }
         })
 
@@ -31,7 +33,6 @@ end sub
 
 
 function beforeViewOpen(options = {}) as dynamic
-    ?"beforeViewOPen " options.route.context, options.route.queryParams, options.route.routeParams
     routeData = options.route
     if not rodash.isNode(routeData) then return promises.resolve(invalid)
     context = routeData.context ?? {}
@@ -47,7 +48,6 @@ end function
 
 
 function onViewOpen(options = {})
-    ?"onViewOPen "  top().subtype()
     dispatch(events.SHOW_DETAILS_UI)
 
     return promises.resolve(invalid)
@@ -55,7 +55,6 @@ end function
 
 
 function onViewResume(options = {})
-    ?"onViewResume "  top().subtype()
     dispatch(events.SHOW_DETAILS_UI)
     return promises.resolve(invalid)
 end function
@@ -83,8 +82,8 @@ end sub
 sub afterStyling(options = {})
     if not rodash.isNode(m.screenContainer) then return
     if not rodash.isNode(m.bottomContainer) then return
-    stackChildren({ node: m.bottomContainer, direction: "vertical" })
     stackChildren({ node: m.screenContainer, direction: "vertical" })
+    stackChildren({ node: m.bottomContainer, direction: "vertical" })
 end sub
 
 
@@ -96,16 +95,27 @@ sub onFocusedChildChange(options = {})
 end sub
 
 
-sub focusCatalogHero(options = {})
-    ' scrollPage(-1, onCatalogHeroFocused)
+sub focusDetailsHero(options = {})
+    scrollPage(-1, onDetailsHeroFocused)
     ' dispatch(events.CATALOG_HERO_FOCUSED)
 end sub
 
 
 sub focusDetailsScrollGroup(options = {})
-    ' scrollPage(1, onDetailsScrollGroupFocused)
-    ' onDetailsScrollGroupFocused()
+    scrollPage(1, onDetailsScrollGroupFocused)
     ' dispatch(events.SCROLL_GROUP_FOCUSED)
+end sub
+
+
+sub onDetailsHeroFocused(options = {})
+    if not rodash.isNode(m.detailsHero) then return
+    setFocus(m.detailsHero)
+end sub
+
+
+sub onDetailsScrollGroupFocused(options = {})
+    if not rodash.isNode(m.detailsScrollGroup) then return
+    setFocus(m.detailsScrollGroup)
 end sub
 
 
@@ -122,31 +132,44 @@ end sub
 
 sub scrollPage(direction = 0, callbackFunc = invalid)
     morphObject = {}
-    heightDelta = 195 * direction
-    morphObject[m.detailsScrollGroup.id] = {
+    heightDelta = 393 * direction
+    morphObject[m.bottomContainer.id] = {
         fields: {
-            height: m.detailsScrollGroup.height + heightDelta,
+            height: m.bottomContainer.height + heightDelta,
             translation: [
                 0,
-                m.catalogHero.height - heightDelta
+                m.detailsHero.height - heightDelta
             ]
         }
     }
-    morphObject[m.catalogHero.id] = {
+
+    morphObject[m.detailsHero.id] = {
         fields: {
-            height: m.catalogHero.height - heightDelta,
-            opacity: 1 - direction
+            height: m.detailsHero.height - heightDelta
         }
     }
 
-    morphObject[m.catalogHeader.id] = {
+    morphObject[m.description.id] = {
         fields: {
-            height: direction = -1 ? m.catalogHero.height - heightDelta : 0,
-            opacity: 0 + direction
+            opacity: 0 - direction
         }
     }
 
-    m.catalogHeader.visible = direction = 1 ? true : false
+    morphObject[m.ctas.id] = {
+        fields: {
+            opacity: 0 - direction
+        }
+    }
 
     morph(morphObject, { callback: callbackFunc, duration: 0.3 })
 end sub
+
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    return exec(function(options = {})
+        if not options.press then return true
+        handled = processFocus(options.key)
+        ?"DetailsScreen onKeyEvent " options.key, handled
+        return handled
+    end function, { key: key, press: press })
+end function
