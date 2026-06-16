@@ -6,7 +6,7 @@ const player = dimensions["player"]
 
 module.exports = {
     "Separator": {
-        opacity: 0.4,
+        opacity: 0,
         translation: [0, viewport.height - 75],
         width: viewport.width,
         "Rectangle": {

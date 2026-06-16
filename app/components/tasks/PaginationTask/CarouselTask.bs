@@ -19,7 +19,7 @@ function runCarouselTask(options = {})
     variables = exec("getVariables", {}, collection)
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Carousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
 
-    responseJSON = parseJSON(response.text)
+    responseJSON = parseJSON(response.text ?? "")
     responseData = responseJSON.data ?? {}
     carouselsData = responseData.carousel ?? {}
     contentsData = carouselsData.contents ?? []

@@ -8,8 +8,8 @@ const player = dimensions["player"];
 const controlsWidth = viewport.width - (player.sideMargin * 2)
 
 module.exports = {
-    "VideoControls": {
-        
+    "VideoOverlay": {
+        opacity: 0,
         "Div": {
             "&#contentContainer": {
                 translation: [player.sideMargin, 66],

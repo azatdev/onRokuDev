@@ -3,7 +3,7 @@ import "bifTools.bs"
 
 sub init()
     exec(sub(options = {})
-        m.videoControls = top().findNode("videoControls")
+        m.videoOverlay = top().findNode("videoOverlay")
         m.trickplay = top().findNode("trickplay")
         m.video = top().findNode("video")
         m.video.enableUI = true
@@ -35,14 +35,13 @@ sub init()
         safeObserve("position", onVideoPositionChange, m.video, ["duration"])
 
         setFocusMap({
-            "default": m.videoControls,
-            "videoControls": {
+            "default": m.videoOverlay,
+            "videoOverlay": {
                 "left": [showOverlay, scrubLeft],
                 "right": [showOverlay, scrubRight],
                 "up": showOverlay,
                 "down": exitPlayer,
                 "ok": onSelection,
-                "options": onOptions,
                 "rewind": [showOverlay, seekRewind],
                 "fastforward": [showOverlay, seekForward],
                 "play": [showOverlay, togglePlayback],
@@ -60,29 +59,24 @@ sub init()
             seeking: false,
             seekIntervals: [30, 60, 120],
             seekSpeed: 0,
-            overlayOpen: true
+            overlayOpen: false
         })
     end sub)
 end sub
 
 
-function onOptions(options = {})
-    ?"onOptions "
-    return false
-end function
-
-
 sub onDataSet(options = {})
     if rodash.isEmpty(options) then return
     if not rodash.isNode(m.video) then return
-    if not rodash.isNode(m.videoControls) then return
+    if not rodash.isNode(m.videoOverlay) then return
 
     data = options.data
     content = data.content
     playerModel = content.playerModel
     m.video.content = playerModel
     m.video.control = "play"
-    m.videoControls.data = data
+    m.videoOverlay.data = data
+    showOverlay()
 end sub
 
 
@@ -125,6 +119,7 @@ sub onSeekTimerFired(options = {})
     if nextPosition = duration then m.seekTimer.control = "stop"
     if nextPosition <= 0 then m.seekTimer.control = "stop"
 
+    showOverlay()
     updateControl({ controlId: "seekControl" })
 end sub
 
@@ -154,7 +149,7 @@ end sub
 
 
 sub onVideoPositionChange(options = {})
-    exec("onPositionChange", options, m.videoControls)
+    exec("onPositionChange", options, m.videoOverlay)
 end sub
 
 
@@ -201,13 +196,13 @@ end sub
 sub sendTrickplayInfo(options = {})
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.trickplay) then return
-    if not rodash.isNode(m.videoControls) then return
+    if not rodash.isNode(m.videoOverlay) then return
 
     options.trickplayFrame = getNearestFrameFromPosition(options.trickplayPosition ?? 0)
     options.duration = m.video.duration
 
     exec("setTrickplayInfo", options, m.trickplay)
-    exec("setPositionLabel", { position: options.trickplayPosition }, m.videoControls)
+    exec("setPositionLabel", { position: options.trickplayPosition }, m.videoOverlay)
 end sub
 
 
@@ -247,16 +242,20 @@ end sub
 
 sub hideOverlay(options = {})
     if not get("overlayOpen") then return
-    fadeOut(m.videoControls)
+    fadeOut(m.videoOverlay)
     set({ overlayOpen: false })
 end sub
 
 
 sub showOverlay(options = {})
-    ?"showOverlay " get("overlayOpen")
-    if get("overlayOpen") then return
-    fadeIn(m.videoControls)
+    if get("overlayOpen")
+        m.overlayTimer.control = "start"
+        return
+    end if
+
+    fadeIn(m.videoOverlay)
     set({ overlayOpen: true })
+    m.overlayTimer.control = "start"
 end sub
 
 
@@ -271,9 +270,13 @@ sub startSeek()
     if not rodash.isNode(m.video) then return
     if m.video.state <> "playing" and m.video.state <> "paused" then return
 
-    m.video.control = "pause"
+    if m.scrubTimer.control = "start"
+        m.scrubTimer.control = "stop"
+        resetControls()
+    end if
 
-    if m.scrubTimer.control = "start" then m.scrubTimer.control = "stop"
+    m.video.control = "pause"
+    updateControl({ controlId: "playControl" })
 
     seekSpeed = get("seekSpeed")
     seeking = get("seeking")
@@ -337,14 +340,21 @@ sub restartPlayback(options = {})
     dispatch(events.VIDEO_RESTARTING)
     m.video.seek = 0
     updateControl({ controlId: "restartControl" })
+
+    rodash.delay(sub()
+        hideOverlay()
+    end sub, 1000)
 end sub
 
 
 sub resetControls(options = {})
-    rodash.delay(sub(controls)
-        if not rodash.isNode(controls) then return
-        controls.config = get("controlsConfig")
-    end sub, 500, m.controls)
+    if not rodash.isNode(m.controls) then return
+    ' rodash.delay(sub(controls)
+    '     if not rodash.isNode(controls) then return
+    '     controls.config = get("controlsConfig")
+    ' end sub, 500, m.controls)
+
+    m.controls.config = get("controlsConfig")
 end sub
 
 

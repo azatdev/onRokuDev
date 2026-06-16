@@ -14,6 +14,6 @@ module.exports = {
     ...require("./TabItem"),
     ...require("./TestItem"),
     ...require("./Trickplay"),
-    ...require("./VideoControls"),
+    ...require("./VideoOverlay"),
     ...require("./VideoPlayer")
 };

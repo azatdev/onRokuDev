@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="VideoControls" extends="Div">
+<component name="VideoOverlay" extends="Div">
     <interface>
         <field id="data" type="assocarray" />
         <function name="safeFunc" />
@@ -23,5 +23,5 @@
             <Controls id="controls" />
         </Div>
     </children>
-    <script type="text/brightscript" uri="VideoControls.bs" />
+    <script type="text/brightscript" uri="VideoOverlay.bs" />
 </component>
