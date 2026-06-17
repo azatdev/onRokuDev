@@ -155,13 +155,13 @@ end sub
 
 sub onCatalogHeroFocused(options = {})
     exec("showBackground", options, background())
-    exec("hideHeaderImage", options, background())
+    ' exec("hideHeaderImage", options, background())
 end sub
 
 
 sub onScrollGroupFocused(options = {})
     exec("hideBackground", options, background())
-    exec("showHeaderImage", options, background())
+    ' exec("showHeaderImage", options, background())
 end sub
 
 

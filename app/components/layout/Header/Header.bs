@@ -6,6 +6,7 @@ sub init()
         m.contentLogo = top().findNode("contentLogo")
         m.metadata = top().findNode("metadata")
         m.title = top().findNode("title")
+        m.headerImage = top().findNode("headerImage")
         safeObserve("data", onDataSet)
     end sub)
 end sub
@@ -24,6 +25,10 @@ sub onDataSet(options = {})
         m.title.visible = true
         setLogoTitle(content.title)
     end if
+
+    ' if rodash.isNonEmptyString(content.posterImageUri)
+    ' end if
+    m.headerImage.newUri = content.posterImageUri
 
     setMetadata(content)
 

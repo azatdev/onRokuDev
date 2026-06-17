@@ -10,6 +10,7 @@
             <Poster id="contentLogo" />
             <Metadata id="metadata" />
         </Div>
+        <HeaderImage id="headerImage" />
     </children>
     <script type="text/brightscript" uri="Header.bs" />
 </component>

@@ -24,7 +24,7 @@ sub onCarouselItemFocused(options = {})
     if carouselItemFocused = -1 then return
     itemModel = m.content.getChild(carouselItemFocused)
     if not rodash.isNode(itemModel) then return
-    dispatch(events.CAROUSEL_ITEM_FOCUSED, { content: itemModel, section: sections.CAROUSEL })
+    dispatch(events.CAROUSEL_ITEM_FOCUSED, { content: itemModel })
     checkPagination({ itemFocused: options.data })
 end sub
 

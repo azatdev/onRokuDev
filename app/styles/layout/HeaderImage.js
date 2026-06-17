@@ -6,7 +6,6 @@ const viewport = dimensions["viewport"]
 module.exports = {
     "HeaderImage": {
         height: 561,
-        opacity: 0,
         translation: [921, 60],
         width: 999,
         "MaskGroup": {

@@ -3,7 +3,6 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(options = {})
         m.backgroundContainer = top().findNode("backgroundContainer")
-        m.headerImage = top().findNode("headerImage")
         m.cornerGradient = top().findNode("cornerGradient")
         m.catalogGradientContainer = top().findNode("catalogGradientContainer")
         m.detailsGradientContainer = top().findNode("detailsGradientContainer")
@@ -11,11 +10,9 @@ sub init()
             hideBackground: hideBackground,
             hideCatalogGradients: hideCatalogGradients,
             hideDetailsGradients: hideDetailsGradients,
-            hideHeaderImage: hideHeaderImage,
             showBackground: showBackground,
             showCatalogGradients: showCatalogGradients,
             showDetailsGradients: showDetailsGradients,
-            showHeaderImage: showHeaderImage,
             updateAssets: updateAssets
         })
     end sub)
@@ -84,8 +81,6 @@ sub updateAssets(options = {})
         setBackground(content.headerImageUri)
     else if section = sections.DETAILS_HERO
         setBackground(content.posterImageUri)
-    else if section = sections.CAROUSEL
-        m.headerImage.newUri = content.posterImageUri
     end if
 end sub
 
@@ -113,14 +108,4 @@ end sub
 
 sub showBackground(options = {})
     fadeIn(m.backgroundContainer, { duration: 0.3 })
-end sub
-
-
-sub hideHeaderImage(options = {})
-    fadeOut(m.headerImage, { duration: 0.3 })
-end sub
-
-
-sub showHeaderImage(options = {})
-    fadeIn(m.headerImage, { duration: 0.3 })
 end sub
