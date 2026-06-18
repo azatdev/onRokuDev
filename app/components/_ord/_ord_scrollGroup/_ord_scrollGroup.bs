@@ -112,11 +112,16 @@ sub onChildChange(options = {})
     animationType = get("animationType") ?? "scroll"
     scrollAnimation = animationType = "scroll"
 
+    currentFocusIndex = get("itemFocused") ?? 0
+    currentFocusIndex = currentFocusIndex < 0 ? 0 : currentFocusIndex
+
     operation = changeData.operation ?? ""
     if operation <> "add" and operation <> "remove" then return
 
     numberOfNewNodes = changeData.index2 - changeData.index1 + 1
     addedNodes = top().getChildren(numberOfNewNodes, changeData.index1)
+
+    childIndex = 0
 
     for each child in addedNodes
         if not child.isSubtype("Group") then continue for
@@ -125,16 +130,15 @@ sub onChildChange(options = {})
             id: "scrollSlide-" + childIndex.toStr(),
             index: childIndex
         }
-        if not scrollAnimation then child.opacity = 0
+        if not scrollAnimation then child.opacity = childIndex = currentFocusIndex ? 1 : 0
         child.update(updateObject, true)
         m.container.appendChild(child)
+        childIndex++
     end for
 
     setGroupSizes()
 
     if top().isSameNode(top().focusedChild)
-        currentFocusIndex = get("itemFocused") ?? 0
-        currentFocusIndex = currentFocusIndex < 0 ? 0 : currentFocusIndex
         childToFocus = m.container.getChild(currentFocusIndex)
         if rodash.isNode(childToFocus) and not childToFocus.isInFocusChain()
             set({ itemFocused: currentFocusIndex })

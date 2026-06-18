@@ -11,9 +11,10 @@ sub init()
         m.description = top().findNode("description")
         m.ctas = top().findNode("ctas")
 
-        liveConfig({ field: "config", keyPath: "CatalogDetailsScrollGroup" }, m.detailsScrollGroup)
+        liveConfig({ field: "config", keyPath: "DetailsScrollGroup" }, m.detailsScrollGroup)
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
+        safeObserve("itemFocused", onTabFocused, m.tabs)
 
         setFocusMap({
             "default": m.detailsHero,
@@ -22,7 +23,11 @@ sub init()
             },
             "detailsScrollGroup": {
                 "up": focusDetailsHero
+            },
+            "ctas": {
+                "up": focusDetailsHero
             }
+
         })
 
         styleHooks({
@@ -47,6 +52,11 @@ function beforeViewOpen(options = {}) as dynamic
 end function
 
 
+sub onTabFocused(options = {})
+    ?"onTabFocused " options
+end sub
+
+
 function onViewOpen(options = {})
     dispatch(events.SHOW_DETAILS_UI)
 
@@ -69,7 +79,11 @@ sub onDataSet(options = {})
     m.content = content
     carousels = content.carousels
     m.detailsHero.data = { content: m.content }
-    m.tabs.data = { content: content. tabsModel }
+
+    tabsModel = content.tabsModel
+
+    liveConfig({ field: "config", keyPath: "TabsCarousel" }, tabsModel)
+    m.tabs.data = { content: tabsModel }
 
     for each model in carousels
         processScrollItem({ model: model })
@@ -102,6 +116,7 @@ end sub
 
 
 sub focusDetailsScrollGroup(options = {})
+    if not rodash.isNode(m.content) then return
     scrollPage(1, onDetailsScrollGroupFocused)
     ' dispatch(events.SCROLL_GROUP_FOCUSED)
 end sub
@@ -115,7 +130,18 @@ end sub
 
 sub onDetailsScrollGroupFocused(options = {})
     if not rodash.isNode(m.detailsScrollGroup) then return
-    setFocus(m.detailsScrollGroup)
+    if not rodash.isNode(m.content) then return
+
+    carousels = m.content.carousels ?? []
+    carouselCount = carousels.count()
+
+    if carouselCount = 0 then return
+
+    if carouselCount = 1
+        setFocus(m.detailsScrollGroup)
+    else
+        setFocus(m.tabs)
+    end if
 end sub
 
 

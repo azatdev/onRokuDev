@@ -39,6 +39,10 @@ sub itemContentChanged(options = {})
         m.icon.visible = true
     end if
 
+    if top().index = top().getParent().itemFocused
+        addClass("active", top())
+    end if
+
     onTextChange()
 end sub
 

@@ -17,7 +17,7 @@ module.exports = {
                 "QuanticoBold": {
                     "&#label": {
                         color: palette.primaryColor,
-                        height: 60,
+                        height: 54,
                         margin: [0, 42, 0, 42],
                         size: 24,
                         vertAlign: "bottom"
@@ -26,14 +26,20 @@ module.exports = {
             }
         },
         "Poster": {
+            opacity: 0,
             "&#tabTop": {
-                "blendColor": `${palette.highlightColor}80`,
+                "blendColor": `${palette.highlightColor}`,
                 "uri": "pkg:/static/images/9patches/tab-top-18px.9.png"
             },
             "&#tabBottom": {
-                blendColor: `${palette.highlightColor}80`,
+                blendColor: `${palette.highlightColor}`,
                 "uri": "pkg:/static/images/9patches/tab-bottom-18px.9.png"
-            },
+            }
+        },
+        "&.active": {
+            "Poster": {
+                opacity: 0.5
+            }
         }
     }
 };

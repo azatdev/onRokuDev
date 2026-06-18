@@ -8,7 +8,7 @@
         <Div id="screenContainer">
             <DetailsHero id="detailsHero" />
             <Div id="bottomContainer">
-                <Tabs id="tabs" />
+                <_ord_flexList id="tabs" />
                 <_ord_scrollGroup id="detailsScrollGroup" />
             </Div>
         </Div>

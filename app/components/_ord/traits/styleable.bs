@@ -108,13 +108,13 @@ class Styleable
         if rodash.isEmpty(styleObject) then return
 
         if rodash.isFunction(m.hookFunctions.before)
-            m.hookFunctions.before(styleObject)
+            exec(m.hookFunctions.before, styleObject)
         end if
 
         setStyles(styleObject)
 
         if rodash.isAA(m.hookFunctions) and rodash.isFunction(m.hookFunctions.after)
-            m.hookFunctions.after(styleObject)
+            exec(m.hookFunctions.after, styleObject)
         end if
     end sub
 
