@@ -13,7 +13,7 @@ end sub
 
 
 function safeFunctions(options = {})
-    interface = m.interfaceFunctions["safeFunctions"]
+    interface = m.ord_interfaces["safeFunctions"]
     if interface = invalid then return invalid
     return interface.safeFunctions(options)
 end function
@@ -38,9 +38,9 @@ function exec(func, options = {}, node = m.top, externalInterface = {})
 
     if not m.top.hasField("_ord_initiated") or not m.top._ord_initiated then ord_init()
 
-    if not rodash.isNonEmptyAA(m.interfaceFunctions) then return invalid
+    if not rodash.isNonEmptyAA(m.ord_interfaces) then return invalid
 
-    interface = m.interfaceFunctions["exec"]
+    interface = m.ord_interfaces["exec"]
     if interface = invalid then return invalid
 
     return interface.exec({
@@ -53,21 +53,21 @@ end function
 
 
 function safeFunc(functionName = "")
-    interface = m.interfaceFunctions["safeFunc"]
+    interface = m.ord_interfaces["safeFunc"]
     if interface = invalid then return invalid
     return interface.safeFunc(functionName)
 end function
 
 
 function safeObserve(fieldName = "", callbackFunc = "", node = m.top, infoFields = [])
-    interface = m.interfaceFunctions["safeObserve"]
+    interface = m.ord_interfaces["safeObserve"]
     if interface = invalid then return invalid
     return interface.safeObserve(fieldName, callbackFunc, node, infoFields)
 end function
 
 
 function safeUnobserve(fieldName = "", node = m.top)
-    interface = m.interfaceFunctions["safeUnobserve"]
+    interface = m.ord_interfaces["safeUnobserve"]
     if interface = invalid then return invalid
     return interface.safeUnobserve(fieldName, node)
 end function
@@ -75,28 +75,28 @@ end function
 
 function setTaskFunction(taskFunction = invalid)
     if not rodash.isFunction(taskFunction) then return invalid
-    interface = m.interfaceFunctions["setTaskFunction"]
+    interface = m.ord_interfaces["setTaskFunction"]
     return interface.setTaskFunction({ function: taskFunction })
 end function
 
 
 
 function get(options, node = m.top)
-    interface = m.interfaceFunctions["get"]
+    interface = m.ord_interfaces["get"]
     if interface = invalid then return invalid
     return interface.get(options, node)
 end function
 
 
 function set(options = {}, node = m.top)
-    interface = m.interfaceFunctions["set"]
+    interface = m.ord_interfaces["set"]
     if interface = invalid then return invalid
     return interface.set(options, node)
 end function
 
 
 function publish(name = "", options = {})
-    interface = m.interfaceFunctions["publish"]
+    interface = m.ord_interfaces["publish"]
     if interface = invalid then return invalid
     return interface.publish({
         id: name,
@@ -106,105 +106,105 @@ end function
 
 
 function subscribe(options)
-    interface = m.interfaceFunctions["subscribe"]
+    interface = m.ord_interfaces["subscribe"]
     if interface = invalid then return invalid
     return interface.subscribe(options)
 end function
 
 
 function setStyles(options, node = m.top)
-    interface = m.interfaceFunctions["setStyles"]
+    interface = m.ord_interfaces["setStyles"]
     if interface = invalid then return invalid
     return interface.setStyles(options, node)
 end function
 
 
 function addClass(className = "", node = m.top)
-    interface = m.interfaceFunctions["addClass"]
+    interface = m.ord_interfaces["addClass"]
     if interface = invalid then return invalid
     return interface.addClass({ class: className, node: node })
 end function
 
 
 function removeClass(className = "", node = m.top)
-    interface = m.interfaceFunctions["removeClass"]
+    interface = m.ord_interfaces["removeClass"]
     if interface = invalid then return invalid
     return interface.removeClass({ class: className, node: node })
 end function
 
 
 function redrawStyles()
-    interface = m.interfaceFunctions["redrawStyles"]
+    interface = m.ord_interfaces["redrawStyles"]
     if interface = invalid then return invalid
     return interface.redrawStyles()
 end function
 
 
 function styleHooks(options = {})
-    interface = m.interfaceFunctions["styleHooks"]
+    interface = m.ord_interfaces["styleHooks"]
     if interface = invalid then return invalid
     return interface.styleHooks(options)
 end function
 
 
 function animate(animation, options = {})
-    interface = m.interfaceFunctions["animate"]
+    interface = m.ord_interfaces["animate"]
     if interface = invalid then return invalid
     return interface.animate(animation, options)
 end function
 
 
 function reverse(animation = "", options = {})
-    interface = m.interfaceFunctions["reverse"]
+    interface = m.ord_interfaces["reverse"]
     if interface = invalid then return invalid
     return interface.reverse(animation, options)
 end function
 
 
 function finishAnimation(id = "")
-    interface = m.interfaceFunctions["reverse"]
+    interface = m.ord_interfaces["reverse"]
     if interface = invalid then return invalid
     return interface.finishAnimation(id)
 end function
 
 
 function stopAnimation(id = "")
-    interface = m.interfaceFunctions["stopAnimation"]
+    interface = m.ord_interfaces["stopAnimation"]
     if interface = invalid then return invalid
     return interface.stopAnimation(id)
 end function
 
 
 function removeAnimation(id = "")
-    interface = m.interfaceFunctions["removeAnimation"]
+    interface = m.ord_interfaces["removeAnimation"]
     if interface = invalid then return invalid
     return interface.removeAnimation(id)
 end function
 
 
 function morph(morphObject = {}, sharedOptions = {})
-    interface = m.interfaceFunctions["morph"]
+    interface = m.ord_interfaces["morph"]
     if interface = invalid then return invalid
     return interface.morph(morphObject, sharedOptions)
 end function
 
 
 function fadeIn(node = invalid, options = {})
-    interface = m.interfaceFunctions["fadeIn"]
+    interface = m.ord_interfaces["fadeIn"]
     if interface = invalid then return invalid
     return interface.fadeIn(node, options)
 end function
 
 
 function fadeOut(node = invalid, options = {})
-    interface = m.interfaceFunctions["fadeOut"]
+    interface = m.ord_interfaces["fadeOut"]
     if interface = invalid then return invalid
     return interface.fadeOut(node, options)
 end function
 
 
 function dispatch(eventId, options = {})
-    interface = m.interfaceFunctions["dispatch"]
+    interface = m.ord_interfaces["dispatch"]
     if interface = invalid then return invalid
     return interface.dispatch({
         id: eventId,
@@ -214,56 +214,56 @@ end function
 
 
 function setFocusMap(options = {})
-    interface = m.interfaceFunctions["setFocusMap"]
+    interface = m.ord_interfaces["setFocusMap"]
     if interface = invalid then return invalid
     return interface.setFocusMap(options)
 end function
 
 
 function processFocus(key = "")
-    interface = m.interfaceFunctions["processFocus"]
+    interface = m.ord_interfaces["processFocus"]
     if interface = invalid then return invalid
     return interface.processFocus(key)
 end function
 
 
 function waitToFocus(focusTarget)
-    interface = m.interfaceFunctions["waitToFocus"]
+    interface = m.ord_interfaces["waitToFocus"]
     if interface = invalid then return invalid
     return interface.waitToFocus(focusTarget)
 end function
 
 
 function readyToFocus()
-    interface = m.interfaceFunctions["readyToFocus"]
+    interface = m.ord_interfaces["readyToFocus"]
     if interface = invalid then return invalid
     return interface.readyToFocus()
 end function
 
 
 function setLoadable(options = {})
-    interface = m.interfaceFunctions["setLoadable"]
+    interface = m.ord_interfaces["setLoadable"]
     if interface = invalid then return invalid
     return interface.setLoadable(options)
 end function
 
 
 function applyDefaultFocus()
-    interface = m.interfaceFunctions["applyDefaultFocus"]
+    interface = m.ord_interfaces["applyDefaultFocus"]
     if interface = invalid then return invalid
     return interface.applyDefaultFocus()
 end function
 
 
 function setFocus(node)
-    interface = m.interfaceFunctions["setFocus"]
+    interface = m.ord_interfaces["setFocus"]
     if interface = invalid then return invalid
     return interface.setFocus(node)
 end function
 
 
 function liveConfig(options = {}, node = top())
-    interface = m.interfaceFunctions["liveConfig"]
+    interface = m.ord_interfaces["liveConfig"]
     if interface = invalid then return invalid
     return interface.liveConfig(options, node)
 end function

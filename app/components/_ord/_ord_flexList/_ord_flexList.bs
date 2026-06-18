@@ -1034,8 +1034,6 @@ namespace calculate
         targetRect = options.targetRect
         targetSetIndex = options.targetSetIndex
 
-        ' clippingRect = [0, 0, 0, 0]
-
         if targetSetIndex = -1
             if rectIndex = firstVisibleIndex
                 if targetRect.x >= 0 and targetRect.x > clippingRect[0] then clippingRect[0] = targetRect.x

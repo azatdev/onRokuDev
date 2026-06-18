@@ -20,13 +20,13 @@ sub ord_init()
 
     interfaces = [Safeable, Stateable, Eventable, Styleable, Animatable, Focusable, Configable, Loadable]
 
-    m.interfaceFunctions = {}
+    m.ord_interfaces = {}
 
     for each interface in interfaces
         interfaceInstance = new interface()
         interfacePublicFunctions = interfaceInstance.publicFunctions ?? []
         for each functionName in interfacePublicFunctions
-            m.interfaceFunctions[functionName] = interfaceInstance
+            m.ord_interfaces[functionName] = interfaceInstance
         end for
     end for
 
