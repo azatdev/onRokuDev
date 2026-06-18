@@ -34,7 +34,7 @@ function user()
 end function
 
 
-function exec(func, options = {}, node = m.top, externalInterface = {})
+function exec(func, options = {}, node = m.top)
 
     if not m.top.hasField("_ord_initiated") or not m.top._ord_initiated then ord_init()
 
@@ -46,8 +46,7 @@ function exec(func, options = {}, node = m.top, externalInterface = {})
     return interface.exec({
         func: func,
         options: options,
-        node: node,
-        externalInterface: externalInterface
+        node: node
     })
 end function
 
