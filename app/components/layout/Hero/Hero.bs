@@ -69,7 +69,6 @@ sub onHydrated(options = {})
     setLogoImage(content.logoImageUri)
     setCTAs(content.heroCTAsModel)
     setMetadata(content)
-    setHeaderImage(content)
 end sub
 
 
@@ -82,12 +81,6 @@ end sub
 sub setDescription(description = "")
     if rodash.isEmptyString(description) then return
     m.description.text = description
-end sub
-
-
-sub setHeaderImage(headerImageUri = "")
-    if rodash.isEmptyString(headerImageUri) then return
-    if rodash.isEmpty(headerImageUri) then return
 end sub
 
 

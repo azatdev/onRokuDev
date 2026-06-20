@@ -21,9 +21,6 @@ class Loadable
     sub onFieldUpdated(options = {})
         if not rodash.isNonEmptyAA(options) then return
 
-        fieldValue = options.data
-        if rodash.isEmpty(fieldValue) then return
-
         updatedField = options.field ?? ""
         if rodash.isEmpty(updatedField) then return
 

@@ -6,8 +6,6 @@ sub init()
         m.frame = top().findNode("frame")
         m.tip = top().findNode("tip")
 
-        safeObserve("position", onPositionChange)
-
         safeFunctions({
             setTrickplayInfo: setTrickplayInfo,
             hideTrickplay: hideTrickplay
@@ -36,12 +34,6 @@ sub hideTrickplay(options = {})
     if not get("active") then return
     fadeOut(top())
     set({ active: false })
-end sub
-
-
-sub onPositionChange(options = {})
-    if rodash.isEmpty(options) then return
-    ' m.trickplayThumbnail.uri =
 end sub
 
 

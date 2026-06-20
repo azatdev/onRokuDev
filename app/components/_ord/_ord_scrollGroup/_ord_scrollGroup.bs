@@ -105,9 +105,9 @@ end sub
 
 
 sub onChildChange(options = {})
-    if rodash.isEmpty(options) then return
+    if not rodash.isNonEmptyAA(options) then return
     changeData = options.data
-    if rodash.isEmpty(changeData) then return
+    if not rodash.isNonEmptyAA(changeData) then return
 
     animationType = get("animationType") ?? "scroll"
     scrollAnimation = animationType = "scroll"
@@ -237,7 +237,7 @@ end function
 
 
 function performScroll(options = {})
-    if rodash.isEmpty(options) then return false
+    if not rodash.isNonEmptyAA(options) then return false
 
     axisIndex = get("axisIndex")
     children = options.children ?? []
@@ -357,7 +357,7 @@ end sub
 
 
 function performFadeMorph(nodeArray = [])
-    if rodash.isEmpty(nodeArray) then return false
+    if not rodash.isNonEmptyArray(nodeArray) then return false
     nodeToFadeIn = nodeArray[0]
     nodeToFadeOut = nodeArray[1]
 

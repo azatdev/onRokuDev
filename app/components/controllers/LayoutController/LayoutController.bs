@@ -46,7 +46,7 @@ end sub
 sub updateBackgroundAssets(options = {})
     if rodash.isEmpty(options) then return
     appBackground = background()
-    if rodash.isEmpty(appBackground) then return
+    if not rodash.isNode(appBackground) then return
     exec("updateAssets", options, background())
     content = options.content
 

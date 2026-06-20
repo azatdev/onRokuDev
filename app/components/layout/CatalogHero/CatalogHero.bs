@@ -91,7 +91,7 @@ end sub
 
 
 sub checkPagination(options = {})
-    if rodash.isEmpty(m.content) then return
+    if not rodash.isNode(m.content) then return
     itemFocused = options.itemFocused ?? 0
     lastPaginatedIndex = m.content.totalCount - 1
     paginationDelta = lastPaginatedIndex - itemFocused

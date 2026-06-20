@@ -70,7 +70,7 @@ end sub
 sub updateAssets(options = {})
     if rodash.isEmpty(options) then return
     content = options.content
-    if rodash.isEmpty(content) then return
+    if not rodash.isNode(content) then return
 
     setComplimentaryColor(content.complimentaryColor)
 

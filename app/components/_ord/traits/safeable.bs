@@ -3,7 +3,6 @@ class Safeable
 
     sub new(options = {})
         top().addField("ord_proxyData", "assocarray", true)
-
         m.setExportFunctions(getGlobalAA().ord_role)
     end sub
 

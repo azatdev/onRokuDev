@@ -9,14 +9,14 @@ sub init()
         m.sidebar = top().findNode("sidebar")
         m.screenContainer = top().findNode("screenContainer")
         m.videoPlayer = top().findNode("videoPlayer")
-        sgRouter.initialize({ outlet: m.screenContainer })
+        sgrouter.initialize({ outlet: m.screenContainer })
 
         sgRouter.addRoutes([
-            { pattern: "/home", component: "CatalogScreen", keepVisible: true},
+            { pattern: "/home", component: "CatalogScreen", suspendMode: "visible" },
             ' { pattern: "/shows", component: "CatalogScreen", clearStackOnResolve: true },
             ' { pattern: "/movies", component: "CatalogScreen", clearStackOnResolve: true },
             ' { pattern: "/details/series/:id/cast", component: "CastDetailsScreen" },
-            { pattern: "/details/:id", component: "DetailsScreen" },
+            { pattern: "/details/:id", component: "DetailsScreen", clearStackOnResolve: true },
             ' { pattern: "/details/movies/:id", component: "DetailsScreen" },
             ' { pattern: "/details/movies/:id/cast", component: "CastDetailsScreen" },
             ' { pattern: "/:screenName", component: "DefaultScreen" }
