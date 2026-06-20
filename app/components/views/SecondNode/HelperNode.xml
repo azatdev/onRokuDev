@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<component name="ThirdNode" extends="Group">
-    <interface>
-        <field id="data2" type="assocArray" />
-    </interface>
-    <children>
-
-    </children>
-</component>
