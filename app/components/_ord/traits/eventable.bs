@@ -2,7 +2,7 @@ class Eventable
     subscriptions = {}
     publicFunctions = []
 
-    sub new(options = {})
+    sub new(_options = {})
         m.renderQueue = createObject("roRenderThreadQueue")
         m.setExportFunctions(getGlobalAA().ord_role)
 
@@ -69,7 +69,7 @@ class Eventable
     end sub
 
 
-    sub onTaskReady(options = {})
+    sub onTaskReady(_options = {})
         dispatch(events.EVENT_TASK_READY)
     end sub
 

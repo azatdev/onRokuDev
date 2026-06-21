@@ -1,7 +1,7 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         setupItem()
     end sub)
 end sub
@@ -29,12 +29,12 @@ sub setupItem()
 end sub
 
 
-sub onGroupFocusChange(options = {})
+sub onGroupFocusChange(_options = {})
     setColors()
 end sub
 
 
-sub onListItemSelected(options = {})
+sub onListItemSelected(_options = {})
     setColors()
 end sub
 
@@ -55,7 +55,7 @@ sub itemContentChanged(options = {})
 end sub
 
 
-sub onTextChange(options = {})
+sub onTextChange(_options = {})
     stackChildren({ node: m.container, direction: "horizontal" })
     m.container.width = m.container.boundingRect().width
     m.container.height = m.container.boundingRect().height
@@ -70,7 +70,7 @@ sub onTextChange(options = {})
 end sub
 
 
-function getFocusedRectSize(options = {})
+function getFocusedRectSize(_options = {})
     if not rodash.isNode(m.label) then return [0,0]
     m.label.visible = true
     m.label.text = ucase(top().itemContent.title)
@@ -82,7 +82,7 @@ function getFocusedRectSize(options = {})
 end function
 
 
-function getUnfocusedRectSize(options = {})
+function getUnfocusedRectSize(_options = {})
     if not rodash.isNode(m.label) then return [0,0]
 
     if get("dynamicWidth")

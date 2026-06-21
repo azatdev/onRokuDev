@@ -1,7 +1,7 @@
 class Stateable
     publicFunctions = []
 
-    sub new(options = {})
+    sub new(_options = {})
         top().addField("_ord_State", "assocarray", false)
 
         m.setExportFunctions(getGlobalAA().ord_role)

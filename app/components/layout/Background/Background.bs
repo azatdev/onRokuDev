@@ -1,7 +1,7 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         m.backgroundContainer = top().findNode("backgroundContainer")
         m.cornerGradient = top().findNode("cornerGradient")
         m.catalogGradientContainer = top().findNode("catalogGradientContainer")
@@ -19,22 +19,22 @@ sub init()
 end sub
 
 
-sub hideCatalogGradients(options = {})
+sub hideCatalogGradients(_options = {})
     fadeOut(m.catalogGradientContainer, { duration: 1 })
 end sub
 
 
-sub showCatalogGradients(options = {})
+sub showCatalogGradients(_options = {})
     fadeIn(m.catalogGradientContainer, { duration: 1 })
 end sub
 
 
-sub showDetailsGradients(options = {})
+sub showDetailsGradients(_options = {})
     fadeIn(m.detailsGradientContainer, { duration: 1 })
 end sub
 
 
-sub hideDetailsGradients(options = {})
+sub hideDetailsGradients(_options = {})
     fadeOut(m.detailsGradientContainer, { duration: 1 })
 end sub
 
@@ -101,11 +101,11 @@ sub setComplimentaryColor(newBlendColor = "")
 end sub
 
 
-sub hideBackground(options = {})
+sub hideBackground(_options = {})
     fadeOut(m.backgroundContainer, { duration: 0.3 })
 end sub
 
 
-sub showBackground(options = {})
+sub showBackground(_options = {})
     fadeIn(m.backgroundContainer, { duration: 0.3 })
 end sub

@@ -2,7 +2,7 @@ import "pkg:/components/_ord/wrappers.bs"
 
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         subscribe({
             [events.CONFIGS_UPDATE]: onConfigsUpdate,
             [events.REQUEST_CONFIGS]: requestConfigs
@@ -22,7 +22,7 @@ sub onConfigsUpdate(options = {})
 end sub
 
 
-sub requestConfigs(options = {})
+sub requestConfigs(_options = {})
     configsTask = createObject("roSGNode", "ConfigsTask")
     configsTask.control = "RUN"
 end sub

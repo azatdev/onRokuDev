@@ -1,7 +1,7 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         m.scrubTrack = top().findNode("scrubTrack")
         m.progressBar = top().findNode("progressBar")
         m.scrubber = top().findNode("scrubber")

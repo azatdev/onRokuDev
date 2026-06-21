@@ -2,7 +2,7 @@ class Loadable
     publicFunctions = []
     nodes = []
 
-    sub new(options = {})
+    sub new(_options = {})
         m.setExportFunctions(getGlobalAA().ord_role)
     end sub
 

@@ -1,7 +1,7 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         subscribe({
             [events.CAROUSEL_FOCUSED]: navSound
             ' [events.CAROUSEL_ITEM_FOCUSED]: navSound
@@ -10,26 +10,26 @@ sub init()
 end sub
 
 
-sub endSound(options = {})
+sub endSound(_options = {})
     playSound(sounds.DEADEND)
 end sub
 
 
-sub ffSound(options = {})
+sub ffSound(_options = {})
     playSound(sounds.NAVMULTI)
 end sub
 
 
-sub playSound(name, volume = 50)
+sub playSound(_name, _volume = 50)
     ' app().playSound = name
 end sub
 
 
-sub navSound(options = {})
+sub navSound(_options = {})
     playSound(sounds.NAVSINGLE)
 end sub
 
 
-sub selectSound(options = {})
+sub selectSound(_options = {})
     ' playSound(sounds.SELECT)
 end sub

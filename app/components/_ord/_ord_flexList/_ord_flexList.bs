@@ -2,7 +2,7 @@ import "pkg:/components/_ord/wrappers.bs"
 
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         top().color = "#00000000"
         m.carousel = top().findNode("carousel")
         m.carousel.advancing = true
@@ -67,7 +67,7 @@ function getFloatFieldInterpolator(children = [])
 end function
 
 
-sub onCarouselFocusedChildChange(options = {})
+sub onCarouselFocusedChildChange(_options = {})
     if not rodash.isNode(m.focusTimer) then return
     safeUnobserve("fraction", m.focusTimer)
     safeObserve("fraction", onFocusTimerFired, m.focusTimer)
@@ -116,7 +116,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
 
         if carousel.content.getChild(nextIndex) = invalid
             if not get("wrap") then return false
-            wrap = get("wrap")
             wrapFirstToLast = get("wrapFirstToLast")
 
             if direction = 1
@@ -292,7 +291,7 @@ sub onFocusedChildChange(options = {})
 end sub
 
 
-sub focusOnCarousel(options = {})
+sub focusOnCarousel(_options = {})
     if m.carousel.hasFocus() then return
     if not rodash.isArray(m.focusedTargetSetArray) then return
 

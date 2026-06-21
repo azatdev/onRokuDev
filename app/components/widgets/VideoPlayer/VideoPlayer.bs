@@ -2,7 +2,7 @@ import "pkg:/components/_ord/wrappers.bs"
 import "bifTools.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         m.videoOverlay = top().findNode("videoOverlay")
         m.trickplay = top().findNode("trickplay")
         m.video = top().findNode("video")
@@ -88,7 +88,7 @@ sub onFocusedChildChange(options = {})
 end sub
 
 
-sub onScrubTimerFired(options = {})
+sub onScrubTimerFired(_options = {})
     if not rodash.isNode(m.trickplay) then return
     if not rodash.isNode(m.video) then return
     m.video.control = "resume"
@@ -98,7 +98,7 @@ sub onScrubTimerFired(options = {})
 end sub
 
 
-sub onSeekTimerFired(options = {})
+sub onSeekTimerFired(_options = {})
     if not rodash.isNode(m.seekTimer) then return
     if not rodash.isNode(m.video) then return
     seeking = get("seeking")
@@ -124,7 +124,7 @@ sub onSeekTimerFired(options = {})
 end sub
 
 
-sub onSelection(options = {})
+sub onSelection(_options = {})
     if not rodash.isNode(m.seekTimer) then return
     if not rodash.isNode(m.scrubTimer) then return
     if not rodash.isNode(m.video) then return
@@ -210,17 +210,17 @@ sub sendTrickplayInfo(options = {})
 end sub
 
 
-sub scrubLeft(options = {})
+sub scrubLeft(_options = {})
     performScrub({ positionDelta: get("scrubInterval") * -1 })
 end sub
 
 
-sub scrubRight(options = {})
+sub scrubRight(_options = {})
     performScrub({ positionDelta: get("scrubInterval")})
 end sub
 
 
-function onBackButton(options = {})
+function onBackButton(_options = {})
     if get("seeking")
         return onSeekCancel()
     else if get("overlayOpen")
@@ -248,14 +248,14 @@ sub onSeekCancel()
 end sub
 
 
-sub hideOverlay(options = {})
+sub hideOverlay(_options = {})
     if not get("overlayOpen") then return
     fadeOut(m.videoOverlay)
     set({ overlayOpen: false })
 end sub
 
 
-sub showOverlay(options = {})
+sub showOverlay(_options = {})
     if get("overlayOpen")
         m.overlayTimer.control = "start"
         return
@@ -304,7 +304,7 @@ sub startSeek()
 end sub
 
 
-sub seekForward(options = {})
+sub seekForward(_options = {})
     seekSpeed = get("seekSpeed")
     seekDirection = get("seekDirection")
 
@@ -316,7 +316,7 @@ sub seekForward(options = {})
 end sub
 
 
-sub seekRewind(options = {})
+sub seekRewind(_options = {})
     seekSpeed = get("seekSpeed")
     seekDirection = get("seekDirection")
     if seekDirection = 1 then seekSpeed = 0
@@ -327,7 +327,7 @@ sub seekRewind(options = {})
 end sub
 
 
-sub togglePlayback(options = {})
+sub togglePlayback(_options = {})
     if not rodash.isNode(m.video) then return
 
     if get("seeking")
@@ -343,7 +343,7 @@ sub togglePlayback(options = {})
 end sub
 
 
-sub restartPlayback(options = {})
+sub restartPlayback(_options = {})
     if not rodash.isNode(m.video) then return
     dispatch(events.VIDEO_RESTARTING)
     m.video.seek = 0
@@ -355,7 +355,7 @@ sub restartPlayback(options = {})
 end sub
 
 
-sub resetControls(options = {})
+sub resetControls(_options = {})
     if not rodash.isNode(m.controls) then return
     ' rodash.delay(sub(controls)
     '     if not rodash.isNode(controls) then return

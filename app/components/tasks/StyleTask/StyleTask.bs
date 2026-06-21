@@ -1,13 +1,13 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         setTaskFunction(runStyleTask)
     end sub)
 end sub
 
 
-function runStyleTask(options = {})
+function runStyleTask(_options = {})
     response = rokurequests_Requests().get("http://192.168.88.31:54323/styles-update.json")
     if not rodash.isEmpty(response.text)
         publish(events.STYLES_UPDATE, parseJSON(response.text))

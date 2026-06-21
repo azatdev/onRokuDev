@@ -2,7 +2,7 @@ import "pkg:/components/_ord/wrappers.bs"
 
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         subscribe({
             [events.PLAY_VIDEO]: playVideo,
             [events.VIDEO_PLAYING]: onVideoPlaying,
@@ -16,32 +16,32 @@ sub init()
 end sub
 
 
-sub onVideoPaused(options = {})
+sub onVideoPaused(_options = {})
     ' ?"onVideoPaused " rodash.now()
 end sub
 
 
-sub onVideoBuffering(options = {})
+sub onVideoBuffering(_options = {})
     ' ?"onVideoBuffering " rodash.now()
 end sub
 
 
-sub onVideoFinished(options = {})
+sub onVideoFinished(_options = {})
     ' ?"onVideoFinished " rodash.now()
 end sub
 
 
-sub onVideoError(options = {})
+sub onVideoError(_options = {})
     ' ?"onVideoError " rodash.now()
 end sub
 
 
-sub onVideoPlaying(options = {})
+sub onVideoPlaying(_options = {})
     ' ?"onVideoPlaying " rodash.now()
 end sub
 
 
-sub onVideoStopped(options = {})
+sub onVideoStopped(_options = {})
     ' ?"onVideoStopped " rodash.now()
 end sub
 
@@ -51,6 +51,6 @@ sub playVideo(options = {})
 end sub
 
 
-function layout(options = {})
+function layout()
     return app().findNode("layout")
 end function

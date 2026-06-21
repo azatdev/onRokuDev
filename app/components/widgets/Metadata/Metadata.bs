@@ -1,7 +1,7 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         m.container = top().findNode("container")
         safeObserve("data", onDataSet)
     end sub)

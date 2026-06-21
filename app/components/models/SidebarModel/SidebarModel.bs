@@ -1,5 +1,5 @@
 sub init()
-    exec(sub(options)
+    exec(sub(_options)
     end sub)
 end sub
 

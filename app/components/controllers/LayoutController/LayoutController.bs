@@ -2,7 +2,7 @@ import "pkg:/components/_ord/wrappers.bs"
 
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         subscribe({
             [events.APP_STARTED]: onAppStarted,
             [events.CATALOG_HERO_FOCUSED]: onCatalogHeroFocused,
@@ -27,7 +27,7 @@ sub init()
 end sub
 
 
-sub onAppStarted(options = {})
+sub onAppStarted(_options = {})
     dispatch(events.GET_SIDEBAR)
     dispatch(events.GET_TOPBAR)
 end sub
@@ -124,13 +124,13 @@ sub getDetailsData(options = {})
 end sub
 
 
-sub getSidebar(options = {})
+sub getSidebar(_options = {})
     sidebarTask = createObject("roSGNode", "SidebarTask")
     sidebarTask.control = "RUN"
 end sub
 
 
-sub getTopbar(options = {})
+sub getTopbar(_options = {})
     topbarTask = createObject("roSGNode", "TopbarTask")
     topbarTask.control = "RUN"
 end sub
@@ -185,12 +185,12 @@ sub onScreenDataReceived(options = {})
 end sub
 
 
-sub showCatalogUI(options = {})
+sub showCatalogUI(_options = {})
     exec("showCatalogUi", {}, layout())
 end sub
 
 
-sub showDetailsUI(options = {})
+sub showDetailsUI(_options = {})
     exec("showDetailsUi", {}, layout())
 end sub
 

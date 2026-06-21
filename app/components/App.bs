@@ -2,7 +2,7 @@ import "pkg:/components/_ord/wrappers.bs"
 
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         top().setFocus(true)
 
         subscribe({
@@ -25,8 +25,7 @@ sub init()
 end sub
 
 
-sub onEventTaskReady(options = {})
-    ?"onEventTaskReady "
+sub onEventTaskReady(_options = {})
     dispatch(events.APP_STARTED)
 end sub
 

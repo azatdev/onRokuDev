@@ -2,7 +2,7 @@ import "pkg:/components/_ord/wrappers.bs"
 import "pkg:/source/roku_modules/promises/promises.brs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         m.screenContainer = top().findNode("screenContainer")
         m.catalogHero = top().findNode("catalogHero")
         m.scrollGroup = top().findNode("scrollGroup")
@@ -43,28 +43,28 @@ sub onViewFadedOut(options = {})
 end sub
 
 
-function beforeViewSuspend(options = {}) as dynamic
+function beforeViewSuspend(_options = {}) as dynamic
     suspendPromise = promises.create()
     fadeOut(top(), { duration: 1, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
     return suspendPromise
 end function
 
 
-function beforeViewClose(options = {})
+function beforeViewClose(_options = {})
     suspendPromise = promises.create()
     fadeOut(top(), { duration: 1, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
     return suspendPromise
 end function
 
 
-function onViewResume(options = {})
+function onViewResume(_options = {})
     dispatch(events.SHOW_CATALOG_UI)
     fadeIn(top(), { duration: 1 })
     return promises.resolve(invalid)
 end function
 
 
-function onViewSuspend(options = {})
+function onViewSuspend(_options = {})
     return promises.resolve(invalid)
 end function
 
@@ -80,25 +80,25 @@ sub checkPagination(options = {})
 end sub
 
 
-sub focusCatalogHero(options = {})
+sub focusCatalogHero(_options = {})
     scrollPage(-1, onCatalogHeroFocused)
     dispatch(events.CATALOG_HERO_FOCUSED)
 end sub
 
 
-sub focusScrollGroup(options = {})
+sub focusScrollGroup(_options = {})
     scrollPage(1, onScrollGroupFocused)
     onScrollGroupFocused()
     dispatch(events.SCROLL_GROUP_FOCUSED)
 end sub
 
 
-sub onCatalogHeroFocused(options = {})
+sub onCatalogHeroFocused(_options = {})
     setFocus(m.catalogHero)
 end sub
 
 
-sub onScrollGroupFocused(options = {})
+sub onScrollGroupFocused(_options = {})
     if not rodash.isNode(m.scrollGroup) then return
     setFocus(m.scrollGroup)
 end sub
@@ -151,14 +151,14 @@ sub onFocusedChildChange(options = {})
 end sub
 
 
-sub afterStyling(options = {})
+sub afterStyling(_options = {})
     if not rodash.isNode(m.screenContainer) then return
     stackChildren({ node: m.screenContainer, direction: "vertical" })
 end sub
 
 
-function handleFocus(options = {})
-    return exec(function(options = {})
+function handleFocus(_options = {})
+    return exec(function(_options = {})
         applyDefaultFocus()
         return true
     end function)

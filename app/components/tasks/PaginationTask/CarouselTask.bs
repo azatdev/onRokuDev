@@ -3,7 +3,7 @@ import "pkg:/components/tasks/shared/carousels.bs"
 import "pkg:/components/tasks/shared/content.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         setTaskFunction(runCarouselTask)
     end sub)
 end sub

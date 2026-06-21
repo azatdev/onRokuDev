@@ -2,7 +2,7 @@ class Styleable
     publicFunctions = []
     hookFunctions = {}
 
-    sub new(options = {})
+    sub new(_options = {})
         m.setExportFunctions(getGlobalAA().ord_role)
 
         if rodash.findIndex(["Scene", "View"], getGlobalAA().ord_role) = -1 then return

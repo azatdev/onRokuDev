@@ -1,13 +1,13 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         setTaskFunction(runQueue)
     end sub)
 end sub
 
 
-function runQueue(options = {})
+function runQueue(_options = {})
     messagePort = createObject("roMessagePort")
     safeObserve("eventData", messagePort)
     top().ready = true

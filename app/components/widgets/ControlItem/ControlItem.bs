@@ -1,7 +1,7 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         m.iconsContainer = top().findNode("iconsContainer")
         m.title = top().findNode("title")
         safeObserve("config", onConfigChange)

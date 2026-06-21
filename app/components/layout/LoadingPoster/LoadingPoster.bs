@@ -1,7 +1,7 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         safeObserve("loading", onLoadingChange)
         m.animationId = ""
     end sub)
@@ -15,12 +15,12 @@ sub onLoadingChange(options = {})
 end sub
 
 
-sub startLoadingAnimation(options = {})
+sub startLoadingAnimation(_options = {})
     m.animationId = fadeIn(top(), { callback: onFadedIn, duration: 0.5 })
 end sub
 
 
-sub onFadedOut(options = {})
+sub onFadedOut(_options = {})
     if not top().loading
         if rodash.isNonEmptyString(m.animationId) then removeAnimation(m.animationId)
         safeUnobserve("loading")
@@ -31,6 +31,6 @@ sub onFadedOut(options = {})
 end sub
 
 
-sub onFadedIn(options = {})
+sub onFadedIn(_options = {})
     fadeOut(top(), { callback: onFadedOut, duration: 0.5 })
 end sub

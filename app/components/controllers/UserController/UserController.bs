@@ -1,7 +1,7 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         subscribe({
             [events.APP_STARTED]: getUserCarousels,
             [events.USER_CAROUSELS_RECEIVED]: userCarouselsReceived
@@ -10,7 +10,7 @@ sub init()
 end sub
 
 
-sub getUserCarousels(options = {})
+sub getUserCarousels(_options = {})
     collections = {
         "CONTINUE_WATCHING": createObject("roSGNode", "Collection"),
         "FAVORITES": createObject("roSGNode", "Collection"),
@@ -29,7 +29,7 @@ sub getUserCarousels(options = {})
 end sub
 
 
-sub userCarouselsReceived(options = {})
+sub userCarouselsReceived(_options = {})
     collections = get("collections")
     ?"userCarouselsReceived " collections["CONTINUE_WATCHING"]
 end sub

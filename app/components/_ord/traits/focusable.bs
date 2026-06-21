@@ -5,11 +5,11 @@ class Focusable
     focusFunction = invalid
     publicFunctions = []
 
-    sub new(options = {})
+    sub new(_options = {})
         m.setExportFunctions(getGlobalAA().ord_role)
     end sub
 
-    
+
     sub setExportFunctions(componentRole = "")
         if rodash.isEmptyString(componentRole) then return
 

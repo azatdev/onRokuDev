@@ -1,7 +1,7 @@
 class Safeable
     publicFunctions = []
 
-    sub new(options = {})
+    sub new(_options = {})
         top().addField("ord_proxyData", "assocarray", true)
         m.setExportFunctions(getGlobalAA().ord_role)
     end sub
@@ -241,3 +241,19 @@ class Safeable
         getGlobalAA()._ord_taskFunction = taskFunction
     end sub
 end class
+
+
+function exec(func, options = {}, node = m.top)
+    if not m.top.hasField("_ord_initiated") or not m.top._ord_initiated then ord_init()
+
+    if not rodash.isNonEmptyAA(m.ord_interfaces) then return invalid
+
+    interface = m.ord_interfaces["exec"]
+    if interface = invalid then return invalid
+
+    return interface.exec({
+        func: func,
+        options: options,
+        node: node
+    })
+end function

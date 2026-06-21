@@ -2,7 +2,7 @@ import "pkg:/components/_ord/wrappers.bs"
 import "pkg:/source/roku_modules/promises/promises.brs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         m.screenContainer = top().findNode("screenContainer")
         m.bottomContainer = top().findNode("bottomContainer")
         m.detailsScrollGroup = top().findNode("detailsScrollGroup")
@@ -60,13 +60,13 @@ sub onTabFocused(options = {})
 end sub
 
 
-function onViewOpen(options = {})
+function onViewOpen(_options = {})
     ?"onViewOpen " rodash.now()
     return promises.resolve(invalid)
 end function
 
 
-function onViewResume(options = {})
+function onViewResume(_options = {})
     dispatch(events.SHOW_DETAILS_UI)
     return promises.resolve(invalid)
 end function
@@ -95,7 +95,7 @@ sub onDataSet(options = {})
 end sub
 
 
-sub afterStyling(options = {})
+sub afterStyling(_options = {})
     if not rodash.isNode(m.screenContainer) then return
     if not rodash.isNode(m.bottomContainer) then return
     stackChildren({ node: m.screenContainer, direction: "vertical" })
@@ -111,26 +111,26 @@ sub onFocusedChildChange(options = {})
 end sub
 
 
-sub focusDetailsHero(options = {})
+sub focusDetailsHero(_options = {})
     scrollPage(-1, onDetailsHeroFocused)
     ' dispatch(events.CATALOG_HERO_FOCUSED)
 end sub
 
 
-sub focusDetailsScrollGroup(options = {})
+sub focusDetailsScrollGroup(_options = {})
     if not rodash.isNode(m.content) then return
     scrollPage(1, onDetailsScrollGroupFocused)
     ' dispatch(events.SCROLL_GROUP_FOCUSED)
 end sub
 
 
-sub onDetailsHeroFocused(options = {})
+sub onDetailsHeroFocused(_options = {})
     if not rodash.isNode(m.detailsHero) then return
     setFocus(m.detailsHero)
 end sub
 
 
-sub onDetailsScrollGroupFocused(options = {})
+sub onDetailsScrollGroupFocused(_options = {})
     if not rodash.isNode(m.detailsScrollGroup) then return
     if not rodash.isNode(m.content) then return
 

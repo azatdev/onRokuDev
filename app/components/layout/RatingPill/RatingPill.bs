@@ -1,7 +1,7 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         m.pill = top().findNode("pill")
         m.ratingText = top().findNode("ratingText")
         safeObserve("text", onTextSet)

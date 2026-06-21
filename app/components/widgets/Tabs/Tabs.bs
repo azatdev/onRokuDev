@@ -1,7 +1,7 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         m.list = top().findNode("tabList")
         safeObserve("focusedChild", onFocusedChildChange)
         safeObserve("data", onDataChange)
@@ -25,7 +25,7 @@ sub onDataChange(options = {})
 end sub
 
 
-sub onFocusedChildChange(options = {})
+sub onFocusedChildChange(_options = {})
 
 end sub
 

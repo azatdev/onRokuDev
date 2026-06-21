@@ -1,7 +1,7 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         m.container = top().findNode("container")
         m.scrolltrack = top().findNode("scrollTrack")
         m.scrollKnob = top().findNode("scrollKnob")
@@ -24,7 +24,7 @@ sub init()
         })
 
         setFocusMap({
-            default: sub(options = {})
+            default: sub(_options = {})
                 focusRow = m.container.getChild(0)
                 setFocus(focusRow)
             end sub
@@ -298,7 +298,7 @@ function performScroll(options = {})
 end function
 
 
-sub setClippingRect(options = {})
+sub setClippingRect(_options = {})
     animationType = get("animationType") ?? "scroll"
     scrollAnimation = animationType = "scroll"
 

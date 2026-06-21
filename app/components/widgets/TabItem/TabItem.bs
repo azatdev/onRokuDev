@@ -1,7 +1,7 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         setupItem()
         styleHooks({
             after: afterStyling
@@ -10,7 +10,7 @@ sub init()
 end sub
 
 
-sub afterStyling(options = {})
+sub afterStyling(_options = {})
     onTextChange()
 end sub
 
@@ -47,7 +47,7 @@ sub itemContentChanged(options = {})
 end sub
 
 
-sub onTextChange(options = {})
+sub onTextChange(_options = {})
     stackChildren({ node: m.container, direction: "horizontal" })
     tabWidth = m.container.boundingRect().width
     tabHeight = m.container.boundingRect().height
@@ -66,7 +66,7 @@ sub onTextChange(options = {})
 end sub
 
 
-function getFocusedRectSize(options = {})
+function getFocusedRectSize(_options = {})
     if not rodash.isNode(m.container) then return [0,0]
 
     return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
@@ -89,7 +89,7 @@ sub onCurrRectChange(options = {})
 end sub
 
 
-sub onGroupFocusPercentChange(options = {})
+sub onGroupFocusPercentChange(_options = {})
     ' percentage = options.data ?? {}
     ' labelSquare = get("labelSquare") ?? [0,0]
     ' labelWidth = labelSquare[0]
@@ -109,7 +109,7 @@ sub onFocusPercentChange(options = {})
 end sub
 
 
-sub runFocusTransformation(percentage)
+sub runFocusTransformation(_percentage)
     ' labelSquare = get("labelSquare") ?? [0,0]
     ' labelWidth = labelSquare[0]
     ' labelHeight = labelSquare[1]

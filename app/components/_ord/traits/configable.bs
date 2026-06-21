@@ -3,7 +3,7 @@ class Configable
     appConfigs = "<%- o(CONFIG) %>"
     configPaths = {}
 
-    sub new(options = {})
+    sub new(_options = {})
         if getGlobalAA().ord_role = "Task" or getGlobalAA().ord_role = "Model" then return
 
         m.setExportFunctions(getGlobalAA().ord_role)

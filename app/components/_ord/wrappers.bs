@@ -34,22 +34,6 @@ function user()
 end function
 
 
-function exec(func, options = {}, node = m.top)
-    if not m.top.hasField("_ord_initiated") or not m.top._ord_initiated then ord_init()
-
-    if not rodash.isNonEmptyAA(m.ord_interfaces) then return invalid
-
-    interface = m.ord_interfaces["exec"]
-    if interface = invalid then return invalid
-
-    return interface.exec({
-        func: func,
-        options: options,
-        node: node
-    })
-end function
-
-
 function safeFunc(functionName = "")
     interface = m.ord_interfaces["safeFunc"]
     if interface = invalid then return invalid

@@ -1,7 +1,7 @@
 import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
-    exec(sub(options = {})
+    exec(sub(_options = {})
         m.paginationConfigs = "<%- o(CONFIG.Pagination) %>"
         safeFunctions({
             generateCarouselCollection: generateCarouselCollection,
@@ -12,7 +12,7 @@ sub init()
 end sub
 
 
-sub generateCarouselCollection(options = {})
+sub generateCarouselCollection(_options = {})
     children = top().getChildren(-1, 0)
     carouselCollection = top().carouselCollection
     if not rodash.isNode(carouselCollection) then carouselCollection = createObject("roSGNode", "Collection")
@@ -25,7 +25,7 @@ sub generateCarouselCollection(options = {})
 end sub
 
 
-function getPagination(options = {})
+function getPagination(_options = {})
     existingPagination = top().pagination
     if rodash.isNonEmptyAA(existingPagination)
         newPagination = returnSubsequentPagination()
@@ -40,7 +40,7 @@ function getPagination(options = {})
 end function
 
 
-function returnInitialPagination(options = {})
+function returnInitialPagination(_options = {})
     if m.top.carouselType = "HERO"
         return m.paginationConfigs["HeroInitial"]
     else
@@ -49,7 +49,7 @@ function returnInitialPagination(options = {})
 end function
 
 
-function returnSubsequentPagination(options = {})
+function returnSubsequentPagination(_options = {})
     if m.top.carouselType = "HERO"
         return m.paginationConfigs["HeroSubsequent"]
     else
@@ -58,7 +58,7 @@ function returnSubsequentPagination(options = {})
 end function
 
 
-function getVariables(options = {})
+function getVariables(_options = {})
     returnObj = {}
     returnObj.setModeCaseSensitive()
     returnObj["documentId"] = top().documentId
