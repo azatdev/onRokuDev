@@ -16,7 +16,7 @@ sub init()
             ' { pattern: "/shows", component: "CatalogScreen", clearStackOnResolve: true },
             ' { pattern: "/movies", component: "CatalogScreen", clearStackOnResolve: true },
             ' { pattern: "/details/series/:id/cast", component: "CastDetailsScreen" },
-            { pattern: "/details/:id", component: "DetailsScreen", clearStackOnResolve: true },
+            { pattern: "/details/:id", component: "DetailsScreen" },
             ' { pattern: "/details/movies/:id", component: "DetailsScreen" },
             ' { pattern: "/details/movies/:id/cast", component: "CastDetailsScreen" },
             ' { pattern: "/:screenName", component: "DefaultScreen" }
