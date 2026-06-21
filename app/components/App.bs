@@ -26,6 +26,7 @@ end sub
 
 
 sub onEventTaskReady(options = {})
+    ?"onEventTaskReady "
     dispatch(events.APP_STARTED)
 end sub
 

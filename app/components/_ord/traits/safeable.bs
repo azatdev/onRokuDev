@@ -89,7 +89,7 @@ class Safeable
         '     end try
         end if
 
-        internalFunctions = getGlobalAA().interfaceFunctions ?? {}
+        internalFunctions = getGlobalAA().ord_interfaces ?? {}
 
         internalInterface = internalFunctions[func] ?? {}
 
@@ -185,7 +185,6 @@ class Safeable
                 node: event.getRoSGNode(),
                 nodeId: event.getNode()
             }
-
 
             exec(functionName, payload)
         end for

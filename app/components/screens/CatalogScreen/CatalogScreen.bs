@@ -37,15 +37,34 @@ function beforeViewOpen(options = {}) as dynamic
 end function
 
 
-function onViewSuspend(options = {}) as dynamic
-    fadeOut(top(), { duration: 1 })
-    return promises.resolve(invalid)
+sub onViewFadedOut(options = {})
+    suspendPromise = options.promise
+    promises.resolve(true, suspendPromise)
+end sub
+
+
+function beforeViewSuspend(options = {}) as dynamic
+    suspendPromise = promises.create()
+    fadeOut(top(), { duration: 1, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
+    return suspendPromise
+end function
+
+
+function beforeViewClose(options = {})
+    suspendPromise = promises.create()
+    fadeOut(top(), { duration: 1, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
+    return suspendPromise
 end function
 
 
 function onViewResume(options = {})
     dispatch(events.SHOW_CATALOG_UI)
     fadeIn(top(), { duration: 1 })
+    return promises.resolve(invalid)
+end function
+
+
+function onViewSuspend(options = {})
     return promises.resolve(invalid)
 end function
 

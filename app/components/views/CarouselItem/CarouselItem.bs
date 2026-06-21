@@ -2,7 +2,6 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(options = {})
-        ' top().id = "carouselItem"
         setupItem()
     end sub)
 end sub

@@ -28,8 +28,8 @@ function runScreenTask(options = {})
     responseJSON = parseJSON(response.text)
     data = responseJSON.data ?? {}
     screenData = data.screen ?? {}
-    carouselsArray = screenData.carousels ?? []
-    ' carouselsArray =  [screenData.carousels[3], screenData.carousels[4], screenData.carousels[5]]
+    ' carouselsArray = screenData.carousels ?? []
+    carouselsArray =  [screenData.carousels[0]]
     ' carouselsArray =  [screenData.carousels[0], screenData.carousels[2]]
     updateObject = returnCarouselsArray(carouselsArray)
     updateObject.append({

@@ -26,15 +26,14 @@ class Loadable
 
         node = options.node
         if not rodash.isNode(node) then return
+
         safeUnobserve(updatedField, node)
+        safeUnobserve("width", node)
+        ' Unobserving in case the node renders after update
+        safeUnobserve("renderTracking", node)
 
         poster = node.findNode("loadingPoster")
-        if not rodash.isNode(poster) then return
-
-        poster.loading = false
-
-        safeUnobserve("width", node)
-        ' safeUnobserve("height", node)
+        if rodash.isNode(poster) then poster.loading = false
 
         fadeIn(node, { callback: "onParentFadedIn", callbackOptions: { node: node }, duration: 0.5 })
     end sub
@@ -54,27 +53,20 @@ class Loadable
         infoFields = options.info
         if not rodash.isNonEmptyAA(infoFields) then return
 
-        updateField = infoFields.keys()[0]
+        updateField = infoFields.keys()?[0] ?? ""
         if rodash.isEmptyString(updateField) then return
 
-        if not rodash.isEmpty(node[updateField])
-            node.opacity = 1
-            return
-        end if
-
         poster = node.findNode("loadingPoster")
+
         if not rodash.isNode(poster)
             poster = createObject("roSGNode", "LoadingPoster")
             poster.id = "loadingPoster"
+            node.appendChild(poster)
+            safeObserve("width", "onWidthHeightChange", node)
         end if
 
         poster.width = node.width
         poster.height = node.height
-
-        safeObserve("width", "onWidthHeightChange", node)
-        ' safeObserve("height", "onWidthHeightChange", node)
-        node.appendChild(poster)
-
         poster.loading = true
     end sub
 

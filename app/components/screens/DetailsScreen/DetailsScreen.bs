@@ -44,9 +44,12 @@ function beforeViewOpen(options = {}) as dynamic
     content = context.content
     if not rodash.isNode(content) then return promises.resolve(invalid)
 
-    top().opacity = 0
+    top().opacity = 0.001
+    top().visible = true
+    top().translation = [0, 0]
     fadeIn(top(), { duration: 1 })
 
+    dispatch(events.SHOW_DETAILS_UI)
     dispatch(events.GET_DETAILS_DATA, { screenId: routeData.id, slug: routeData.path, content: content })
     return promises.resolve(invalid)
 end function
@@ -58,8 +61,7 @@ end sub
 
 
 function onViewOpen(options = {})
-    dispatch(events.SHOW_DETAILS_UI)
-
+    ?"onViewOpen " rodash.now()
     return promises.resolve(invalid)
 end function
 

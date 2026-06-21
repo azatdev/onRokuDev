@@ -9,7 +9,7 @@ sub runUserInterface(args = {})
     ' screen.createScene("TestScene")
     screen.show()
     ' vscode_rale_tracker_entry
-    ' vscode_rdb_on_device_component_entry
+    ' zvscode_rdb_on_device_component_entry
 
     scene.observeFieldScopedEx("playSound", port)
 
