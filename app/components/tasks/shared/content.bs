@@ -5,7 +5,7 @@ sub generateCarouselModel(options = {})
 
     fields = []
     if thumbnailType = "LANDSCAPE" or thumbnailType = "PORTRAIT"
-        fields = ["id", "thumbnailImageUri"]
+        fields = ["thumbnailImageUri"]
     end if
 
     carouselItemModel = model.carouselItemModel

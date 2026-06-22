@@ -23,7 +23,6 @@ function runCarouselTask(options = {})
     responseData = responseJSON.data ?? {}
     carouselsData = responseData.carousel ?? {}
     contentsData = carouselsData.contents ?? []
-    collectionChildren = collection.getChildren(-1, 0)
 
     for each content in contentsData
         documentId =  content.documentId ?? ""
@@ -36,9 +35,7 @@ function runCarouselTask(options = {})
             continue for
         end if
 
-        existingEmptyNode = rodash.find(collectionChildren, function(cv)
-            return not cv.hydrated
-        end function)
+        existingEmptyNode = collection.findNode("pending")
 
         if rodash.isNode(existingEmptyNode)
             processContent({ model: existingEmptyNode, data: content, thumbnailType: collection.thumbnailType })
