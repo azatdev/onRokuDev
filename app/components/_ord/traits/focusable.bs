@@ -88,6 +88,11 @@ class Focusable
 
             if rodash.isInvalid(target) then continue for
 
+            if rodash.isBoolean(target)
+                handled = target
+                continue for
+            end if
+
             if not rodash.isNode(target) and rodash.isNonEmptyString(target)
                 target = top().findNode(target)
             end if

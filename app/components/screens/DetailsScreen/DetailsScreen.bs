@@ -22,10 +22,17 @@ sub init()
                 "down": focusDetailsScrollGroup
             },
             "detailsScrollGroup": {
+                "left": true,
                 "up": focusDetailsHero
             },
             "ctas": {
                 "up": focusDetailsHero
+            },
+            "tabs": {
+                "up": focusDetailsHero,
+                "down": sub(_options = {})
+                    setFocus(m.detailsScrollGroup)
+                end sub
             }
 
         })
