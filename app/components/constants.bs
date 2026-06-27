@@ -36,6 +36,18 @@ namespace events
 end namespace
 
 
+namespace carouselTypes
+    const CHANNEL = "CHANNEL"
+    const CONTINUE_WATCHING = "CONTINUE_WATCHING"
+    const EPISODES = "EPISODES"
+    const EXTRAS = "EXTRAS"
+    const GRID = "GRID"
+    const HERO = "HERO"
+    const INDEX = "INDEX"
+    const RELATED = "RELATED"
+end namespace
+
+
 namespace sections
     const CAROUSEL = "CAROUSEL"
     const HERO = "HERO"

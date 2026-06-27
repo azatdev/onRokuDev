@@ -19,22 +19,25 @@ sub init()
         setFocusMap({
             "default": m.detailsHero,
             "detailsHero": {
-                "down": focusDetailsScrollGroup
+                "down": focusDetailsScrollGroup,
+                "left": true
             },
             "detailsScrollGroup": {
                 "left": true,
                 "up": focusDetailsHero
             },
             "ctas": {
+                "left": true,
                 "up": focusDetailsHero
             },
             "tabs": {
-                "up": focusDetailsHero,
                 "down": sub(_options = {})
                     setFocus(m.detailsScrollGroup)
-                end sub
-            }
+                end sub,
+                "left": true,
+                "up": focusDetailsHero
 
+            }
         })
 
         styleHooks({
@@ -159,6 +162,7 @@ sub processScrollItem(options = {})
 
     model = options.model
     component = createObject("roSGNode", "Carousel")
+        
     addClass("noTitle", component)
     component.data = { content: model }
     m.detailsScrollGroup.appendChild(component)

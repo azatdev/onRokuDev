@@ -68,7 +68,6 @@ end sub
 
 function getFocusedRectSize(_options = {})
     if not rodash.isNode(m.container) then return [0,0]
-
     return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
 end function
 
@@ -89,8 +88,11 @@ sub onCurrRectChange(options = {})
 end sub
 
 
-sub onGroupFocusPercentChange(_options = {})
-    ' percentage = options.data ?? {}
+sub onGroupFocusPercentChange(options = {})
+    percentage = options.data ?? {}
+    if top().index = 0
+        ?"onGroupFocusPercentChange " percentage, top().itemHasFocus
+    end if
     ' labelSquare = get("labelSquare") ?? [0,0]
     ' labelWidth = labelSquare[0]
     ' labelHeight = labelSquare[1]
@@ -105,7 +107,9 @@ end sub
 sub onFocusPercentChange(options = {})
     percentage = options.data ?? {}
     ' runFocusTransformation(percentage)
-    ?"onFocusPercentageChange " percentage
+    if top().index = 0
+        ?"onFocusPercentageChange " percentage, top().itemHasFocus
+    end if
 end sub
 
 
