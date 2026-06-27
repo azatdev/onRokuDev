@@ -19,7 +19,8 @@ sub generateCarouselCollection(_options = {})
 
     for each child in children
         existingModel = child.carouselItemModel
-        if rodash.isNode(existingModel) and carouselCollection.findNode(existingModel.id) = invalid then carouselCollection.appendChild(existingModel)
+        if rodash.isNode(existingModel.getParent()) and existingModel.getParent().isSameNode(carouselCollection) then continue for
+        carouselCollection.appendChild(existingModel)
     end for
     top().carouselCollection = carouselCollection
 end sub
