@@ -25,19 +25,21 @@ module.exports = {
                 }
             }
         },
-        "Poster": {
+        "Group": {
             opacity: 0,
-            "&#tabTop": {
-                "blendColor": `${palette.highlightColor}`,
-                "uri": "pkg:/static/images/9patches/tab-top-18px.9.png"
+            "Poster": {
+                "&#tabTop": {
+                    "blendColor": `${palette.highlightColor}`,
+                    "uri": "pkg:/static/images/9patches/tab-top-18px.9.png"
+                },
+                "&#tabBottom": {
+                    blendColor: `${palette.highlightColor}`,
+                    "uri": "pkg:/static/images/9patches/tab-bottom-18px.9.png"
+                }
             },
-            "&#tabBottom": {
-                blendColor: `${palette.highlightColor}`,
-                "uri": "pkg:/static/images/9patches/tab-bottom-18px.9.png"
-            }
         },
         "&.active": {
-            "Poster": {
+            "Group": {
                 opacity: 0.5
             }
         }

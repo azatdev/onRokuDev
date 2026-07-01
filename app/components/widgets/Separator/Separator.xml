@@ -5,7 +5,7 @@
     </interface>
     <children>
         <Rectangle id="leftLine" />
-        <TabItem id="tabItem" />
+        <!-- <TabItem id="tabItem" /> -->
         <Rectangle id="rightLine" />
     </children>
     <script type="text/brightscript" uri="Separator.bs" />

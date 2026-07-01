@@ -194,6 +194,13 @@ function dispatch(eventId, options = {})
 end function
 
 
+function resetFocus()
+    interface = m.ord_interfaces["resetFocus"]
+    if interface = invalid then return invalid
+    return interface.resetFocus()
+end function
+
+
 function setFocusMap(options = {})
     interface = m.ord_interfaces["setFocusMap"]
     if interface = invalid then return invalid

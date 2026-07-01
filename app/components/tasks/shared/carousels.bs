@@ -39,6 +39,8 @@ sub generateDefaultModels(carouselModel)
 
     initialPagination = exec("returnInitialPagination", {}, carouselModel)
 
+    ?"generateDefaultModels " carouselModel
+
     ' Load initial carousel items
     ' for loading animation
     for x = 0 to initialPagination.pageSize - 1

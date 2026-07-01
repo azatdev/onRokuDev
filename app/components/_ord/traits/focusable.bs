@@ -18,6 +18,7 @@ class Focusable
         m.publicFunctions.push("applyDefaultFocus")
         m.publicFunctions.push("setFocus")
         m.publicFunctions.push("processFocus")
+        m.publicFunctions.push("resetFocus")
         m.publicFunctions.push("readyToFocus")
         m.publicFunctions.push("setFocusMap")
         m.publicFunctions.push("waitToFocus")
@@ -31,7 +32,7 @@ class Focusable
             return
         end if
 
-        if not rodash.isNode(defaultNode) and rodash.isString(defaultNode) then top().findNode(defaultNode)
+        if not rodash.isNode(defaultNode) and rodash.isString(defaultNode) then defaultNode = top().findNode(defaultNode)
 
         if not rodash.isNode(defaultNode) then defaultNode = top().getChild(0)
 
@@ -76,7 +77,11 @@ class Focusable
         nodeMap = m.focusMap[focusTarget.id] ?? {}
         focusArray = nodeMap[key]
 
-        if rodash.isInvalid(focusArray) then return handled
+        if rodash.isInvalid(focusArray)
+            focusArray = nodeMap["default"]
+            if rodash.isInvalid(focusArray) then return handled
+        end if
+
         if not rodash.isArray(focusArray) then focusArray = [focusArray]
 
         for each target in focusArray
@@ -105,6 +110,11 @@ class Focusable
 
         return handled
     end function
+
+
+    sub resetFocus(_options = {})
+        m.focusMap.current = invalid
+    end sub
 
 
     sub setFocus(node = {})

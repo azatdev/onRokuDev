@@ -10,8 +10,10 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <Poster id="tabTop" />
-        <Poster id="tabBottom" />
+        <Group id="tabBackground">
+            <Poster id="tabTop" />
+            <Poster id="tabBottom" />
+        </Group>
         <Rectangle id="textContainer">
             <Icon id="icon" />
             <QuanticoBold id="label" />

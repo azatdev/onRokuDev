@@ -49,8 +49,20 @@ function runCarouselTask(options = {})
 
     collection.canPaginate = not rodash.isEmpty(contentsData)
     exec("generateCarouselCollection", {}, collection)
+    ' removePendingNodes(collection)
     collection.paginating = false
     collection.hydrated = true
 
     return true
 end function
+
+
+sub removePendingNodes(collection)
+    if not rodash.isNode(collection) then return
+    pendingNode = collection.findNode("pending")
+    while pendingNode <> invalid
+        ?"removePendingNodes " pendingNode
+        collection.removeChild(pendingNode)
+        pendingNode = collection.findNode("pending")
+    end while
+end sub
