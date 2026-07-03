@@ -27,6 +27,7 @@ sub init()
                 "up": focusDetailsHero
             },
             "tabs": {
+                "back": false,
                 "default": true,
                 "down": m.detailsScrollGroup,
                 "up": sub(_options = {})

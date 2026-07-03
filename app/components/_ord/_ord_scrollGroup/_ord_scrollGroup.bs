@@ -217,6 +217,7 @@ end sub
 
 function handleScrollKey(key = "")
     if rodash.isEmptyString(key) then return false
+    if not get("autoFocus") then return true
 
     children = m.container.getChildren(-1, 0)
     if not rodash.isNonEmptyArray(children) then return false

@@ -24,6 +24,15 @@ function runCarouselTask(options = {})
     carouselsData = responseData.carousel ?? {}
     contentsData = carouselsData.contents ?? []
 
+
+    ' if collection.getChildCount() > contentsData.count()
+    '     numberOfChildren = collection.getChildCount() - contentsData.count()
+    '     ?"removing " numberOfChildren, contentsData.count()
+    '     collection.removeChildrenIndex(numberOfChildren, contentsData.count())
+    ' end if
+    ' ?"collection " collection.getChildCount()
+    ' ?"contentsData " contentsData.count()
+
     for each content in contentsData
         documentId =  content.documentId ?? ""
         if rodash.isEmptyString(documentId) then continue for
@@ -47,9 +56,10 @@ function runCarouselTask(options = {})
         collection.appendChild(newContentNode)
     end for
 
-    collection.canPaginate = not rodash.isEmpty(contentsData)
     exec("generateCarouselCollection", {}, collection)
-    ' removePendingNodes(collection)
+    removePendingNodes(collection)
+
+    collection.canPaginate = not rodash.isEmpty(contentsData)
     collection.paginating = false
     collection.hydrated = true
 
@@ -60,9 +70,14 @@ end function
 sub removePendingNodes(collection)
     if not rodash.isNode(collection) then return
     pendingNode = collection.findNode("pending")
+    carouselsCollection = collection.carouselCollection
+
     while pendingNode <> invalid
-        ?"removePendingNodes " pendingNode
         collection.removeChild(pendingNode)
+        carouselModel = pendingNode.carouselItemModel
+        if rodash.isNode(carouselsCollection) and rodash.isNode(carouselModel)
+            carouselsCollection.removeChild(carouselModel)
+        end if
         pendingNode = collection.findNode("pending")
     end while
 end sub
