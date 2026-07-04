@@ -23,12 +23,6 @@ sub generateCarouselCollection(_options = {})
         carouselCollection.appendChild(existingModel)
     end for
 
-    ' if carouselCollection.getChildCount() > top().getChildCount()
-    '     numberOfChildren = carouselCollection.getChildCount() - top().getChildCount()
-    '     ?"removing " numberOfChildren
-    '     carouselCollection.removeChildrenIndex(numberOfChildren, top().getChildCount())
-    ' end if
-
     top().carouselCollection = carouselCollection
 end sub
 

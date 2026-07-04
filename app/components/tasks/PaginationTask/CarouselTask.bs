@@ -14,6 +14,7 @@ function runCarouselTask(options = {})
     if not rodash.isNonEmptyAA(options) then return true
 
     collection = options.collection
+
     if not rodash.isNode(collection) then return true
 
     variables = exec("getVariables", {}, collection)
@@ -23,15 +24,6 @@ function runCarouselTask(options = {})
     responseData = responseJSON.data ?? {}
     carouselsData = responseData.carousel ?? {}
     contentsData = carouselsData.contents ?? []
-
-
-    ' if collection.getChildCount() > contentsData.count()
-    '     numberOfChildren = collection.getChildCount() - contentsData.count()
-    '     ?"removing " numberOfChildren, contentsData.count()
-    '     collection.removeChildrenIndex(numberOfChildren, contentsData.count())
-    ' end if
-    ' ?"collection " collection.getChildCount()
-    ' ?"contentsData " contentsData.count()
 
     for each content in contentsData
         documentId =  content.documentId ?? ""

@@ -25,7 +25,7 @@ sub onCTASelected(options = {})
     actionType = options.data
     if actionType = "play"
         dispatch(events.PLAY_VIDEO, { content: m.content })
-    else if actionType = "more_info"
+    else if actionType = "details"
         dispatch(events.NAVIGATE_TO, { slug: `/details/${m.content.id}`, content: m.content })
     end if
 end sub
