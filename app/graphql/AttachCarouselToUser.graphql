@@ -1,0 +1,22 @@
+mutation AttachCarouselToUser(
+  $userId: ID!
+  $carouselIds: [ID!]!
+) {
+  attachUserCarouselsByDocumentId(
+    userDocumentId: $userId
+    carouselDocumentIds: $carouselIds
+  ) {
+    user {
+      documentId
+      username
+      user_carousels {
+        documentId
+        type
+      }
+    }
+    attachedCarousels {
+      documentId
+      type
+    }
+  }
+}

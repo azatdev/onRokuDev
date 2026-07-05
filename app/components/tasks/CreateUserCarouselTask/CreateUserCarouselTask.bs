@@ -1,0 +1,21 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(_options = {})
+        setTaskFunction(runCreateUserCarouselTask)
+    end sub)
+end sub
+
+
+function runCreateUserCarouselTask(_options = {})
+    variables = {}
+    variables.setModeCaseSensitive()
+    variables = {
+        "carouselType": "CONTINUE_WATCHING"
+    }
+    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.CreateUserCarousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+    responseJSON = parseJSON(response.text)
+    responseData = responseJSON.data ?? {}
+    ?"responseData " formatJSON(responseData)
+    return true
+end function

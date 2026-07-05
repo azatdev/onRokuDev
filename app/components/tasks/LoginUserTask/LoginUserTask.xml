@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="LoginUserTask" extends="Task">
+    <interface>
+    </interface>
+    <children>
+    </children>
+    <script type="text/brightscript" uri="LoginUserTask.bs" />
+</component>

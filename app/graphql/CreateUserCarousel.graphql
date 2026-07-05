@@ -1,0 +1,11 @@
+mutation CreateUserCarousel($carouselType: ENUM_USERCAROUSEL_TYPE!) {
+  createUserCarousel (
+    status: PUBLISHED
+    data: {
+      type: $carouselType
+    }
+  ) {
+    documentId
+    type
+  }
+}

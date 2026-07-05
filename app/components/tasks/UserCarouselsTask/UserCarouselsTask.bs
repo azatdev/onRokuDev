@@ -1,4 +1,5 @@
 import "pkg:/components/_ord/wrappers.bs"
+import "pkg:/components/tasks/shared/content.bs"
 
 sub init()
     exec(sub(_options = {})
@@ -12,39 +13,97 @@ function runUserCarouselsTask(options = {})
     if not rodash.isNonEmptyAA(options) then return true
 
     collections = options.collections
+    userModel = options.userModel
+    if not rodash.isNode(userModel) then return true
 
     variables = {}
     variables.setModeCaseSensitive()
     variables = {
-        "documentId": "tcsdu0rj38k1ls6tmcyo0fdu",
+        "documentId": userModel.documentId ?? "",
         "sort": "updatedAt:desc",
         "pagination": {
             "page": 1,
             "pageSize": 100
         }
     }
-    ?"variables " variables
+
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.UserCarousels) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+
     responseJSON = parseJSON(response.text)
     responseData = responseJSON.data ?? {}
     usersPermissionsUser = responseData.usersPermissionsUser ?? {}
     userCarouselsData = usersPermissionsUser.user_carousels ?? {}
     if rodash.isEmpty(userCarouselsData) then return true
 
+    carouselTypesArray = collections.keys() ?? []
+
     for each carousel in userCarouselsData
         collection = collections[carousel.type]
         if not rodash.isNode(collection) then continue for
+
+        collection.id = carousel.documentId
 
         userItems = carousel.user_items
         for each item in userItems
             content = item.content
             content.position = item.position
             model = createObject("roSGNode", "ContentModel")
-            exec("processContent", { data: content, thumbnailType: "LANDSCAPE" }, model)
+            processContent({ model: model, data: content, thumbnailType: "LANDSCAPE" })
             collection.appendChild(model)
         end for
+
+        typeIndex = rodash.indexOf(carouselTypesArray, carousel.type)
+        carouselTypesArray.delete(typeIndex)
     end for
+
+    newCarouselIds = []
+
+    for each carouselType in carouselTypesArray
+        collection = collections[carouselType]
+        newCarouselId = createUserCarousel(carouselType)
+        collection.id = newCarouselId
+        newCarouselIds.push(newCarouselId)
+    end for
+
+    if rodash.isNonEmptyArray(newCarouselIds) then attachCarouselsToUser({
+        userId: userModel.documentId ?? "",
+        carouselIds: newCarouselIds
+    })
 
     publish(events.USER_CAROUSELS_RECEIVED)
     return true
 end function
+
+
+function createUserCarousel(carouselType = "")
+    variables = {}
+    variables.setModeCaseSensitive()
+    variables = {
+        "carouselType": carouselType
+    }
+
+    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.CreateUserCarousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+
+    responseJSON = parseJSON(response.text)
+    responseData = responseJSON.data ?? {}
+    carouselData = responseData.createUserCarousel ?? {}
+    newCarouselId = carouselData.documentId
+
+    return newCarouselId
+end function
+
+
+sub attachCarouselsToUser(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    variables = {}
+    variables.setModeCaseSensitive()
+    variables = {
+        "userId": options.userId,
+        "carouselIds": options.carouselIds
+    }
+
+    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.AttachCarouselToUser) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+
+    ?"attachCarouselsToUser " response
+end sub

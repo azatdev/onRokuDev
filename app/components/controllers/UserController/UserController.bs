@@ -3,7 +3,9 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(_options = {})
         subscribe({
-            [events.APP_STARTED]: getUserCarousels,
+            [events.APP_STARTED]: loginUser,
+            [events.GET_USER_CAROUSELS]: getUserCarousels,
+            [events.USER_LOGGED_IN]: userLoggedIn,
             [events.USER_CAROUSELS_RECEIVED]: userCarouselsReceived
         })
     end sub)
@@ -12,16 +14,19 @@ end sub
 
 sub getUserCarousels(_options = {})
     collections = {
-        "CONTINUE_WATCHING": createObject("roSGNode", "Collection"),
-        "FAVORITES": createObject("roSGNode", "Collection"),
-        "WATCHLIST": createObject("roSGNode", "Collection")
+        [carouselTypes.CONTINUE_WATCHING]: createObject("roSGNode", "Collection"),
+        [carouselTypes.FAVORITES]: createObject("roSGNode", "Collection"),
+        [carouselTypes.WATCHLIST]: createObject("roSGNode", "Collection")
     }
-    set({ collections: collections })
+    set({
+        collections: collections
+    })
 
     userCarouselsTask = createObject("roSGNode", "UserCarouselsTask")
     userCarouselsTask.update({
         options: {
-            collections: collections
+            collections: collections,
+            userModel: get("userModel")
         }
     }, true)
 
@@ -29,7 +34,21 @@ sub getUserCarousels(_options = {})
 end sub
 
 
+sub loginUser(_options = {})
+    loginUserTask = createObject("roSGNode", "LoginUserTask")
+    loginUserTask.control = "RUN"
+end sub
+
+
 sub userCarouselsReceived(_options = {})
-    collections = get("collections")
-    ?"userCarouselsReceived " collections["CONTINUE_WATCHING"]
+    ' collections = get("collections")
+    ' ?"userCarouselsReceived " collections["CONTINUE_WATCHING"] collections["FAVORITES"] collections["WATCHLIST"]
+end sub
+
+
+sub userLoggedIn(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    userModel = options.userModel
+    set({ userModel: userModel })
+    dispatch(events.GET_USER_CAROUSELS)
 end sub

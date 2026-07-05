@@ -1,0 +1,31 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(_options = {})
+        setTaskFunction(runLoginUserTask)
+    end sub)
+end sub
+
+
+function runLoginUserTask(_options = {})
+    variables = {}
+    variables.setModeCaseSensitive()
+    variables = {
+        "email": "<%- s(CONFIG.ENV.USER_EMAIL) %>",
+        "password": "<%- s(CONFIG.ENV.USER_PASS) %>"
+    }
+
+    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Login) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>" })
+
+    responseJSON = parseJSON(response.text)
+    responseData = responseJSON.data ?? {}
+    loginData = responseData.login ?? {}
+    userData = loginData.user ?? {}
+
+    userModel = createObject("roSGNode", "UserModel")
+    userData.append({ jwt: loginData.jwt })
+    userModel.update(userData, true)
+
+    publish(events.USER_LOGGED_IN, { userModel: userModel })
+    return true
+end function

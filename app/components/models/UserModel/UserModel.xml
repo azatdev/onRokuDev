@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="UserModel" extends="ContentNode">
+    <interface>
+        <field id="documentId" type="string" />
+        <field id="email" type="string" />
+        <field id="jwt" type="string" />
+        <field id="username" type="string" />
+    </interface>
+    <script type="text/brightscript" uri="UserModel.bs" />
+</component>
