@@ -4,6 +4,7 @@ query UserCarousels($documentId: ID!, $sort: [String], $pagination: PaginationAr
       documentId
       type
       user_items(sort: $sort, pagination: $pagination) {
+        documentId
         type
         position
         contentId

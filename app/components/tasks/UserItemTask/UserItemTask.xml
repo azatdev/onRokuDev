@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="UserItemTask" extends="Task">
+    <interface>
+        <field id="options" type="assocArray" />
+    </interface>
+    <children>
+    </children>
+    <script type="text/brightscript" uri="UserItemTask.bs" />
+</component>

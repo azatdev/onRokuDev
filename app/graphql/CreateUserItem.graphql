@@ -1,0 +1,40 @@
+mutation CreateUserItem(
+  $contentDocumentId: String
+  $contentId: ID
+  $position: Int
+  $userItemType: ENUM_USERITEM_TYPE
+) {
+  createUserItem(
+    status: PUBLISHED
+    data: {
+      type: $userItemType
+      content: $contentId
+      contentId: $contentDocumentId
+      position: $position
+    }
+  ) {
+    documentId
+    type
+    position
+    contentId
+    content {
+      complimentaryColor
+      copyrightYear
+      description
+      documentId
+      duration
+      v2genres {
+        name
+      }
+      rating
+      title
+      type
+      images {
+        imageType
+        data {
+          url
+        }
+      }
+    }
+  }
+}

@@ -25,6 +25,10 @@ sub onCTASelected(options = {})
     actionType = options.data
     if actionType = "play"
         dispatch(events.PLAY_VIDEO, { content: m.content })
+    else if actionType = "addWatchlist"
+        dispatch(events.TOGGLE_WATCHLIST, { content: m.content })
+    else if actionType = "addFavorites"
+        dispatch(events.TOGGLE_FAVORITE, { content: m.content })
     else if actionType = "details"
         dispatch(events.NAVIGATE_TO, { slug: `/details/${m.content.id}`, content: m.content })
     end if

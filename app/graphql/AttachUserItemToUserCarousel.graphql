@@ -1,0 +1,16 @@
+mutation AttachUserItemToUserCarousel(
+  $carouselDocumentId: ID!
+  # $carouselType: ENUM_USERCAROUSEL_TYPE!
+  $userItemDocumentIds: [ID]
+) {
+  updateUserCarousel(
+    documentId: $carouselDocumentId
+    status: PUBLISHED
+    data: {
+      # type: $carouselType
+      user_items: $userItemDocumentIds
+    }
+  ) {
+    documentId
+  }
+}

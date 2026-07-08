@@ -72,6 +72,7 @@ sub onDataSet(options = {})
 
     data = options.data
     content = data.content
+    m.content = content
     playerModel = content.playerModel
     m.video.content = playerModel
     m.video.control = "play"
@@ -152,6 +153,9 @@ end sub
 
 sub onVideoPositionChange(options = {})
     exec("onPositionChange", options, m.videoOverlay)
+    if not rodash.isNode(m.content) then return
+    options.append({ contentModel: m.content })
+    dispatch(events.VIDEO_POSITION_CHANGE, options)
 end sub
 
 

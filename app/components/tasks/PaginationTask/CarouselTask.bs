@@ -9,7 +9,7 @@ sub init()
 end sub
 
 
-function runCarouselTask(options = {})
+function runCarouselTask(_options = {})
     options = top().options ?? {}
     if not rodash.isNonEmptyAA(options) then return true
 

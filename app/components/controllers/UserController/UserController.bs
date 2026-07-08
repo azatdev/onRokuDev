@@ -6,7 +6,10 @@ sub init()
             [events.APP_STARTED]: loginUser,
             [events.GET_USER_CAROUSELS]: getUserCarousels,
             [events.USER_LOGGED_IN]: userLoggedIn,
-            [events.USER_CAROUSELS_RECEIVED]: userCarouselsReceived
+            [events.USER_CAROUSELS_RECEIVED]: userCarouselsReceived,
+            [events.TOGGLE_FAVORITE]: toggleFavorite,
+            [events.TOGGLE_WATCHLIST]: toggleWatchlist,
+            [events.VIDEO_POSITION_CHANGE]: onVideoPositionChange
         })
     end sub)
 end sub
@@ -40,9 +43,91 @@ sub loginUser(_options = {})
 end sub
 
 
+sub onVideoPositionChange(options = {})
+    position = options.data ?? 0
+    duration = options.info?.duration ?? 0
+    contentModel = options.contentModel
+
+    collections = get("collections") ?? {}
+    if not rodash.isNonEmptyAA(collections) then return
+
+    collection = collections[carouselTypes.CONTINUE_WATCHING]
+    if not rodash.isNode(collection) then return
+
+    prevPosition = get("prevPosition") ?? {}
+    prevContentPosition = prevPosition[contentModel.id] ?? 0
+
+    positionDelta = abs(position - prevContentPosition)
+    ?"onVideoPositionChange " positionDelta
+    if positionDelta < 15 then return
+
+    prevPosition[contentModel.id] = position
+    set({ prevPosition: prevPosition })
+
+    userItemTask = createObject("roSGNode", "UserItemTask")
+    userItemTask.update({
+        options: {
+            collection: collection,
+            contentModel: contentModel,
+            duration: duration,
+            position: position
+        }
+    })
+
+    userItemTask.control = "RUN"
+end sub
+
+
+sub toggleFavorite(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    contentModel = options.content
+    if not rodash.isNode(contentModel) then return
+
+    ?"toggleFavorite " contentModel
+
+    collections = get("collections")
+    if not rodash.isNonEmptyAA(collections) then return
+
+    collection = collections[carouselTypes.FAVORITES]
+    if not rodash.isNode(collection) then return
+
+    userItemTask = createObject("roSGNode", "UserItemTask")
+    userItemTask.update({
+        options: {
+            collection: collection,
+            contentModel: contentModel
+        }
+    })
+    userItemTask.control = "RUN"
+end sub
+
+
+sub toggleWatchlist(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    contentModel = options.content
+    if not rodash.isNode(contentModel) then return
+
+    collections = get("collections")
+    if not rodash.isNonEmptyAA(collections) then return
+
+    collection = collections[carouselTypes.WATCHLIST]
+    if not rodash.isNode(collection) then return
+
+    userItemTask = createObject("roSGNode", "UserItemTask")
+    userItemTask.update({
+        options: {
+            collection: collection,
+            contentModel: contentModel
+        }
+    })
+    userItemTask.control = "RUN"
+end sub
+
+
 sub userCarouselsReceived(_options = {})
-    ' collections = get("collections")
-    ' ?"userCarouselsReceived " collections["CONTINUE_WATCHING"] collections["FAVORITES"] collections["WATCHLIST"]
+    collections = get("collections")
+    collection = collections["CONTINUE_WATCHING"]
+    ?"userCarouselsReceived " collection.getChild(0)
 end sub
 
 

@@ -26,12 +26,15 @@ namespace events
     const SHOW_DETAILS_UI = "SHOW_DETAILS_UI"
     const STYLES_UPDATE = "STYLES_UPDATE"
     const REQUEST_CONFIGS = "REQUEST_CONFIGS"
+    const TOGGLE_FAVORITE = "TOGGLE_FAVORITE"
+    const TOGGLE_WATCHLIST = "TOGGLE_WATCHLIST"
     const USER_LOGGED_IN = "USER_LOGGED_IN"
     const VIDEO_PLAYING = "VIDEO_PLAYING"
     const VIDEO_RESTARTING = "VIDEO_RESTARTING"
     const VIDEO_PAUSED = "VIDEO_PAUSED"
     const VIDEO_ERROR = "VIDEO_ERROR"
     const VIDEO_BUFFERING = "VIDEO_BUFFERING"
+    const VIDEO_POSITION_CHANGE = "VIDEO_POSITION_CHANGE"
     const VIDEO_FINISHED = "VIDEO_FINISHED"
     const VIDEO_STOPPED = "VIDEO_STOPPED"
 end namespace
@@ -47,6 +50,13 @@ namespace carouselTypes
     const HERO = "HERO"
     const INDEX = "INDEX"
     const RELATED = "RELATED"
+    const WATCHLIST = "WATCHLIST"
+end namespace
+
+
+namespace userItemsTypes
+    const CWITEM = "CWITEM"
+    const FAVORITE = "FAVORITE"
     const WATCHLIST = "WATCHLIST"
 end namespace
 

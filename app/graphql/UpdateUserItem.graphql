@@ -1,0 +1,13 @@
+mutation UpdateUserItem(
+  $documentId: ID!
+  $position: Int
+) {
+  updateUserItem(
+    documentId: $documentId,
+    data: {
+      position: $position
+    }
+  ) {
+    position
+  }
+}

@@ -86,6 +86,7 @@ sub processContent(options = {})
         playerModel: returnPlayerModel(data),
         playlistUrl: data.playlistUrl,
         position: data.position ?? 0,
+        userItemId: data.userItemId,
         title: data.title,
         type: data.type
     }

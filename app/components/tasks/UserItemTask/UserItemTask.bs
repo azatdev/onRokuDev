@@ -1,0 +1,195 @@
+import "pkg:/components/_ord/wrappers.bs"
+import "pkg:/components/tasks/shared/content.bs"
+
+sub init()
+    exec(sub(_options = {})
+        setTaskFunction(runUserItemTask)
+    end sub)
+end sub
+
+
+function runUserItemTask(_options = {})
+    options = top().options ?? {}
+    if not rodash.isNonEmptyAA(options) then return true
+
+    collection = options.collection
+    contentModel = options.contentModel
+
+    if not rodash.isNode(collection) then return true
+
+    existingUserItemModel = collection.findNode(contentModel.id)
+
+    ?"existingUserItemModel " existingUserItemModel
+
+    if rodash.isNode(existingUserItemModel)
+        if collection.type = carouselTypes.CONTINUE_WATCHING
+            duration = options.duration ?? 0
+            position = options.position ?? 0
+            if rodash.isNumber(duration) and duration = 0 or rodash.isNumber(position) and position = 0 then return true
+
+            if position > duration or duration - position <= 120
+                deleteUserItemModel({
+                    collection: collection,
+                    model: existingUserItemModel
+                })
+            else
+                updateUserItemModel({
+                    model: existingUserItemModel,
+                    position: options.position ?? 0
+                })
+            end if
+        else
+            deleteUserItemModel({
+                collection: collection,
+                model: existingUserItemModel
+            })
+        end if
+    else
+        createUserItemModel({
+            collection: collection,
+            contentDocumentId: contentModel.id,
+            position: options.position ?? 0
+        })
+    end if
+
+    return true
+end function
+
+
+sub deleteUserItemModel(options = {})
+    ?"deleteUserItemModel " options
+    if not rodash.isNonEmptyAA(options) then return
+
+    collection = options.collection
+    if not rodash.isNode(collection) then return
+
+    model = options.model
+    if not rodash.isNode(model) then return
+
+    userItemId = model.userItemId
+
+    variables = {}
+    variables.setModeCaseSensitive()
+    variables = {
+        "documentId": userItemId
+    }
+
+    ?"variables " variables
+
+    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.DeleteUserItem) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+    responseJSON = parseJSON(response.text)
+    ?"responseJSON.errors " formatJSON(responseJSON.errors)
+    if not rodash.isEmpty(responseJSON.errors)
+        return
+    end if
+
+    collection.removeChild(model)
+end sub
+
+
+sub updateUserItemModel(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    model = options.model
+    if not rodash.isNode(model) then return
+
+    userItemId = model.userItemId
+    position = options.position
+
+    variables = {}
+    variables.setModeCaseSensitive()
+    variables = {
+        "documentId": userItemId,
+        "position": position
+    }
+    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.UpdateUserItem) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+    responseJSON = parseJSON(response.text)
+    if not rodash.isEmpty(responseJSON.errors)
+        return
+    end if
+
+    model.position = position
+end sub
+
+
+sub createUserItemModel(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    collection = options.collection
+    if not rodash.isNode(collection) then return
+
+    carouselType = collection.type
+    userItemType = ""
+
+    if carouselType = carouselTypes.CONTINUE_WATCHING
+        userItemType = userItemsTypes.CWITEM
+    else if carouselType = carouselTypes.FAVORITES
+        userItemType = userItemsTypes.FAVORITE
+    else if carouselType = carouselTypes.WATCHLIST
+        userItemType = userItemsTypes.WATCHLIST
+    end if
+
+    if rodash.isEmptyString(userItemType) then return
+
+    contentDocumentId = options.contentDocumentId
+    position = options.position
+
+    variables = {}
+    variables.setModeCaseSensitive()
+    variables = {
+        "contentDocumentId": contentDocumentId,
+        "contentId": contentDocumentId,
+        "position": position,
+        "userItemType": userItemType
+    }
+    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.CreateUserItem) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+    responseJSON = parseJSON(response.text)
+    responseData = responseJSON.data ?? {}
+
+    userItemData = responseData.createUserItem ?? {}
+    content = userItemData.content ?? {}
+
+    if not rodash.isNonEmptyAA(content) then return
+
+    model = createObject("roSGNode", "ContentModel")
+    content.userItemId = userItemData.documentId
+
+    processContent({ model: model, data: content, thumbnailType: "LANDSCAPE" })
+
+    attachUserItemModel({
+        collection: collection,
+        newUserItemModel: model,
+        userItemId: userItemData.documentId ?? ""
+    })
+end sub
+
+
+sub attachUserItemModel(options = {})
+    ?"attachUserItemModel " options
+    if not rodash.isNonEmptyAA(options) then return
+
+    collection = options.collection
+    if not rodash.isNode(collection) then return
+
+    newUserItemModel = options.newUserItemModel
+    if not rodash.isNode(newUserItemModel) then return
+
+    userItemId = options.userItemId
+    if rodash.isEmptyString(userItemId) then return
+
+    variables = {}
+    variables.setModeCaseSensitive()
+    variables = {
+        "carouselDocumentId": collection.id,
+        ' "carouselType": collection.type,
+        "userItemDocumentIds": [userItemId]
+    }
+    ?"variables " variables
+    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.AttachUserItemToUserCarousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+    responseJSON = parseJSON(response.text)
+    if not rodash.isEmpty(responseJSON.errors)
+        return
+    end if
+
+    collection.insertChild(newUserItemModel, 0)
+end sub
