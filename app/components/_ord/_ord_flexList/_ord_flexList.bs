@@ -373,6 +373,8 @@ sub processConfig(options = {})
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.content) then return
 
+    ?"processConfig " options
+
     defaultConfig = get("defaultConfig")
     config = {}
     config.append(defaultConfig)

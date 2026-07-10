@@ -6,24 +6,24 @@ const Icons = iconConfig["Icons"]
 module.exports = {
     "DetailsCTAs": [
         {
-            id: "play",
+            id: "CWITEM",
             iconText: Icons.play,
             title: "Play Now"
         },
         {
-            id: "addWatchlist",
+            id: "WATCHLIST",
             dynamicWidth: true,
             iconText: Icons.watchlist,
             title: "Add to watchlist"
         },
         {
-            id: "addFavorites",
+            id: "FAVORITE",
             dynamicWidth: true,
             iconText: Icons.favorites,
             title: "Add to favorites"
         },
         {
-            id: "details",
+            id: "DETAILS",
             dynamicWidth: true,
             iconText: Icons.ellipsisH,
             title: "Details"

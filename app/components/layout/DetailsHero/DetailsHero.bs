@@ -23,13 +23,13 @@ sub onCTASelected(options = {})
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.content) then return
     actionType = options.data
-    if actionType = "play"
+    if actionType = "PLAY"
         dispatch(events.PLAY_VIDEO, { content: m.content })
-    else if actionType = "addWatchlist"
+    else if actionType = "WATCHLIST"
         dispatch(events.TOGGLE_WATCHLIST, { content: m.content })
-    else if actionType = "addFavorites"
+    else if actionType = "FAVORITE"
         dispatch(events.TOGGLE_FAVORITE, { content: m.content })
-    else if actionType = "details"
+    else if actionType = "DETAILS"
         dispatch(events.NAVIGATE_TO, { slug: `/details/${m.content.id}`, content: m.content })
     end if
 end sub
@@ -50,6 +50,7 @@ sub onDataSet(options = {})
     if rodash.isNode(m.content) and content.isSameNode(m.content) then return
 
     m.content = content
+    ?"onDataSet " content
 
     onHydrated({ node: m.content })
     stackChildren({ node: m.container, direction: "vertical" })
@@ -68,9 +69,9 @@ sub onHydrated(options = {})
 end sub
 
 
-sub setCTAs(heroCTAsModel = {})
-    if not rodash.isNode(heroCTAsModel) then return
-    m.ctas.data = { content: heroCTAsModel }
+sub setCTAs(detailsCTAsModel = {})
+    if not rodash.isNode(detailsCTAsModel) then return
+    m.ctas.data = { content: detailsCTAsModel }
 end sub
 
 

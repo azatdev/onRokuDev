@@ -29,9 +29,9 @@ sub onCTASelected(options = {})
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.content) then return
     actionType = options.data
-    if actionType = "play"
+    if actionType = "PLAY"
 
-    else if actionType = "more_info"
+    else if actionType = "MORE_INFO"
         dispatch(events.NAVIGATE_TO, { slug: `/details/${m.content.id}`, content: m.content })
     end if
 end sub

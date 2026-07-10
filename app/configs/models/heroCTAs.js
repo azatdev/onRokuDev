@@ -4,12 +4,12 @@ const Icons = iconConfig["Icons"]
 module.exports = {
     "HeroCTAs": [
         {
-            id: "play",
+            id: "PLAY",
             iconText: Icons.play,
             title: "TKEY_PLAY_NOW"
         },
         {
-            id: "more_info",
+            id: "MORE_INFO",
             iconText: Icons.info,
             title: "TKEY_MORE_INFO"
         }

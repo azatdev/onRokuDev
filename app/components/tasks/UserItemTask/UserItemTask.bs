@@ -19,8 +19,6 @@ function runUserItemTask(_options = {})
 
     existingUserItemModel = collection.findNode(contentModel.id)
 
-    ?"existingUserItemModel " existingUserItemModel
-
     if rodash.isNode(existingUserItemModel)
         if collection.type = carouselTypes.CONTINUE_WATCHING
             duration = options.duration ?? 0
@@ -47,6 +45,7 @@ function runUserItemTask(_options = {})
     else
         createUserItemModel({
             collection: collection,
+            contentModel: contentModel,
             contentDocumentId: contentModel.id,
             position: options.position ?? 0
         })
@@ -83,6 +82,9 @@ sub deleteUserItemModel(options = {})
         return
     end if
 
+    userItemType = returnUserItemType(collection.type)
+    if rodash.isEmptyString(userItemType) then return
+
     collection.removeChild(model)
 end sub
 
@@ -118,18 +120,11 @@ sub createUserItemModel(options = {})
     collection = options.collection
     if not rodash.isNode(collection) then return
 
-    carouselType = collection.type
-    userItemType = ""
-
-    if carouselType = carouselTypes.CONTINUE_WATCHING
-        userItemType = userItemsTypes.CWITEM
-    else if carouselType = carouselTypes.FAVORITES
-        userItemType = userItemsTypes.FAVORITE
-    else if carouselType = carouselTypes.WATCHLIST
-        userItemType = userItemsTypes.WATCHLIST
-    end if
-
+    userItemType = returnUserItemType(collection.type)
     if rodash.isEmptyString(userItemType) then return
+
+    contentModel = options.contentModel
+    if not rodash.isNode(contentModel) then return
 
     contentDocumentId = options.contentDocumentId
     position = options.position
@@ -161,6 +156,18 @@ sub createUserItemModel(options = {})
         newUserItemModel: model,
         userItemId: userItemData.documentId ?? ""
     })
+
+    detailsModel = contentModel.detailsCTAsModel
+    if not rodash.isNode(detailsModel) then return
+
+    ?"detailsModel " detailsModel
+    detailsItemModel = detailsModel.findNode(userItemType)
+    if not rodash.isNode(detailsItemModel) then return
+
+    detailsItemModel.title = "Remove From Watchlist"
+
+    ?"model " model
+    ?"createUserItemModel " detailsItemModel
 end sub
 
 
@@ -193,3 +200,15 @@ sub attachUserItemModel(options = {})
 
     collection.insertChild(newUserItemModel, 0)
 end sub
+
+
+function returnUserItemType(carouselType = "")
+    if carouselType = carouselTypes.CONTINUE_WATCHING
+        return userItemsTypes.CWITEM
+    else if carouselType = carouselTypes.FAVORITES
+        return userItemsTypes.FAVORITE
+    else if carouselType = carouselTypes.WATCHLIST
+        return userItemsTypes.WATCHLIST
+    end if
+    return ""
+end function

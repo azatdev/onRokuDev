@@ -27,6 +27,7 @@ end sub
 
 sub itemContentChanged(options = {})
     content = options.data
+    ?"itemContentChanged " content
     m.label.text = ucase(content.title)
     m.icon.text = content.iconText
     dynamicWidth = content.dynamicWidth ?? false

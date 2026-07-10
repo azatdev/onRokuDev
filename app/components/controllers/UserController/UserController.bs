@@ -113,6 +113,8 @@ sub toggleWatchlist(options = {})
     collection = collections[carouselTypes.WATCHLIST]
     if not rodash.isNode(collection) then return
 
+    ?"toggleWatchlist " contentModel
+
     userItemTask = createObject("roSGNode", "UserItemTask")
     userItemTask.update({
         options: {
