@@ -1,6 +1,7 @@
 module.exports = {
     "CTACarousel": {
         carouselType: "dynamicSize",
+        clip: false,
         focusType: "floating",
         horizAlign: "center",
         itemComponentName: "ButtonItem",

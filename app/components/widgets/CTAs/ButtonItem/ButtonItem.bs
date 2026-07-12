@@ -25,18 +25,81 @@ sub setupItem()
 end sub
 
 
+sub checkCTAActive(options = {})
+    model = options.model
+    if not rodash.isNode(model) then return
+
+    ctaType = model.id
+    if rodash.isEmptyString(ctaType) then return
+
+    carouselType = ""
+
+    if ctaType = userItemsTypes.CWITEM
+        carouselType = carouselTypes.CONTINUE_WATCHING
+    else if ctaType = userItemsTypes.FAVORITE
+        carouselType = carouselTypes.FAVORITES
+    else if ctaType = carouselTypes.WATCHLIST
+        carouselType = carouselTypes.WATCHLIST
+    end if
+
+    if rodash.isEmptyString(carouselType) then return
+
+    collections = get("collections", user())
+    if not rodash.isNonEmptyAA(collections) then return
+
+    userCollection = collections[carouselType]
+    if not rodash.isNode(userCollection) then return
+
+    contentDocumentId = model.contentDocumentId
+    if rodash.isEmptyString(contentDocumentId) then return
+
+    userItemModel = userCollection.findNode(contentDocumentId)
+    model.active = rodash.isNode(userItemModel)
+end sub
+
+
+function getTitleText()
+    if not rodash.isNode(top().itemContent) then return ""
+    active = top().itemContent.active ?? false
+    title = active ? top().itemContent.activeTitle : top().itemContent.title
+    return ucase(title)
+end function
+
+
 sub itemContentChanged(options = {})
     content = options.data
-    ?"itemContentChanged " content
-    m.label.text = ucase(content.title)
-    m.icon.text = content.iconText
+    checkCTAActive({ model: content })
+    m.label.text = getTitleText()
+
+    setIconInfo(content)
+
     dynamicWidth = content.dynamicWidth ?? false
     set({ dynamicWidth: dynamicWidth })
     onTextChange()
 end sub
 
 
+sub setIconInfo(content)
+    if not rodash.isNode(content) then return
+    m.icon.text = content.iconText
+
+    ctaType = content.id
+    if rodash.isEmptyString(ctaType) then return
+
+    if ctaType <> carouselTypes.WATCHLIST and ctaType <> carouselTypes.WATCHLIST then return
+
+    if content.active ?? false
+        ' addClass("active", m.icon)
+    else
+        ' removeClass("active", m.icon)
+    end if
+end sub
+
+
 sub onTextChange(_options = {})
+    labelSquare = get("labelSquare") ?? [0,0]
+    clipPercentage = labelSquare[0] > 0 ? m.label.clippingRect.width / labelSquare[0] : 0
+
     stackChildren({ node: m.container, direction: "horizontal" })
     m.container.width = m.container.boundingRect().width
     m.container.height = m.container.boundingRect().height
@@ -47,7 +110,10 @@ sub onTextChange(_options = {})
         index: m.top.index
     }, top().getParent().getParent())
 
-    if get("dynamicWidth") then m.label.clippingRect = [0,0,0,0]
+    if get("dynamicWidth")
+        labelSquare = get("labelSquare") ?? [0,0]
+        m.label.clippingRect = [0, 0, labelSquare[0] * clipPercentage, labelSquare[1]]
+    end if
 end sub
 
 
@@ -84,8 +150,10 @@ end sub
 function getFocusedRectSize(_options = {})
     if not rodash.isNode(m.label) then return [0,0]
 
-    m.label.text = ucase(top().itemContent.title)
+    m.label.text = getTitleText()
     m.label.visible = true
+
+    if get("dynamicWidth") then m.label.clippingRect = [0,0,0,0]
     labelSquare = [getVisibleWidth(m.label), getVisibleHeight(m.label)]
     set({ "labelSquare": labelSquare })
 

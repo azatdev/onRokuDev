@@ -25,9 +25,10 @@ function runUserItemTask(_options = {})
             position = options.position ?? 0
             if rodash.isNumber(duration) and duration = 0 or rodash.isNumber(position) and position = 0 then return true
 
-            if position > duration or duration - position <= 120
+            if position > duration or duration - position > 120
                 deleteUserItemModel({
                     collection: collection,
+                    contentModel: contentModel,
                     model: existingUserItemModel
                 })
             else
@@ -39,6 +40,7 @@ function runUserItemTask(_options = {})
         else
             deleteUserItemModel({
                 collection: collection,
+                contentModel: contentModel,
                 model: existingUserItemModel
             })
         end if
@@ -86,6 +88,17 @@ sub deleteUserItemModel(options = {})
     if rodash.isEmptyString(userItemType) then return
 
     collection.removeChild(model)
+
+    contentModel = options.contentModel
+    if not rodash.isNode(contentModel) then return
+
+    detailsModel = contentModel.detailsCTAsModel
+    if not rodash.isNode(detailsModel) then return
+
+    detailsItemModel = detailsModel.findNode(userItemType)
+    if not rodash.isNode(detailsItemModel) then return
+
+    detailsItemModel.active = false
 end sub
 
 
@@ -164,7 +177,7 @@ sub createUserItemModel(options = {})
     detailsItemModel = detailsModel.findNode(userItemType)
     if not rodash.isNode(detailsItemModel) then return
 
-    detailsItemModel.title = "Remove From Watchlist"
+    detailsItemModel.active = true
 
     ?"model " model
     ?"createUserItemModel " detailsItemModel

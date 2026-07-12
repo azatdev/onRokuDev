@@ -23,7 +23,8 @@ sub onCTASelected(options = {})
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.content) then return
     actionType = options.data
-    if actionType = "PLAY"
+    ?"onCTASelected " actionType
+    if actionType = "CWITEM"
         dispatch(events.PLAY_VIDEO, { content: m.content })
     else if actionType = "WATCHLIST"
         dispatch(events.TOGGLE_WATCHLIST, { content: m.content })

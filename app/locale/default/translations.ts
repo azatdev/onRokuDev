@@ -22,6 +22,10 @@
             <translation>Content Details</translation>
         </message>
         <message>
+            <source>TKEY_CONTINUE_WATCHING</source>
+            <translation>Continue Watching</translation>
+        </message>
+        <message>
             <source>TKEY_DETAILS</source>
             <translation>Details</translation>
         </message>
@@ -44,6 +48,14 @@
         <message>
             <source>TKEY_PLAY_NOW</source>
             <translation>Play now</translation>
+        </message>
+        <message>
+            <source>TKEY_REMOVE_FAVORITES</source>
+            <translation>Remove from favorites</translation>
+        </message>
+        <message>
+            <source>TKEY_REMOVE_WATCHLIST</source>
+            <translation>Remove from watchlist</translation>
         </message>
         <message>
             <source>TKEY_RESTART</source>

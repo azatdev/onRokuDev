@@ -12,7 +12,10 @@ module.exports = {
                     height: 75,
                     margin: [0, 39, 0, 39],
                     size: 33,
-                    vertAlign: "center"
+                    vertAlign: "center",
+                    "&.active": {
+                        color: "#b9faa0",
+                    }
                 },
                 "QuanticoBold": {
                     "&#label": {

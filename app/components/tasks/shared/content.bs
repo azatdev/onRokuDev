@@ -79,8 +79,8 @@ sub processContent(options = {})
         description: data.description,
         duration: data.duration,
         genres: data.v2genres,
-        heroCTAsModel: returnHeroCTAsModel(),
-        detailsCTAsModel: returnDetailsCTAsModel(),
+        heroCTAsModel: returnHeroCTAsModel({ contentDocumentId: data.documentId }),
+        detailsCTAsModel: returnDetailsCTAsModel({ contentDocumentId: data.documentId }),
         id: data.documentId,
         rating: data.rating,
         playerModel: returnPlayerModel(data),
@@ -99,16 +99,19 @@ sub processContent(options = {})
 end sub
 
 
-function returnHeroCTAsModel()
+function returnHeroCTAsModel(options = {})
     model = createObject("roSGNode", "CTAsModel")
     modelConfigArray = "<%- o(CONFIG.HeroCTAs) %>"
     updateObject = {
         children: []
     }
 
+    contentDocumentId = options.contentDocumentId ?? ""
+
     for each item in modelConfigArray
         updateObject.children.push({
             id: item.id,
+            contentDocumentId: contentDocumentId,
             dynamicWidth: item.dynamicWidth ?? false,
             iconText: item.iconText ?? "",
             title: (item.title ?? "").inStr("TKEY") <> -1 ? tr(item.title) : item.title,
@@ -142,7 +145,7 @@ function returnPlayerModel(options = {})
 end function
 
 
-function returnDetailsCTAsModel()
+function returnDetailsCTAsModel(options = {})
     model = createObject("roSGNode", "CTAsModel")
     modelConfigArray = "<%- o(CONFIG.DetailsCTAs) %>"
     updateObject = {
@@ -152,8 +155,11 @@ function returnDetailsCTAsModel()
     for each item in modelConfigArray
         updateObject.children.push({
             id: item.id,
+            contentDocumentId: options.contentDocumentId ?? "",
             dynamicWidth: item.dynamicWidth ?? false,
             iconText: item.iconText ?? "",
+            active: false,
+            activeTitle: (item.activeTitle ?? "").inStr("TKEY") <> -1 ? tr(item.activeTitle) : item.activeTitle,
             title: (item.title ?? "").inStr("TKEY") <> -1 ? tr(item.title) : item.title,
             subtype: "Model"
         })

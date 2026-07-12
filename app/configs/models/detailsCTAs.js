@@ -8,25 +8,28 @@ module.exports = {
         {
             id: "CWITEM",
             iconText: Icons.play,
-            title: "Play Now"
+            title: "TKEY_PLAY_NOW",
+            activeTitle: "TKEY_CONTINUE_WATCHING"
         },
         {
             id: "WATCHLIST",
             dynamicWidth: true,
             iconText: Icons.watchlist,
-            title: "Add to watchlist"
+            title: "TKEY_ADD_WATCHLIST",
+            activeTitle: "TKEY_REMOVE_WATCHLIST"
         },
         {
             id: "FAVORITE",
             dynamicWidth: true,
             iconText: Icons.favorites,
-            title: "Add to favorites"
+            title: "TKEY_ADD_FAVORITES",
+            activeTitle: "TKEY_REMOVE_FAVORITES"
         },
         {
             id: "DETAILS",
             dynamicWidth: true,
             iconText: Icons.ellipsisH,
-            title: "Details"
+            title: "TKEY_DETAILS"
         }
     ]
 };

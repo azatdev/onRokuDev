@@ -462,12 +462,11 @@ sub processConfig(options = {})
         wrapFirstToLast: config.wrapFirstToLast
     })
 
-    applyClippingRect({ percentage: 0 })
+    applyClippingRect({ percentage: top().focusPercent })
 
-    m.carousel.targetSet = m.unFocusedTargetSet
-    if top().hasFocus()
-        m.carousel.setFocus(true)
-    end if
+    if not m.carousel.hasFocus() then m.carousel.targetSet = m.unFocusedTargetSet
+
+    if top().hasFocus() then m.carousel.setFocus(true)
 end sub
 
 
@@ -604,16 +603,17 @@ sub generateRects(options = {})
     else
         for index = 0 to targetsetRects.count() - 1
             if index >= firstFocusableIndex and index <= lastFocusableIndex
+                targetSetIndex = index - firstFocusableIndex
                 targetSetOptions = {
                     focusIndex: index,
                     targetRects: targetsetRects[index]
                 }
-                if rodash.isNode(m.focusedTargetSetArray[index])
-                    focusedTargetSet = m.focusedTargetSetArray[index]
+                if rodash.isNode(m.focusedTargetSetArray[targetSetIndex])
+                    focusedTargetSet = m.focusedTargetSetArray[targetSetIndex]
                     focusedTargetSet.update(targetSetOptions)
                 else
                     focusedTargetSet = createTargetSet(targetSetOptions)
-                    m.focusedTargetSetArray.push(focusedTargetSet)
+                    m.focusedTargetSetArray[targetSetIndex] = focusedTargetSet
                 end if
             end if
         end for

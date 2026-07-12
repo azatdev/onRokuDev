@@ -107,10 +107,6 @@ sub getDetailsData(options = {})
         slug: slug
     }, true)
 
-    ' saveObject = {}
-    ' saveObject[slug] = screenConfig
-    ' set(saveObject)
-
     screenTask = createObject("roSGNode", "DetailsTask")
     screenTask.update({
         options: {
