@@ -65,13 +65,11 @@ sub onTabFocused(options = {})
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.detailsScrollGroup) then return
 
-    ?"onTabFocused " options.data
     m.detailsScrollGroup.animateToItem = options.data ?? 0
 end sub
 
 
 function onViewOpen(_options = {})
-    ?"onViewOpen " rodash.now()
     return promises.resolve(invalid)
 end function
 
@@ -126,8 +124,6 @@ sub focusDetailsHero(_options = {})
 
     carousels = m.content.carousels ?? []
     carouselCount = carousels.count()
-
-    ?"focusDetailsHero " carouselCount
 
     if carouselCount = 0 then return
 

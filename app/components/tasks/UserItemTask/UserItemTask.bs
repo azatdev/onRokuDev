@@ -25,7 +25,7 @@ function runUserItemTask(_options = {})
             position = options.position ?? 0
             if rodash.isNumber(duration) and duration = 0 or rodash.isNumber(position) and position = 0 then return true
 
-            if position > duration or duration - position > 120
+            if position > duration or duration - position <= 120
                 deleteUserItemModel({
                     collection: collection,
                     contentModel: contentModel,
@@ -58,7 +58,6 @@ end function
 
 
 sub deleteUserItemModel(options = {})
-    ?"deleteUserItemModel " options
     if not rodash.isNonEmptyAA(options) then return
 
     collection = options.collection
@@ -75,11 +74,9 @@ sub deleteUserItemModel(options = {})
         "documentId": userItemId
     }
 
-    ?"variables " variables
-
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.DeleteUserItem) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+
     responseJSON = parseJSON(response.text)
-    ?"responseJSON.errors " formatJSON(responseJSON.errors)
     if not rodash.isEmpty(responseJSON.errors)
         return
     end if
@@ -173,19 +170,14 @@ sub createUserItemModel(options = {})
     detailsModel = contentModel.detailsCTAsModel
     if not rodash.isNode(detailsModel) then return
 
-    ?"detailsModel " detailsModel
     detailsItemModel = detailsModel.findNode(userItemType)
     if not rodash.isNode(detailsItemModel) then return
 
     detailsItemModel.active = true
-
-    ?"model " model
-    ?"createUserItemModel " detailsItemModel
 end sub
 
 
 sub attachUserItemModel(options = {})
-    ?"attachUserItemModel " options
     if not rodash.isNonEmptyAA(options) then return
 
     collection = options.collection
@@ -201,10 +193,8 @@ sub attachUserItemModel(options = {})
     variables.setModeCaseSensitive()
     variables = {
         "carouselDocumentId": collection.id,
-        ' "carouselType": collection.type,
         "userItemDocumentIds": [userItemId]
     }
-    ?"variables " variables
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.AttachUserItemToUserCarousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
     responseJSON = parseJSON(response.text)
     if not rodash.isEmpty(responseJSON.errors)

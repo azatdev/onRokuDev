@@ -58,7 +58,6 @@ sub onVideoPositionChange(options = {})
     prevContentPosition = prevPosition[contentModel.id] ?? 0
 
     positionDelta = abs(position - prevContentPosition)
-    ?"onVideoPositionChange " positionDelta
     if positionDelta < 15 then return
 
     prevPosition[contentModel.id] = position
@@ -82,8 +81,6 @@ sub toggleFavorite(options = {})
     if not rodash.isNonEmptyAA(options) then return
     contentModel = options.content
     if not rodash.isNode(contentModel) then return
-
-    ?"toggleFavorite " contentModel
 
     collections = get("collections")
     if not rodash.isNonEmptyAA(collections) then return
@@ -112,8 +109,6 @@ sub toggleWatchlist(options = {})
 
     collection = collections[carouselTypes.WATCHLIST]
     if not rodash.isNode(collection) then return
-
-    ?"toggleWatchlist " contentModel
 
     userItemTask = createObject("roSGNode", "UserItemTask")
     userItemTask.update({

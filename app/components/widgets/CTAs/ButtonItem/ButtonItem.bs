@@ -86,12 +86,12 @@ sub setIconInfo(content)
     ctaType = content.id
     if rodash.isEmptyString(ctaType) then return
 
-    if ctaType <> carouselTypes.WATCHLIST and ctaType <> carouselTypes.WATCHLIST then return
+    if ctaType <> userItemsTypes.WATCHLIST and ctaType <> userItemsTypes.FAVORITE then return
 
     if content.active ?? false
-        ' addClass("active", m.icon)
+        addClass("active", m.icon)
     else
-        ' removeClass("active", m.icon)
+        removeClass("active", m.icon)
     end if
 end sub
 

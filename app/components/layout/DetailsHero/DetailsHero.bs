@@ -23,7 +23,6 @@ sub onCTASelected(options = {})
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.content) then return
     actionType = options.data
-    ?"onCTASelected " actionType
     if actionType = "CWITEM"
         dispatch(events.PLAY_VIDEO, { content: m.content })
     else if actionType = "WATCHLIST"
@@ -31,7 +30,7 @@ sub onCTASelected(options = {})
     else if actionType = "FAVORITE"
         dispatch(events.TOGGLE_FAVORITE, { content: m.content })
     else if actionType = "DETAILS"
-        dispatch(events.NAVIGATE_TO, { slug: `/details/${m.content.id}`, content: m.content })
+        ' dispatch(events.NAVIGATE_TO, { slug: `/details/${m.content.id}`, content: m.content })
     end if
 end sub
 
@@ -51,8 +50,6 @@ sub onDataSet(options = {})
     if rodash.isNode(m.content) and content.isSameNode(m.content) then return
 
     m.content = content
-    ?"onDataSet " content
-
     onHydrated({ node: m.content })
     stackChildren({ node: m.container, direction: "vertical" })
     dispatch(events.HERO_ITEM_FOCUSED, { content: content, section: sections.DETAILS_HERO })

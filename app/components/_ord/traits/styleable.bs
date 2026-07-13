@@ -31,6 +31,21 @@ class Styleable
     end sub
 
 
+    sub setExportFunctions(componentRole)
+        if rodash.isEmptyString(componentRole) then return
+
+        if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
+        m.publicFunctions.push("addClass")
+        m.publicFunctions.push("removeClass")
+        m.publicFunctions.push("redrawStyles")
+        m.publicFunctions.push("setStyles")
+        m.publicFunctions.push("styleHooks")
+        m.publicFunctions.push("onChildChange")
+        m.publicFunctions.push("onIdClassChange")
+        m.publicFunctions.push("stylesUpdated")
+    end sub
+
+
     sub addClass(options = {})
         node = options.node ?? top()
         className = (options.class ?? "").trim()
@@ -42,7 +57,9 @@ class Styleable
         if rodash.indexOf(classNames, className) = -1 then classNames.push(className)
 
         m.setClassNames(node, classNames)
-        m.redrawStyles()
+
+        nodeStyles = m.findNodeStyles({ node: node })
+        m.setClassStyles(nodeStyles, node)
     end sub
 
 
@@ -62,8 +79,40 @@ class Styleable
         end for
 
         m.setClassNames(node, filteredClassNames)
-        m.redrawStyles()
+
+        nodeStyles = m.findNodeStyles({ node: node })
+        m.setStyles(nodeStyles, node)
+        ' m.redrawStyles()
     end sub
+
+
+    function findNodeStyles(options = {})
+        returnObj = {}
+
+        node = options.node
+        if not rodash.isNode(node) then return returnObj
+
+        styleObject = global()._ord_styles.getField(top().subType())
+
+        nodeSubType = node.subType()
+
+        nodeStyleObject = m.findStyles(nodeSubType, styleObject, returnObj)
+
+        return nodeStyleObject
+    end function
+
+
+    function findStyles(nodeSubType, styleObject, returnObj = {})
+        for each item in styleObject.items()
+            if item.key = nodeSubType
+                returnObj.append(item.value)
+            else if rodash.isAA(item.value)
+                m.findStyles(nodeSubType, item.value, returnObj)
+            end if
+        end for
+
+        return returnObj
+    end function
 
 
     sub onChildChange(options = {})
@@ -125,21 +174,6 @@ class Styleable
     end sub
 
 
-    sub setExportFunctions(componentRole)
-        if rodash.isEmptyString(componentRole) then return
-
-        if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
-        m.publicFunctions.push("addClass")
-        m.publicFunctions.push("removeClass")
-        m.publicFunctions.push("redrawStyles")
-        m.publicFunctions.push("setStyles")
-        m.publicFunctions.push("styleHooks")
-        m.publicFunctions.push("onChildChange")
-        m.publicFunctions.push("onIdClassChange")
-        m.publicFunctions.push("stylesUpdated")
-    end sub
-
-
     function returnHandles(options = {})
         allNodeHandles = []
 
@@ -147,8 +181,6 @@ class Styleable
         if not rodash.isNode(node) then return allNodeHandles
 
         nodeSubtype = node.subType()
-
-        ' if not nodeSubtype = "Group" and not node.isSubtype("Group") then return allNodeHandles
 
         allNodeHandles.push(nodeSubtype)
 
