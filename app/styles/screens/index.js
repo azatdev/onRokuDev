@@ -1,4 +1,4 @@
 module.exports = {
     ...require("./CatalogScreen"),
-    ...require("./DetailsScreen")
+    ...require("./ContentScreen")
 };

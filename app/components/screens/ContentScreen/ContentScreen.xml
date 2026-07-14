@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="DetailsScreen" extends="sgRouter_View">
+<component name="ContentScreen" extends="sgRouter_View">
     <interface>
         <field id="data" type="assocArray" />
         <function name="safeFunc" />
     </interface>
     <children>
         <Div id="screenContainer">
-            <DetailsHero id="detailsHero" />
+            <ContentHero id="contentHero" />
             <Div id="bottomContainer">
                 <_ord_flexList id="tabs" />
-                <_ord_scrollGroup id="detailsScrollGroup" />
+                <_ord_scrollGroup id="contentScrollGroup" />
             </Div>
         </Div>
     </children>
-    <script type="text/brightscript" uri="DetailsScreen.bs" />
+    <script type="text/brightscript" uri="ContentScreen.bs" />
 </component>

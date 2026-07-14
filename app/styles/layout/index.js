@@ -3,7 +3,7 @@ module.exports = {
     ...require("./Carousel"),
     ...require("./CatalogHero"),
     ...require("./Delimiter"),
-    ...require("./DetailsHero"),
+    ...require("./ContentHero"),
     ...require("./Header"),
     ...require("./HeaderImage"),
     ...require("./Hero"),

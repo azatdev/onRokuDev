@@ -1,4 +1,4 @@
-query DetailsScreen($documentId: ID!) {
+query ContentScreen($documentId: ID!) {
   content(documentId: $documentId) {
     bifs {
       bifType

@@ -26,19 +26,19 @@ module.exports = {
                     }
                 }
             },
-            "&#detailsGradientContainer": {
+            "&#contentGradientContainer": {
                 opacity: 0,
                 "Poster": {
-                    "&#bottomDetailsGradient": {
+                    "&#bottomContentGradient": {
                         ...gradients.BottomGradient
                     },
-                    "&#topDetailsGradient": {
+                    "&#topContentGradient": {
                         ...gradients.TopGradient
                     },
-                    "&#leftDetailsGradient": {
+                    "&#leftContentGradient": {
                         "blendColor": "#000000",
                         "height": viewport.height,
-                        "uri": "pkg:/static/images/gradients/details-left-gradient.webp",
+                        "uri": "pkg:/static/images/gradients/content-left-gradient.webp",
                         "width": 1293
                     },
                 }

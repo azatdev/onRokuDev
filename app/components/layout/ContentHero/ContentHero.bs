@@ -52,7 +52,7 @@ sub onDataSet(options = {})
     m.content = content
     onHydrated({ node: m.content })
     stackChildren({ node: m.container, direction: "vertical" })
-    dispatch(events.HERO_ITEM_FOCUSED, { content: content, section: sections.DETAILS_HERO })
+    dispatch(events.HERO_ITEM_FOCUSED, { content: content, section: sections.CONTENT_HERO })
 end sub
 
 
@@ -62,14 +62,14 @@ sub onHydrated(options = {})
 
     setDescription(content.description)
     setLogoImage(content.logoImageUri)
-    setCTAs(content.detailsCTAsModel)
+    setCTAs(content.contentCTAsModel)
     setMetadata(content)
 end sub
 
 
-sub setCTAs(detailsCTAsModel = {})
-    if not rodash.isNode(detailsCTAsModel) then return
-    m.ctas.data = { content: detailsCTAsModel }
+sub setCTAs(contentCTAsModel = {})
+    if not rodash.isNode(contentCTAsModel) then return
+    m.ctas.data = { content: contentCTAsModel }
 end sub
 
 

@@ -1,0 +1,20 @@
+import "pkg:/components/_ord/wrappers.bs"
+import "pkg:/source/roku_modules/promises/promises.brs"
+
+sub init()
+    exec(sub(_options = {})
+        styleHooks({
+            ' after: afterStyling
+        })
+    end sub)
+end sub
+
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    return exec(function(options = {})
+        if not options.press then return true
+        handled = processFocus(options.key)
+        ?"DetailsModal onKeyEvent " options.key, handled
+        return handled
+    end function, { key: key, press: press })
+end function

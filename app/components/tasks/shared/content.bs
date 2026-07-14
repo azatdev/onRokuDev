@@ -80,7 +80,7 @@ sub processContent(options = {})
         duration: data.duration,
         genres: data.v2genres,
         heroCTAsModel: returnHeroCTAsModel({ contentDocumentId: data.documentId }),
-        detailsCTAsModel: returnDetailsCTAsModel({ contentDocumentId: data.documentId }),
+        contentCTAsModel: returnContentCTAsModel({ contentDocumentId: data.documentId }),
         id: data.documentId,
         rating: data.rating,
         playerModel: returnPlayerModel(data),
@@ -145,9 +145,9 @@ function returnPlayerModel(options = {})
 end function
 
 
-function returnDetailsCTAsModel(options = {})
+function returnContentCTAsModel(options = {})
     model = createObject("roSGNode", "CTAsModel")
-    modelConfigArray = "<%- o(CONFIG.DetailsCTAs) %>"
+    modelConfigArray = "<%- o(CONFIG.ContentCTAs) %>"
     updateObject = {
         children: []
     }

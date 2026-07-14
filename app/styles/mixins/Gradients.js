@@ -7,13 +7,13 @@ module.exports = {
             "blendColor": "#000000",
             "height": 561,
             "translation": [0, viewport.height - 561],
-            "uri": "pkg:/static/images/gradients/details-bottom-gradient.webp",
+            "uri": "pkg:/static/images/gradients/content-bottom-gradient.webp",
             "width": viewport.width
         },
         "TopGradient": {
             "blendColor": "#000000",
             "height": 330,
-            "uri": "pkg:/static/images/gradients/details-top-gradient.webp",
+            "uri": "pkg:/static/images/gradients/content-top-gradient.webp",
             "width": viewport.width
         }
     }

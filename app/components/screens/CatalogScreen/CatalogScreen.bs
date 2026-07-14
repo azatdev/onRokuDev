@@ -38,22 +38,25 @@ end function
 
 
 sub onViewFadedOut(options = {})
-    suspendPromise = options.promise
-    promises.resolve(true, suspendPromise)
+    ' suspendPromise = options.promise
+    ' promises.resolve(true, suspendPromise)
 end sub
 
 
 function beforeViewSuspend(_options = {}) as dynamic
-    suspendPromise = promises.create()
-    fadeOut(top(), { duration: 1, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
-    return suspendPromise
+    ' suspendPromise = promises.create()
+    fadeOut(top(), { duration: 1, callback: onViewFadedOut })
+    ' return suspendPromise
+    return promises.resolve(invalid)
 end function
 
 
 function beforeViewClose(_options = {})
-    suspendPromise = promises.create()
-    fadeOut(top(), { duration: 1, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
-    return suspendPromise
+    ' suspendPromise = promises.create()
+    fadeOut(top(), { duration: 1, callback: onViewFadedOut })
+    return promises.resolve(invalid)
+
+    ' return suspendPromise
 end function
 
 

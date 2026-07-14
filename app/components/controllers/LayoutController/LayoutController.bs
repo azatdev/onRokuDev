@@ -7,9 +7,9 @@ sub init()
             [events.APP_STARTED]: onAppStarted,
             [events.CATALOG_HERO_FOCUSED]: onCatalogHeroFocused,
             [events.CAROUSEL_ITEM_FOCUSED]: onCarouselItemFocused,
-            [events.DETAILS_DATA_RECEIVED]: onScreenDataReceived,
+            [events.CONTENT_DATA_RECEIVED]: onScreenDataReceived,
             [events.GET_CATALOG_DATA]: getCatalogData,
-            [events.GET_DETAILS_DATA]: getDetailsData,
+            [events.GET_CONTENT_DATA]: getContentData,
             [events.GET_SIDEBAR]: getSidebar,
             [events.GET_TOPBAR]: getTopbar,
             [events.HERO_ITEM_FOCUSED]: updateBackgroundAssets,
@@ -19,7 +19,7 @@ sub init()
             [events.SCREEN_DATA_RECEIVED]: [onScreenDataReceived],
             [events.SCROLL_GROUP_FOCUSED]: onScrollGroupFocused,
             [events.SHOW_CATALOG_UI]: showCatalogUI,
-            [events.SHOW_DETAILS_UI]: showDetailsUI,
+            [events.SHOW_CONTENT_UI]: showContentUI,
             [events.SIDEBAR_RECEIVED]: onSidebarReceived,
             [events.TOPBAR_RECEIVED]: onTopbarReceived
         })
@@ -52,7 +52,7 @@ sub updateBackgroundAssets(options = {})
 
     rodash.delay(sub(options = {})
         ' dispatch(events.PLAY_VIDEO, { content: options.content })
-        dispatch(events.NAVIGATE_TO, { slug: `/details/${options.content.id}`, content: options.content })
+        ' dispatch(events.NAVIGATE_TO, { slug: `/content/${options.content.id}`, content: options.content })
     end sub, 1000, { content: content })
 end sub
 
@@ -92,7 +92,7 @@ sub getCatalogData(options = {})
 end sub
 
 
-sub getDetailsData(options = {})
+sub getContentData(options = {})
     if not rodash.isNonEmptyAA(options) then return
     slug = options.slug ?? ""
     screenId = options.screenId ?? ""
@@ -107,7 +107,7 @@ sub getDetailsData(options = {})
         slug: slug
     }, true)
 
-    screenTask = createObject("roSGNode", "DetailsTask")
+    screenTask = createObject("roSGNode", "ContentTask")
     screenTask.update({
         options: {
             content: content
@@ -184,8 +184,8 @@ sub showCatalogUI(_options = {})
 end sub
 
 
-sub showDetailsUI(_options = {})
-    exec("showDetailsUi", {}, layout())
+sub showContentUI(_options = {})
+    exec("showContentUI", {}, layout())
 end sub
 
 

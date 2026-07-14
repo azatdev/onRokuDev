@@ -15,15 +15,13 @@ sub init()
             { pattern: "/home", component: "CatalogScreen", suspendMode: "visible" },
             ' { pattern: "/shows", component: "CatalogScreen", clearStackOnResolve: true },
             ' { pattern: "/movies", component: "CatalogScreen", clearStackOnResolve: true },
-            ' { pattern: "/details/series/:id/cast", component: "CastDetailsScreen" },
-            { pattern: "/details/:id", component: "DetailsScreen" },
-            ' { pattern: "/details/movies/:id", component: "DetailsScreen" },
-            ' { pattern: "/details/movies/:id/cast", component: "CastDetailsScreen" },
+            { pattern: "/content/:id", component: "ContentScreen", "suspendMode": "visible" },
+            { pattern: "/details/:id", component: "DetailsModal", "suspendMode": "visible" },
             ' { pattern: "/:screenName", component: "DefaultScreen" }
         ])
 
         safeFunctions({
-            "showDetailsUI": showDetailsUI,
+            "showContentUI": showContentUI,
             "showCatalogUI": showCatalogUI,
             "navigateTo": navigateTo,
             "playVideo": playVideo
@@ -45,7 +43,7 @@ sub init()
 
         set({
             catalogUIHidden: false,
-            detailsUIHidden: true,
+            contentUIHidden: true,
             navigationHidden: false
         })
 
@@ -62,23 +60,23 @@ sub showCatalogUI(options = {})
     end if
 
     if get("catalogUIHidden")
-        set({ catalogUIHidden: false, detailsUIHidden: true })
+        set({ catalogUIHidden: false, contentUIHidden: true })
         exec("showCatalogGradients", options, m.background)
-        exec("hideDetailsGradients", options, m.background)
+        exec("hideContentGradients", options, m.background)
     end if
 end sub
 
 
-sub showDetailsUI(options = {})
+sub showContentUI(options = {})
     if not get("navigationHidden")
         set({ navigationHidden: true })
         fadeOut(m.navigation, { duration: 1 })
     end if
 
-    if get("detailsUIHidden")
-        set({ catalogUIHidden: true, detailsUIHidden: false })
+    if get("contentUIHidden")
+        set({ catalogUIHidden: true, contentUIHidden: false })
         exec("hideCatalogGradients", options, m.background)
-        exec("showDetailsGradients", options, m.background)
+        exec("showContentGradients", options, m.background)
     end if
 end sub
 
@@ -133,7 +131,7 @@ sub hideVideoPlayer(_options = {})
         }
     }
 
-    if get("detailsUIHidden")
+    if get("contentUIHidden")
         morphObject[m.navigation.id] = {
             fields: {
                 opacity: 1

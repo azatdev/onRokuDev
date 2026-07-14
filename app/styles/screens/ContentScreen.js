@@ -4,10 +4,10 @@ const palette = mixins["Palette"]
 const viewport = dimensions["viewport"]
 
 module.exports = {
-    "DetailsScreen": {
+    "ContentScreen": {
         "Div": {
             "&#screenContainer": {
-                "DetailsHero": {
+                "ContentHero": {
                     height: 780,
                     width: viewport.width
                 },

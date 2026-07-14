@@ -89,13 +89,13 @@ sub deleteUserItemModel(options = {})
     contentModel = options.contentModel
     if not rodash.isNode(contentModel) then return
 
-    detailsModel = contentModel.detailsCTAsModel
-    if not rodash.isNode(detailsModel) then return
+    contentCTAsModel = contentModel.contentCTAsModel
+    if not rodash.isNode(contentModel) then return
 
-    detailsItemModel = detailsModel.findNode(userItemType)
-    if not rodash.isNode(detailsItemModel) then return
+    ctaItemModel = contentCTAsModel.findNode(userItemType)
+    if not rodash.isNode(ctaItemModel) then return
 
-    detailsItemModel.active = false
+    ctaItemModel.active = false
 end sub
 
 
@@ -167,13 +167,13 @@ sub createUserItemModel(options = {})
         userItemId: userItemData.documentId ?? ""
     })
 
-    detailsModel = contentModel.detailsCTAsModel
-    if not rodash.isNode(detailsModel) then return
+    contentCTAsModel = contentModel.contentCTAsModel
+    if not rodash.isNode(contentModel) then return
 
-    detailsItemModel = detailsModel.findNode(userItemType)
-    if not rodash.isNode(detailsItemModel) then return
+    ctaItemModel = contentCTAsModel.findNode(userItemType)
+    if not rodash.isNode(ctaItemModel) then return
 
-    detailsItemModel.active = true
+    ctaItemModel.active = true
 end sub
 
 

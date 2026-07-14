@@ -4,7 +4,7 @@ const dimensions = mixins["Dimensions"]
 const viewport = dimensions["viewport"]
 
 module.exports = {
-    "DetailsHero": {
+    "ContentHero": {
         height: 441,
         translation: [0, 0],
         width: viewport.width,

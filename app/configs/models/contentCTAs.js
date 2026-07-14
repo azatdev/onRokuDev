@@ -1,28 +1,33 @@
-
-
 const iconConfig = require("../layout/icons");
 const Icons = iconConfig["Icons"]
 
 module.exports = {
     "ContentCTAs": [
         {
+            id: "CWITEM",
             iconText: Icons.play,
-            title: "TK_PLAY_NOW"
+            title: "TKEY_PLAY_NOW",
+            activeTitle: "TKEY_CONTINUE_WATCHING"
         },
         {
+            id: "WATCHLIST",
             dynamicWidth: true,
             iconText: Icons.watchlist,
-            title: "TK_ADD_WATCHLIST"
+            title: "TKEY_ADD_WATCHLIST",
+            activeTitle: "TKEY_REMOVE_WATCHLIST"
         },
         {
+            id: "FAVORITE",
             dynamicWidth: true,
             iconText: Icons.favorites,
-            title: "TK_ADD_FAVORITES"
+            title: "TKEY_ADD_FAVORITES",
+            activeTitle: "TKEY_REMOVE_FAVORITES"
         },
         {
+            id: "DETAILS",
             dynamicWidth: true,
             iconText: Icons.ellipsisH,
-            title: "TK_DETAILS"
+            title: "TKEY_DETAILS"
         }
     ]
 };

@@ -4,12 +4,12 @@ import "pkg:/components/tasks/shared/content.bs"
 
 sub init()
     exec(sub(_options = {})
-        setTaskFunction(runDetailsTask)
+        setTaskFunction(runContentTask)
     end sub)
 end sub
 
 
-function runDetailsTask(options = {})
+function runContentTask(options = {})
     options = top().options ?? {}
     if not rodash.isNonEmptyAA(options) then return true
 
@@ -23,7 +23,7 @@ function runDetailsTask(options = {})
     variables = {
         "documentId": documentId
     }
-    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.DetailsScreen) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>" })
+    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.ContentScreen) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>" })
     responseJSON = parseJSON(response.text)
     responseData = responseJSON.data ?? {}
     content = responseData.content
@@ -37,6 +37,6 @@ function runDetailsTask(options = {})
     model.carousels = updateObject.children
     model.tabsModel = returnTabsModel(carouselsArray)
 
-    publish(events.DETAILS_DATA_RECEIVED, { content: model })
+    publish(events.CONTENT_DATA_RECEIVED, { content: model })
     return true
 end function

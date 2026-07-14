@@ -1,5 +1,5 @@
 module.exports = {
-    "DetailsScrollGroup": {
+    "ContentScrollGroup": {
         animationType: "fade",
         autoFocus: false,
         direction: "horizontal",

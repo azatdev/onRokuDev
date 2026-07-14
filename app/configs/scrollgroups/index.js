@@ -1,5 +1,5 @@
 module.exports = {
     ...require("./catalog"),
-    ...require("./details"),
+    ...require("./content"),
     ...require("./hero")
 };

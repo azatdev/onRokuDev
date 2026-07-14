@@ -9,10 +9,10 @@
             <Poster id="bottomGradient" />
             <Poster id="cornerGradient" />
         </Div>
-        <Div id="detailsGradientContainer">
-            <Poster id="topDetailsGradient" />
-            <Poster id="bottomDetailsGradient" />
-            <Poster id="leftDetailsGradient" />
+        <Div id="contentGradientContainer">
+            <Poster id="topContentGradient" />
+            <Poster id="bottomContentGradient" />
+            <Poster id="leftContentGradient" />
         </Div>
     </children>
     <script type="text/brightscript" uri="Background.bs" />

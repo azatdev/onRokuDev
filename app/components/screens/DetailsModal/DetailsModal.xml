@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="DetailsModal" extends="sgRouter_View">
+    <interface>
+        <field id="data" type="assocArray" />
+        <function name="safeFunc" />
+    </interface>
+    <children>
+
+    </children>
+    <script type="text/brightscript" uri="DetailsModal.bs" />
+</component>

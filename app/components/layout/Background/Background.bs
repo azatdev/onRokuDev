@@ -5,14 +5,14 @@ sub init()
         m.backgroundContainer = top().findNode("backgroundContainer")
         m.cornerGradient = top().findNode("cornerGradient")
         m.catalogGradientContainer = top().findNode("catalogGradientContainer")
-        m.detailsGradientContainer = top().findNode("detailsGradientContainer")
+        m.contentGradientContainer = top().findNode("contentGradientContainer")
         safeFunctions({
             hideBackground: hideBackground,
             hideCatalogGradients: hideCatalogGradients,
-            hideDetailsGradients: hideDetailsGradients,
+            hideContentGradients: hideContentGradients,
             showBackground: showBackground,
             showCatalogGradients: showCatalogGradients,
-            showDetailsGradients: showDetailsGradients,
+            showContentGradients: showContentGradients,
             updateAssets: updateAssets
         })
     end sub)
@@ -29,13 +29,13 @@ sub showCatalogGradients(_options = {})
 end sub
 
 
-sub showDetailsGradients(_options = {})
-    fadeIn(m.detailsGradientContainer, { duration: 1 })
+sub showContentGradients(_options = {})
+    fadeIn(m.contentGradientContainer, { duration: 1 })
 end sub
 
 
-sub hideDetailsGradients(_options = {})
-    fadeOut(m.detailsGradientContainer, { duration: 1 })
+sub hideContentGradients(_options = {})
+    fadeOut(m.contentGradientContainer, { duration: 1 })
 end sub
 
 
@@ -79,7 +79,7 @@ sub updateAssets(options = {})
 
     if section = sections.HERO
         setBackground(content.headerImageUri)
-    else if section = sections.DETAILS_HERO
+    else if section = sections.CONTENT_HERO
         setBackground(content.posterImageUri)
     end if
 end sub

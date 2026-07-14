@@ -5,33 +5,34 @@ sub init()
     exec(sub(_options = {})
         m.screenContainer = top().findNode("screenContainer")
         m.bottomContainer = top().findNode("bottomContainer")
-        m.detailsScrollGroup = top().findNode("detailsScrollGroup")
-        m.detailsHero = top().findNode("detailsHero")
+        m.contentScrollGroup = top().findNode("contentScrollGroup")
+        m.contentHero = top().findNode("contentHero")
         m.tabs = top().findNode("tabs")
         m.description = top().findNode("description")
         m.ctas = top().findNode("ctas")
 
-        liveConfig({ field: "config", keyPath: "DetailsScrollGroup" }, m.detailsScrollGroup)
+        liveConfig({ field: "config", keyPath: "ContentScrollGroup" }, m.contentScrollGroup)
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
         safeObserve("itemFocused", onTabFocused, m.tabs)
 
         setFocusMap({
-            "default": m.detailsHero,
-            "detailsHero": {
+            "default": m.contentHero,
+            "contentHero": {
                 "default": true,
-                "down": focusDetailsScrollGroup
+                "back": false,
+                "down": focusContentScrollGroup
             },
-            "detailsScrollGroup": {
+            "contentScrollGroup": {
                 "default": true,
-                "up": focusDetailsHero
+                "up": focusContentHero
             },
             "tabs": {
                 "back": false,
                 "default": true,
-                "down": m.detailsScrollGroup,
+                "down": m.contentScrollGroup,
                 "up": sub(_options = {})
-                    scrollPage(-1, onDetailsHeroFocused)
+                    scrollPage(-1, onContentHeroFocused)
                 end sub
             }
         })
@@ -55,17 +56,17 @@ function beforeViewOpen(options = {}) as dynamic
     top().translation = [0, 0]
     fadeIn(top(), { duration: 1 })
 
-    dispatch(events.SHOW_DETAILS_UI)
-    dispatch(events.GET_DETAILS_DATA, { screenId: routeData.id, slug: routeData.path, content: content })
+    dispatch(events.SHOW_CONTENT_UI)
+    dispatch(events.GET_CONTENT_DATA, { screenId: routeData.id, slug: routeData.path, content: content })
     return promises.resolve(invalid)
 end function
 
 
 sub onTabFocused(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(m.detailsScrollGroup) then return
+    if not rodash.isNode(m.contentScrollGroup) then return
 
-    m.detailsScrollGroup.animateToItem = options.data ?? 0
+    m.contentScrollGroup.animateToItem = options.data ?? 0
 end sub
 
 
@@ -75,7 +76,7 @@ end function
 
 
 function onViewResume(_options = {})
-    dispatch(events.SHOW_DETAILS_UI)
+    dispatch(events.SHOW_CONTENT_UI)
     return promises.resolve(invalid)
 end function
 
@@ -88,7 +89,7 @@ sub onDataSet(options = {})
     content = data.content
     m.content = content
     carousels = content.carousels
-    m.detailsHero.data = { content: m.content }
+    m.contentHero.data = { content: m.content }
 
     tabsModel = content.tabsModel
 
@@ -119,7 +120,7 @@ sub onFocusedChildChange(options = {})
 end sub
 
 
-sub focusDetailsHero(_options = {})
+sub focusContentHero(_options = {})
     if not rodash.isNode(m.content) then return
 
     carousels = m.content.carousels ?? []
@@ -128,28 +129,28 @@ sub focusDetailsHero(_options = {})
     if carouselCount = 0 then return
 
     if carouselCount = 1
-        scrollPage(-1, onDetailsHeroFocused)
+        scrollPage(-1, onContentHeroFocused)
     else
         setFocus(m.tabs)
     end if
 end sub
 
 
-sub focusDetailsScrollGroup(_options = {})
+sub focusContentScrollGroup(_options = {})
     if not rodash.isNode(m.content) then return
-    scrollPage(1, onDetailsScrollGroupFocused)
+    scrollPage(1, onContentScrollGroupFocused)
     ' dispatch(events.SCROLL_GROUP_FOCUSED)
 end sub
 
 
-sub onDetailsHeroFocused(_options = {})
-    if not rodash.isNode(m.detailsHero) then return
-    setFocus(m.detailsHero)
+sub onContentHeroFocused(_options = {})
+    if not rodash.isNode(m.contentHero) then return
+    setFocus(m.contentHero)
 end sub
 
 
-sub onDetailsScrollGroupFocused(_options = {})
-    if not rodash.isNode(m.detailsScrollGroup) then return
+sub onContentScrollGroupFocused(_options = {})
+    if not rodash.isNode(m.contentScrollGroup) then return
     if not rodash.isNode(m.content) then return
 
     carousels = m.content.carousels ?? []
@@ -158,7 +159,7 @@ sub onDetailsScrollGroupFocused(_options = {})
     if carouselCount = 0 then return
 
     if carouselCount = 1
-        setFocus(m.detailsScrollGroup)
+        setFocus(m.contentScrollGroup)
     else
         setFocus(m.tabs)
     end if
@@ -173,7 +174,7 @@ sub processScrollItem(options = {})
 
     addClass("noTitle", component)
     component.data = { content: model }
-    m.detailsScrollGroup.appendChild(component)
+    m.contentScrollGroup.appendChild(component)
 end sub
 
 
@@ -185,14 +186,14 @@ sub scrollPage(direction = 0, callbackFunc = invalid)
             height: m.bottomContainer.height + heightDelta,
             translation: [
                 0,
-                m.detailsHero.height - heightDelta
+                m.contentHero.height - heightDelta
             ]
         }
     }
 
-    morphObject[m.detailsHero.id] = {
+    morphObject[m.contentHero.id] = {
         fields: {
-            height: m.detailsHero.height - heightDelta
+            height: m.contentHero.height - heightDelta
         }
     }
 
@@ -216,7 +217,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
     return exec(function(options = {})
         if not options.press then return true
         handled = processFocus(options.key)
-        ?"DetailsScreen onKeyEvent " options.key, handled
+        ?"ContentScreen onKeyEvent " options.key, handled
         return handled
     end function, { key: key, press: press })
 end function
