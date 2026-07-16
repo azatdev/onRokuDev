@@ -48,12 +48,6 @@ sub updateBackgroundAssets(options = {})
     appBackground = background()
     if not rodash.isNode(appBackground) then return
     exec("updateAssets", options, background())
-    content = options.content
-
-    rodash.delay(sub(options = {})
-        ' dispatch(events.PLAY_VIDEO, { content: options.content })
-        ' dispatch(events.NAVIGATE_TO, { slug: `/content/${options.content.id}`, content: options.content })
-    end sub, 1000, { content: content })
 end sub
 
 
@@ -131,6 +125,7 @@ end sub
 
 
 sub navigateTo(options = {})
+    ?"layout navigateTo " options
     documentId = options.documentId
     slug = options.slug
     content = options.content

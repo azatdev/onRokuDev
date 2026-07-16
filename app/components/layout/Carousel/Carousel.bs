@@ -8,6 +8,7 @@ sub init()
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
         safeObserve("itemFocused", onCarouselItemFocused, m.carouselList)
+        safeObserve("itemSelected", onCarouselItemSelected, m.carouselList)
         setFocusMap({
             "default": m.carouselList
         })
@@ -27,6 +28,21 @@ sub onCarouselItemFocused(options = {})
     if not rodash.isNode(itemModel) then return
     if m.content.carouselType = carouselTypes.INDEX then dispatch(events.CAROUSEL_ITEM_FOCUSED, { content: itemModel })
     checkPagination({ itemFocused: options.data })
+end sub
+
+
+sub onCarouselItemSelected(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    if not rodash.isNode(m.content) then return
+
+    carouselCollection = m.content.carouselCollection
+    if not rodash.isNode(carouselCollection) then return
+
+    selectedChild = options.data
+    itemContent = carouselCollection.getChild(selectedChild)
+    if not rodash.isNode(itemContent) then return
+
+    dispatch(events.NAVIGATE_TO, { slug: `/content/${itemContent.id}`, content: itemContent })
 end sub
 
 

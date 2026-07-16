@@ -24,6 +24,7 @@ sub init()
                 "down": focusContentScrollGroup
             },
             "contentScrollGroup": {
+                "back": false,
                 "default": true,
                 "up": focusContentHero
             },
@@ -77,6 +78,13 @@ end function
 
 function onViewResume(_options = {})
     dispatch(events.SHOW_CONTENT_UI)
+    fadeIn(top(), { duration: 1 })
+    return promises.resolve(invalid)
+end function
+
+
+function beforeViewSuspend(_options = {}) as dynamic
+    fadeOut(top(), { duration: 1 })
     return promises.resolve(invalid)
 end function
 
@@ -101,11 +109,6 @@ sub onDataSet(options = {})
     end for
 
     afterStyling()
-
-    rodash.delay(sub(m)
-        ?"ASDASDSADASDASASSD "
-        dispatch(events.NAVIGATE_TO, { slug: `/details/${m.content.id}`, content: m.content })
-    end sub, 1000, m)
 end sub
 
 

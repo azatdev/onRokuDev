@@ -3,6 +3,7 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(_options = {})
         m.container = top().findNode("container")
+        m.title = top().findNode("title")
         m.contentLogo = top().findNode("contentLogo")
         m.metadata = top().findNode("metadata")
         m.description = top().findNode("description")
@@ -60,8 +61,17 @@ sub onHydrated(options = {})
     if not rodash.isNonEmptyAA(options) then return
     content = options.node
 
+    if not rodash.isEmpty(content.logoImageUri)
+        m.contentLogo.visible = true
+        m.title.visible = false
+        setLogoImage(content.logoImageUri)
+    else if not rodash.isEmpty(content.title)
+        m.contentLogo.visible = false
+        m.title.visible = true
+        setLogoTitle(content.title)
+    end if
+
     setDescription(content.description)
-    setLogoImage(content.logoImageUri)
     setCTAs(content.contentCTAsModel)
     setMetadata(content)
 end sub
@@ -82,6 +92,12 @@ end sub
 sub setLogoImage(logoImageUri = "")
     if rodash.isEmptyString(logoImageUri) then return
     m.contentLogo.uri = logoImageUri
+end sub
+
+
+sub setLogoTitle(title = "")
+    if rodash.isEmptyString(title) then return
+    m.title.text = title
 end sub
 
 

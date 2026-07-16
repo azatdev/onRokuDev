@@ -26,8 +26,6 @@ sub onDataSet(options = {})
         setLogoTitle(content.title)
     end if
 
-    ' if rodash.isNonEmptyString(content.posterImageUri)
-    ' end if
     m.headerImage.newUri = content.posterImageUri
 
     setMetadata(content)

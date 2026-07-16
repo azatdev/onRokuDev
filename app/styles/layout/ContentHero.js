@@ -27,6 +27,16 @@ module.exports = {
                 width: 687,
                 wrap: true
             },
+            "QuanticoBold": {
+                maxLines: 2,
+                size: 48,
+                height: 132,
+                lineSpacing: -12,
+                margin: [0, 0, 9, 0],
+                vertAlign: "bottom",
+                width: 810,
+                wrap: true
+            },
             "CTAs": {
                 height: 75,
                 margin: [36, 0, 0, -16],

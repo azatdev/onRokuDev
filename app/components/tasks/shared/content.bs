@@ -5,7 +5,7 @@ sub generateCarouselModel(options = {})
 
     fields = []
     if thumbnailType = "LANDSCAPE" or thumbnailType = "PORTRAIT"
-        fields = ["thumbnailImageUri"]
+        fields = ["id", "thumbnailImageUri"]
     end if
 
     carouselItemModel = model.carouselItemModel
@@ -122,7 +122,6 @@ function returnCreditsCollection(options = {})
 
     orderedArray = []
     concatenatedCredits = {}
-    ?"credits " credits
 
     for each credit in credits
         role = credit.role ?? ""
