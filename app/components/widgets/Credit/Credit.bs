@@ -1,0 +1,32 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(_options = {})
+        m.role = top().findNode("role")
+        m.name = top().findNode("name")
+
+        safeObserve("data", onDataSet)
+
+        styleHooks({
+            after: afterStyling
+        })
+    end sub)
+end sub
+
+
+sub afterStyling(_options = {})
+    stackChildren({ node: top(), direction: "vertical" })
+end sub
+
+
+sub onDataSet(options = {})
+    if rodash.isEmpty(options) then return
+
+    data = options.data ?? {}
+    content = data.content ?? {}
+
+    m.role.text = content.role
+    m.name.text = content.name
+
+    afterStyling()
+end sub

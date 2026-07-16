@@ -30,6 +30,10 @@
             <translation>Details</translation>
         </message>
         <message>
+            <source>TKEY_DESCRIPTION</source>
+            <translation>Description</translation>
+        </message>
+        <message>
             <source>TKEY_HIDE_OVERLAY</source>
             <translation>HIDE OVERLAY</translation>
         </message>

@@ -5,6 +5,7 @@ module.exports = {
     ...require("./CarouselItem"),
     ...require("./Controls"),
     ...require("./ControlItem"),
+    ...require("./Credit"),
     ...require("./DynamicItem"),
     ...require("./Metadata"),
     ...require("./NavigationItem"),

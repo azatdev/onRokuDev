@@ -76,6 +76,7 @@ sub processContent(options = {})
     updateObject = {
         complimentaryColor: data.complimentaryColor,
         copyrightYear: data.copyrightYear,
+        creditsCollection: returnCreditsCollection({ data: data }),
         description: data.description,
         duration: data.duration,
         genres: data.v2genres,
@@ -99,7 +100,59 @@ sub processContent(options = {})
 end sub
 
 
+function returnCreditsCollection(options = {})
+    if not rodash.isNonEmptyAA(options) then return invalid
+
+    collection = createObject("roSGNode", "Collection")
+
+    data = options.data ?? {}
+    credits = data.credits
+
+    if rodash.isNonEmptyString(data.description)
+        model = createObject("roSGNode", "Model")
+        updateObj = {
+            role: tr("TKEY_DESCRIPTION"),
+            name: data.description
+        }
+        model.update(updateObj, true)
+        collection.appendChild(model)
+    end if
+
+    if not rodash.isNonEmptyArray(credits) then return collection
+
+    orderedArray = []
+    concatenatedCredits = {}
+    ?"credits " credits
+
+    for each credit in credits
+        role = credit.role ?? ""
+        name = credit.name ?? ""
+        namesArray = concatenatedCredits[role] ?? []
+        if not rodash.isNonEmptyArray(namesArray)
+            orderedArray.push(role)
+        end if
+        namesArray.push(name)
+        concatenatedCredits[role] = namesArray
+    end for
+
+    for each role in orderedArray
+        model = createObject("roSGNode", "Model")
+        namesArray = concatenatedCredits[role]
+        updateObj = {
+            role: role,
+            name: namesArray.join(", ")
+        }
+        model.update(updateObj, true)
+        collection.appendChild(model)
+    end for
+
+    return collection
+end function
+
+
 function returnHeroCTAsModel(options = {})
+    if rodash.isEmpty(options) then return invalid
+
     model = createObject("roSGNode", "CTAsModel")
     modelConfigArray = "<%- o(CONFIG.HeroCTAs) %>"
     updateObject = {

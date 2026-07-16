@@ -8,6 +8,10 @@ query ContentScreen($documentId: ID!) {
     }
     complimentaryColor
     copyrightYear
+    credits {
+      name
+      role
+    }
     description
     documentId
     duration

@@ -74,6 +74,9 @@ sub onHeroItemFocused(options = {})
     if not rodash.isNode(itemFocusedModel) then return
 
     dispatch(events.HERO_ITEM_FOCUSED, { content: itemFocusedModel, section: sections.HERO })
+
+    dispatch(events.NAVIGATE_TO, { slug: `/content/${itemFocusedModel.id}`, content: itemFocusedModel })
+
     checkPagination({ itemFocused: options.data })
 end sub
 
@@ -85,6 +88,7 @@ sub processScrollItem(options = {})
     if not rodash.isNode(model) then return
 
     component = createObject("roSGNode", "Hero")
+
     component.data = { content: model }
     m.heroScrollGroup.appendChild(component)
 end sub

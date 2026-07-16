@@ -5,7 +5,11 @@
         <function name="safeFunc" />
     </interface>
     <children>
-
+        <Div id="screenContainer">
+            <Poster id="modalContainer">
+                <_ord_scrollGroup id="detailsScrollGroup" />
+            </Poster>
+        </Div>
     </children>
     <script type="text/brightscript" uri="DetailsModal.bs" />
 </component>

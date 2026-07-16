@@ -3,10 +3,85 @@ import "pkg:/source/roku_modules/promises/promises.brs"
 
 sub init()
     exec(sub(_options = {})
+        safeObserve("data", onDataSet)
+        m.modalContainer = top().findNode("modalContainer")
+        m.detailsScrollGroup = top().findNode("detailsScrollGroup")
+
+        liveConfig({ field: "config", keyPath: "DetailsScrollGroup" }, m.detailsScrollGroup)
+        safeObserve("focusedChild", onFocusedChildChange)
+
+        setFocusMap({
+            "default": m.detailsScrollGroup
+        })
+
         styleHooks({
-            ' after: afterStyling
+            after: afterStyling
         })
     end sub)
+end sub
+
+
+sub afterStyling(_options = {})
+    stackChildren({ node: m.modalContainer, direction: "vertical" })
+    centerComponent({ node: m.modalContainer, horizontal: true, vertical: true })
+end sub
+
+
+sub onFocusedChildChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    focusedChild = options.data
+    if not rodash.isNode(focusedChild) then return
+    if top().isSameNode(focusedChild) then applyDefaultFocus()
+end sub
+
+
+sub onDataSet(options = {})
+    data = options.data
+    model = data.content
+    creditsCollection = model.creditsCollection
+
+    for each model in creditsCollection.getChildren(-1, 0)
+        processScrollItem({ model: model })
+    end for
+
+    afterStyling()
+end sub
+
+
+function beforeViewOpen(options = {}) as dynamic
+    top().opacity = 0.001
+    fadeIn(top(), { duration: 1 })
+    route = options.route ?? {}
+    context = route.context ?? {}
+    content = context.content
+    if rodash.isNode(content) then top().data = { content: content }
+    return promises.resolve(invalid)
+end function
+
+
+sub onViewFadedOut(options = {})
+    suspendPromise = options.promise
+    ?"onViewFadedOut " suspendPromise
+    promises.resolve(true, suspendPromise)
+end sub
+
+
+function beforeViewClose(_options = {})
+    suspendPromise = promises.create()
+    fadeOut(top(), { duration: 0.5, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise }})
+    return suspendPromise
+end function
+
+
+sub processScrollItem(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    model = options.model
+    if not rodash.isNode(model) then return
+
+    component = createObject("roSGNode", "Credit")
+    component.data = { content: model }
+    m.detailsScrollGroup.appendChild(component)
 end sub
 
 

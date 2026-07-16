@@ -12,11 +12,9 @@ sub init()
         sgrouter.initialize({ outlet: m.screenContainer })
 
         sgRouter.addRoutes([
-            { pattern: "/home", component: "CatalogScreen", suspendMode: "visible" },
-            ' { pattern: "/shows", component: "CatalogScreen", clearStackOnResolve: true },
-            ' { pattern: "/movies", component: "CatalogScreen", clearStackOnResolve: true },
-            { pattern: "/content/:id", component: "ContentScreen", "suspendMode": "visible" },
-            { pattern: "/details/:id", component: "DetailsModal", "suspendMode": "visible" },
+            { pattern: "/home", component: "CatalogScreen", suspendMode: "show" },
+            { pattern: "/content/:id", component: "ContentScreen", suspendMode: "show" },
+            { pattern: "/details/:id", component: "DetailsModal", keepAlive: { enabled: false } },
             ' { pattern: "/:screenName", component: "DefaultScreen" }
         ])
 

@@ -3,6 +3,5 @@ module.exports = {
         animationType: "fade",
         direction: "horizontal",
         flushEnd: false,
-        showScrollbar: false
     }
 };

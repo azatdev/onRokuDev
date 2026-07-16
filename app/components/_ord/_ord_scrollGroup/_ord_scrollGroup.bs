@@ -14,7 +14,7 @@ sub init()
             direction: "vertical",
             flushEnd: false,
             maxSize: 0,
-            showScrollbar: false,
+            scrollBar: {},
             scrollbarPosition: "right",
             scrollSize: 0
         }
@@ -196,7 +196,10 @@ sub setGroupSizes()
 
     setClippingRect()
 
-    if not get("showScrollbar")
+    scrollbarOptions = get("scrollBar") ?? {}
+    showScrollbar = scrollbarOptions.show ?? false
+
+    if not showScrollbar
         m.scrolltrack.visible = false
         return
     end if
@@ -207,6 +210,8 @@ sub setGroupSizes()
         crossAxisTargetDimension: get("crossAxisTargetDimension"),
         direction: direction,
         horizontal: horizontal,
+        thumbOptions: scrollbarOptions.thumb ?? {},
+        trackOptions: scrollbarOptions.track ?? {},
         scrollbarPosition: get("scrollbarPosition"),
         scrollContainerDimensions: scrollContainerDimensions,
         targetDimension: get("targetDimension"),
@@ -365,14 +370,27 @@ end sub
 
 
 sub setupScrollbar(options = {})
+    if not rodash.isNode(m.scrolltrack) then return
+    if not rodash.isNode(m.scrollKnob) then return
+
     axisIndex = options.axisIndex
     horizontal = options.horizontal
+    thumbOptions = options.thumbOptions ?? {}
+    trackOptions = options.trackOptions ?? {}
     viewportDimensions = options.viewportDimensions
     scrollbarPosition = options.scrollbarPosition
     scrollContainerDimensions = options.scrollContainerDimensions
     targetDimension = options.targetDimension
     crossAxisTargetDimension = options.crossAxisTargetDimension
     crossAxisIndex = options.crossAxisIndex
+
+    if rodash.isNonEmptyAA(thumbOptions)
+        m.scrollKnob.update(thumbOptions, true)
+    end if
+
+    if rodash.isNonEmptyAA(trackOptions)
+        m.scrolltrack.update(trackOptions, true)
+    end if
 
     stackChildren({ node: m.scrollTrack })
 
@@ -465,10 +483,14 @@ namespace calculate
 
     function scrollContainerSize(options = {})
         node = options.node
-        if not rodash.isNode(node) then return [0, 0]
+        if not rodash.isNode(node) then return [1, 1]
+
+        nodeWidth = node.width
+        nodeHeight = node.height
+
         return [
-            node.width,
-            node.height
+            nodeWidth = 0 ? 1 : nodeWidth,
+            nodeHeight = 0 ? 1 : nodeHeight
         ]
     end function
 
@@ -512,9 +534,9 @@ namespace calculate
 
         if maxSize > 0
             if horizontal
-                viewportHeight = maxSize
-            else
                 viewportWidth = maxSize
+            else
+                viewportHeight = maxSize
             end if
         end if
 

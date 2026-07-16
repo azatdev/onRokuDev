@@ -101,6 +101,11 @@ sub onDataSet(options = {})
     end for
 
     afterStyling()
+
+    rodash.delay(sub(m)
+        ?"ASDASDSADASDASASSD "
+        dispatch(events.NAVIGATE_TO, { slug: `/details/${m.content.id}`, content: m.content })
+    end sub, 1000, m)
 end sub
 
 

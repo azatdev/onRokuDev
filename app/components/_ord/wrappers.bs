@@ -321,6 +321,33 @@ sub stackChildren(options = {})
 end sub
 
 
+sub centerComponent(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    node = options.node
+    if not rodash.isNode(node) then return
+
+    horizontal = options.horizontal ?? false
+    vertical = options.vertical ?? false
+
+    if horizontal
+        parentWidth = getVisibleWidth(node.getParent())
+        translation = node.translation
+        width = getVisibleWidth(node)
+        translationX = (parentWidth / 2) - (width / 2)
+        node.translation = [translationX, translation[1]]
+    end if
+
+    if vertical
+        parentHeight = getVisibleHeight(node.getParent())
+        translation = node.translation
+        height = getVisibleHeight(node)
+        translationY = (parentHeight / 2) - (height / 2)
+        node.translation = [translation[0], translationY]
+    end if
+end sub
+
+
 function quadrupleMargins(margin)
     returnObj = {
         "left": 0,
@@ -366,8 +393,9 @@ function getVisibleHeight(node)
 
     if not rodash.isNonEmptyAA(clippingRect) then return 0
 
+    nodeHeight = clippingRect.height
+
     if clippingRect.height > 0
-        nodeHeight = clippingRect.height
     else if rodash.isNumber(node.height) and node.height > 0
         nodeHeight = node.height
     else if rodash.isNonEmptyAA(boundingRect)
