@@ -336,12 +336,15 @@ function performScroll(options = {})
 
     trackTranslation[axisIndex] = trackTranslation[axisIndex] * -1
 
-    performMorph({
-        scrollKnobTranslation: scrollKnobTranslation,
-        trackTranslation: trackTranslation
-    })
+    if m.scrollKnob.translation[axisIndex] <> scrollKnobTranslation[axisIndex]
+        performMorph({
+            scrollKnobTranslation: scrollKnobTranslation,
+            trackTranslation: trackTranslation
+        })
+        return true
+    end if
 
-    return true
+    return false
 end function
 
 

@@ -11,7 +11,11 @@ sub init()
         safeObserve("focusedChild", onFocusedChildChange)
 
         setFocusMap({
-            "default": m.detailsScrollGroup
+            "default": m.detailsScrollGroup,
+            "detailsScrollGroup": {
+                "default": true,
+                "back": false
+            }
         })
 
         styleHooks({
@@ -61,7 +65,6 @@ end function
 
 sub onViewFadedOut(options = {})
     suspendPromise = options.promise
-    ?"onViewFadedOut " suspendPromise
     promises.resolve(true, suspendPromise)
 end sub
 
