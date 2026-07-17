@@ -5,6 +5,8 @@ sub init()
         m.container = top().findNode("container")
         m.scrolltrack = top().findNode("scrollTrack")
         m.scrollKnob = top().findNode("scrollKnob")
+        m.scrollTimer = createObject("roSGNode", "Timer")
+        safeObserve("fire", onScrollTimerFired, m.scrollTimer)
 
         defaultConfig = {
             advanceKey: "down",
@@ -16,7 +18,9 @@ sub init()
             maxSize: 0,
             scrollBar: {},
             scrollbarPosition: "right",
-            scrollSize: 0
+            scrollSize: 0,
+            scrollTimer: 0,
+            wrap: false
         }
 
         set({
@@ -75,11 +79,16 @@ sub onFocusedChildChange(options = {})
             lastFocused: get("itemfocused")
         })
         if not get("autoFocus") then resetFocus()
+        if rodash.isNode(m.scrollTimer) then m.scrollTimer.control = "stop"
         return
     end if
 
     if get("itemFocused") = -1
         set({ itemFocused: get("lastFocused") ?? 0 })
+    end if
+
+    if get("scrollTimer") <> 0 and rodash.isNode(m.scrollTimer)
+        m.scrollTimer.control = "start"
     end if
 end sub
 
@@ -158,6 +167,11 @@ sub onChildChange(options = {})
 end sub
 
 
+sub onScrollTimerFired(_options = {})
+    handleScrollKey({ key: get("advanceKey"), autoScroll: true })
+end sub
+
+
 sub setGroupSizes()
     animationType = get("animationType") ?? "scroll"
     scrollAnimation = animationType = "scroll"
@@ -186,6 +200,10 @@ sub setGroupSizes()
     scrollbarOptions = get("scrollBar") ?? {}
     showScrollbar = scrollbarOptions.show ?? false
 
+    if get("scrollTimer") <> 0 and rodash.isNode(m.scrollTimer)
+        m.scrollTimer.duration = int(get("scrollTimer") / 1000)
+    end if
+
     if not showScrollbar
         m.scrolltrack.visible = false
         return
@@ -212,6 +230,12 @@ function handleScrollKey(options = {})
     if rodash.isEmptyString(key) then return false
     if not get("autoFocus") then return false
 
+    autoScroll = options.autoScroll ?? false
+
+    if not autoScroll and rodash.isNode(m.scrollTimer)
+        m.scrollTimer.control = "stop"
+    end if
+
     if rodash.indexOf([get("advanceKey"), get("reverseKey")], key) = -1 then return false
 
     children = m.container.getChildren(-1, 0)
@@ -225,7 +249,10 @@ function handleScrollKey(options = {})
         maxIndex: children.count() - 1
     })
 
-    if nextFocusedItem = itemFocused then return false
+    if nextFocusedItem = itemFocused
+        if not get("wrap") then return false
+        nextFocusedItem = 0
+    end if
 
     return performAnimation({
         itemFocused: itemFocused,
