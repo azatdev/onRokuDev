@@ -46,6 +46,10 @@ sub init()
             wrapFirstToLast: true
         }})
 
+        setFocusMap({
+            "default": handleScrollKey
+        })
+
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
 
@@ -91,60 +95,59 @@ sub onFocusTimerFired(options = {})
 end sub
 
 
-function onKeyEvent(key as string, press as boolean) as boolean
-    return exec(function(options = {})
-        carousel = options.carousel
-        key = options.key
-        press = options.press
+function handleScrollKey(options = {})
+    key = options.key
+    if rodash.isEmptyString(key) then return false
 
-        if not press then return true
-        if not rodash.isArray(m.focusedTargetSetArray) then return true
-        if not rodash.isNode(carousel) then return true
+    carousel = m.carousel
+    if not rodash.isNode(carousel) then return false
 
-        if calculate.floatMOD(carousel.currFocusItemIndex, 1) <> 0 then return true
-        if key <> top().advanceKey and key <> top().reverseKey then return false
+    if not rodash.isArray(m.focusedTargetSetArray) then return true
+    if not rodash.isNode(carousel) then return true
 
-        direction = key = top().reverseKey ? -1 : 1
-        currentIndex = top().focusedContentIndex
-        lastFocusableIndex = get("lastFocusableIndex")
-        nextIndex = currentIndex + direction
-        currentTargetSetIndex = top().focusedTargetsetIndex
-        nextTargetSetIndex = currentTargetSetIndex + direction
+    if calculate.floatMOD(carousel.currFocusItemIndex, 1) <> 0 then return true
+    if key <> top().advanceKey and key <> top().reverseKey then return false
 
-        if nextTargetSetIndex <= 0 then nextTargetSetIndex = 0
-        if nextTargetSetIndex >= lastFocusableIndex then nextTargetSetIndex = lastFocusableIndex
+    direction = key = top().reverseKey ? -1 : 1
+    currentIndex = top().focusedContentIndex
+    lastFocusableIndex = get("lastFocusableIndex")
+    nextIndex = currentIndex + direction
+    currentTargetSetIndex = top().focusedTargetsetIndex
+    nextTargetSetIndex = currentTargetSetIndex + direction
 
-        if carousel.content.getChild(nextIndex) = invalid
-            if not get("wrap") then return false
+    if nextTargetSetIndex <= 0 then nextTargetSetIndex = 0
+    if nextTargetSetIndex >= lastFocusableIndex then nextTargetSetIndex = lastFocusableIndex
+
+    if carousel.content.getChild(nextIndex) = invalid
+        if not get("wrap") then return false
+        wrapFirstToLast = get("wrapFirstToLast")
+
+        if direction = 1
+            nextIndex = 0
+            nextTargetSetIndex = 0
+        else
             wrapFirstToLast = get("wrapFirstToLast")
-
-            if direction = 1
-                nextIndex = 0
-                nextTargetSetIndex = 0
-            else
-                wrapFirstToLast = get("wrapFirstToLast")
-                firstToLast = nextIndex = -1
-                if firstToLast and not wrapFirstToLast then return false
-                collection = carousel.content
-                if not rodash.isNode(collection) then return true
-                nextIndex = collection.getChildCount() - 1
-                nextTargetSetIndex = m.focusedTargetSetArray.count() - 1
-            end if
+            firstToLast = nextIndex = -1
+            if firstToLast and not wrapFirstToLast then return false
+            collection = carousel.content
+            if not rodash.isNode(collection) then return true
+            nextIndex = collection.getChildCount() - 1
+            nextTargetSetIndex = m.focusedTargetSetArray.count() - 1
         end if
+    end if
 
-        nextTargetSet = m.focusedTargetSetArray[nextTargetSetIndex]
+    nextTargetSet = m.focusedTargetSetArray[nextTargetSetIndex]
 
-        carousel.animateToItem = nextIndex
+    carousel.animateToItem = nextIndex
 
-        if nextTargetSet <> invalid and carousel.currTargetSet <> invalid and nextTargetSet.focusIndex <> carousel.currTargetSet.focusIndex
-            carousel.animateToTargetSet = nextTargetSet
-            top().focusedTargetsetIndex = nextTargetSetIndex
-        end if
+    if nextTargetSet <> invalid and carousel.currTargetSet <> invalid and nextTargetSet.focusIndex <> carousel.currTargetSet.focusIndex
+        carousel.animateToTargetSet = nextTargetSet
+        top().focusedTargetsetIndex = nextTargetSetIndex
+    end if
 
-        top().focusedContentIndex = nextIndex
+    top().focusedContentIndex = nextIndex
 
-        return true
-    end function, { carousel: m.carousel, key: key, press: press })
+    return true
 end function
 
 

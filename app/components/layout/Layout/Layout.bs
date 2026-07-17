@@ -184,15 +184,3 @@ sub setActiveView(screenId = "")
     setFocusMap(mapObject)
     setFocus(m.activeView)
 end sub
-
-
-function onKeyEvent(key as string, press as boolean) as boolean
-    return exec(function(options = {})
-        key = options.key
-        press = options.press
-        if not press then return true
-        handled = processFocus(key)
-        ?"Layout onKeyEvent " key, handled
-        return handled
-    end function, { key: key, press: press })
-end function

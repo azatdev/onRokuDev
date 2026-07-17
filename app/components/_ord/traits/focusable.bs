@@ -4,6 +4,8 @@ class Focusable
     focusNode = invalid
     focusFunction = invalid
     publicFunctions = []
+    lastFocus = rodash.now()
+    focusInterval = 500
 
     sub new(_options = {})
         m.setExportFunctions(getGlobalAA().ord_role)
@@ -17,6 +19,7 @@ class Focusable
 
         m.publicFunctions.push("applyDefaultFocus")
         m.publicFunctions.push("setFocus")
+        m.publicFunctions.push("onKeyEvent")
         m.publicFunctions.push("processFocus")
         m.publicFunctions.push("resetFocus")
         m.publicFunctions.push("readyToFocus")
@@ -42,6 +45,17 @@ class Focusable
     end sub
 
 
+    function exceedsFocusInterval()
+        if global().lastFocusedTime = invalid
+            global().addField("lastFocusedTime", "longinteger", false)
+        end if
+
+        lastFocusedTime = global().lastFocusedTime
+        currentTime = rodash.now()
+        return currentTime - lastFocusedTime < m.focusInterval
+    end function
+
+
     function getFocusedChild(node = {})
         if not rodash.isNode(node) then node = top()
 
@@ -54,10 +68,22 @@ class Focusable
     end function
 
 
-    function processFocusFunction(focusFunction = {})
+    function onKeyEvent(options = {}) as boolean
+        if not rodash.isNonEmptyAA(options) then return false
+        if not options.press then return true
+        handled = m.processFocus(options.key)
+        if devMode() then ?top().subType(), options.key, handled
+        return handled
+    end function
+
+
+    function processFocusFunction(options = {})
+        if not rodash.isNonEmptyAA(options) then return false
+
+        focusFunction = options.focusFunction
         if not rodash.isFunction(focusFunction) then return false
 
-        functionHandled = exec(focusFunction)
+        functionHandled = exec(focusFunction, { key: options.key })
         ' Supporting subs
         if functionHandled = invalid then return true
         if rodash.isBoolean(functionHandled) then return functionHandled
@@ -66,27 +92,28 @@ class Focusable
 
 
     function processFocus(key as string)
+        if m.exceedsFocusInterval() then return true
         handled = false
 
-        focusTarget = m.focusMap.current ?? m.focusMap.default ?? top()
-        if rodash.isFunction(focusTarget)
-            handled = m.processFocusFunction(focusTarget)
-            return handled
+        focusTarget = m.focusMap.current ?? top()
+
+        nodeMap = m.focusMap[focusTarget.id] ?? m.focusMap.default
+
+        if rodash.isInvalid(nodeMap) then return false
+
+        if rodash.isFunction(nodeMap)
+            focusArray = nodeMap
+        else
+            focusArray = nodeMap[key] ?? nodeMap["default"]
         end if
 
-        nodeMap = m.focusMap[focusTarget.id] ?? {}
-        focusArray = nodeMap[key]
-
-        if rodash.isInvalid(focusArray)
-            focusArray = nodeMap["default"]
-            if rodash.isInvalid(focusArray) then return handled
-        end if
+        if rodash.isInvalid(focusArray) then return false
 
         if not rodash.isArray(focusArray) then focusArray = [focusArray]
 
         for each target in focusArray
             if rodash.isFunction(target)
-                functionHandled = m.processFocusFunction(target)
+                functionHandled = m.processFocusFunction({ focusFunction: target, key: key })
                 if not handled then handled = functionHandled
                 continue for
             end if
@@ -108,6 +135,7 @@ class Focusable
             if not handled then handled = true
         end for
 
+        if handled then global().lastFocusedTime = rodash.now()
         return handled
     end function
 

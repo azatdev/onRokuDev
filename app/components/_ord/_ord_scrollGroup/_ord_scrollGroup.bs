@@ -25,12 +25,7 @@ sub init()
         })
 
         setFocusMap({
-            default: sub(_options = {})
-                focusIndex = get("itemFocused") ?? 0
-                if focusIndex = -1 then focusIndex = get("lastFocused") ?? 0
-                focusRow = m.container.getChild(focusIndex)
-                setFocus(focusRow)
-            end sub
+            "default": handleScrollKey
         })
 
         onConfigChange({ data: defaultConfig })
@@ -67,7 +62,12 @@ sub onFocusedChildChange(options = {})
     focusedChild = options.data
     unfocused = focusedChild = invalid
 
-    if top().isSameNode(focusedChild) then applyDefaultFocus()
+    if top().isSameNode(focusedChild)
+        focusIndex = get("itemFocused") ?? 0
+        if focusIndex = -1 then focusIndex = get("lastFocused") ?? 0
+        focusRow = m.container.getChild(focusIndex)
+        setFocus(focusRow)
+    end if
 
     if unfocused
         set({
@@ -82,19 +82,6 @@ sub onFocusedChildChange(options = {})
         set({ itemFocused: get("lastFocused") ?? 0 })
     end if
 end sub
-
-
-function onKeyEvent(key as string, press as boolean) as boolean
-    return exec(function(options = {})
-        key = options.key
-        press = options.press
-        if not press then return true
-        handled = rodash.indexOf([get("advanceKey"), get("reverseKey")], key) <> -1
-
-        if handled then return handleScrollKey(key)
-        return handled
-    end function, { key: key, press: press })
-end function
 
 
 sub onConfigChange(options = {})
@@ -220,9 +207,12 @@ sub setGroupSizes()
 end sub
 
 
-function handleScrollKey(key = "")
+function handleScrollKey(options = {})
+    key = options.key
     if rodash.isEmptyString(key) then return false
-    if not get("autoFocus") then return true
+    if not get("autoFocus") then return false
+
+    if rodash.indexOf([get("advanceKey"), get("reverseKey")], key) = -1 then return false
 
     children = m.container.getChildren(-1, 0)
     if not rodash.isNonEmptyArray(children) then return false

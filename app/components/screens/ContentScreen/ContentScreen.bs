@@ -219,13 +219,3 @@ sub scrollPage(direction = 0, callbackFunc = invalid)
 
     morph(morphObject, { callback: callbackFunc, duration: 0.3 })
 end sub
-
-
-function onKeyEvent(key as string, press as boolean) as boolean
-    return exec(function(options = {})
-        if not options.press then return true
-        handled = processFocus(options.key)
-        ?"ContentScreen onKeyEvent " options.key, handled
-        return handled
-    end function, { key: key, press: press })
-end function

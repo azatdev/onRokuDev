@@ -250,6 +250,13 @@ function setFocus(node)
 end function
 
 
+function onKeyEvent(key as string, press as boolean) as boolean
+    interface = m.ord_interfaces["onKeyEvent"]
+    if interface = invalid then return false
+    return interface["onKeyEvent"]({ key: key, press: press })
+end function
+
+
 function liveConfig(options = {}, node = top())
     interface = m.ord_interfaces["liveConfig"]
     if interface = invalid then return invalid
