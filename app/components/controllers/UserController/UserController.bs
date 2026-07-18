@@ -122,9 +122,8 @@ end sub
 
 
 sub userCarouselsReceived(_options = {})
-    collections = get("collections")
-    collection = collections["CONTINUE_WATCHING"]
-    ?"userCarouselsReceived " collection.getChild(0)
+    collections = get("collections") ?? {}
+    dispatch(events.SET_USER_CAROUSELS, { collections: collections })
 end sub
 
 

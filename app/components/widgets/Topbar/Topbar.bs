@@ -4,7 +4,14 @@ sub init()
     exec(sub(_options = {})
         m.gradient = top().findNode("gradient")
         m.list = top().findNode("topbarList")
-        ' loadTopbar()
+        m.userCarouselsContainer = top().findNode("userCarouselsContainer")
+        m.userScrollGroup = top().findNode("userScrollGroup")
+        liveConfig({ field: "config", keyPath: "ContentScrollGroup" }, m.userScrollGroup)
+
+        safeFunctions({
+            "setUserCarousels": setUserCarousels
+        })
+
         safeObserve("data", onDataChange)
         safeObserve("focusedChild", onFocusedChildChange)
     end sub)
@@ -21,31 +28,32 @@ sub onDataChange(options = {})
 end sub
 
 
-sub loadTopbar()
-    list = top().findNode("topbarList")
-
-    model = createObject("roSGNode", "TopbarModel")
-    model.config = {
-        carouselType: "dynamicSize",
-        focusType: "floating",
-        itemComponentName: "NavigationItem",
-        maxWidth: 1800,
-        visibleTiles: 999,
-        useUnfocusedTargetSet: true,
-        horizAlign: "left"
-    }
-
-    list.data = {
-        content: model
-    }
-
-    m.list = list
-end sub
-
-
 sub onFocusedChildChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     focusedChild = options.data
     if not rodash.isNode(focusedChild) or not top().isSameNode(focusedChild) then return
     m.list.setFocus(true)
+end sub
+
+
+sub processScrollItem(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    model = options.model
+    component = createObject("roSGNode", "Carousel")
+
+    addClass("noTitle", component)
+    component.data = { content: model }
+    m.userScrollGroup.appendChild(component)
+end sub
+
+
+sub setUserCarousels(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    collections = options.collections
+
+    for each collectionType in collections.items()
+        collection = collectionType.value
+        processScrollItem({ model: collection })
+    end for
 end sub

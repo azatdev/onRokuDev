@@ -9,6 +9,9 @@
             <_ord_flexList id="topbarList" />
             <Poster id="gradient" />
         </MaskGroup>
+        <Div id="userCarouselsContainer">
+            <_ord_scrollGroup id="userScrollGroup" />
+        </Div>
     </children>
     <script type="text/brightscript" uri="Topbar.bs" />
 </component>
