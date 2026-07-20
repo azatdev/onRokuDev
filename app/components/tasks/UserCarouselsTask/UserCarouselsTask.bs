@@ -28,8 +28,13 @@ function runUserCarouselsTask(options = {})
     }
 
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.UserCarousels) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
-
     responseJSON = parseJSON(response.text)
+
+    if not rodash.isEmpty(responseJSON.errors)
+        onError(responseJSON.errors)
+        return false
+    end if
+
     responseData = responseJSON.data ?? {}
     usersPermissionsUser = responseData.usersPermissionsUser ?? {}
     userCarouselsData = usersPermissionsUser.user_carousels ?? []
@@ -66,7 +71,7 @@ function runUserCarouselsTask(options = {})
             id: newCarouselId,
             type: carouselType
         }
-        newCarouselIds.push(newCarouselId)
+        if not rodash.isEmpty(newCarouselId) then newCarouselIds.push(newCarouselId)
     end for
 
     if rodash.isNonEmptyArray(newCarouselIds) then attachCarouselsToUser({
@@ -89,8 +94,13 @@ function createUserCarousel(carouselType = "")
     }
 
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.CreateUserCarousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
-
     responseJSON = parseJSON(response.text)
+
+    if not rodash.isEmpty(responseJSON.errors)
+        onError(responseJSON.errors)
+        return invalid
+    end if
+
     responseData = responseJSON.data ?? {}
     carouselData = responseData.createUserCarousel ?? {}
     newCarouselId = carouselData.documentId
@@ -110,6 +120,10 @@ sub attachCarouselsToUser(options = {})
     }
 
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.AttachCarouselToUser) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+    responseJSON = parseJSON(response.text)
 
-    ?"attachCarouselsToUser " response
+    if not rodash.isEmpty(responseJSON.errors)
+        onError(responseJSON.errors)
+        return
+    end if
 end sub

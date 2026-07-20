@@ -19,6 +19,7 @@ function getContentData(options = {})
         rating: data.rating,
         playlistUrl: data.playlistUrl,
         position: data.position ?? 0,
+        subtype: "ContentModel",
         title: data.title,
         type: data.type,
         userItemId: data.userItemId

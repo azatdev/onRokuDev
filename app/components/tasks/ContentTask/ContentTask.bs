@@ -16,22 +16,24 @@ function runContentTask(options = {})
     model = options.content
     if not rodash.isNode(model) then return true
 
-    documentId = model.id
+    variables = options.variables ?? {}
+    if not rodash.isNonEmptyAA(variables) then return true
 
-    variables = {}
-    variables.setModeCaseSensitive()
-    variables = {
-        "documentId": documentId
-    }
-    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.ContentScreen) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>" })
-    responseJSON = parseJSON(response.text)
-    responseData = responseJSON.data ?? {}
-    content = responseData.content ?? {}
+    detailsHydrated = options.detailsHydrated ?? false
+    updateObject = {}
 
-    updateObject = getContentData({ data: content })
+    if not detailsHydrated
+        response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.ContentScreen) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>" })
+        responseJSON = parseJSON(response.text)
+        responseData = responseJSON.data ?? {}
+        content = responseData.content ?? {}
 
-    carouselsArray = content.carousels ?? []
-    updateObject.append(returnCarouselsArray(carouselsArray))
+        updateObject.append(getContentData({ data: content }))
+
+        carouselsArray = content.carousels ?? []
+        updateObject.append(returnCarouselsArray(carouselsArray))
+        updateObject.append({ detailsHydrated: true })
+    end if
 
     publish(events.CONTENT_DATA_RECEIVED, {
         content: model,

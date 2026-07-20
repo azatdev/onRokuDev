@@ -3,6 +3,8 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(_options = {})
         safeFunctions({
+            getVariables: getVariables,
+            markUserAction: markUserAction,
             returnContentCTAsModel: returnContentCTAsModel,
             returnCreditsCollection: returnCreditsCollection,
             returnHeroCTAsModel: returnHeroCTAsModel,
@@ -30,14 +32,41 @@ function getBifFields(bifs)
 end function
 
 
+function getVariables(_options = {})
+    returnObj = {}
+    returnObj.setModeCaseSensitive()
+    returnObj["documentId"] = top().id
+    return returnObj
+end function
+
+
+sub markUserAction(_options = {})
+    collections = get("collections", user())
+    if not rodash.isNonEmptyAA(collections) then return
+    cwCollection = collections[carouselTypes.CONTINUE_WATCHING]
+    if rodash.isNode(cwCollection)
+        userItemModel = cwCollection.findNode(top().id)
+        if rodash.isNode(userItemModel) then top().position = userItemModel.position
+    end if
+
+    watchlistCollection = collections[carouselTypes.WATCHLIST]
+    if rodash.isNode(watchlistCollection)
+        top().watchlisted = rodash.isNode(watchlistCollection.findNode(top().id))
+    end if
+
+    favoritedCollection = collections[carouselTypes.FAVORITES]
+    if rodash.isNode(favoritedCollection)
+        top().favorited = rodash.isNode(favoritedCollection.findNode(top().id))
+    end if
+end sub
+
+
 function returnContentCTAsModel(_options = {})
     model = createObject("roSGNode", "CTAsModel")
     modelConfigArray = "<%- o(CONFIG.ContentCTAs) %>"
     updateObject = {
         children: []
     }
-
-    collections = get("collections", user()) ?? {}
 
     for each item in modelConfigArray
         buttonItemObject = {
@@ -52,20 +81,13 @@ function returnContentCTAsModel(_options = {})
         }
 
         ctaType = item.id ?? ""
-        carouselType = ""
 
         if ctaType = userItemsTypes.CWITEM
-            carouselType = carouselTypes.CONTINUE_WATCHING
+            buttonItemObject["active"] = top().position > 0
         else if ctaType = userItemsTypes.FAVORITE
-            carouselType = carouselTypes.FAVORITES
+            buttonItemObject["active"] = top().favorited
         else if ctaType = carouselTypes.WATCHLIST
-            carouselType = carouselTypes.WATCHLIST
-        end if
-
-        if rodash.isNonEmptyString(carouselType)
-            userCollection = collections[carouselType]
-            userItemModel = userCollection.findNode(top().id)
-            if rodash.isNode(userItemModel) then buttonItemObject.active = true
+            buttonItemObject["active"] = top().watchlisted
         end if
 
         updateObject.children.push(buttonItemObject)

@@ -280,10 +280,11 @@ function runTask()
 end function
 
 
-sub onError(e)
+function onError(e)
     'bs:disable-next-line
     ?"ERROR: " formatJSON(e)
-end sub
+    return invalid
+end function
 
 
 sub stackChildren(options = {})

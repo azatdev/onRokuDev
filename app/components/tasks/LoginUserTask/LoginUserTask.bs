@@ -7,25 +7,27 @@ sub init()
 end sub
 
 
-function runLoginUserTask(_options = {})
-    variables = {}
-    variables.setModeCaseSensitive()
-    variables = {
-        "email": "<%- s(CONFIG.ENV.USER_EMAIL) %>",
-        "password": "<%- s(CONFIG.ENV.USER_PASS) %>"
-    }
+function runLoginUserTask(options = {})
+    options = top().options ?? {}
+    if not rodash.isNonEmptyAA(options) then return true
+
+    model = options.model
+    if not rodash.isNode(model) then return true
+
+    variables = options.variables ?? {}
+    if rodash.isEmpty(variables) then return true
 
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Login) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>" })
 
     responseJSON = parseJSON(response.text)
     responseData = responseJSON.data ?? {}
     loginData = responseData.login ?? {}
-    userData = loginData.user ?? {}
+    updateObject = loginData.user ?? {}
+    updateObject.append({ jwt: loginData.jwt })
 
-    userModel = createObject("roSGNode", "UserModel")
-    userData.append({ jwt: loginData.jwt })
-    userModel.update(userData, true)
-
-    publish(events.USER_LOGGED_IN, { userModel: userModel })
+    publish(events.USER_LOGGED_IN, {
+        model: model,
+        updateObject: updateObject
+    })
     return true
 end function

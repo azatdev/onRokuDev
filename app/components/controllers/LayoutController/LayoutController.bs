@@ -107,7 +107,9 @@ sub getContentData(options = {})
     screenTask = createObject("roSGNode", "ContentTask")
     screenTask.update({
         options: {
-            content: content
+            content: content,
+            detailsHydrated: content.detailsHydrated,
+            variables: exec("getVariables", {}, content)
         }
     }, true)
 
@@ -170,8 +172,7 @@ sub onScreenDataReceived(options = {})
     screenModel = options.content
     if not rodash.isNode(screenModel) then return
 
-    updateObject = options.updateObject
-    if not rodash.isNonEmptyAA(updateObject) then return
+    updateObject = options.updateObject ?? {}
 
     screenId = screenModel.screenId ?? ""
     if rodash.isEmpty(screenId) then return
@@ -180,6 +181,7 @@ sub onScreenDataReceived(options = {})
     if not rodash.isNode(screen) then return
 
     screenModel.update(updateObject, true)
+    exec("markUserAction", {}, screenModel)
 
     if rodash.isNonEmptyAA(screen.data) then return
     screen.data = { content: screenModel }

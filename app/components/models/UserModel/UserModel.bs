@@ -1,0 +1,18 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(_options = {})
+        safeFunctions({
+            getVariables: getVariables
+        })
+    end sub)
+end sub
+
+
+function getVariables(_options = {})
+    returnObj = {}
+    returnObj.setModeCaseSensitive()
+    returnObj["email"] = "<%- s(CONFIG.ENV.USER_EMAIL) %>"
+    returnObj["password"] = "<%- s(CONFIG.ENV.USER_PASS) %>"
+    return returnObj
+end function

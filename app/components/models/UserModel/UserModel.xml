@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="UserModel" extends="ContentNode">
+<component name="UserModel" extends="Model">
     <interface>
         <field id="documentId" type="string" />
         <field id="email" type="string" />

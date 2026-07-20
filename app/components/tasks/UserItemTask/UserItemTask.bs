@@ -78,6 +78,7 @@ sub deleteUserItemModel(options = {})
 
     responseJSON = parseJSON(response.text)
     if not rodash.isEmpty(responseJSON.errors)
+        onError(responseJSON.errors)
         return
     end if
 
@@ -117,6 +118,7 @@ sub updateUserItemModel(options = {})
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.UpdateUserItem) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
     responseJSON = parseJSON(response.text)
     if not rodash.isEmpty(responseJSON.errors)
+        onError(responseJSON.errors)
         return
     end if
 
@@ -149,6 +151,11 @@ sub createUserItemModel(options = {})
     }
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.CreateUserItem) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
     responseJSON = parseJSON(response.text)
+    if not rodash.isEmpty(responseJSON.errors)
+        onError(responseJSON.errors)
+        return
+    end if
+
     responseData = responseJSON.data ?? {}
 
     userItemData = responseData.createUserItem ?? {}
@@ -200,6 +207,7 @@ sub attachUserItemModel(options = {})
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.AttachUserItemToUserCarousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
     responseJSON = parseJSON(response.text)
     if not rodash.isEmpty(responseJSON.errors)
+        onError(responseJSON.errors)
         return
     end if
 

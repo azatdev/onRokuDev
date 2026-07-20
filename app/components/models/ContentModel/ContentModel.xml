@@ -4,6 +4,7 @@
         <field id="carousels" type="nodearray" />
         <field id="complimentaryColor" type="string" />
         <field id="copyrightYear" type="string" />
+        <field id="detailsHydrated" type="boolean" />
         <field id="duration" type="integer" />
         <field id="favorited" type="boolean" />
         <field id="genres" type="array" />

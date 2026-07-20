@@ -22,7 +22,7 @@ sub getUserCarousels(_options = {})
         [carouselTypes.WATCHLIST]: {}
     }
 
-    userModel = get("userModel")
+    userModel = get("model")
     if not rodash.isNode(userModel) then return
 
     userCarouselsTask = createObject("roSGNode", "UserCarouselsTask")
@@ -38,7 +38,14 @@ end sub
 
 
 sub loginUser(_options = {})
+    userModel = createObject("roSGNode", "UserModel")
     loginUserTask = createObject("roSGNode", "LoginUserTask")
+    loginUserTask.update({
+        options: {
+            model: userModel,
+            variables: exec("getVariables", {}, userModel)
+        }
+    }, true)
     loginUserTask.control = "RUN"
 end sub
 
@@ -146,7 +153,13 @@ end sub
 
 sub userLoggedIn(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    userModel = options.userModel
-    set({ userModel: userModel })
+
+    userModel = options.model
+    updateObject = options.updateObject ?? {}
+    if not rodash.isNode(userModel) then return
+
+    userModel.update(updateObject, true)
+    set({ model: userModel })
+
     dispatch(events.GET_USER_CAROUSELS)
 end sub
