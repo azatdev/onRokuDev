@@ -24,7 +24,16 @@ function runContentTask(options = {})
 
     if not detailsHydrated
         response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.ContentScreen) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>" })
-        responseJSON = parseJSON(response.text)
+        responseJSON = response.json ?? {}
+
+        if not response.ok
+            onError({
+                failureReason: response.getfailurereason,
+                errors: (responseJSON ?? {}).errors
+            })
+            return true
+        end if
+
         responseData = responseJSON.data ?? {}
         content = responseData.content ?? {}
 

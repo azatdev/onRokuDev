@@ -64,7 +64,7 @@ sub getCatalogData(options = {})
         documentId = screenConfig.documentId ?? ""
         collection = createObject("roSGNode", "Collection")
         collection.update({
-            documentId: documentId,
+            id: documentId,
             screenId: screenId,
             slug: slug
         }, true)
@@ -219,7 +219,6 @@ sub paginateCarousel(options = {})
     collection.paginating = true
 
     carouselTask = createObject("roSGNode", "CarouselTask")
-
     carouselTask.update({
         options: {
             collection: collection,

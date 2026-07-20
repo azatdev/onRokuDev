@@ -9,10 +9,17 @@ end sub
 
 function runSidebarTask(_options = {})
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Sidebar) %>"}, headers: "<%- o(CONFIG.Headers) %>"})
+    responseJSON = response.json ?? {}
 
-    if rodash.isEmpty(response.text) then return true
+    if not response.ok
+        onError({
+            failureReason: response.getfailurereason,
+            errors: (responseJSON ?? {}).errors
+        })
+        return true
+    end if
 
-    sidebarModel = returnSidebarModel(parseJSON(response.text))
+    sidebarModel = returnSidebarModel(responseJSON)
 
     if rodash.isNode(sidebarModel)
         publish(events.SIDEBAR_RECEIVED, { content: sidebarModel })

@@ -9,9 +9,17 @@ end sub
 
 function runConfigsTask(_options = {})
     response = rokurequests_Requests().get("http://192.168.88.31:54323/configs.json")
-    if not rodash.isEmpty(response.text)
-        dispatch(events.CONFIGS_UPDATE, parseJSON(response.text))
+    responseJSON = response.json ?? {}
+
+    if not response.ok
+        onError({
+            failureReason: response.getfailurereason,
+            errors: (responseJSON ?? {}).errors
+        })
+        return true
     end if
+
+    dispatch(events.CONFIGS_UPDATE, responseJSON)
 
     return true
 end function

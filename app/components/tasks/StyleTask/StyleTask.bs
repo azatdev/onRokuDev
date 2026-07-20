@@ -9,9 +9,17 @@ end sub
 
 function runStyleTask(_options = {})
     response = rokurequests_Requests().get("http://192.168.88.31:54323/styles-update.json")
-    if not rodash.isEmpty(response.text)
-        publish(events.STYLES_UPDATE, parseJSON(response.text))
+    responseJSON = response.json ?? {}
+
+    if not response.ok
+        onError({
+            failureReason: response.getfailurereason,
+            errors: (responseJSON ?? {}).errors
+        })
+        return true
     end if
+
+    publish(events.STYLES_UPDATE, responseJSON)
 
     return true
 end function

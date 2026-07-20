@@ -8,7 +8,6 @@ function returnCarouselsArray(carouselsArray = [])
         updateObject = {
             carouselTitle: carousel.carouselTitle,
             carouselType: carousel.carouselType ?? "INDEX",
-            documentId: carousel.documentId,
             id: carousel.documentId,
             subtype: "Collection",
             thumbnailType: carousel.thumbnailType ?? "LANDSCAPE"

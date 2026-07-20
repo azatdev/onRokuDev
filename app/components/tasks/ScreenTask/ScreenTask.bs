@@ -20,10 +20,16 @@ function runScreenTask(options = {})
     if rodash.isEmpty(variables) then return true
 
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Screen) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+    responseJSON = response.json ?? {}
 
-    if rodash.isEmpty(response.text) then return true
+    if not response.ok
+        onError({
+            failureReason: response.getfailurereason,
+            errors: (responseJSON ?? {}).errors
+        })
+        return true
+    end if
 
-    responseJSON = parseJSON(response.text)
     data = responseJSON.data ?? {}
     screenData = data.screen ?? {}
     carouselsArray = screenData.carousels ?? []
@@ -31,7 +37,7 @@ function runScreenTask(options = {})
     ' carouselsArray =  [screenData.carousels[0], screenData.carousels[2]]
     updateObject = returnCarouselsArray(carouselsArray)
     updateObject.append({
-        documentId: screenData.documentId,
+        id: screenData.documentId,
         slug: screenData.slug
     })
 

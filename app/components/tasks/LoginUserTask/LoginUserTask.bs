@@ -18,8 +18,16 @@ function runLoginUserTask(options = {})
     if rodash.isEmpty(variables) then return true
 
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Login) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>" })
+    responseJSON = response.json ?? {}
 
-    responseJSON = parseJSON(response.text)
+    if not response.ok
+        onError({
+            failureReason: response.getfailurereason,
+            errors: (responseJSON ?? {}).errors
+        })
+        return true
+    end if
+
     responseData = responseJSON.data ?? {}
     loginData = responseData.login ?? {}
     updateObject = loginData.user ?? {}

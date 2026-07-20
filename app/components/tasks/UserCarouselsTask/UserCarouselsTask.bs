@@ -28,11 +28,14 @@ function runUserCarouselsTask(options = {})
     }
 
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.UserCarousels) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
-    responseJSON = parseJSON(response.text)
+    responseJSON = response.json ?? {}
 
-    if not rodash.isEmpty(responseJSON.errors)
-        onError(responseJSON.errors)
-        return false
+    if not response.ok
+        onError({
+            failureReason: response.getfailurereason,
+            errors: (responseJSON ?? {}).errors
+        })
+        return true
     end if
 
     responseData = responseJSON.data ?? {}
@@ -94,10 +97,13 @@ function createUserCarousel(carouselType = "")
     }
 
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.CreateUserCarousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
-    responseJSON = parseJSON(response.text)
+    responseJSON = response.json ?? {}
 
-    if not rodash.isEmpty(responseJSON.errors)
-        onError(responseJSON.errors)
+    if not response.ok
+        onError({
+            failureReason: response.getfailurereason,
+            errors: (responseJSON ?? {}).errors
+        })
         return invalid
     end if
 
@@ -120,10 +126,13 @@ sub attachCarouselsToUser(options = {})
     }
 
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.AttachCarouselToUser) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
-    responseJSON = parseJSON(response.text)
+    responseJSON = response.json ?? {}
 
-    if not rodash.isEmpty(responseJSON.errors)
-        onError(responseJSON.errors)
+    if not response.ok
+        onError({
+            failureReason: response.getfailurereason,
+            errors: (responseJSON ?? {}).errors
+        })
         return
     end if
 end sub

@@ -96,7 +96,7 @@ end function
 function getVariables(_options = {})
     returnObj = {}
     returnObj.setModeCaseSensitive()
-    returnObj["documentId"] = top().documentId
+    returnObj["documentId"] = top().id
     returnObj["pagination"] = getPagination()
     return returnObj
 end function

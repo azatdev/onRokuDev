@@ -75,10 +75,13 @@ sub deleteUserItemModel(options = {})
     }
 
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.DeleteUserItem) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+    responseJSON = response.json
 
-    responseJSON = parseJSON(response.text)
-    if not rodash.isEmpty(responseJSON.errors)
-        onError(responseJSON.errors)
+    if not response.ok
+        onError({
+            failureReason: response.getfailurereason,
+            errors: (responseJSON ?? {}).errors
+        })
         return
     end if
 
@@ -116,9 +119,13 @@ sub updateUserItemModel(options = {})
         "position": position
     }
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.UpdateUserItem) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
-    responseJSON = parseJSON(response.text)
-    if not rodash.isEmpty(responseJSON.errors)
-        onError(responseJSON.errors)
+    responseJSON = response.json
+
+    if not response.ok
+        onError({
+            failureReason: response.getfailurereason,
+            errors: (responseJSON ?? {}).errors
+        })
         return
     end if
 
@@ -150,9 +157,14 @@ sub createUserItemModel(options = {})
         "userItemType": userItemType
     }
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.CreateUserItem) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
-    responseJSON = parseJSON(response.text)
-    if not rodash.isEmpty(responseJSON.errors)
-        onError(responseJSON.errors)
+    responseJSON = response.json
+    responseJSON = response.json
+
+    if not response.ok
+        onError({
+            failureReason: response.getfailurereason,
+            errors: (responseJSON ?? {}).errors
+        })
         return
     end if
 
@@ -205,9 +217,13 @@ sub attachUserItemModel(options = {})
         "userItemDocumentIds": [userItemId]
     }
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.AttachUserItemToUserCarousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
-    responseJSON = parseJSON(response.text)
-    if not rodash.isEmpty(responseJSON.errors)
-        onError(responseJSON.errors)
+    responseJSON = response.json
+
+    if not response.ok
+        onError({
+            failureReason: response.getfailurereason,
+            errors: (responseJSON ?? {}).errors
+        })
         return
     end if
 
