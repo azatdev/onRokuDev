@@ -14,7 +14,7 @@ module.exports = {
         width: scrubBarWidth,
         "Poster": {
             "&#frame": {
-                blendColor: "#0e0d0dff",
+                blendColor: "#8f9483",
                 height: 180,
                 uri: "pkg:/static/images/white-block.webp",
                 translation: [0, 0],
@@ -27,7 +27,7 @@ module.exports = {
                 }
             },
             "&#tip": {
-                blendColor: "#131212ff",
+                blendColor: "#8f9483",
                 height: 18,
                 translation: [0, 0],
                 uri: "pkg:/static/images/playhead.webp",

@@ -25,39 +25,6 @@ sub setupItem()
 end sub
 
 
-sub checkCTAActive(options = {})
-    model = options.model
-    if not rodash.isNode(model) then return
-
-    ctaType = model.id
-    if rodash.isEmptyString(ctaType) then return
-
-    carouselType = ""
-
-    if ctaType = userItemsTypes.CWITEM
-        carouselType = carouselTypes.CONTINUE_WATCHING
-    else if ctaType = userItemsTypes.FAVORITE
-        carouselType = carouselTypes.FAVORITES
-    else if ctaType = carouselTypes.WATCHLIST
-        carouselType = carouselTypes.WATCHLIST
-    end if
-
-    if rodash.isEmptyString(carouselType) then return
-
-    collections = get("collections", user())
-    if not rodash.isNonEmptyAA(collections) then return
-
-    userCollection = collections[carouselType]
-    if not rodash.isNode(userCollection) then return
-
-    contentDocumentId = model.contentDocumentId
-    if rodash.isEmptyString(contentDocumentId) then return
-
-    userItemModel = userCollection.findNode(contentDocumentId)
-    model.active = rodash.isNode(userItemModel)
-end sub
-
-
 function getTitleText()
     if not rodash.isNode(top().itemContent) then return ""
     active = top().itemContent.active ?? false
@@ -68,7 +35,6 @@ end function
 
 sub itemContentChanged(options = {})
     content = options.data
-    checkCTAActive({ model: content })
     m.label.text = getTitleText()
 
     setIconInfo(content)

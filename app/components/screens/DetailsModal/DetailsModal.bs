@@ -42,7 +42,8 @@ end sub
 sub onDataSet(options = {})
     data = options.data
     model = data.content
-    creditsCollection = model.creditsCollection
+    creditsCollection = exec("returnCreditsCollection", {}, model)
+    if not rodash.isNode(creditsCollection) then return
 
     for each model in creditsCollection.getChildren(-1, 0)
         processScrollItem({ model: model })

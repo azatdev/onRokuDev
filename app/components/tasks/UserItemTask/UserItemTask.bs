@@ -89,13 +89,13 @@ sub deleteUserItemModel(options = {})
     contentModel = options.contentModel
     if not rodash.isNode(contentModel) then return
 
-    contentCTAsModel = contentModel.contentCTAsModel
-    if not rodash.isNode(contentModel) then return
-
-    ctaItemModel = contentCTAsModel.findNode(userItemType)
-    if not rodash.isNode(ctaItemModel) then return
-
-    ctaItemModel.active = false
+    if userItemType = userItemsTypes.CWITEM
+        contentModel.position = 0
+    else if userItemType = userItemsTypes.FAVORITE
+        contentModel.favorited = false
+    else if userItemType = userItemsTypes.WATCHLIST
+        contentModel.watchlisted = false
+    end if
 end sub
 
 
@@ -157,9 +157,11 @@ sub createUserItemModel(options = {})
     if not rodash.isNonEmptyAA(content) then return
 
     model = createObject("roSGNode", "ContentModel")
-    content.userItemId = userItemData.documentId
 
-    processContent({ model: model, data: content, thumbnailType: "LANDSCAPE" })
+    updateObject = getContentData({ data: content })
+    updateObject.userItemId = userItemData.documentId
+
+    model.update(updateObject, true)
 
     attachUserItemModel({
         collection: collection,
@@ -167,13 +169,13 @@ sub createUserItemModel(options = {})
         userItemId: userItemData.documentId ?? ""
     })
 
-    contentCTAsModel = contentModel.contentCTAsModel
-    if not rodash.isNode(contentModel) then return
-
-    ctaItemModel = contentCTAsModel.findNode(userItemType)
-    if not rodash.isNode(ctaItemModel) then return
-
-    ctaItemModel.active = true
+    if userItemType = userItemsTypes.CWITEM
+        contentModel.position = position
+    else if userItemType = userItemsTypes.FAVORITE
+        contentModel.favorited = true
+    else if userItemType = userItemsTypes.WATCHLIST
+        contentModel.watchlisted = true
+    end if
 end sub
 
 

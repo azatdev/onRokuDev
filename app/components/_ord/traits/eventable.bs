@@ -35,7 +35,6 @@ class Eventable
 
 
     sub setupEventQueue()
-        ?"setupEventQueue "
         if rodash.isNode(global()._ord_eventQueue)
             m.eventQueue = global()._ord_eventQueue
         else

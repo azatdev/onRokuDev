@@ -33,8 +33,7 @@ sub ord_init()
         top().functionName = "runTask"
     end if
 
-    top().addField("_ord_initiated", "boolean", false)
-    top()._ord_initiated = true
+    m.ord_initiated = true
 end sub
 
 

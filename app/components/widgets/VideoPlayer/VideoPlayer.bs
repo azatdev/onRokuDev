@@ -33,6 +33,7 @@ sub init()
         safeObserve("focusedChild", onFocusedChildChange)
         safeObserve("state", onVideoStateChange, m.video)
         safeObserve("position", onVideoPositionChange, m.video, ["duration"])
+        safeObserve("duration", onVideoDurationChange, m.video)
 
         setFocusMap({
             "default": m.videoOverlay,
@@ -73,8 +74,9 @@ sub onDataSet(options = {})
     data = options.data
     content = data.content
     m.content = content
-    playerModel = content.playerModel
+    playerModel = exec("returnPlayerModel", {}, content)
     m.video.content = playerModel
+    m.video.seek = playerModel.position
     m.video.control = "play"
     m.videoOverlay.data = data
     showOverlay()
@@ -151,8 +153,22 @@ sub onSelection(_options = {})
 end sub
 
 
+sub onVideoDurationChange(options = {})
+    if rodash.isEmpty(options) then return
+    if not rodash.isNode(m.video) then return
+    position = m.video.position
+    duration = options.data ?? 0
+    exec("onPositionChange", { position: position, duration: duration }, m.videoOverlay)
+end sub
+
+
 sub onVideoPositionChange(options = {})
-    exec("onPositionChange", options, m.videoOverlay)
+    if rodash.isEmpty(options) then return
+    position = options.data ?? 0
+    duration = options.info?.duration ?? 0
+    set({ scrubPosition: position })
+    exec("onPositionChange", { position: position, duration: duration }, m.videoOverlay)
+
     if not rodash.isNode(m.content) then return
     options.append({ contentModel: m.content })
     dispatch(events.VIDEO_POSITION_CHANGE, options)
@@ -299,7 +315,7 @@ sub startSeek()
         set({ seekSpeed: seekSpeed })
     else
         set({
-            scrubPosition: m.video.position,
+            scrubPosition: get("scrubPosition") ?? m.video.position,
             seeking: true
         })
         m.seekTimer.control = "start"
@@ -361,11 +377,6 @@ end sub
 
 sub resetControls(_options = {})
     if not rodash.isNode(m.controls) then return
-    ' rodash.delay(sub(controls)
-    '     if not rodash.isNode(controls) then return
-    '     controls.config = get("controlsConfig")
-    ' end sub, 500, m.controls)
-
     m.controls.config = get("controlsConfig")
 end sub
 

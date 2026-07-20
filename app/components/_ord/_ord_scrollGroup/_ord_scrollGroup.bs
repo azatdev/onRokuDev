@@ -442,7 +442,7 @@ sub setupScrollbar(options = {})
     m.container.translation = containerTranslation
 
     setClippingRect()
-    m.scrolltrack.visible = true
+    m.scrolltrack.visible = m.scrollKnob[targetDimension] < m.scrolltrack[targetDimension]
 end sub
 
 
@@ -524,7 +524,7 @@ namespace calculate
         trackTranslation = options.trackTranslation
         viewportDimensions = options.viewportDimensions
 
-        scrollableSize = viewportDimensions[axisIndex] - m.scrollKnob[targetDimension]
+        scrollableSize = viewportDimensions[axisIndex] - scrollKnob[targetDimension]
         scrollPercentage = trackTranslation[axisIndex] / maxTranslation[axisIndex]
         scrollTrackTranslation = scrollPercentage * scrollableSize
 

@@ -12,14 +12,14 @@ function runUserCarouselsTask(options = {})
     options = top().options ?? {}
     if not rodash.isNonEmptyAA(options) then return true
 
-    collections = options.collections
-    userModel = options.userModel
-    if not rodash.isNode(userModel) then return true
+    collectionTypes = options.collectionTypes
+    userId = options.userId
+    if rodash.isEmptyString(userId) then return true
 
     variables = {}
     variables.setModeCaseSensitive()
     variables = {
-        "documentId": userModel.documentId ?? "",
+        "documentId": userId,
         "sort": "updatedAt:desc",
         "pagination": {
             "page": 1,
@@ -34,26 +34,25 @@ function runUserCarouselsTask(options = {})
     usersPermissionsUser = responseData.usersPermissionsUser ?? {}
     userCarouselsData = usersPermissionsUser.user_carousels ?? []
 
-    carouselTypesArray = collections.keys() ?? []
+    carouselTypesArray = collectionTypes.keys() ?? []
 
     for each carousel in userCarouselsData
-        collection = collections[carousel.type]
-        if not rodash.isNode(collection) then continue for
-
-        collection.update({
+        updateObject = {
+            children: [],
             id: carousel.documentId,
             type: carousel.type
-        }, true)
+        }
 
         userItems = carousel.user_items
         for each item in userItems
             content = item.content
-            content.position = item.position
-            content.userItemId = item.documentId
-            model = createObject("roSGNode", "ContentModel")
-            processContent({ model: model, data: content, thumbnailType: "LANDSCAPE" })
-            collection.appendChild(model)
+            contentData = getContentData({ data: content })
+            contentData.position = item.position
+            contentData.userItemId = item.documentId
+            updateObject.children.push(contentData)
         end for
+
+        collectionTypes[carousel.type] = updateObject
 
         typeIndex = rodash.indexOf(carouselTypesArray, carousel.type)
         carouselTypesArray.delete(typeIndex)
@@ -62,21 +61,22 @@ function runUserCarouselsTask(options = {})
     newCarouselIds = []
 
     for each carouselType in carouselTypesArray
-        collection = collections[carouselType]
         newCarouselId = createUserCarousel(carouselType)
-        collection.update({
+        collectionTypes[carouselType] = {
             id: newCarouselId,
             type: carouselType
-        }, true)
+        }
         newCarouselIds.push(newCarouselId)
     end for
 
     if rodash.isNonEmptyArray(newCarouselIds) then attachCarouselsToUser({
-        userId: userModel.documentId ?? "",
+        userId: userId,
         carouselIds: newCarouselIds
     })
 
-    publish(events.USER_CAROUSELS_RECEIVED)
+    publish(events.USER_CAROUSELS_RECEIVED, {
+        userCarouselsData: collectionTypes
+    })
     return true
 end function
 

@@ -21,7 +21,6 @@ sub onDataChange(options = {})
     m.list.data = {
         content: m.model
     }
-    ?"tabs ondataset " getVisibleHeight(m.list)
 end sub
 
 

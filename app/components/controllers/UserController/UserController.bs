@@ -16,20 +16,20 @@ end sub
 
 
 sub getUserCarousels(_options = {})
-    collections = {
-        [carouselTypes.CONTINUE_WATCHING]: createObject("roSGNode", "Collection"),
-        [carouselTypes.FAVORITES]: createObject("roSGNode", "Collection"),
-        [carouselTypes.WATCHLIST]: createObject("roSGNode", "Collection")
+    collectionTypes = {
+        [carouselTypes.CONTINUE_WATCHING]: {},
+        [carouselTypes.FAVORITES]: {},
+        [carouselTypes.WATCHLIST]: {}
     }
-    set({
-        collections: collections
-    })
+
+    userModel = get("userModel")
+    if not rodash.isNode(userModel) then return
 
     userCarouselsTask = createObject("roSGNode", "UserCarouselsTask")
     userCarouselsTask.update({
         options: {
-            collections: collections,
-            userModel: get("userModel")
+            collectionTypes: collectionTypes,
+            userId: userModel.documentId
         }
     }, true)
 
@@ -121,8 +121,25 @@ sub toggleWatchlist(options = {})
 end sub
 
 
-sub userCarouselsReceived(_options = {})
+sub userCarouselsReceived(options = {})
     collections = get("collections") ?? {}
+    userCarouselsData = options.userCarouselsData ?? {}
+    if not rodash.isNonEmptyAA(userCarouselsData) then return
+
+    for each carouselData in userCarouselsData.items()
+        carouselType = carouselData.key
+        carouselData = carouselData.value
+        if not rodash.isNonEmptyAA(carouselData) then continue for
+        collection = collections[carouselType]
+        if not rodash.isNode(collection) then collection = createObject("roSGNode", "Collection")
+        collection.update(carouselData, true)
+        collections[carouselType] = collection
+    end for
+
+    set({
+        collections: collections
+    })
+
     dispatch(events.SET_USER_CAROUSELS, { collections: collections })
 end sub
 

@@ -7,6 +7,7 @@ sub init()
             [events.APP_STARTED]: onAppStarted,
             [events.CATALOG_HERO_FOCUSED]: onCatalogHeroFocused,
             [events.CAROUSEL_ITEM_FOCUSED]: onCarouselItemFocused,
+            [events.CAROUSEL_PAGINATED]: onCarouselPaginated,
             [events.CONTENT_DATA_RECEIVED]: onScreenDataReceived,
             [events.GET_CATALOG_DATA]: getCatalogData,
             [events.GET_CONTENT_DATA]: getContentData,
@@ -16,7 +17,7 @@ sub init()
             [events.NAVIGATE_TO]: navigateTo,
             [events.PAGINATE_CAROUSEL]: paginateCarousel,
             [events.PAGINATE_SCREEN]: getCatalogData,
-            [events.SCREEN_DATA_RECEIVED]: [onScreenDataReceived],
+            [events.SCREEN_DATA_RECEIVED]: onScreenDataReceived,
             [events.SCROLL_GROUP_FOCUSED]: onScrollGroupFocused,
             [events.SET_USER_CAROUSELS]: setUserCarousels,
             [events.SHOW_CATALOG_UI]: showCatalogUI,
@@ -79,7 +80,8 @@ sub getCatalogData(options = {})
     screenTask = createObject("roSGNode", "ScreenTask")
     screenTask.update({
         options: {
-            collection: collection
+            collection: collection,
+            variables: exec("getVariables", {}, collection)
         }
     }, true)
 
@@ -144,13 +146,21 @@ end sub
 
 sub onCatalogHeroFocused(options = {})
     exec("showBackground", options, background())
-    ' exec("hideHeaderImage", options, background())
+end sub
+
+
+sub onCarouselPaginated(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    collection = options.collection
+    updateObject = options.updateObject
+    if not rodash.isNode(collection) then return
+    if not rodash.isNonEmptyAA(updateObject) then return
+    exec("processCarouselData", updateObject, collection)
 end sub
 
 
 sub onScrollGroupFocused(options = {})
     exec("hideBackground", options, background())
-    ' exec("showHeaderImage", options, background())
 end sub
 
 
@@ -160,17 +170,19 @@ sub onScreenDataReceived(options = {})
     screenModel = options.content
     if not rodash.isNode(screenModel) then return
 
+    updateObject = options.updateObject
+    if not rodash.isNonEmptyAA(updateObject) then return
+
     screenId = screenModel.screenId ?? ""
     if rodash.isEmpty(screenId) then return
 
     screen = layout().findNode(screenId)
     if not rodash.isNode(screen) then return
 
-    if rodash.isEmpty(screen.data)
-        screen.data = {
-            content: screenModel
-        }
-    end if
+    screenModel.update(updateObject, true)
+
+    if rodash.isNonEmptyAA(screen.data) then return
+    screen.data = { content: screenModel }
 end sub
 
 
@@ -195,7 +207,6 @@ end sub
 
 
 sub onTopbarReceived(options = {})
-    ?"onTopbarReceived " rodash.now()
     topbar().data = options
 end sub
 
@@ -209,7 +220,8 @@ sub paginateCarousel(options = {})
 
     carouselTask.update({
         options: {
-            collection: collection
+            collection: collection,
+            variables: exec("getVariables", {}, collection)
         }
     }, true)
 

@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="ContentModel" extends="Model">
     <interface>
-        <field id="carouselItemModel" type="node" />
         <field id="carousels" type="nodearray" />
         <field id="complimentaryColor" type="string" />
         <field id="copyrightYear" type="string" />
         <field id="duration" type="integer" />
+        <field id="favorited" type="boolean" />
         <field id="genres" type="array" />
-        <field id="heroCTAsModel" type="node" />
         <field id="headerImageUri" type="string" />
         <field id="logoImageUri" type="string" />
         <field id="landscapeImageUri" type="string" />
@@ -17,8 +16,8 @@
         <field id="position" type="int" />
         <field id="rating" type="string" />
         <field id="posterImageUri" type="string" />
-        <field id="tabsModel" type="node" />
         <field id="thumbnailImageUri" type="string" />
+        <field id="watchlisted" type="boolean" />
     </interface>
     <children>
     </children>

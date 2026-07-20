@@ -26,17 +26,16 @@ function runContentTask(options = {})
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.ContentScreen) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>" })
     responseJSON = parseJSON(response.text)
     responseData = responseJSON.data ?? {}
-    content = responseData.content
+    content = responseData.content ?? {}
 
-    processContent({ model: model, data: content })
+    updateObject = getContentData({ data: content })
 
     carouselsArray = content.carousels ?? []
-    updateObject = returnCarouselsArray(carouselsArray)
+    updateObject.append(returnCarouselsArray(carouselsArray))
 
-    model.update(updateObject, true)
-    model.carousels = updateObject.children
-    model.tabsModel = returnTabsModel(carouselsArray)
-
-    publish(events.CONTENT_DATA_RECEIVED, { content: model })
+    publish(events.CONTENT_DATA_RECEIVED, {
+        content: model,
+        updateObject: updateObject
+    })
     return true
 end function

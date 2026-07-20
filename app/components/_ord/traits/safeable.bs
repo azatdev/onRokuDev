@@ -89,21 +89,21 @@ class Safeable
     function proxyFunc(functionName = "", options = {}, node = {})
         if not rodash.isNode(node) then return invalid
 
-        proxyData = node.ord_proxyData ?? {}
+        if rodash.isNonEmptyAA(options)
+            proxyData = {}
 
-        if not rodash.isEmpty(options)
-            proxyData.input = options
+            if not rodash.isEmpty(options)
+                proxyData.input = options
+            end if
+
+            node.moveIntoField("ord_proxyData", proxyData)
         end if
-
-        node.ord_proxyData = proxyData
 
         node.callFunc("safeFunc", functionName)
 
-        proxyData = node.ord_proxyData ?? {}
+        proxyData = node.moveFromField("ord_proxyData") ?? {}
         returnObj = proxyData.output ?? invalid
-        proxyData.output = invalid
 
-        node.ord_proxyData = proxyData
         return returnObj
     end function
 
@@ -111,10 +111,14 @@ class Safeable
     sub processSafeFunc(functionName)
         proxyData = top().ord_proxyData ?? {}
         options = proxyData.input ?? {}
+        top().ord_proxyData = invalid
         returnData = exec(functionName, options, top())
-        proxyData.input = invalid
-        proxyData.output = returnData
-        top().ord_proxyData = proxyData
+
+        if returnData <> invalid
+            proxyData.input = invalid
+            proxyData.output = returnData
+            top().ord_proxyData = proxyData
+        end if
     end sub
 
 
@@ -231,7 +235,7 @@ end class
 
 
 function exec(func, options = {}, node = m.top)
-    if not m.top.hasField("_ord_initiated") or not m.top._ord_initiated then ord_init()
+    if m.ord_initiated = invalid then ord_init()
 
     if not rodash.isNonEmptyAA(m.ord_interfaces) then return invalid
 

@@ -1,38 +1,31 @@
-sub generateCarouselModel(options = {})
-    model = options.model
-    if not rodash.isNode(model) then return
-    thumbnailType = options.thumbnailType
+function getContentData(options = {})
+    if not rodash.isNonEmptyAA(options) then return {}
 
-    fields = []
-    if thumbnailType = "LANDSCAPE" or thumbnailType = "PORTRAIT"
-        fields = ["id", "thumbnailImageUri"]
-    end if
+    data = options.data
+    if not rodash.isNonEmptyAA(data) then return {}
 
-    carouselItemModel = model.carouselItemModel
-    if not rodash.isNode(carouselItemModel) then carouselItemModel = createObject("roSGNode", "ContentModel")
+    contentImages = data.images ?? []
+    imageFields = getImageFields(contentImages)
 
-    for each field in fields
-        carouselItemModel[field] = model[field]
-    end for
+    updateObject = {
+        bifs: data.bifs ?? [],
+        credits: data.credits ?? [],
+        complimentaryColor: data.complimentaryColor,
+        copyrightYear: data.copyrightYear,
+        description: data.description,
+        duration: data.duration,
+        genres: data.v2genres,
+        id: data.documentId,
+        rating: data.rating,
+        playlistUrl: data.playlistUrl,
+        position: data.position ?? 0,
+        title: data.title,
+        type: data.type,
+        userItemId: data.userItemId
+    }
 
-    model.carouselItemModel = carouselItemModel
-end sub
-
-
-function getBifFields(bifs)
-    if not rodash.isNonEmptyArray(bifs) then return {}
-
-    imageFields = rodash.reduce(bifs, function(acc, cv)
-        bifType = lcase(cv.bifType ?? "")
-        if rodash.isEmptyString(bifType) then return acc
-        fieldName = bifType = "SD" ? "sdbifurl" : "hdbifurl"
-        bifURL = cv.bif?.url ?? ""
-        serverPath = "<%- s(CONFIG.ENV.SERVER_URI) %>"
-        acc[fieldName] = serverPath + bifURL
-        return acc
-    end function, {})
-
-    return imageFields
+    updateObject.append(imageFields)
+    return updateObject
 end function
 
 
@@ -56,183 +49,4 @@ function getImageFields(images)
     end if
 
     return imageFields
-end function
-
-
-sub processContent(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
-    model = options.model
-    if not rodash.isNode(model) then return
-
-    data = options.data
-    thumbnailType = options.thumbnailType ?? "LANDSCAPE"
-
-    if not rodash.isNonEmptyAA(data) then return
-
-    contentImages = data.images ?? []
-    imageFields = getImageFields(contentImages)
-
-    updateObject = {
-        complimentaryColor: data.complimentaryColor,
-        copyrightYear: data.copyrightYear,
-        creditsCollection: returnCreditsCollection({ data: data }),
-        description: data.description,
-        duration: data.duration,
-        genres: data.v2genres,
-        heroCTAsModel: returnHeroCTAsModel({ contentDocumentId: data.documentId }),
-        contentCTAsModel: returnContentCTAsModel({ contentDocumentId: data.documentId }),
-        id: data.documentId,
-        rating: data.rating,
-        playerModel: returnPlayerModel(data),
-        playlistUrl: data.playlistUrl,
-        position: data.position ?? 0,
-        userItemId: data.userItemId,
-        title: data.title,
-        type: data.type
-    }
-
-    updateObject.append(imageFields)
-    model.update(updateObject, true)
-
-    generateCarouselModel({ model: model, thumbnailType: thumbnailType })
-    model.hydrated = true
-end sub
-
-
-function returnCreditsCollection(options = {})
-    if not rodash.isNonEmptyAA(options) then return invalid
-
-    collection = createObject("roSGNode", "Collection")
-
-    data = options.data ?? {}
-    credits = data.credits
-
-    if rodash.isNonEmptyString(data.description)
-        model = createObject("roSGNode", "Model")
-        updateObj = {
-            role: tr("TKEY_DESCRIPTION"),
-            name: data.description
-        }
-        model.update(updateObj, true)
-        collection.appendChild(model)
-    end if
-
-    if not rodash.isNonEmptyArray(credits) then return collection
-
-    orderedArray = []
-    concatenatedCredits = {}
-
-    for each credit in credits
-        role = credit.role ?? ""
-        name = credit.name ?? ""
-        namesArray = concatenatedCredits[role] ?? []
-        if not rodash.isNonEmptyArray(namesArray)
-            orderedArray.push(role)
-        end if
-        namesArray.push(name)
-        concatenatedCredits[role] = namesArray
-    end for
-
-    for each role in orderedArray
-        model = createObject("roSGNode", "Model")
-        namesArray = concatenatedCredits[role]
-        updateObj = {
-            role: role,
-            name: namesArray.join(", ")
-        }
-        model.update(updateObj, true)
-        collection.appendChild(model)
-    end for
-
-    return collection
-end function
-
-
-function returnHeroCTAsModel(options = {})
-    if rodash.isEmpty(options) then return invalid
-
-    model = createObject("roSGNode", "CTAsModel")
-    modelConfigArray = "<%- o(CONFIG.HeroCTAs) %>"
-    updateObject = {
-        children: []
-    }
-
-    contentDocumentId = options.contentDocumentId ?? ""
-
-    for each item in modelConfigArray
-        updateObject.children.push({
-            id: item.id,
-            contentDocumentId: contentDocumentId,
-            dynamicWidth: item.dynamicWidth ?? false,
-            iconText: item.iconText ?? "",
-            title: (item.title ?? "").inStr("TKEY") <> -1 ? tr(item.title) : item.title,
-            subtype: "Model"
-        })
-    end for
-
-    model.update(updateObject, true)
-    return model
-end function
-
-
-function returnPlayerModel(options = {})
-    if rodash.isEmpty(options) then return invalid
-    playlistUrl = options.playlistUrl
-    if rodash.isEmpty(playlistUrl) then return invalid
-
-    playerModel = createObject("roSGNode", "ContentModel")
-
-    bifs = options.bifs ?? []
-    bifFields = getBifFields(bifs) ?? {}
-
-    updateObj = {
-        url: playlistUrl
-    }
-
-    updateObj.append(bifFields)
-    playerModel.update(updateObj, true)
-
-    return playerModel
-end function
-
-
-function returnContentCTAsModel(options = {})
-    model = createObject("roSGNode", "CTAsModel")
-    modelConfigArray = "<%- o(CONFIG.ContentCTAs) %>"
-    updateObject = {
-        children: []
-    }
-
-    for each item in modelConfigArray
-        updateObject.children.push({
-            id: item.id,
-            contentDocumentId: options.contentDocumentId ?? "",
-            dynamicWidth: item.dynamicWidth ?? false,
-            iconText: item.iconText ?? "",
-            active: false,
-            activeTitle: (item.activeTitle ?? "").inStr("TKEY") <> -1 ? tr(item.activeTitle) : item.activeTitle,
-            title: (item.title ?? "").inStr("TKEY") <> -1 ? tr(item.title) : item.title,
-            subtype: "Model"
-        })
-    end for
-
-    model.update(updateObject, true)
-    return model
-end function
-
-
-function returnTabsModel(carousels = [])
-    if not rodash.isArray(carousels) then return invalid
-    model = createObject("roSGNode", "Model")
-
-    for each carousel in carousels
-        carouselType = carousel.carouselType
-        if rodash.isEmpty(carouselType) then continue for
-        tabModel = createObject("roSGNode", "Model")
-        tabModel.title = carouselType
-        model.appendChild(tabModel)
-    end for
-
-    return model
 end function

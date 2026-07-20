@@ -96,17 +96,20 @@ sub onDataSet(options = {})
     data = options.data
     content = data.content
     m.content = content
-    carousels = content.carousels
-    m.contentHero.data = { content: m.content }
 
-    tabsModel = content.tabsModel
-
-    liveConfig({ field: "config", keyPath: "TabsCarousel" }, tabsModel)
-    m.tabs.data = { content: tabsModel }
-
+    carousels = content.getChildren(-1, 0)
     for each model in carousels
         processScrollItem({ model: model })
     end for
+
+    m.contentHero.data = { content: m.content }
+
+    tabsModel = exec("returnTabsModel", { carousels: carousels }, content)
+
+    if rodash.isNode(tabsModel)
+        liveConfig({ field: "config", keyPath: "TabsCarousel" }, tabsModel)
+        m.tabs.data = { content: tabsModel }
+    end if
 
     afterStyling()
 end sub
@@ -130,9 +133,7 @@ end sub
 
 sub focusContentHero(_options = {})
     if not rodash.isNode(m.content) then return
-
-    carousels = m.content.carousels ?? []
-    carouselCount = carousels.count()
+    carouselCount = m.content.getChildCount()
 
     if carouselCount = 0 then return
 
@@ -161,8 +162,7 @@ sub onContentScrollGroupFocused(_options = {})
     if not rodash.isNode(m.contentScrollGroup) then return
     if not rodash.isNode(m.content) then return
 
-    carousels = m.content.carousels ?? []
-    carouselCount = carousels.count()
+    carouselCount = m.content.getChildCount()
 
     if carouselCount = 0 then return
 

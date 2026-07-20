@@ -30,14 +30,16 @@ sub onDataSet(options = {})
     content = data.content
     m.content = content
 
+    exec("generateDefaultModels", {}, content)
+
     for each model in content.getChildren(-1, 0)
         processScrollItem({ model: model })
     end for
 
-    safeObserve("hydrated", onCollectionHydrated, m.content)
+    safeObserve("hydrated", onCollectionHydrated, content)
+    safeObserve("change", onCollectionChildChange, content)
 
     dispatch(events.PAGINATE_CAROUSEL, { collection: content })
-    safeObserve("change", onCollectionChildChange, content)
 end sub
 
 
@@ -75,7 +77,7 @@ sub onHeroItemFocused(options = {})
 
     dispatch(events.HERO_ITEM_FOCUSED, { content: itemFocusedModel, section: sections.HERO })
 
-    ' dispatch(events.NAVIGATE_TO, { slug: `/content/${itemFocusedModel.id}`, content: itemFocusedModel })
+    dispatch(events.NAVIGATE_TO, { slug: `/content/${itemFocusedModel.id}`, content: itemFocusedModel })
 
     checkPagination({ itemFocused: options.data })
 end sub

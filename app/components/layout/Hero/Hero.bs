@@ -15,11 +15,12 @@ sub init()
 
         safeObserve("data", onDataSet)
         safeObserve("focusedChild", onFocusedChildChange)
+        safeObserve("ctaSelected", onCTASelected, m.ctas)
+
         setFocusMap({
             "default": m.ctas
         })
         stackChildren({ node: m.container, direction: "vertical" })
-        safeObserve("ctaSelected", onCTASelected, m.ctas)
         redrawStyles()
     end sub)
 end sub
@@ -56,7 +57,7 @@ sub onDataSet(options = {})
     if content.hydrated ?? false
         onHydrated({ node: m.content })
     else
-        safeObserve("hydrated", onHydrated, m.content)
+        safeObserve("hydrated", onHydrated, content)
     end if
 end sub
 
@@ -67,14 +68,16 @@ sub onHydrated(options = {})
 
     setDescription(content.description)
     setLogoImage(content.logoImageUri)
-    setCTAs(content.heroCTAsModel)
+    setCTAs(content)
     setMetadata(content)
 end sub
 
 
-sub setCTAs(heroCTAsModel = {})
+sub setCTAs(content = {})
+    if not rodash.isNode(content) then return
+    heroCTAsModel = exec("returnHeroCTAsModel", {}, content)
     if not rodash.isNode(heroCTAsModel) then return
-    m.ctas.data = { content: heroCTAsModel }
+    m.ctas.data = { content:  heroCTAsModel}
 end sub
 
 

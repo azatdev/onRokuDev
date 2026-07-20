@@ -82,7 +82,6 @@ class Styleable
 
         nodeStyles = m.findNodeStyles({ node: node })
         m.setStyles(nodeStyles, node)
-        ' m.redrawStyles()
     end sub
 
 

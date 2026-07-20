@@ -5,8 +5,6 @@ import "pkg:/components/tasks/shared/content.bs"
 sub init()
     exec(sub(_options = {})
         setTaskFunction(runScreenTask)
-        ' Needed to circumvent a Roku bug with callFunc
-        m.containerNode = createObject("roSGNode", "Node")
     end sub)
 end sub
 
@@ -18,7 +16,7 @@ function runScreenTask(options = {})
     collection = options.collection
     if not rodash.isNode(collection) then return true
 
-    variables = exec("getVariables", {}, collection)
+    variables = options.variables ?? {}
     if rodash.isEmpty(variables) then return true
 
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Screen) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
@@ -36,11 +34,10 @@ function runScreenTask(options = {})
         documentId: screenData.documentId,
         slug: screenData.slug
     })
-    collection.update(updateObject, true)
-    collection.totalCount = collection.getChildCount()
 
     publish(events.SCREEN_DATA_RECEIVED, {
-        content: collection
+        content: collection,
+        updateObject: updateObject
     })
 
     return true

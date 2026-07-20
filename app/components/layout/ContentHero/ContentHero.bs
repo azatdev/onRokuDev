@@ -54,6 +54,34 @@ sub onDataSet(options = {})
     onHydrated({ node: m.content })
     stackChildren({ node: m.container, direction: "vertical" })
     dispatch(events.HERO_ITEM_FOCUSED, { content: content, section: sections.CONTENT_HERO })
+
+    safeObserve("favorited", onFavoriteToggle, content)
+    safeObserve("position", onPositionChange, content)
+    safeObserve("watchlisted", onWatchlistToggle, content)
+end sub
+
+
+sub onFavoriteToggle(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    if not rodash.isNode(m.contentCTAsModel) then return
+    ctaItemModel = m.contentCTAsModel.findNode(userItemsTypes.FAVORITE)
+    ctaItemModel.active = options.data
+end sub
+
+
+sub onPositionChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    if not rodash.isNode(m.contentCTAsModel) then return
+    ctaItemModel = m.contentCTAsModel.findNode(userItemsTypes.CWITEM)
+    ctaItemModel.active = options.data <> 0
+end sub
+
+
+sub onWatchlistToggle(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    if not rodash.isNode(m.contentCTAsModel) then return
+    ctaItemModel = m.contentCTAsModel.findNode(userItemsTypes.WATCHLIST)
+    ctaItemModel.active = options.data
 end sub
 
 
@@ -72,14 +100,17 @@ sub onHydrated(options = {})
     end if
 
     setDescription(content.description)
-    setCTAs(content.contentCTAsModel)
+    setCTAs(content)
     setMetadata(content)
 end sub
 
 
-sub setCTAs(contentCTAsModel = {})
+sub setCTAs(content = {})
+    if not rodash.isNode(content) then return
+    contentCTAsModel = exec("returnContentCTAsModel", {}, content)
     if not rodash.isNode(contentCTAsModel) then return
-    m.ctas.data = { content: contentCTAsModel }
+    m.contentCTAsModel = contentCTAsModel
+    m.ctas.data = { content:  contentCTAsModel}
 end sub
 
 

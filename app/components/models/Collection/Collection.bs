@@ -4,26 +4,33 @@ sub init()
     exec(sub(_options = {})
         m.paginationConfigs = "<%- o(CONFIG.Pagination) %>"
         safeFunctions({
-            generateCarouselCollection: generateCarouselCollection,
+            generateDefaultModels: generateDefaultModels,
             getVariables: getVariables,
+            processCarouselData: processCarouselData,
             returnInitialPagination: returnInitialPagination
         })
     end sub)
 end sub
 
 
-sub generateCarouselCollection(_options = {})
-    children = top().getChildren(-1, 0)
-    carouselCollection = top().carouselCollection
-    if not rodash.isNode(carouselCollection) then carouselCollection = createObject("roSGNode", "Collection")
+sub generateDefaultModels(_options = {})
+    initialPagination = returnInitialPagination()
 
-    for each child in children
-        existingModel = child.carouselItemModel
-        if rodash.isNode(existingModel.getParent()) and existingModel.getParent().isSameNode(carouselCollection) then continue for
-        carouselCollection.appendChild(existingModel)
+    ' Load initial carousel items
+    ' for loading animation
+    for x = 0 to initialPagination.pageSize - 1
+        updateObject = {
+            description: "",
+            id: "pending",
+            hydrated: false,
+            logoImageUri: "",
+            thumbnailImageUri: ""
+        }
+        model = createObject("roSGNode", "ContentModel")
+        model.update(updateObject, true)
+
+        top().appendChild(model)
     end for
-
-    top().carouselCollection = carouselCollection
 end sub
 
 
@@ -40,6 +47,32 @@ function getPagination(_options = {})
 
     return newPagination
 end function
+
+
+sub processCarouselData(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    children = options.children ?? []
+    for each child in children
+        documentId =  child.id ?? ""
+        if rodash.isEmptyString(documentId) then continue for
+
+        contentNode = top().findNode(documentId) ?? top().findNode("pending")
+
+        if not rodash.isNode(contentNode)
+            contentNode = createObject("roSGNode", "ContentModel")
+            top().appendChild(contentNode)
+        end if
+
+        contentNode.update(child, true)
+        contentNode.hydrated = true
+    end for
+
+    top().canPaginate = not rodash.isEmpty(children)
+    removePendingNodes()
+    top().paginating = false
+    top().hydrated = true
+end sub
 
 
 function returnInitialPagination(_options = {})
@@ -67,3 +100,14 @@ function getVariables(_options = {})
     returnObj["pagination"] = getPagination()
     return returnObj
 end function
+
+
+sub removePendingNodes()
+    pendingNode = top().findNode("pending")
+
+    while pendingNode <> invalid
+        top().removeChild(pendingNode)
+        pendingNode = top().findNode("pending")
+    end while
+end sub
+

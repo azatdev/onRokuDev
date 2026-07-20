@@ -14,10 +14,11 @@ function runCarouselTask(_options = {})
     if not rodash.isNonEmptyAA(options) then return true
 
     collection = options.collection
-
     if not rodash.isNode(collection) then return true
 
-    variables = exec("getVariables", {}, collection)
+    variables = options.variables ?? {}
+    if rodash.isEmpty(variables) then return true
+
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Carousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
 
     responseJSON = parseJSON(response.text ?? "")
@@ -25,51 +26,19 @@ function runCarouselTask(_options = {})
     carouselsData = responseData.carousel ?? {}
     contentsData = carouselsData.contents ?? []
 
+    updateObject = {
+        children: []
+    }
+
     for each content in contentsData
-        documentId =  content.documentId ?? ""
-        if rodash.isEmptyString(documentId) then continue for
-
-        existingContentNode = collection.findNode(documentId)
-
-        if rodash.isNode(existingContentNode)
-            processContent({ model: existingContentNode, data: content, thumbnailType: collection.thumbnailType })
-            continue for
-        end if
-
-        existingEmptyNode = collection.findNode("pending")
-
-        if rodash.isNode(existingEmptyNode)
-            processContent({ model: existingEmptyNode, data: content, thumbnailType: collection.thumbnailType })
-            continue for
-        end if
-
-        newContentNode = createObject("roSGNode", "ContentModel")
-        processContent({ model: newContentNode, data: content, thumbnailType: collection.thumbnailType })
-        collection.appendChild(newContentNode)
+        contentData = getContentData({ data: content })
+        updateObject.children.push(contentData)
     end for
 
-    exec("generateCarouselCollection", {}, collection)
-    removePendingNodes(collection)
-
-    collection.canPaginate = not rodash.isEmpty(contentsData)
-    collection.paginating = false
-    collection.hydrated = true
+    publish(events.CAROUSEL_PAGINATED, {
+        collection: collection,
+        updateObject: updateObject
+    })
 
     return true
 end function
-
-
-sub removePendingNodes(collection)
-    if not rodash.isNode(collection) then return
-    pendingNode = collection.findNode("pending")
-    carouselsCollection = collection.carouselCollection
-
-    while pendingNode <> invalid
-        collection.removeChild(pendingNode)
-        carouselModel = pendingNode.carouselItemModel
-        if rodash.isNode(carouselsCollection) and rodash.isNode(carouselModel)
-            carouselsCollection.removeChild(carouselModel)
-        end if
-        pendingNode = collection.findNode("pending")
-    end while
-end sub

@@ -35,11 +35,8 @@ sub onCarouselItemSelected(options = {})
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.content) then return
 
-    carouselCollection = m.content.carouselCollection
-    if not rodash.isNode(carouselCollection) then return
-
     selectedChild = options.data
-    itemContent = carouselCollection.getChild(selectedChild)
+    itemContent = m.content.getChild(selectedChild)
     if not rodash.isNode(itemContent) then return
 
     dispatch(events.NAVIGATE_TO, { slug: `/content/${itemContent.id}`, content: itemContent })
@@ -60,15 +57,18 @@ sub onDataSet(options = {})
 
     data = options.data
     content = data.content
-    carouselCollection = content.carouselCollection
-    if not rodash.isNode(carouselCollection) then return
+
+    exec("generateDefaultModels", {}, content)
+
+    if not rodash.isNode(content) then return
+
     thumbnailType = content.thumbnailType
     configKey = thumbnailType = "LANDSCAPE" ? "LandscapeCarousel" : "PortraitCarousel"
-    liveConfig({ field: "config", keyPath: configKey }, carouselCollection)
+    liveConfig({ field: "config", keyPath: configKey }, content)
 
     m.content = content
     m.carouselTitle.text = content.carouselTitle
-    m.carouselList.data = { content: carouselCollection }
+    m.carouselList.data = { content: content }
 
     if rodash.isNonEmptyString(thumbnailType) then addClass(lcase(thumbnailType))
 

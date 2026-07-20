@@ -2,6 +2,190 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(_options = {})
+        safeFunctions({
+            returnContentCTAsModel: returnContentCTAsModel,
+            returnCreditsCollection: returnCreditsCollection,
+            returnHeroCTAsModel: returnHeroCTAsModel,
+            returnPlayerModel: returnPlayerModel,
+            returnTabsModel: returnTabsModel
+        })
     end sub)
 end sub
 
+
+function getBifFields(bifs)
+    if not rodash.isNonEmptyArray(bifs) then return {}
+
+    imageFields = rodash.reduce(bifs, function(acc, cv)
+        bifType = lcase(cv.bifType ?? "")
+        if rodash.isEmptyString(bifType) then return acc
+        fieldName = bifType = "SD" ? "sdbifurl" : "hdbifurl"
+        bifURL = cv.bif?.url ?? ""
+        serverPath = "<%- s(CONFIG.ENV.SERVER_URI) %>"
+        acc[fieldName] = serverPath + bifURL
+        return acc
+    end function, {})
+
+    return imageFields
+end function
+
+
+function returnContentCTAsModel(_options = {})
+    model = createObject("roSGNode", "CTAsModel")
+    modelConfigArray = "<%- o(CONFIG.ContentCTAs) %>"
+    updateObject = {
+        children: []
+    }
+
+    collections = get("collections", user()) ?? {}
+
+    for each item in modelConfigArray
+        buttonItemObject = {
+            id: item.id,
+            contentDocumentId: top().id,
+            dynamicWidth: item.dynamicWidth ?? false,
+            iconText: item.iconText ?? "",
+            active: false,
+            activeTitle: (item.activeTitle ?? "").inStr("TKEY") <> -1 ? tr(item.activeTitle) : item.activeTitle,
+            title: (item.title ?? "").inStr("TKEY") <> -1 ? tr(item.title) : item.title,
+            subtype: "Model"
+        }
+
+        ctaType = item.id ?? ""
+        carouselType = ""
+
+        if ctaType = userItemsTypes.CWITEM
+            carouselType = carouselTypes.CONTINUE_WATCHING
+        else if ctaType = userItemsTypes.FAVORITE
+            carouselType = carouselTypes.FAVORITES
+        else if ctaType = carouselTypes.WATCHLIST
+            carouselType = carouselTypes.WATCHLIST
+        end if
+
+        if rodash.isNonEmptyString(carouselType)
+            userCollection = collections[carouselType]
+            userItemModel = userCollection.findNode(top().id)
+            if rodash.isNode(userItemModel) then buttonItemObject.active = true
+        end if
+
+        updateObject.children.push(buttonItemObject)
+    end for
+
+    model.update(updateObject, true)
+    return model
+end function
+
+
+function returnCreditsCollection(_options = {})
+    collection = createObject("roSGNode", "Collection")
+
+    credits = top().credits
+
+    if rodash.isNonEmptyString(top().description)
+        model = createObject("roSGNode", "Model")
+        updateObj = {
+            role: tr("TKEY_DESCRIPTION"),
+            name: top().description
+        }
+        model.update(updateObj, true)
+        collection.appendChild(model)
+    end if
+
+    if not rodash.isNonEmptyArray(credits) then return collection
+
+    orderedArray = []
+    concatenatedCredits = {}
+
+    for each credit in credits
+        role = credit.role ?? ""
+        name = credit.name ?? ""
+        namesArray = concatenatedCredits[role] ?? []
+        if not rodash.isNonEmptyArray(namesArray)
+            orderedArray.push(role)
+        end if
+        namesArray.push(name)
+        concatenatedCredits[role] = namesArray
+    end for
+
+    for each role in orderedArray
+        model = createObject("roSGNode", "Model")
+        namesArray = concatenatedCredits[role]
+        updateObj = {
+            role: role,
+            name: namesArray.join(", ")
+        }
+        model.update(updateObj, true)
+        collection.appendChild(model)
+    end for
+
+    return collection
+end function
+
+
+function returnHeroCTAsModel(_options = {})
+    model = createObject("roSGNode", "CTAsModel")
+    modelConfigArray = "<%- o(CONFIG.HeroCTAs) %>"
+    updateObject = {
+        children: []
+    }
+
+    for each item in modelConfigArray
+        updateObject.children.push({
+            id: item.id,
+            contentDocumentId: top().id,
+            dynamicWidth: item.dynamicWidth ?? false,
+            iconText: item.iconText ?? "",
+            title: (item.title ?? "").inStr("TKEY") <> -1 ? tr(item.title) : item.title,
+            subtype: "Model"
+        })
+    end for
+
+    model.update(updateObject, true)
+    return model
+end function
+
+
+function returnPlayerModel(_options = {})
+    playlistUrl = top().playlistUrl
+    if rodash.isEmpty(playlistUrl) then return invalid
+
+    playerModel = createObject("roSGNode", "ContentModel")
+
+    bifs = top().bifs ?? []
+    bifFields = getBifFields(bifs) ?? {}
+
+    updateObj = {
+        url: playlistUrl
+    }
+
+    updateObj.append(bifFields)
+
+    collections = get("collections", user()) ?? {}
+    userCollection = collections[carouselTypes.CONTINUE_WATCHING]
+    if rodash.isNode(userCollection)
+        userItemModel = userCollection.findNode(top().id)
+        if rodash.isNode(userItemModel) then updateObj.append({ position: userItemModel.position })
+    end if
+
+    playerModel.update(updateObj, true)
+
+    return playerModel
+end function
+
+
+function returnTabsModel(options = {})
+    if not rodash.isNonEmptyAA(options) then return invalid
+    carousels = options.carousels ?? []
+    if not rodash.isArray(carousels) then return invalid
+    model = createObject("roSGNode", "Model")
+
+    for each carousel in carousels
+        carouselType = carousel.carouselType
+        if rodash.isEmpty(carouselType) then continue for
+        tabModel = createObject("roSGNode", "Model")
+        tabModel.title = carouselType
+        model.appendChild(tabModel)
+    end for
+
+    return model
+end function
