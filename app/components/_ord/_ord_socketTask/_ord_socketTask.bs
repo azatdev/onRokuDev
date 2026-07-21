@@ -9,7 +9,7 @@ end sub
 
 
 function setupSocket(_options = {})
-    serverAddress = "<%- s(CONFIG.ENV.LOCAL_DEV_SERVER) %>"
+    serverAddress = "<%- s(CONFIG.ENV.LOCAL_SOCKET_SERVER) %>"
     messagePort = createObject("roMessagePort")
     sendAddress = createObject("roSocketAddress")
     sendAddress.setAddress(serverAddress)
@@ -21,10 +21,14 @@ function setupSocket(_options = {})
     socket.setNoDelay(true)
     socket.connect()
 
-    ?"Connected to TCP socket server at " serverAddress
+    if socket.connect()
+        ?"Connected to TCP socket server at " serverAddress
 
-    waitForSocketMessages(socket, messagePort)
-    socket.close()
+        waitForSocketMessages(socket, messagePort)
+        socket.close()
+    else
+        onError({ error: `Unable to conntect to TCP socket server at ${serverAddress}` })
+    end if
 
     return invalid
 end function
