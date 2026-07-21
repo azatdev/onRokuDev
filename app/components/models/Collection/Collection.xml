@@ -2,7 +2,6 @@
 <component name="Collection" extends="Model">
     <interface>
         <field id="canPaginate" type="boolean" value="true" />
-        <field id="paginating" type="boolean" />
         <field id="config" type="assocArray" />
         <field id="pagination" type="assocArray" />
         <field id="thumbnailType" type="string" />

@@ -9,6 +9,7 @@ sub init()
         m.sidebar = top().findNode("sidebar")
         m.screenContainer = top().findNode("screenContainer")
         m.videoPlayer = top().findNode("videoPlayer")
+
         sgrouter.initialize({ outlet: m.screenContainer })
 
         sgRouter.addRoutes([
@@ -19,10 +20,13 @@ sub init()
         ])
 
         safeFunctions({
-            "showContentUI": showContentUI,
+            "catalogCarouselsFocused": catalogCarouselsFocused,
+            "catalogHeroFocused": catalogHeroFocused,
             "showCatalogUI": showCatalogUI,
+            "showContentUI": showContentUI,
             "navigateTo": navigateTo,
-            "playVideo": playVideo
+            "playVideo": playVideo,
+            "updateBackgroundAssets": updateBackgroundAssets
         })
 
         setFocusMap({
@@ -40,6 +44,7 @@ sub init()
         })
 
         set({
+            catalogCarouselsFocused: false,
             catalogUIHidden: false,
             contentUIHidden: true,
             navigationHidden: false
@@ -51,49 +56,15 @@ sub init()
 end sub
 
 
-sub showCatalogUI(options = {})
-    if get("navigationHidden")
-        set({ navigationHidden: false })
-        fadeIn(m.navigation, { duration: 1 })
-    end if
-
-    if get("catalogUIHidden")
-        set({ catalogUIHidden: false, contentUIHidden: true })
-        exec("showCatalogGradients", options, m.background)
-        exec("hideContentGradients", options, m.background)
-    end if
+sub catalogCarouselsFocused(options = {})
+    set({ catalogCarouselsFocused: true })
+    exec("hideBackground", options, m.background)
 end sub
 
 
-sub showContentUI(options = {})
-    if not get("navigationHidden")
-        set({ navigationHidden: true })
-        fadeOut(m.navigation, { duration: 1 })
-    end if
-
-    if get("contentUIHidden")
-        set({ catalogUIHidden: true, contentUIHidden: false })
-        exec("hideCatalogGradients", options, m.background)
-        exec("showContentGradients", options, m.background)
-    end if
-end sub
-
-
-sub navigateTo(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
-    slug = options.slug ?? ""
-    if rodash.isEmptyString(slug) then return
-
-    sgRouter.navigateTo(slug, { context: options })
-end sub
-
-
-sub onFocusedChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    focusedChild = options.data
-    if not rodash.isNode(focusedChild) or not top().isSameNode(focusedChild) then return
-    focusOnScreen()
+sub catalogHeroFocused(options = {})
+    set({ catalogCarouselsFocused: false })
+    exec("showBackground", options, m.background)
 end sub
 
 
@@ -101,13 +72,6 @@ sub focusOnScreen(_options = {})
     activeView = m.activeView
     if not rodash.isNode(activeView) then return
     setFocus(m.activeView)
-end sub
-
-
-sub onRouterStateChanged(options = {})
-    data = options.data
-    if data.type <> "NavigationEnd" then return
-    setActiveView(data.id)
 end sub
 
 
@@ -139,6 +103,31 @@ sub hideVideoPlayer(_options = {})
 
     morph(morphObject)
     focusOnScreen()
+end sub
+
+
+sub navigateTo(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    slug = options.slug ?? ""
+    if rodash.isEmptyString(slug) then return
+
+    sgRouter.navigateTo(slug, { context: options })
+end sub
+
+
+sub onFocusedChildChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    focusedChild = options.data
+    if not rodash.isNode(focusedChild) or not top().isSameNode(focusedChild) then return
+    focusOnScreen()
+end sub
+
+
+sub onRouterStateChanged(options = {})
+    data = options.data
+    if data.type <> "NavigationEnd" then return
+    setActiveView(data.id)
 end sub
 
 
@@ -183,4 +172,48 @@ sub setActiveView(screenId = "")
     mapObject[screenId] = viewMapObject
     setFocusMap(mapObject)
     setFocus(m.activeView)
+end sub
+
+
+sub showCatalogUI(options = {})
+    if get("catalogCarouselsFocused")
+        exec("hideBackground", options, m.background)
+    end if
+
+    if get("navigationHidden")
+        set({ navigationHidden: false })
+        fadeIn(m.navigation, { duration: 1 })
+    end if
+
+    if get("catalogUIHidden")
+        set({ catalogUIHidden: false, contentUIHidden: true })
+        exec("showCatalogGradients", options, m.background)
+        exec("hideContentGradients", options, m.background)
+    end if
+end sub
+
+
+sub showContentUI(options = {})
+    ?"showContentUI " get("catalogCarouselsFocused")
+    if get("catalogCarouselsFocused")
+        exec("showBackground", options, m.background)
+    end if
+
+    if not get("navigationHidden")
+        set({ navigationHidden: true })
+        fadeOut(m.navigation, { duration: 1 })
+    end if
+
+    if get("contentUIHidden")
+        set({ catalogUIHidden: true, contentUIHidden: false })
+        exec("hideCatalogGradients", options, m.background)
+        exec("showContentGradients", options, m.background)
+    end if
+end sub
+
+
+sub updateBackgroundAssets(options = {})
+    if rodash.isEmpty(options) then return
+    if not rodash.isNode(m.background) then return
+    exec("updateAssets", options, m.background)
 end sub

@@ -24,6 +24,15 @@ module.exports = {
     },
     "Topbar": {
         "translation": [1170, 0],
+        "Div": {
+            "inheritParentTransform": false,
+            "translation": [0, 108],
+            "visible": false,
+            "_ord_scrollGroup":{
+                "height": 480,
+                "width": viewport.width
+            }
+        },
         "MaskGroup": {
             "maskOffset": [0, 216],
             "maskuri": "pkg:/static/images/gradients/topbar-mask-white.webp",

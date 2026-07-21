@@ -63,7 +63,7 @@ sub onDataSet(options = {})
     if not rodash.isNode(content) then return
 
     thumbnailType = content.thumbnailType
-    configKey = thumbnailType = "LANDSCAPE" ? "LandscapeCarousel" : "PortraitCarousel"
+    configKey = thumbnailType = thumbnailTypes.LANDSCAPE ? "LandscapeCarousel" : "PortraitCarousel"
     liveConfig({ field: "config", keyPath: configKey }, content)
 
     m.content = content

@@ -13,12 +13,12 @@ sub init()
             [events.GET_CONTENT_DATA]: getContentData,
             [events.GET_SIDEBAR]: getSidebar,
             [events.GET_TOPBAR]: getTopbar,
-            [events.HERO_ITEM_FOCUSED]: updateBackgroundAssets,
+            [events.HERO_ITEM_FOCUSED]: onHeroItemFocused,
             [events.NAVIGATE_TO]: navigateTo,
             [events.PAGINATE_CAROUSEL]: paginateCarousel,
             [events.PAGINATE_SCREEN]: getCatalogData,
             [events.SCREEN_DATA_RECEIVED]: onScreenDataReceived,
-            [events.SCROLL_GROUP_FOCUSED]: onScrollGroupFocused,
+            [events.CATALOG_CAROUSELS_FOCUSED]: onCatalogCarouselsFocused,
             [events.SET_USER_CAROUSELS]: setUserCarousels,
             [events.SHOW_CATALOG_UI]: showCatalogUI,
             [events.SHOW_CONTENT_UI]: showContentUI,
@@ -41,15 +41,7 @@ sub onCarouselItemFocused(options = {})
     if not rodash.isNode(itemHeader) then return
     itemHeader.data = options
 
-    updateBackgroundAssets(options)
-end sub
-
-
-sub updateBackgroundAssets(options = {})
-    if rodash.isEmpty(options) then return
-    appBackground = background()
-    if not rodash.isNode(appBackground) then return
-    exec("updateAssets", options, background())
+    exec("updateBackgroundAssets", options, layout())
 end sub
 
 
@@ -146,8 +138,13 @@ sub navigateTo(options = {})
 end sub
 
 
+sub onCatalogCarouselsFocused(options = {})
+    exec("catalogCarouselsFocused", options, layout())
+end sub
+
+
 sub onCatalogHeroFocused(options = {})
-    exec("showBackground", options, background())
+    exec("catalogHeroFocused", options, layout())
 end sub
 
 
@@ -158,11 +155,14 @@ sub onCarouselPaginated(options = {})
     if not rodash.isNode(collection) then return
     if not rodash.isNonEmptyAA(updateObject) then return
     exec("processCarouselData", updateObject, collection)
+    collection.paginating = false
 end sub
 
 
-sub onScrollGroupFocused(options = {})
-    exec("hideBackground", options, background())
+sub onHeroItemFocused(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    if not rodash.isNode(layout()) then return
+    exec("updateBackgroundAssets", options, layout())
 end sub
 
 
@@ -183,6 +183,8 @@ sub onScreenDataReceived(options = {})
     screenModel.update(updateObject, true)
     exec("markUserAction", {}, screenModel)
 
+    screenModel.paginating = false
+
     if rodash.isNonEmptyAA(screen.data) then return
     screen.data = { content: screenModel }
 end sub
@@ -194,7 +196,7 @@ end sub
 
 
 sub showCatalogUI(_options = {})
-    exec("showCatalogUi", {}, layout())
+    exec("showCatalogUI", {}, layout())
 end sub
 
 

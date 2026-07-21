@@ -2,6 +2,7 @@
 <component name="Model" extends="ContentNode">
     <interface>
         <field id="hydrated" type="boolean" />
+        <field id="paginating" type="boolean" />
         <field id="totalCount" type="integer" />
         <function name="safeFunc" />
     </interface>

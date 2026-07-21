@@ -70,7 +70,6 @@ sub processCarouselData(options = {})
 
     top().canPaginate = not rodash.isEmpty(children)
     removePendingNodes()
-    top().paginating = false
     top().hydrated = true
 end sub
 

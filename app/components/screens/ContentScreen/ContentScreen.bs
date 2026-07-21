@@ -148,7 +148,6 @@ end sub
 sub focusContentScrollGroup(_options = {})
     if not rodash.isNode(m.content) then return
     scrollPage(1, onContentScrollGroupFocused)
-    ' dispatch(events.SCROLL_GROUP_FOCUSED)
 end sub
 
 

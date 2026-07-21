@@ -77,7 +77,6 @@ sub checkPagination(options = {})
     itemFocused = options.itemFocused ?? 0
     lastPaginatedIndex = m.content.totalCount - 1
     paginationDelta = lastPaginatedIndex - itemFocused
-
     needsPaginating = paginationDelta <= 3 and m.content.canPaginate and not m.content.paginating
     if needsPaginating then dispatch(events.PAGINATE_SCREEN, { collection: m.content })
 end sub
@@ -92,7 +91,7 @@ end sub
 sub focusScrollGroup(_options = {})
     scrollPage(1, onScrollGroupFocused)
     onScrollGroupFocused()
-    dispatch(events.SCROLL_GROUP_FOCUSED)
+    dispatch(events.CATALOG_CAROUSELS_FOCUSED)
 end sub
 
 
@@ -108,6 +107,8 @@ end sub
 
 
 sub onScrollGroupItemFocused(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    if options.data = -1 then return
     if not rodash.isNonEmptyAA(options) then return
     dispatch(events.CAROUSEL_FOCUSED)
     checkPagination({ itemFocused: options.data })

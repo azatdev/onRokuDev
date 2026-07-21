@@ -48,6 +48,7 @@ end sub
 
 sub setBackground(newUri = "")
     if rodash.isEmpty(newUri) then return
+    if not rodash.isNode(m.backgroundContainer) then return
     newPoster = createObject("roSGNode", "Poster")
     newPoster.id = rodash.now().toStr()
     newPoster.opacity = 0
