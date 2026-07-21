@@ -9,12 +9,10 @@ end sub
 
 
 function setupSocket(_options = {})
-    serverHost = "192.168.88.31"
-    serverPort = 54320
-
+    serverAddress = "<%- s(CONFIG.ENV.LOCAL_DEV_SERVER) %>"
     messagePort = createObject("roMessagePort")
     sendAddress = createObject("roSocketAddress")
-    sendAddress.setAddress(serverHost + ":" + serverPort.toStr())
+    sendAddress.setAddress(serverAddress)
     socket = createObject("roStreamSocket")
     socket.setMessagePort(messagePort)
     socket.setSendToAddress(sendAddress)
@@ -23,7 +21,7 @@ function setupSocket(_options = {})
     socket.setNoDelay(true)
     socket.connect()
 
-    ?"Connected to TCP socket server at"; serverHost + ":" + serverPort.toStr()
+    ?"Connected to TCP socket server at " serverAddress
 
     waitForSocketMessages(socket, messagePort)
     socket.close()

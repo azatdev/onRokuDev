@@ -8,7 +8,7 @@ end sub
 
 
 function runStyleTask(_options = {})
-    response = rokurequests_Requests().get("http://192.168.88.31:54323/styles-update.json")
+    response = rokurequests_Requests().get("<%- s(CONFIG.ENV.LOCAL_DEV_SERVER) %>" + "/styles-update.json")
     responseJSON = response.json ?? {}
 
     if not response.ok
