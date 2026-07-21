@@ -194,7 +194,6 @@ end sub
 
 
 sub showContentUI(options = {})
-    ?"showContentUI " get("catalogCarouselsFocused")
     if get("catalogCarouselsFocused")
         exec("showBackground", options, m.background)
     end if

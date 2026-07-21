@@ -94,9 +94,8 @@ sub receiveMessage(socketMessage as string)
     if rodash.isInvalid(messageObj) then return
 
     if messageObj.type = "STYLES_UPDATE"
-        publish("REQUEST_STYLES")
+        publish(events.REQUEST_STYLES)
     else if messageObj.type = "CONFIGS_UPDATE"
-        publish("REQUEST_CONFIGS")
+        publish(events.REQUEST_CONFIGS)
     end if
 end sub
-

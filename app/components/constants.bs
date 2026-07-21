@@ -1,6 +1,5 @@
 namespace events
     const APP_STARTED = "APP_STARTED"
-    const CAROUSEL_FOCUSED = "CAROUSEL_FOCUSED"
     const CAROUSEL_ITEM_FOCUSED = "CAROUSEL_ITEM_FOCUSED"
     const CAROUSEL_PAGINATED = "CAROUSEL_PAGINATED"
     const CATALOG_HERO_FOCUSED = "CATALOG_HERO_FOCUSED"
@@ -67,14 +66,6 @@ namespace sections
     const CAROUSEL = "CAROUSEL"
     const HERO = "HERO"
     const CONTENT_HERO = "CONTENT_HERO"
-end namespace
-
-
-namespace sounds
-    const SELECT = "select"
-    const NAVSINGLE = "navsingle"
-    const NAVMULTI = "navmulti"
-    const DEADEND = "deadend"
 end namespace
 
 

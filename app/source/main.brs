@@ -5,7 +5,6 @@ sub runUserInterface(_args = {})
     screen.setMessagePort(port)
     screen.createScene("App")
     scene = screen.getScene()
-    ' screen.createScene("Benchmarks")
     screen.show()
     ' vscode_rale_tracker_entry
     ' zvscode_rdb_on_device_component_entry
@@ -19,17 +18,6 @@ sub runUserInterface(_args = {})
             if msg.isScreenClosed()
                 return
             end if
-        else if msgType = "roSGNodeEvent"
-            if msg.getField() = "playSound"
-                ' soundSource = msg.getData()
-                ' playSound(soundSource)
-            end if
         end if
     end while
 end sub
-
-
-' sub playSound(soundSource)
-'     ' sound = createObject("roAudioResource", soundSource)
-'     ' sound.trigger(50)
-' end sub

@@ -5,19 +5,15 @@ sub init()
     exec(sub(_options = {})
         subscribe({
             [events.PLAY_VIDEO]: playVideo,
-            [events.VIDEO_PLAYING]: onVideoPlaying,
-            [events.VIDEO_PAUSED]: onVideoPaused,
             [events.VIDEO_BUFFERING]: onVideoBuffering,
-            [events.VIDEO_FINISHED]: onVideoFinished,
             [events.VIDEO_ERROR]: onVideoError,
+            [events.VIDEO_FINISHED]: onVideoFinished,
+            [events.VIDEO_PAUSED]: onVideoPaused,
+            [events.VIDEO_PLAYING]: onVideoPlaying,
+            [events.VIDEO_RESTARTING]: onVideoRestarting,
             [events.VIDEO_STOPPED]: onVideoStopped
         })
     end sub)
-end sub
-
-
-sub onVideoPaused(_options = {})
-    ' ?"onVideoPaused " rodash.now()
 end sub
 
 
@@ -26,18 +22,28 @@ sub onVideoBuffering(_options = {})
 end sub
 
 
-sub onVideoFinished(_options = {})
-    ' ?"onVideoFinished " rodash.now()
-end sub
-
-
 sub onVideoError(_options = {})
     ' ?"onVideoError " rodash.now()
 end sub
 
 
+sub onVideoFinished(_options = {})
+    ' ?"onVideoFinished " rodash.now()
+end sub
+
+
+sub onVideoPaused(_options = {})
+    ' ?"onVideoPaused " rodash.now()
+end sub
+
+
 sub onVideoPlaying(_options = {})
     ' ?"onVideoPlaying " rodash.now()
+end sub
+
+
+sub onVideoRestarting(_options = {})
+    ' ?"onVideoRestarting " rodash.now()
 end sub
 
 

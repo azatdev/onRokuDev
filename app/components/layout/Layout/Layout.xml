@@ -6,10 +6,6 @@
     <children>
         <VideoPlayer id="videoPlayer" />
         <Background id="background" />
-        <!-- <CTAs id="ctas" />
-        <DefaultCarousel id="defaultCarousel" />
-        <DynamicCarousel id="dynamicCarousel" />
-        <FlushCarousel id="flushCarousel" /> -->
         <sgRouter_Outlet id="screenContainer" />
         <Div id="navigation">
             <Topbar id="topbar" />

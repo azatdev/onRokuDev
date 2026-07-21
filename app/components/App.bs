@@ -14,7 +14,6 @@ sub init()
             "ConfigsController",
             "LayoutController",
             "PlayerController",
-            "SFXController",
             "SocketController",
             "StylesController",
             "UserController"

@@ -110,7 +110,6 @@ sub onScrollGroupItemFocused(options = {})
     if not rodash.isNonEmptyAA(options) then return
     if options.data = -1 then return
     if not rodash.isNonEmptyAA(options) then return
-    dispatch(events.CAROUSEL_FOCUSED)
     checkPagination({ itemFocused: options.data })
 end sub
 
