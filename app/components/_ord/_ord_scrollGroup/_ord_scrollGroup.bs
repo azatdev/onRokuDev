@@ -20,7 +20,8 @@ sub init()
             scrollbarPosition: "right",
             scrollSize: 0,
             scrollTimer: 0,
-            wrap: false
+            wrap: false,
+            wrapFirstToLast: true
         }
 
         set({
@@ -251,6 +252,7 @@ function handleScrollKey(options = {})
 
     if nextFocusedItem = itemFocused
         if not get("wrap") then return false
+        if get("wrapFirstToLast") and itemFocused = 0 then return false
         nextFocusedItem = 0
     end if
 

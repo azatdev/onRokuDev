@@ -9,6 +9,7 @@ module.exports = {
         visibleTiles: 999,
         squareMargins: [0, 16, 0, 0],
         useUnfocusedTargetSet: true,
-        wrap: false
+        wrap: false,
+        wrapFirstToLast: false
     }
 };
