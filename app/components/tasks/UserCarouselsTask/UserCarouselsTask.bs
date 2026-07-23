@@ -46,6 +46,7 @@ function runUserCarouselsTask(options = {})
 
     for each carousel in userCarouselsData
         updateObject = {
+            canPaginate: false,
             children: [],
             id: carousel.documentId,
             type: carousel.type
@@ -59,6 +60,8 @@ function runUserCarouselsTask(options = {})
             contentData.userItemId = item.documentId
             updateObject.children.push(contentData)
         end for
+
+        updateObject.thumbnailType = thumbnailTypes.LANDSCAPE
 
         collectionTypes[carousel.type] = updateObject
 

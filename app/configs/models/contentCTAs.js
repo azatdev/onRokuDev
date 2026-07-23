@@ -10,18 +10,18 @@ module.exports = {
             activeTitle: "TKEY_CONTINUE_WATCHING"
         },
         {
-            id: "WATCHLIST",
-            dynamicWidth: true,
-            iconText: Icons.watchlist,
-            title: "TKEY_ADD_WATCHLIST",
-            activeTitle: "TKEY_REMOVE_WATCHLIST"
-        },
-        {
             id: "FAVORITE",
             dynamicWidth: true,
             iconText: Icons.favorites,
             title: "TKEY_ADD_FAVORITES",
             activeTitle: "TKEY_REMOVE_FAVORITES"
+        },
+        {
+            id: "WATCHLIST",
+            dynamicWidth: true,
+            iconText: Icons.watchlist,
+            title: "TKEY_ADD_WATCHLIST",
+            activeTitle: "TKEY_REMOVE_WATCHLIST"
         },
         {
             id: "DETAILS",

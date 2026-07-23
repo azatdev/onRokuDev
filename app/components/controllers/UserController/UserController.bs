@@ -76,6 +76,7 @@ sub onVideoPositionChange(options = {})
             collection: collection,
             contentModel: contentModel,
             duration: duration,
+            existingUserItemIds: exec("getChildIds", {}, collection),
             position: position
         }
     })
@@ -99,7 +100,8 @@ sub toggleFavorite(options = {})
     userItemTask.update({
         options: {
             collection: collection,
-            contentModel: contentModel
+            contentModel: contentModel,
+            existingUserItemIds: exec("getChildFields", { field: "userItemId" }, collection)
         }
     })
     userItemTask.control = "RUN"
@@ -121,7 +123,8 @@ sub toggleWatchlist(options = {})
     userItemTask.update({
         options: {
             collection: collection,
-            contentModel: contentModel
+            contentModel: contentModel,
+            existingUserItemIds: exec("getChildIds", {}, collection)
         }
     })
     userItemTask.control = "RUN"

@@ -25,12 +25,25 @@ module.exports = {
     "Topbar": {
         "translation": [1170, 0],
         "Div": {
-            "inheritParentTransform": false,
-            "translation": [0, 108],
-            "visible": false,
-            "_ord_scrollGroup":{
-                "height": 480,
-                "width": viewport.width
+            "&#overlay": {
+                "inheritParentTransform": false,
+                "color": "#000000",
+                "opacity": 0,
+                "height": viewport.height,
+                "width": viewport.width,
+            },
+            "&#userCarouselsContainer": {
+                "color": "#5c5c4b23",
+                "height": 207,
+                "inheritParentTransform": false,
+                "opacity": 0,
+                "translation": [0, 111],
+                "width": viewport.width,
+                "_ord_scrollGroup":{
+                    "height": 189,
+                    "translation": [0, 9],
+                    "width": viewport.width
+                }
             }
         },
         "MaskGroup": {

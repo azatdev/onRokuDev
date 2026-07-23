@@ -14,6 +14,7 @@ function runUserItemTask(_options = {})
 
     collection = options.collection
     contentModel = options.contentModel
+    existingUserItemIds = options.existingUserItemIds ?? []
 
     if not rodash.isNode(collection) then return true
 
@@ -49,6 +50,7 @@ function runUserItemTask(_options = {})
             collection: collection,
             contentModel: contentModel,
             contentDocumentId: contentModel.id,
+            existingUserItemIds: existingUserItemIds,
             position: options.position ?? 0
         })
     end if
@@ -145,6 +147,8 @@ sub createUserItemModel(options = {})
     contentModel = options.contentModel
     if not rodash.isNode(contentModel) then return
 
+    existingUserItemIds = options.existingUserItemIds ?? []
+
     contentDocumentId = options.contentDocumentId
     position = options.position
 
@@ -179,13 +183,14 @@ sub createUserItemModel(options = {})
 
     updateObject = getContentData({ data: content })
     updateObject.userItemId = userItemData.documentId
+    existingUserItemIds.unshift(userItemData.documentId)
 
     model.update(updateObject, true)
 
     attachUserItemModel({
         collection: collection,
         newUserItemModel: model,
-        userItemId: userItemData.documentId ?? ""
+        userItemIds: existingUserItemIds
     })
 
     if userItemType = userItemsTypes.CWITEM
@@ -207,14 +212,14 @@ sub attachUserItemModel(options = {})
     newUserItemModel = options.newUserItemModel
     if not rodash.isNode(newUserItemModel) then return
 
-    userItemId = options.userItemId
-    if rodash.isEmptyString(userItemId) then return
+    userItemIds = options.userItemIds ?? []
+    if not rodash.isNonEmptyArray(userItemIds) then return
 
     variables = {}
     variables.setModeCaseSensitive()
     variables = {
         "carouselDocumentId": collection.id,
-        "userItemDocumentIds": [userItemId]
+        "userItemDocumentIds": userItemIds
     }
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.AttachUserItemToUserCarousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
     responseJSON = response.json

@@ -39,32 +39,34 @@ sub hideContentGradients(_options = {})
 end sub
 
 
-sub onBackgroundFadeOut(options = {})
+sub onBackgroundFadeIn(options = {})
     oldPoster = options.node
     if not rodash.isNode(oldPoster) then return
     m.backgroundContainer.removeChild(oldPoster)
 end sub
 
 
+sub onBackgroundFadeOut(_options = {})
+    for each child in m.backgroundContainer.getChildren(-1, 0)
+        child.opacity = 0
+    end for
+end sub
+
+
 sub setBackground(newUri = "")
     if rodash.isEmpty(newUri) then return
     if not rodash.isNode(m.backgroundContainer) then return
+
     newPoster = createObject("roSGNode", "Poster")
     newPoster.id = rodash.now().toStr()
     newPoster.opacity = 0
     newPoster.uri = newUri
     newPoster.width = "<%- s(STYLES.Dimensions.viewport.width) %>"
     newPoster.height = "<%- s(STYLES.Dimensions.viewport.height) %>"
-    m.backgroundContainer.insertChild(newPoster, 0)
-    if rodash.isInvalid(m.poster)
-        m.poster = newPoster
-        fadeIn(newPoster, { duration: 0.5 })
-    else
-        newPoster.opacity = 1
-        oldPoster = m.poster
-        m.poster = newPoster
-        fadeOut(oldPoster, { callback: onBackgroundFadeOut, callbackOptions: { node: oldPoster }, duration: 0.5 })
-    end if
+    oldPoster = m.poster
+    m.backgroundContainer.appendChild(newPoster)
+    fadeIn(newPoster, { callback: onBackgroundFadeIn, callbackOptions: { node: oldPoster }, duration: 0.5 })
+    m.poster = newPoster
 end sub
 
 
@@ -103,7 +105,7 @@ end sub
 
 
 sub hideBackground(_options = {})
-    fadeOut(m.backgroundContainer, { duration: 0.3 })
+    fadeOut(m.backgroundContainer, { callback: onBackgroundFadeOut, duration: 0.3 })
 end sub
 
 

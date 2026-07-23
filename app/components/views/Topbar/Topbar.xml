@@ -5,6 +5,7 @@
         <function name="safeFunc" />
     </interface>
     <children>
+        <Div id="overlay" />
         <MaskGroup id="topbarMaskgroup">
             <_ord_flexList id="topbarList" />
             <Poster id="gradient" />

@@ -179,6 +179,10 @@ sub processScrollItem(options = {})
     model = options.model
     component = createObject("roSGNode", "Carousel")
 
+    thumbnailType = model.thumbnailType
+    configKey = thumbnailType = thumbnailTypes.LANDSCAPE ? "LandscapeCarousel" : "PortraitCarousel"
+    liveConfig({ field: "config", keyPath: configKey }, model)
+
     addClass("noTitle", component)
     component.data = { content: model }
     m.contentScrollGroup.appendChild(component)

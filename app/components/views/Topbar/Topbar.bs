@@ -4,17 +4,39 @@ sub init()
     exec(sub(_options = {})
         m.gradient = top().findNode("gradient")
         m.list = top().findNode("topbarList")
+        m.overlay = top().findNode("overlay")
         m.userCarouselsContainer = top().findNode("userCarouselsContainer")
         m.userScrollGroup = top().findNode("userScrollGroup")
         liveConfig({ field: "config", keyPath: "ContentScrollGroup" }, m.userScrollGroup)
+
+        safeObserve("itemFocused", onBarItemFocused, m.list)
+        safeObserve("data", onDataChange)
+        safeObserve("focusedChild", onFocusedChildChange)
 
         safeFunctions({
             "setUserCarousels": setUserCarousels
         })
 
-        safeObserve("data", onDataChange)
-        safeObserve("focusedChild", onFocusedChildChange)
+        setFocusMap({
+            "default": onFocused,
+            "topbarList": {
+                "default": false,
+                "down": m.userScrollGroup
+            },
+            "userScrollGroup": {
+                "default": false,
+                "up": m.list
+            }
+        })
     end sub)
+end sub
+
+
+sub onBarItemFocused(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    if not rodash.isNode(m.userScrollGroup) then return
+
+    m.userScrollGroup.animateToItem = options.data ?? 0
 end sub
 
 
@@ -28,11 +50,23 @@ sub onDataChange(options = {})
 end sub
 
 
+sub onFocused(_options = {})
+    userCarouselsToggle(1)
+    setFocus(m.list)
+end sub
+
+
+sub onUnfocused(_options = {})
+    resetFocus()
+    userCarouselsToggle(0)
+end sub
+
+
 sub onFocusedChildChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     focusedChild = options.data
-    if not rodash.isNode(focusedChild) or not top().isSameNode(focusedChild) then return
-    m.list.setFocus(true)
+    if not rodash.isNode(focusedChild) then onUnfocused(): return
+    if top().isSameNode(focusedChild) then applyDefaultFocus()
 end sub
 
 
@@ -41,6 +75,8 @@ sub processScrollItem(options = {})
 
     model = options.model
     component = createObject("roSGNode", "Carousel")
+
+    liveConfig({ field: "config", keyPath: "UserCarousel" }, model)
 
     addClass("noTitle", component)
     component.data = { content: model }
@@ -56,4 +92,21 @@ sub setUserCarousels(options = {})
         collection = collectionType.value
         processScrollItem({ model: collection })
     end for
+end sub
+
+
+sub userCarouselsToggle(direction = 0)
+    overlayOpacity = direction = 0 ? 0 : 0.6
+    morphObject = {}
+    morphObject[m.overlay.id] = {
+        fields: {
+            opacity: overlayOpacity
+        }
+    }
+    morphObject[m.userCarouselsContainer.id] = {
+        fields: {
+            opacity: direction
+        }
+    }
+    morph(morphObject, { duration: 0.3 })
 end sub

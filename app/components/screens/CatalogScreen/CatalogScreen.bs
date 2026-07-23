@@ -214,6 +214,11 @@ sub processScrollItem(options = {})
         m.catalogHero.data = { content: model }
     else
         component = createObject("roSGNode", "Carousel")
+
+        thumbnailType = model.thumbnailType
+        configKey = thumbnailType = thumbnailTypes.LANDSCAPE ? "LandscapeCarousel" : "PortraitCarousel"
+        liveConfig({ field: "config", keyPath: configKey }, model)
+
         component.data = { content: model }
         m.scrollGroup.appendChild(component)
     end if

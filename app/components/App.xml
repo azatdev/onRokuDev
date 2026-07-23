@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="App" extends="Scene">
     <interface>
+        <field id="id" type="string" value="app" />
         <field id="launchArgs" type="assocArray" />
         <field id="testFunctions" type="assocarray" />
         <field id="drink" type="string" />

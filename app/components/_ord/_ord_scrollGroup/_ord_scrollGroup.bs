@@ -252,7 +252,7 @@ function handleScrollKey(options = {})
 
     if nextFocusedItem = itemFocused
         if not get("wrap") then return false
-        if get("wrapFirstToLast") and itemFocused = 0 then return false
+        if get("wrapFirstToLast") and itemFocused = 0 and key = get("reverseKey") then return false
         nextFocusedItem = 0
     end if
 

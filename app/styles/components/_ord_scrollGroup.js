@@ -10,7 +10,6 @@ module.exports = {
                 "Poster": {
                     blendColor: "#d2f3dfff",
                     height: 72,
-                    // inheritParentOpacity: false,
                     margin: 3,
                     translation: [3, 3],
                     width: 36,

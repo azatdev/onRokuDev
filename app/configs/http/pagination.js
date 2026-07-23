@@ -2,7 +2,7 @@ module.exports = {
     "Pagination": {
         "HeroInitial": {
             "page": 1,
-            "pageSize": 1
+            "pageSize": 2
         },
         "HeroSubsequent": {
             "limit": 2,

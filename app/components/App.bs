@@ -8,7 +8,13 @@ sub init()
         })
 
         m.layout = top().findNode("layout")
-        if not rodash.isNode(m.layout) then setFocus(m.layout)
+
+        setFocusMap({
+            "default": m.layout,
+            "app": {
+                "default": true
+            }
+        })
 
         registerControllers([
             "ConfigsController",

@@ -34,6 +34,7 @@ sub init()
             itemComponentName: "",
             maxHeight: 0,
             maxWidth: 0,
+            resetOnChange: false,
             smallSquare: [0, 0],
             squareMargins: [0, 0],
             squareTotalArea: [0, 0],
@@ -351,6 +352,12 @@ sub onTotalCountChange(options = {})
     totalCarouselItems = options.data
     if rodash.isNumber(totalCarouselItems) then set({ totalCarouselItems: totalCarouselItems })
     processConfig()
+
+    if get("resetOnChange")
+        rodash.delay(sub(_options = {})
+            resetCarousel()
+        end sub, 500, {})
+    end if
 end sub
 
 
@@ -459,6 +466,7 @@ sub processConfig(options = {})
         gutters: gutters,
         lastFocusableIndex: lastFocusableIndex,
         useUnfocusedTargetSet: config.useUnfocusedTargetSet,
+        resetOnChange: config.resetOnChange,
         wrap: config.wrap,
         wrapFirstToLast: config.wrapFirstToLast
     })
@@ -503,6 +511,11 @@ sub registerChildRect(options = {})
     if m.rectSizes.count() = m.content.getChildCount()
         processConfig({ data: m.content.config })
     end if
+end sub
+
+
+sub resetCarousel()
+    m.carousel.jumpToItem = 0
 end sub
 
 

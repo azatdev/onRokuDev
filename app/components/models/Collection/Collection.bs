@@ -5,6 +5,7 @@ sub init()
         m.paginationConfigs = "<%- o(CONFIG.Pagination) %>"
         safeFunctions({
             generateDefaultModels: generateDefaultModels,
+            getChildFields: getChildFields,
             getVariables: getVariables,
             processCarouselData: processCarouselData,
             returnInitialPagination: returnInitialPagination
@@ -32,6 +33,18 @@ sub generateDefaultModels(_options = {})
         top().appendChild(model)
     end for
 end sub
+
+
+function getChildFields(options = {})
+    childIds = []
+    fieldToGet = options.field ?? "id"
+
+    for each child in top().getChildren(-1, 0)
+        childIds.push(child[fieldToGet])
+    end for
+
+    return childIds
+end function
 
 
 function getPagination(_options = {})
