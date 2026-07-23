@@ -516,6 +516,7 @@ end sub
 
 sub resetCarousel()
     m.carousel.jumpToItem = 0
+    top().focusedContentIndex = 0
 end sub
 
 
