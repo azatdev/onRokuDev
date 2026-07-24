@@ -156,6 +156,20 @@ function stopAnimation(id = "")
 end function
 
 
+function findAnimation(id = "")
+    interface = m.ord_interfaces["findAnimation"]
+    if interface = invalid then return invalid
+    return interface.findAnimation(id)
+end function
+
+
+function runAnimation(id = "", isReverse = false)
+    interface = m.ord_interfaces["runAnimation"]
+    if interface = invalid then return invalid
+    return interface.runAnimation(id, isReverse)
+end function
+
+
 function removeAnimation(id = "")
     interface = m.ord_interfaces["removeAnimation"]
     if interface = invalid then return invalid

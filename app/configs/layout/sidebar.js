@@ -3,7 +3,7 @@ module.exports = {
         direction: "vertical",
         carouselType: "dynamicSize",
         focusType: "floating",
-        itemComponentName: "NavigationItem",
+        itemComponentName: "SidebarItem",
         maxHeight: 1800,
         visibleTiles: 999,
         squareMargins: [0, 0, 0, 0],

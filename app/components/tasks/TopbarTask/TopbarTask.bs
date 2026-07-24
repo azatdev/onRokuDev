@@ -19,10 +19,10 @@ function runTopbarTask(_options = {})
         return true
     end if
 
-    sidebarModel = returnTopbarModel(responseJSON)
+    topbarModel = returnTopbarModel(responseJSON)
 
-    if rodash.isNode(sidebarModel)
-        publish(events.TOPBAR_RECEIVED, { content: sidebarModel })
+    if rodash.isNode(topbarModel)
+        publish(events.TOPBAR_RECEIVED, { content: topbarModel })
     end if
 
     return true

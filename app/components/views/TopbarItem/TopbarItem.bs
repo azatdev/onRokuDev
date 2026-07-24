@@ -1,0 +1,132 @@
+import "pkg:/components/_ord/wrappers.bs"
+
+sub init()
+    exec(sub(_options = {})
+        setupItem()
+    end sub)
+end sub
+
+
+sub setupItem()
+    m.label = top().findNode("label")
+    m.icon = top().findNode("icon")
+    m.container = top().findNode("textContainer")
+    m.background = top().findNode("background")
+    m.highlight = top().findNode("highlight")
+    m.parentList = top().getParent()
+    m.flexList = m.parentList.getParent()
+
+    safeObserve("focusPercent", onFocusPercentChange)
+    safeObserve("itemContent", itemContentChanged)
+    safeObserve("currRect", onCurrRectChange)
+    safeObserve("focusPercent", onGroupFocusPercentChange, m.parentList)
+end sub
+
+
+sub itemContentChanged(options = {})
+    content = options.data
+    m.label.text = ucase(content.title)
+    m.icon.text = content.iconText
+
+    listContent = content.getParent()
+    totalItemCount = listContent.totalCount
+
+    set({ totalItemCount: totalItemCount})
+    onTextChange()
+end sub
+
+
+sub onTextChange(_options = {})
+    stackChildren({ node: m.container, direction: "horizontal" })
+    m.container.width = m.container.boundingRect().width
+    m.container.height = m.container.boundingRect().height
+
+    exec("registerChildRect", {
+        smallSquare: getUnFocusedRectSize(),
+        bigSquare: getFocusedRectSize(),
+        index: m.top.index
+    }, top().getParent().getParent())
+end sub
+
+
+function getFocusedRectSize(_options = {})
+    if not rodash.isNode(m.label) then return [0,0]
+    m.label.visible = true
+    m.label.text = ucase(top().itemContent.title)
+    labelSquare = [getVisibleWidth(m.label), getVisibleHeight(m.label)]
+    set({ "labelSquare": labelSquare })
+
+    stackChildren({ node: m.container, direction: "horizontal" })
+    return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
+end function
+
+
+function getUnfocusedRectSize(_options = {})
+    if not rodash.isNode(m.label) then return [0,0]
+
+    stackChildren({ node: m.container, direction: "horizontal" })
+    return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
+end function
+
+
+sub onCurrRectChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    rect = options.data
+    m.background.width = rect.width
+    m.background.height = rect.height
+end sub
+
+
+sub onGroupFocusPercentChange(options = {})
+    backgroundPercentage = getBackgroundPercentage(options.data ?? 0)
+    if rodash.isNode(m.background) then m.background.opacity = backgroundPercentage
+
+    highlightPercentage = getHighlightPercentage(options.data ?? 0)
+
+    if top().groupHasFocus
+        delayMS = top().index * 33
+    else
+        totalItemCount = get("totalItemCount") ?? 0
+        delayMS =  (totalItemCount - top().index) * 33
+    end if
+
+    rodash.delay(sub(args)
+        node = args[0]
+        highlightPercentage = args[1]
+        node.opacity = highlightPercentage
+    end sub, delayMS, [m.highlight, highlightPercentage])
+end sub
+
+
+sub onFocusPercentChange(options = {})
+    focusPercentage = options.data ?? {}
+    if not top().groupHasFocus then return
+    if not rodash.isNode(m.background) then return
+    m.background.opacity = focusPercentage
+end sub
+
+
+function getHighlightPercentage(value = 0)
+    if not rodash.isNumber(value) then return 0
+
+    clampedValue = value
+    if clampedValue < 0 then clampedValue = 0
+    if clampedValue > 1 then clampedValue = 1
+
+    return 1 - abs((clampedValue * 2) - 1)
+end function
+
+
+function getBackgroundPercentage(value = 0)
+    if not rodash.isNode(m.parentList) then return 0
+
+    selectedItem = m.parentList.itemFocused = top().index
+    if not selectedItem then return 0
+
+    if top().groupHasFocus
+        return value
+    else
+        return 1 - value
+    end if
+end function
+

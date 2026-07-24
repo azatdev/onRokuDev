@@ -108,5 +108,26 @@ sub userCarouselsToggle(direction = 0)
             opacity: direction
         }
     }
-    morph(morphObject, { duration: 0.3 })
+    deferredAnimation = morph(morphObject, { deferred: true, duration: 0.3 })
+
+    floatFieldInterp = getFloatFieldInterpolator(deferredAnimation.getChildren(-1, 0))
+    if not rodash.isNode(floatFieldInterp) then return
+
+    safeObserve("fraction", onAnimationFraction, floatFieldInterp)
+    runAnimation(deferredAnimation.id)
+end sub
+
+
+function getFloatFieldInterpolator(children = [])
+    for each child in children
+        if child.subType() = "FloatFieldInterpolator" then return child
+        return getFloatFieldInterpolator(child.getChildren(-1, 0))
+    end for
+    return invalid
+end function
+
+
+sub onAnimationFraction(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    m.list.focusPercent = options.data
 end sub

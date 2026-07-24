@@ -28,6 +28,7 @@ sub init()
             defaultVisibleIndex: 0,
             ' lastIndex: 2,
             direction: "horizontal",
+            externalFocusControl: false,
             focusType: "floating",
             gutterSize: 0,
             horizAlign: "center",
@@ -74,7 +75,6 @@ end function
 
 sub onCarouselFocusedChildChange(_options = {})
     if not rodash.isNode(m.focusTimer) then return
-    safeUnobserve("fraction", m.focusTimer)
     safeObserve("fraction", onFocusTimerFired, m.focusTimer)
 end sub
 
@@ -85,8 +85,11 @@ sub onFocusTimerFired(options = {})
     if rodash.isNode(m.focusTimer) and (fraction = 0 or fraction = 1) then safeUnobserve("fraction", m.focusTimer)
 
     percentage = m.carousel.isInFocusChain() ? fraction : 1 - fraction
-    m.carousel.focusPercent = percentage
-    top().focusPercent = percentage
+
+    if not get("externalFocusControl")
+        m.carousel.focusPercent = percentage
+        top().focusPercent = percentage
+    end if
 
     ' There is a 100ms delay before
     ' TargetGroup animation starts
@@ -347,6 +350,11 @@ sub onDataSet(options = {})
 end sub
 
 
+sub onExternalFocusPercentChange(options = {})
+    m.carousel.focusPercent = options.data
+end sub
+
+
 sub onTotalCountChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     totalCarouselItems = options.data
@@ -461,6 +469,7 @@ sub processConfig(options = {})
         debugClippingRect: config.debugClippingRect,
         direction: config.direction,
         dynamicSize: dynamicSize,
+        externalFocusControl: config.externalFocusControl,
         extraRects: extraRects,
         focusableIndexArray: focusableIndexArray,
         gutters: gutters,
@@ -476,6 +485,10 @@ sub processConfig(options = {})
     if not m.carousel.hasFocus() then m.carousel.targetSet = m.unFocusedTargetSet
 
     if top().hasFocus() then m.carousel.setFocus(true)
+
+    if get("externalFocusControl")
+        safeObserve("focusPercent", onExternalFocusPercentChange)
+    end if
 end sub
 
 

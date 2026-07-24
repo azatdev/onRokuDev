@@ -24,6 +24,8 @@ class Animatable
         m.publicFunctions.push("reverse")
         m.publicFunctions.push("morph")
         m.publicFunctions.push("finishAnimation")
+        m.publicFunctions.push("runAnimation")
+        m.publicFunctions.push("findAnimation")
         m.publicFunctions.push("stopAnimation")
         m.publicFunctions.push("removeAnimation")
         m.publicFunctions.push("fadeIn")
@@ -88,6 +90,12 @@ class Animatable
             m.activeAnimations({ action: "add", id: id, node: animation })
         end if
     end sub
+
+
+    function findAnimation(id = "")
+        if rodash.isEmpty(m.animations) then return invalid
+        return m.animations[id]
+    end function
 
 
     sub finishAnimation(id = "")
@@ -362,9 +370,11 @@ class Animatable
             options: animationCallbackOptions
         })
 
-        m.runAnimation(animationId)
+        deferred = sharedOptions.deferred ?? false
 
-        return animationId
+        if not deferred then m.runAnimation(animationId)
+
+        return animation
     end function
 
 

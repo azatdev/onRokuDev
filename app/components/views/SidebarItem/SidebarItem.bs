@@ -16,10 +16,6 @@ sub setupItem()
     m.parentList = top().getParent()
     m.flexList = m.parentList.getParent()
 
-    if m.flexList.id = "topbarList"
-        addClass("topbar")
-    end if
-
     safeObserve("focusPercent", onFocusPercentChange)
     safeObserve("itemContent", itemContentChanged)
     safeObserve("currRect", onCurrRectChange)
@@ -113,7 +109,7 @@ sub onGroupFocusPercentChange(options = {})
         m.label.clippingRect = [0, 0, labelWidth * options.data, labelHeight]
     end if
 
-    percentageOffset = getCenteredPercentage(options.data ?? 0)
+    highlightPercentage = getHighlightPercentage(options.data ?? 0)
 
     if top().groupHasFocus
         delayMS = top().index * 33
@@ -124,9 +120,9 @@ sub onGroupFocusPercentChange(options = {})
 
     rodash.delay(sub(args)
         node = args[0]
-        percentageOffset = args[1]
-        node.opacity = percentageOffset
-    end sub, delayMS, [m.highlight, percentageOffset])
+        highlightPercentage = args[1]
+        node.opacity = highlightPercentage
+    end sub, delayMS, [m.highlight, highlightPercentage])
 end sub
 
 
@@ -142,7 +138,7 @@ sub onFocusPercentChange(options = {})
 end sub
 
 
-function getCenteredPercentage(value = 0)
+function getHighlightPercentage(value = 0)
     if not rodash.isNumber(value) then return 0
 
     clampedValue = value
@@ -158,13 +154,9 @@ sub setColors()
     selectedItem = m.parentList.itemFocused = top().index
     groupHasFocus = top().groupHasFocus
 
-    m.label.color = "#BBBBBB"
-    m.icon.color = "#BBBBBB"
     m.background.opacity = 0
 
     if activeItem
-        m.label.color = "#9ca56c"
-        m.icon.color = "#9ca56c"
         m.background.opacity = 1
     else if selectedItem and groupHasFocus
         m.background.opacity = 0.2

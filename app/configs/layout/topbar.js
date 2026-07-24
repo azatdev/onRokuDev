@@ -1,8 +1,9 @@
 module.exports = {
     "Topbar": {
         carouselType: "dynamicSize",
+        externalFocusControl: true,
         focusType: "floating",
-        itemComponentName: "NavigationItem",
+        itemComponentName: "TopbarItem",
         maxWidth: 1800,
         visibleTiles: 999,
         useUnfocusedTargetSet: true,

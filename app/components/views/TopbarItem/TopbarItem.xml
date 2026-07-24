@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="NavigationItem" extends="Rectangle">
+<component name="TopbarItem" extends="Rectangle">
     <interface>
-        <field id="class" type="string" />
         <field id="groupHasFocus" type="boolean" />
         <field id="index" type="integer" />
-        <field id="itemHasFocus" type="boolean" />
         <field id="currRect" type="rect2d" />
         <field id="focusPercent" type="float" />
         <field id="itemContent" type="node" />
@@ -18,5 +16,5 @@
             <QuanticoBold id="label" />
         </Rectangle>
     </children>
-    <script type="text/brightscript" uri="NavigationItem.bs" />
+    <script type="text/brightscript" uri="TopbarItem.bs" />
 </component>
