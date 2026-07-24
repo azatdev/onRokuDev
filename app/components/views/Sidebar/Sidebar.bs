@@ -10,7 +10,6 @@ sub init()
         safeObserve("width", onListWidthChange, m.list)
         safeObserve("focusPercent", onFocusPercentChange, m.list)
         safeObserve("itemSelected", onItemSelected, m.list)
-        safeObserve("itemFocused", onItemFocused, m.list)
 
         safeObserve("data", onDataChange)
         safeObserve("focusedChild", onFocusedChildChange)
@@ -32,7 +31,7 @@ sub onDataChange(options = {})
     defaultSlug = content.defaultSlug
     itemModel = content.findNode(defaultSlug)
     selectedItemIndex = rodash.indexOf(content.getChildren(-1, 0), itemModel)
-    m.list.itemSelected = selectedItemIndex
+    exec("setActiveItem", { activeIndex: selectedItemIndex }, m.list)
 end sub
 
 
@@ -41,13 +40,6 @@ sub onFocusedChildChange(options = {})
     focusedChild = options.data
     if not rodash.isNode(focusedChild) then return
     if top().isSameNode(focusedChild) then applyDefaultFocus()
-end sub
-
-
-sub onItemFocused(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    itemFocused = options.data
-    ?"sidebar onItemFocused " itemFocused
 end sub
 
 

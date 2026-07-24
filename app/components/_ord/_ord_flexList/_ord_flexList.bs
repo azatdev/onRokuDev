@@ -56,7 +56,8 @@ sub init()
         safeObserve("focusedChild", onFocusedChildChange)
 
         safeFunctions({
-            registerChildRect: registerChildRect
+            registerChildRect: registerChildRect,
+            setActiveItem: setActiveItem
         })
 
         m.focusTimer = getFloatFieldInterpolator(m.carousel.getChildren(-1, 0))
@@ -227,6 +228,17 @@ function applyGutters(options = {})
 end function
 
 
+sub setActiveItem(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    activeIndex = options.activeIndex ?? 0
+    m.carousel.itemSelected = activeIndex
+    top().itemSelected = activeIndex
+    top().focusedContentIndex = activeIndex
+    top().focusedTargetsetIndex = activeIndex
+end sub
+
+
 sub setClippingRects(options = {})
     if not rodash.isNonEmptyAA(options) then return
     clippingRects = options.clippingRects ?? {}
@@ -306,10 +318,7 @@ sub focusOnCarousel(_options = {})
     m.carousel.setFocus(true)
 
     currentTargetSet = m.focusedTargetSetArray[top().focusedTargetsetIndex]
-
-    rodash.delay(sub(args)
-        args[0].animateToTargetSet = args[1]
-    end sub, 100, [m.carousel, currentTargetSet])
+    m.carousel.animateToTargetSet = currentTargetSet
 end sub
 
 

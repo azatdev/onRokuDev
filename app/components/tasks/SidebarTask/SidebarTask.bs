@@ -38,7 +38,6 @@ function returnSidebarModel(options = {})
     for each screen in screensData
         updateObject = {
             documentId: screen.documentId,
-            dynamicWidth: true,
             iconText: getIcon(screen.icon),
             id: screen.slug,
             title: screen.name ?? "",

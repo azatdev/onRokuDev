@@ -39,14 +39,13 @@ sub itemContentChanged(options = {})
     content = options.data
     m.label.text = ucase(content.title)
     m.icon.text = content.iconText
-    dynamicWidth = content.dynamicWidth ?? false
 
     listContent = content.getParent()
     totalItemCount = listContent.totalCount
 
     setColors()
 
-    set({ dynamicWidth: dynamicWidth, totalItemCount: totalItemCount})
+    set({ totalItemCount: totalItemCount})
     onTextChange()
 end sub
 
@@ -62,7 +61,7 @@ sub onTextChange(_options = {})
         index: m.top.index
     }, top().getParent().getParent())
 
-    if get("dynamicWidth") then m.label.clippingRect = [0,0,0,0]
+    m.label.clippingRect = [0,0,0,0]
 end sub
 
 
@@ -81,11 +80,9 @@ end function
 function getUnfocusedRectSize(_options = {})
     if not rodash.isNode(m.label) then return [0,0]
 
-    if get("dynamicWidth")
-        m.label.width = 0
-        m.label.text = ""
-        m.label.visible = false
-    end if
+    m.label.width = 0
+    m.label.text = ""
+    m.label.visible = false
 
     stackChildren({ node: m.container, direction: "horizontal" })
     return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
@@ -105,9 +102,7 @@ sub onGroupFocusPercentChange(options = {})
     labelWidth = labelSquare[0]
     labelHeight = labelSquare[1]
 
-    if get("dynamicWidth")
-        m.label.clippingRect = [0, 0, labelWidth * options.data, labelHeight]
-    end if
+    m.label.clippingRect = [0, 0, labelWidth * options.data, labelHeight]
 
     highlightPercentage = getHighlightPercentage(options.data ?? 0)
 
@@ -127,12 +122,12 @@ end sub
 
 
 sub onFocusPercentChange(options = {})
+    if not rodash.isNode(m.flexList) then return
+    itemSelected = m.flexList.itemSelected = top().index
+    if itemSelected then return
+
     focusPercentage = options.data ?? {}
     maxOpacity = top().groupHasFocus ? 0.20 : 0
-
-    if m.flexList.itemSelected = top().index
-        maxOpacity = 1
-    end if
 
     m.background.opacity = focusPercentage * maxOpacity
 end sub
