@@ -14,6 +14,9 @@ sub init()
 
         sgRouter.addRoutes([
             { pattern: "/home", component: "CatalogScreen", suspendMode: "show" },
+            { pattern: "/movies", component: "CatalogScreen", suspendMode: "show" },
+            { pattern: "/tv-shows", component: "CatalogScreen", suspendMode: "show" },
+            { pattern: "/documentaries", component: "CatalogScreen", suspendMode: "show" },
             { pattern: "/content/:id", component: "ContentScreen", suspendMode: "show" },
             { pattern: "/details/:id", component: "DetailsModal", keepAlive: { enabled: false } },
             ' { pattern: "/:screenName", component: "DefaultScreen" }

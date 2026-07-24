@@ -8,8 +8,8 @@
         <Background id="background" />
         <sgRouter_Outlet id="screenContainer" />
         <Div id="navigation">
-            <Sidebar id="sidebar" />
             <Topbar id="topbar" />
+            <Sidebar id="sidebar" />
         </Div>
     </children>
     <script type="text/brightscript" uri="Layout.bs" />
