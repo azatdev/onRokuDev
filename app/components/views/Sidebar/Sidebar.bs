@@ -5,14 +5,13 @@ sub init()
         m.gradient = top().findNode("gradient")
         m.list = top().findNode("sidebarList")
         setFocusMap({
-            "default": m.list
+            "onFocus": m.list
         })
         safeObserve("width", onListWidthChange, m.list)
         safeObserve("focusPercent", onFocusPercentChange, m.list)
         safeObserve("itemSelected", onItemSelected, m.list)
 
         safeObserve("data", onDataChange)
-        safeObserve("focusedChild", onFocusedChildChange)
     end sub)
 end sub
 
@@ -32,14 +31,6 @@ sub onDataChange(options = {})
     itemModel = content.findNode(defaultSlug)
     selectedItemIndex = rodash.indexOf(content.getChildren(-1, 0), itemModel)
     exec("setActiveItem", { activeIndex: selectedItemIndex }, m.list)
-end sub
-
-
-sub onFocusedChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    focusedChild = options.data
-    if not rodash.isNode(focusedChild) then return
-    if top().isSameNode(focusedChild) then applyDefaultFocus()
 end sub
 
 

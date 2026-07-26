@@ -18,6 +18,7 @@ class Focusable
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
 
         m.publicFunctions.push("applyDefaultFocus")
+        m.publicFunctions.push("onFocusedChildChange")
         m.publicFunctions.push("setFocus")
         m.publicFunctions.push("onKeyEvent")
         m.publicFunctions.push("processFocus")
@@ -29,19 +30,18 @@ class Focusable
 
 
     sub applyDefaultFocus()
-        defaultNode = m.focusMap.current ?? m.focusMap.default ?? ""
+        ?"applyDefaultFocus "
+        defaultNode = m.focusMap.current ?? m.focusMap.onFocus ?? ""
+        ?"defaultNode " defaultNode
         if rodash.isFunction(defaultNode)
             exec(defaultNode)
             return
         end if
 
         if not rodash.isNode(defaultNode) and rodash.isString(defaultNode) then defaultNode = top().findNode(defaultNode)
-
         if not rodash.isNode(defaultNode) then defaultNode = top().getChild(0)
-
         if not rodash.isNode(defaultNode) then defaultNode = top()
-
-        m.setFocus(defaultNode)
+        m.setFocus({ nodeToFocus: defaultNode })
     end sub
 
 
@@ -66,6 +66,20 @@ class Focusable
             return rodash.isNode(focusedNode) ? focusedNode : node
         end if
     end function
+
+
+    sub onFocusedChildChange(options = {})
+        if not rodash.isNonEmptyAA(options) then return
+        focusedChild = options.data
+        if not rodash.isNode(focusedChild) then m.onFocusRemoved(): return
+        if top().isSameNode(focusedChild) then m.applyDefaultFocus()
+    end sub
+
+
+    sub onFocusRemoved()
+        unfocusFunction = m.focusMap.onUnfocus
+        if rodash.isFunction(unfocusFunction) then exec(unfocusFunction)
+    end sub
 
 
     function onKeyEvent(options = {}) as boolean
@@ -96,8 +110,11 @@ class Focusable
         handled = false
 
         focusTarget = m.focusMap.current ?? top()
+        ?"focusTarget " top().subType(), focusTarget
 
-        nodeMap = m.focusMap[focusTarget.id] ?? m.focusMap.default
+        nodeMap = m.focusMap[focusTarget.id] ?? m.focusMap.onFocus
+
+        ?"nodeMap " top().subType(), nodeMap
 
         if rodash.isInvalid(nodeMap) then return false
 
@@ -131,7 +148,7 @@ class Focusable
 
             if not rodash.isNode(target) then continue for
 
-            m.setFocus(target)
+            m.setFocus({ nodeToFocus: target })
             if not handled then handled = true
         end for
 
@@ -145,23 +162,33 @@ class Focusable
     end sub
 
 
-    sub setFocus(node = {})
-        if not rodash.isNode(node) then return
-        m.focusMap.current = node
-        node.setFocus(true)
+    sub setFocus(options = {})
+        if not rodash.isNonEmptyAA(options) then return
+        nodeToFocus = options.nodeToFocus
+        focusMapNode = options.focusMapNode
+        ?"setFocus " top().subType(), nodeToFocus, focusMapNode
+
+
+        m.focusMap.current = rodash.isNode(focusMapNode) ? focusMapNode : nodeToFocus
+        ?"m.focusMap.current " top().subType(), m.focusMap.current
+        if rodash.isNode(nodeToFocus) then nodeToFocus.setFocus(true)
+
     end sub
 
 
     sub setFocusMap(options = {})
         if not rodash.isNonEmptyAA(options) then return
         m.focusMap.append(options)
+        'bs:disable-next-line
+        if rodash.isFunction(onFocusedChildChange) then return
+        safeObserve("focusedChild", "onFocusedChildChange", top())
     end sub
 
 
     sub waitToFocus(focusTarget)
         if rodash.isNode(focusTarget)
             if m.focusReady
-                m.setFocus(focusTarget)
+                m.setFocus({ nodeToFocus: focusTarget })
                 return
             end if
 
@@ -187,7 +214,7 @@ class Focusable
         focusNode = m.focusNode
 
         if rodash.isNode(focusNode)
-            m.setFocus(focusNode)
+            m.setFocus({ nodeToFocus: focusNode })
         else if rodash.isFunction(focusFunction)
             exec(focusFunction)
         end if

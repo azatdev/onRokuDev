@@ -13,11 +13,10 @@ sub init()
 
         liveConfig({ field: "config", keyPath: "ContentScrollGroup" }, m.contentScrollGroup)
         safeObserve("data", onDataSet)
-        safeObserve("focusedChild", onFocusedChildChange)
         safeObserve("itemFocused", onTabFocused, m.tabs)
 
         setFocusMap({
-            "default": m.contentHero,
+            "onFocus": m.contentHero,
             "contentHero": {
                 "default": true,
                 "back": false,
@@ -120,14 +119,6 @@ sub afterStyling(_options = {})
     if not rodash.isNode(m.bottomContainer) then return
     stackChildren({ node: m.screenContainer, direction: "vertical" })
     stackChildren({ node: m.bottomContainer, direction: "vertical" })
-end sub
-
-
-sub onFocusedChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    focusedChild = options.data
-    if not rodash.isNode(focusedChild) then return
-    if top().isSameNode(focusedChild) then applyDefaultFocus()
 end sub
 
 

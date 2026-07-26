@@ -30,13 +30,12 @@ sub init()
         activeControlsConfig = "<%- o(CONFIG.ActiveControls) %>"
 
         safeObserve("data", onDataSet)
-        safeObserve("focusedChild", onFocusedChildChange)
         safeObserve("state", onVideoStateChange, m.video)
         safeObserve("position", onVideoPositionChange, m.video, ["duration"])
         safeObserve("duration", onVideoDurationChange, m.video)
 
         setFocusMap({
-            "default": m.videoOverlay,
+            "onFocus": m.videoOverlay,
             "videoOverlay": {
                 "left": [showOverlay, scrubLeft],
                 "right": [showOverlay, scrubRight],
@@ -80,14 +79,6 @@ sub onDataSet(options = {})
     m.video.control = "play"
     m.videoOverlay.data = data
     showOverlay()
-end sub
-
-
-sub onFocusedChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    focusedChild = options.data
-    if not rodash.isNode(focusedChild) then return
-    if top().isSameNode(focusedChild) then applyDefaultFocus()
 end sub
 
 

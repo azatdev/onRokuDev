@@ -33,7 +33,7 @@ sub init()
         })
 
         setFocusMap({
-            "default": m.screenContainer,
+            "onFocus": m.screenContainer,
             "sidebar": {
                 "right": focusOnScreen
             },
@@ -54,7 +54,6 @@ sub init()
         })
 
         safeObserve("routerState", onRouterStateChanged, sgRouter.getRouter())
-        safeObserve("focusedChild", onFocusedChildChange)
     end sub)
 end sub
 
@@ -116,14 +115,6 @@ sub navigateTo(options = {})
     if rodash.isEmptyString(slug) then return
 
     sgRouter.navigateTo(slug, { context: options })
-end sub
-
-
-sub onFocusedChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    focusedChild = options.data
-    if not rodash.isNode(focusedChild) or not top().isSameNode(focusedChild) then return
-    focusOnScreen()
 end sub
 
 

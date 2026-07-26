@@ -49,7 +49,10 @@ sub init()
         }})
 
         setFocusMap({
-            "default": handleScrollKey
+            "onFocus": focusOnCarousel,
+            "carousel": {
+                "default": handleScrollKey
+            }
         })
 
         safeObserve("data", onDataSet)
@@ -102,6 +105,7 @@ end sub
 
 function handleScrollKey(options = {})
     key = options.key
+    ?"handleScrollKey " key
     if rodash.isEmptyString(key) then return false
 
     carousel = m.carousel
@@ -284,13 +288,14 @@ end sub
 sub onFocusedChildChange(options = {})
     focusedChild = options.data
     currentIndex = top().focusedContentIndex
-    if m.content = invalid then return
+    ?"flexList onFocusedChildChange " m.content, focusedChild
+    ' if m.content = invalid then return
 
-    unfocused = focusedChild = invalid or not top().isSameNode(focusedChild) and not top().isInFocusChain()
 
-    if not rodash.isNode(m.carousel.targetSet) then return
+    unfocused = focusedChild = invalid 'or not top().isSameNode(focusedChild) and not top().isInFocusChain()
 
     if unfocused
+        if not rodash.isNode(m.carousel.targetSet) then return
         dynamicSize = get("dynamicSize") ?? false
         useUnfocusedTargetSet = get("useUnfocusedTargetSet") ?? false
 
@@ -311,11 +316,13 @@ end sub
 
 
 sub focusOnCarousel(_options = {})
-    if m.carousel.hasFocus() then return
+    ?"focusOnCarousel " m.carousel.hasFocus(), m.focusedTargetSetArray
+    ' if m.carousel.hasFocus() then return
+    setFocus(m.carousel)
+    m.carousel.animateToItem = top().focusedContentIndex ?? 0
     if not rodash.isArray(m.focusedTargetSetArray) then return
 
-    m.carousel.animateToItem = top().focusedContentIndex ?? 0
-    m.carousel.setFocus(true)
+    ' m.carousel.setFocus(true)
 
     currentTargetSet = m.focusedTargetSetArray[top().focusedTargetsetIndex]
     m.carousel.animateToTargetSet = currentTargetSet
@@ -493,7 +500,7 @@ sub processConfig(options = {})
 
     if not m.carousel.hasFocus() then m.carousel.targetSet = m.unFocusedTargetSet
 
-    if top().hasFocus() then m.carousel.setFocus(true)
+    ' if top().hasFocus() then m.carousel.setFocus(true)
 
     if get("externalFocusControl")
         safeObserve("focusPercent", onExternalFocusPercentChange)

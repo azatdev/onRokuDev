@@ -8,10 +8,9 @@ sub init()
         m.detailsScrollGroup = top().findNode("detailsScrollGroup")
 
         liveConfig({ field: "config", keyPath: "DetailsScrollGroup" }, m.detailsScrollGroup)
-        safeObserve("focusedChild", onFocusedChildChange)
 
         setFocusMap({
-            "default": m.detailsScrollGroup,
+            "onFocus": m.detailsScrollGroup,
             "detailsScrollGroup": {
                 "default": true,
                 "back": false
@@ -28,14 +27,6 @@ end sub
 sub afterStyling(_options = {})
     stackChildren({ node: m.modalContainer, direction: "vertical" })
     centerComponent({ node: m.modalContainer, horizontal: true, vertical: true })
-end sub
-
-
-sub onFocusedChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    focusedChild = options.data
-    if not rodash.isNode(focusedChild) then return
-    if top().isSameNode(focusedChild) then applyDefaultFocus()
 end sub
 
 

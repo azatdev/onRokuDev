@@ -30,7 +30,7 @@ sub init()
         })
 
         setFocusMap({
-            "default": handleScrollKey
+            "onFocus": handleScrollKey
         })
 
         onConfigChange({ data: defaultConfig })
@@ -66,6 +66,8 @@ sub onFocusedChildChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     focusedChild = options.data
     unfocused = focusedChild = invalid
+
+    ?"scrollGroup onFocusedChildChange " focusedChild
 
     if top().isSameNode(focusedChild)
         focusIndex = get("itemFocused") ?? 0

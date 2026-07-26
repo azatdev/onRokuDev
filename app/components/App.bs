@@ -10,7 +10,7 @@ sub init()
         m.layout = top().findNode("layout")
 
         setFocusMap({
-            "default": m.layout,
+            "onFocus": m.layout,
             "app": {
                 "default": true
             }

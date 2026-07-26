@@ -14,16 +14,21 @@ sub init()
         setLoadable({ node: m.ctas, updateField: "data" })
 
         safeObserve("data", onDataSet)
-        safeObserve("focusedChild", onFocusedChildChange)
         safeObserve("ctaSelected", onCTASelected, m.ctas)
 
         setFocusMap({
-            "default": m.ctas
+            "onFocus": onHeroFocus
         })
         stackChildren({ node: m.container, direction: "vertical" })
         redrawStyles()
     end sub)
 end sub
+
+
+function onHeroFocus(options = {})
+    ?"onHeroFocus "
+    return true
+end function
 
 
 sub onCTASelected(options = {})
@@ -35,14 +40,6 @@ sub onCTASelected(options = {})
     else if actionType = "MORE_INFO"
         dispatch(events.NAVIGATE_TO, { slug: `/content/${m.content.id}`, content: m.content })
     end if
-end sub
-
-
-sub onFocusedChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    focusedChild = options.data
-    if not rodash.isNode(focusedChild) then return
-    if top().isSameNode(focusedChild) then applyDefaultFocus()
 end sub
 
 
@@ -65,11 +62,13 @@ end sub
 sub onHydrated(options = {})
     if not rodash.isNonEmptyAA(options) then return
     content = options.node
+    ?"onHydrated " top().id
 
     setDescription(content.description)
     setLogoImage(content.logoImageUri)
     setCTAs(content)
     setMetadata(content)
+    ' applyDefaultFocus()
 end sub
 
 
