@@ -6,11 +6,10 @@ sub init()
         m.carouselList = top().findNode("carouselList")
         m.titleContainer = top().findNode("titleContainer")
         safeObserve("data", onDataSet)
-        safeObserve("focusedChild", onFocusedChildChange)
         safeObserve("itemFocused", onCarouselItemFocused, m.carouselList)
         safeObserve("itemSelected", onCarouselItemSelected, m.carouselList)
         setFocusMap({
-            "default": m.carouselList
+            "onFocus": m.carouselList
         })
         styleHooks({
             after: afterStyling
@@ -40,14 +39,6 @@ sub onCarouselItemSelected(options = {})
     if not rodash.isNode(itemContent) then return
 
     dispatch(events.NAVIGATE_TO, { slug: `/content/${itemContent.id}`, content: itemContent })
-end sub
-
-
-sub onFocusedChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    focusedChild = options.data
-    if not rodash.isNode(focusedChild) then return
-    if top().isSameNode(focusedChild) then applyDefaultFocus()
 end sub
 
 

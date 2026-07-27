@@ -18,6 +18,7 @@ class Focusable
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
 
         m.publicFunctions.push("applyDefaultFocus")
+        m.publicFunctions.push("onFocusedChildChange")
         m.publicFunctions.push("setFocus")
         m.publicFunctions.push("onKeyEvent")
         m.publicFunctions.push("processFocus")
@@ -29,19 +30,21 @@ class Focusable
 
 
     sub applyDefaultFocus()
-        defaultNode = m.focusMap.current ?? m.focusMap.default ?? ""
+        if top().isSameNode(m.focusMap.current)
+            defaultNode = m.focusMap.onFocus
+        else
+            defaultNode = m.focusMap.onFocus ?? m.focusMap.current
+        end if
+
         if rodash.isFunction(defaultNode)
             exec(defaultNode)
             return
         end if
 
         if not rodash.isNode(defaultNode) and rodash.isString(defaultNode) then defaultNode = top().findNode(defaultNode)
-
-        if not rodash.isNode(defaultNode) then defaultNode = top().getChild(0)
-
-        if not rodash.isNode(defaultNode) then defaultNode = top()
-
-        m.setFocus(defaultNode)
+        ' if not rodash.isNode(defaultNode) then defaultNode = top().getChild(0)
+        ' if not rodash.isNode(defaultNode) then defaultNode = top()
+        m.setFocus({ nodeToFocus: defaultNode })
     end sub
 
 
@@ -66,6 +69,20 @@ class Focusable
             return rodash.isNode(focusedNode) ? focusedNode : node
         end if
     end function
+
+
+    sub onFocusedChildChange(options = {})
+        if not rodash.isNonEmptyAA(options) then return
+        focusedChild = options.data
+        if not rodash.isNode(focusedChild) then m.onFocusRemoved(): return
+        if top().isSameNode(focusedChild) then m.applyDefaultFocus()
+    end sub
+
+
+    sub onFocusRemoved()
+        unfocusFunction = m.focusMap.onUnfocus
+        if rodash.isFunction(unfocusFunction) then exec(unfocusFunction)
+    end sub
 
 
     function onKeyEvent(options = {}) as boolean
@@ -94,12 +111,12 @@ class Focusable
     function processFocus(key as string)
         if m.exceedsFocusInterval() then return true
         handled = false
+        if not rodash.isNonEmptyAA(m.focusMap) then return handled
 
-        focusTarget = m.focusMap.current ?? top()
+        focusTarget = m.focusMap.current ?? {}
+        nodeMap = m.focusMap[focusTarget.id] ?? m.focusMap.onKey
 
-        nodeMap = m.focusMap[focusTarget.id] ?? m.focusMap.default
-
-        if rodash.isInvalid(nodeMap) then return false
+        if rodash.isInvalid(nodeMap) then return handled
 
         if rodash.isFunction(nodeMap)
             focusArray = nodeMap
@@ -107,7 +124,7 @@ class Focusable
             focusArray = nodeMap[key] ?? nodeMap["default"]
         end if
 
-        if rodash.isInvalid(focusArray) then return false
+        if rodash.isInvalid(focusArray) then return handled
 
         if not rodash.isArray(focusArray) then focusArray = [focusArray]
 
@@ -131,7 +148,7 @@ class Focusable
 
             if not rodash.isNode(target) then continue for
 
-            m.setFocus(target)
+            m.setFocus({ nodeToFocus: target })
             if not handled then handled = true
         end for
 
@@ -145,23 +162,29 @@ class Focusable
     end sub
 
 
-    sub setFocus(node = {})
-        if not rodash.isNode(node) then return
-        m.focusMap.current = node
-        node.setFocus(true)
+    sub setFocus(options = {})
+        if not rodash.isNonEmptyAA(options) then return
+        nodeToFocus = options.nodeToFocus
+        focusMapNode = options.focusMapNode
+
+        m.focusMap.current = rodash.isNode(focusMapNode) ? focusMapNode : nodeToFocus
+        if rodash.isNode(nodeToFocus) then nodeToFocus.setFocus(true)
     end sub
 
 
     sub setFocusMap(options = {})
         if not rodash.isNonEmptyAA(options) then return
         m.focusMap.append(options)
+        'bs:disable-next-line
+        if rodash.isFunction(onFocusedChildChange) then return
+        safeObserve("focusedChild", "onFocusedChildChange", top())
     end sub
 
 
     sub waitToFocus(focusTarget)
         if rodash.isNode(focusTarget)
             if m.focusReady
-                m.setFocus(focusTarget)
+                m.setFocus({ nodeToFocus: focusTarget })
                 return
             end if
 
@@ -187,7 +210,7 @@ class Focusable
         focusNode = m.focusNode
 
         if rodash.isNode(focusNode)
-            m.setFocus(focusNode)
+            m.setFocus({ nodeToFocus: focusNode })
         else if rodash.isFunction(focusFunction)
             exec(focusFunction)
         end if

@@ -11,11 +11,10 @@ sub init()
         liveConfig({ field: "config", keyPath: "CatalogScrollGroup" }, m.scrollGroup)
 
         safeObserve("data", onDataSet)
-        safeObserve("focusedChild", onFocusedChildChange)
         safeObserve("itemFocused", onScrollGroupItemFocused, m.scrollGroup)
 
         setFocusMap({
-            "default": m.catalogHero,
+            "onFocus": m.catalogHero,
             "catalogHero": {
                 "down": focusScrollGroup
             },
@@ -146,26 +145,10 @@ sub scrollPage(direction = 0, callbackFunc = invalid)
 end sub
 
 
-sub onFocusedChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    focusedChild = options.data
-    if not rodash.isNode(focusedChild) then return
-    if top().isSameNode(focusedChild) then applyDefaultFocus()
-end sub
-
-
 sub afterStyling(_options = {})
     if not rodash.isNode(m.screenContainer) then return
     stackChildren({ node: m.screenContainer, direction: "vertical" })
 end sub
-
-
-function handleFocus(_options = {})
-    return exec(function(_options = {})
-        applyDefaultFocus()
-        return true
-    end function)
-end function
 
 
 sub onDataSet(options = {})

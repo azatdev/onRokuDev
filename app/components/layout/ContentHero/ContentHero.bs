@@ -10,9 +10,8 @@ sub init()
         m.ctas = top().findNode("ctas")
 
         safeObserve("data", onDataSet)
-        safeObserve("focusedChild", onFocusedChildChange)
         setFocusMap({
-            "default": m.ctas
+            "onFocus": m.ctas
         })
         safeObserve("ctaSelected", onCTASelected, m.ctas)
         redrawStyles()
@@ -33,14 +32,6 @@ sub onCTASelected(options = {})
     else if actionType = "DETAILS"
         dispatch(events.NAVIGATE_TO, { slug: `/details/${m.content.id}`, content: m.content })
     end if
-end sub
-
-
-sub onFocusedChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    focusedChild = options.data
-    if not rodash.isNode(focusedChild) then return
-    if top().isSameNode(focusedChild) then applyDefaultFocus()
 end sub
 
 

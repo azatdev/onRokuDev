@@ -206,12 +206,12 @@ end sub
 
 
 sub onSidebarReceived(options = {})
-    sidebar().data = options
+    if rodash.isNode(sidebar()) then sidebar().data = options
 end sub
 
 
 sub onTopbarReceived(options = {})
-    topbar().data = options
+    if rodash.isNode(topbar()) then topbar().data = options
 end sub
 
 

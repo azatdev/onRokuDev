@@ -5,20 +5,11 @@ sub init()
         m.heroScrollGroup = top().findNode("heroScrollGroup")
         liveConfig({ field: "config", keyPath: "HeroScrollGroup" }, m.heroScrollGroup)
         safeObserve("data", onDataSet)
-        safeObserve("focusedChild", onFocusedChildChange)
         safeObserve("itemFocused", onHeroItemFocused, m.heroScrollGroup)
         setFocusMap({
-            "default": m.heroScrollGroup
+            "onFocus": m.heroScrollGroup
         })
     end sub)
-end sub
-
-
-sub onFocusedChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    focusedChild = options.data
-    if not rodash.isNode(focusedChild) then return
-    if top().isSameNode(focusedChild) then applyDefaultFocus()
 end sub
 
 

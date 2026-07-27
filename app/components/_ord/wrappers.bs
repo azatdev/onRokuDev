@@ -257,10 +257,10 @@ function applyDefaultFocus()
 end function
 
 
-function setFocus(node)
+function setFocus(node, focusMapNode = invalid)
     interface = m.ord_interfaces["setFocus"]
     if interface = invalid then return invalid
-    return interface.setFocus(node)
+    return interface.setFocus({ nodeToFocus: node, focusMapNode: focusMapNode })
 end function
 
 

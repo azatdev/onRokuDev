@@ -11,14 +11,14 @@ sub init()
 
         safeObserve("itemFocused", onBarItemFocused, m.list)
         safeObserve("data", onDataChange)
-        safeObserve("focusedChild", onFocusedChildChange)
 
         safeFunctions({
             "setUserCarousels": setUserCarousels
         })
 
         setFocusMap({
-            "default": onFocused,
+            "onFocus": onFocused,
+            "onUnfocus": onUnfocused,
             "topbarList": {
                 "default": false,
                 "down": m.userScrollGroup
@@ -59,14 +59,6 @@ end sub
 sub onUnfocused(_options = {})
     resetFocus()
     userCarouselsToggle(0)
-end sub
-
-
-sub onFocusedChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    focusedChild = options.data
-    if not rodash.isNode(focusedChild) then onUnfocused(): return
-    if top().isSameNode(focusedChild) then applyDefaultFocus()
 end sub
 
 

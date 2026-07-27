@@ -14,11 +14,13 @@ sub init()
         setLoadable({ node: m.ctas, updateField: "data" })
 
         safeObserve("data", onDataSet)
-        safeObserve("focusedChild", onFocusedChildChange)
         safeObserve("ctaSelected", onCTASelected, m.ctas)
 
         setFocusMap({
-            "default": m.ctas
+            "onFocus": m.ctas,
+            "ctas": {
+                "default": false
+            }
         })
         stackChildren({ node: m.container, direction: "vertical" })
         redrawStyles()
@@ -31,18 +33,10 @@ sub onCTASelected(options = {})
     if not rodash.isNode(m.content) then return
     actionType = options.data
     if actionType = "PLAY"
-
+        dispatch(events.PLAY_VIDEO, { content: m.content })
     else if actionType = "MORE_INFO"
         dispatch(events.NAVIGATE_TO, { slug: `/content/${m.content.id}`, content: m.content })
     end if
-end sub
-
-
-sub onFocusedChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    focusedChild = options.data
-    if not rodash.isNode(focusedChild) then return
-    if top().isSameNode(focusedChild) then applyDefaultFocus()
 end sub
 
 

@@ -30,12 +30,13 @@ sub init()
         })
 
         setFocusMap({
-            "default": handleScrollKey
+            "onFocus": focusOnScrollGroup,
+            "onUnfocus": onCarouselUnfocus,
+            "onKey": handleScrollKey
         })
 
         onConfigChange({ data: defaultConfig })
 
-        safeObserve("focusedChild", onFocusedChildChange)
         safeObserve("animateToItem", onAnimateToItem)
         safeObserve("config", onConfigChange)
         safeObserve("change", onChildChange)
@@ -62,27 +63,11 @@ sub onAnimateToItem(options = {})
 end sub
 
 
-sub onFocusedChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    focusedChild = options.data
-    unfocused = focusedChild = invalid
-
-    if top().isSameNode(focusedChild)
-        focusIndex = get("itemFocused") ?? 0
-        if focusIndex = -1 then focusIndex = get("lastFocused") ?? 0
-        focusRow = m.container.getChild(focusIndex)
-        setFocus(focusRow)
-    end if
-
-    if unfocused
-        set({
-            itemfocused: -1,
-            lastFocused: get("itemfocused")
-        })
-        if not get("autoFocus") then resetFocus()
-        if rodash.isNode(m.scrollTimer) then m.scrollTimer.control = "stop"
-        return
-    end if
+sub focusOnScrollGroup(_options = {})
+    focusIndex = get("itemFocused") ?? 0
+    if focusIndex = -1 then focusIndex = get("lastFocused") ?? 0
+    focusRow = m.container.getChild(focusIndex)
+    setFocus(focusRow, top())
 
     if get("itemFocused") = -1
         set({ itemFocused: get("lastFocused") ?? 0 })
@@ -91,6 +76,16 @@ sub onFocusedChildChange(options = {})
     if get("scrollTimer") <> 0 and rodash.isNode(m.scrollTimer)
         m.scrollTimer.control = "start"
     end if
+end sub
+
+
+sub onCarouselUnfocus(_options = {})
+    set({
+        itemfocused: -1,
+        lastFocused: get("itemfocused")
+    })
+    if not get("autoFocus") then resetFocus()
+    if rodash.isNode(m.scrollTimer) then m.scrollTimer.control = "stop"
 end sub
 
 
@@ -162,7 +157,7 @@ sub onChildChange(options = {})
         if rodash.isNode(childToFocus) and not childToFocus.isInFocusChain()
             set({ itemFocused: currentFocusIndex })
             if not scrollAnimation then performFadeMorph([childToFocus])
-            if get("autoFocus") then setFocus(childToFocus)
+            if get("autoFocus") then setFocus(childToFocus, top())
         end if
     end if
 end sub
@@ -294,7 +289,7 @@ function performAnimation(options = {})
     if not scrollPerformed then return false
 
     if rodash.isNode(nextFocusNode)
-        if get("autoFocus") then setFocus(nextFocusNode)
+        if get("autoFocus") then setFocus(nextFocusNode, top())
         set({ itemFocused: nextFocusedItem })
     end if
 

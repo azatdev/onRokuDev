@@ -33,7 +33,11 @@ sub init()
         })
 
         setFocusMap({
-            "default": m.screenContainer,
+            "onFocus": m.screenContainer,
+            "screenContainer": {
+                "left": m.sidebar,
+                "up": m.topbar
+            },
             "sidebar": {
                 "right": focusOnScreen
             },
@@ -54,7 +58,6 @@ sub init()
         })
 
         safeObserve("routerState", onRouterStateChanged, sgRouter.getRouter())
-        safeObserve("focusedChild", onFocusedChildChange)
     end sub)
 end sub
 
@@ -74,7 +77,7 @@ end sub
 sub focusOnScreen(_options = {})
     activeView = m.activeView
     if not rodash.isNode(activeView) then return
-    setFocus(m.activeView)
+    setFocus(m.activeView, m.screenContainer)
 end sub
 
 
@@ -119,14 +122,6 @@ sub navigateTo(options = {})
 end sub
 
 
-sub onFocusedChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    focusedChild = options.data
-    if not rodash.isNode(focusedChild) or not top().isSameNode(focusedChild) then return
-    focusOnScreen()
-end sub
-
-
 sub onRouterStateChanged(options = {})
     data = options.data
     if data.type <> "NavigationEnd" then return
@@ -166,15 +161,7 @@ end sub
 sub setActiveView(screenId = "")
     if rodash.isEmptyString(screenId) then return
     m.activeView = top().findNode(screenId)
-    mapObject = {}
-
-    viewMapObject = {
-        "left": m.sidebar,
-        "up": m.topbar
-    }
-    mapObject[screenId] = viewMapObject
-    setFocusMap(mapObject)
-    setFocus(m.activeView)
+    setFocus(m.activeView, m.screenContainer)
 end sub
 
 
