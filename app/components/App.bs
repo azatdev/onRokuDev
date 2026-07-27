@@ -3,6 +3,8 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(_options = {})
+        top().backExitsScene = false
+
         subscribe({
             [events.EVENT_TASK_READY]: onEventTaskReady
         })
@@ -10,8 +12,8 @@ sub init()
         m.layout = top().findNode("layout")
 
         setFocusMap({
-            "onFocus": m.layout,
-            "app": {
+            "onFocus": top().findNode("layout"),
+            "onKey": {
                 "default": true
             }
         })
@@ -24,6 +26,8 @@ sub init()
             "StylesController",
             "UserController"
         ])
+
+        setFocus(m.layout)
     end sub)
 end sub
 

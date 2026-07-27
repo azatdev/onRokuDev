@@ -151,14 +151,6 @@ sub afterStyling(_options = {})
 end sub
 
 
-function handleFocus(_options = {})
-    return exec(function(_options = {})
-        applyDefaultFocus()
-        return true
-    end function)
-end function
-
-
 sub onDataSet(options = {})
     if not rodash.isNonEmptyAA(options) then return
     if rodash.isNode(m.content) then return

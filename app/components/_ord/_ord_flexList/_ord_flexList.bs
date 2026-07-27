@@ -1,6 +1,5 @@
 import "pkg:/components/_ord/wrappers.bs"
 
-
 sub init()
     exec(sub(_options = {})
         top().color = "#00000000"
@@ -16,8 +15,7 @@ sub init()
         safeObserve("itemFocused", onItemFocused, m.carousel)
         safeObserve("itemUnfocused", onItemUnfocused, m.carousel)
         safeObserve("focusedChild", onCarouselFocusedChildChange, m.carousel)
-
-        m.initialFocus = m.carousel
+        safeObserve("data", onDataSet)
 
         set({ defaultConfig: {
             animationDuration: 0.1,
@@ -50,13 +48,11 @@ sub init()
 
         setFocusMap({
             "onFocus": focusOnCarousel,
-            "carousel": {
+            "onUnfocus": onCarouselUnfocus,
+            "onKey": {
                 "default": handleScrollKey
             }
         })
-
-        safeObserve("data", onDataSet)
-        safeObserve("focusedChild", onFocusedChildChange)
 
         safeFunctions({
             registerChildRect: registerChildRect,
@@ -105,7 +101,6 @@ end sub
 
 function handleScrollKey(options = {})
     key = options.key
-    ?"handleScrollKey " key
     if rodash.isEmptyString(key) then return false
 
     carousel = m.carousel
@@ -285,44 +280,31 @@ sub setClippingRects(options = {})
 end sub
 
 
-sub onFocusedChildChange(options = {})
-    focusedChild = options.data
-    currentIndex = top().focusedContentIndex
-    ?"flexList onFocusedChildChange " m.content, focusedChild
-    ' if m.content = invalid then return
+sub onCarouselUnfocus(_options = {})
+    if not rodash.isNode(m.carousel) then return
+    if not rodash.isNode(m.carousel.targetSet) then return
+    dynamicSize = get("dynamicSize") ?? false
+    useUnfocusedTargetSet = get("useUnfocusedTargetSet") ?? false
 
+    if m.unFocusedTargetSet = invalid then return
+    unFocusedTargetSet = dynamicSize and not useUnfocusedTargetSet ? m.carousel.targetSet : m.unFocusedTargetSet
 
-    unfocused = focusedChild = invalid 'or not top().isSameNode(focusedChild) and not top().isInFocusChain()
+    unFocusedTargetSet.focusIndex = m.carousel.targetSet.focusIndex
+    rodash.delay(sub(args)
+        args[0].animateToTargetSet = args[1]
+    end sub, 100, [m.carousel, unFocusedTargetSet])
 
-    if unfocused
-        if not rodash.isNode(m.carousel.targetSet) then return
-        dynamicSize = get("dynamicSize") ?? false
-        useUnfocusedTargetSet = get("useUnfocusedTargetSet") ?? false
-
-        if m.unFocusedTargetSet = invalid then return
-        unFocusedTargetSet = dynamicSize and not useUnfocusedTargetSet ? m.carousel.targetSet : m.unFocusedTargetSet
-
-        unFocusedTargetSet.focusIndex = m.carousel.targetSet.focusIndex
-        rodash.delay(sub(args)
-            args[0].animateToTargetSet = args[1]
-        end sub, 100, [m.carousel, unFocusedTargetSet])
-        m.carousel.animateToItem = currentIndex
-        set({ itemfocused: -1 })
-        return
-    end if
-
-    focusOnCarousel()
+    m.carousel.animateToItem = top().focusedContentIndex
+    set({ itemfocused: -1 })
 end sub
 
 
 sub focusOnCarousel(_options = {})
-    ?"focusOnCarousel " m.carousel.hasFocus(), m.focusedTargetSetArray
-    ' if m.carousel.hasFocus() then return
-    setFocus(m.carousel)
-    m.carousel.animateToItem = top().focusedContentIndex ?? 0
+    if m.carousel.hasFocus() then return
     if not rodash.isArray(m.focusedTargetSetArray) then return
 
-    ' m.carousel.setFocus(true)
+    m.carousel.animateToItem = top().focusedContentIndex ?? 0
+    setFocus(m.carousel, top())
 
     currentTargetSet = m.focusedTargetSetArray[top().focusedTargetsetIndex]
     m.carousel.animateToTargetSet = currentTargetSet
@@ -375,6 +357,7 @@ sub onTotalCountChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     totalCarouselItems = options.data
     if rodash.isNumber(totalCarouselItems) then set({ totalCarouselItems: totalCarouselItems })
+
     processConfig()
 
     if get("resetOnChange")
@@ -500,7 +483,7 @@ sub processConfig(options = {})
 
     if not m.carousel.hasFocus() then m.carousel.targetSet = m.unFocusedTargetSet
 
-    ' if top().hasFocus() then m.carousel.setFocus(true)
+    if top().hasFocus() then setFocus(m.carousel, top())
 
     if get("externalFocusControl")
         safeObserve("focusPercent", onExternalFocusPercentChange)

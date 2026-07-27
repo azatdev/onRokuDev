@@ -34,6 +34,10 @@ sub init()
 
         setFocusMap({
             "onFocus": m.screenContainer,
+            "screenContainer": {
+                "left": m.sidebar,
+                "up": m.topbar
+            },
             "sidebar": {
                 "right": focusOnScreen
             },
@@ -73,7 +77,7 @@ end sub
 sub focusOnScreen(_options = {})
     activeView = m.activeView
     if not rodash.isNode(activeView) then return
-    setFocus(m.activeView)
+    setFocus(m.activeView, m.screenContainer)
 end sub
 
 
@@ -157,15 +161,7 @@ end sub
 sub setActiveView(screenId = "")
     if rodash.isEmptyString(screenId) then return
     m.activeView = top().findNode(screenId)
-    mapObject = {}
-
-    viewMapObject = {
-        "left": m.sidebar,
-        "up": m.topbar
-    }
-    mapObject[screenId] = viewMapObject
-    setFocusMap(mapObject)
-    setFocus(m.activeView)
+    setFocus(m.activeView, m.screenContainer)
 end sub
 
 

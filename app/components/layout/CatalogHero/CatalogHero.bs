@@ -7,7 +7,7 @@ sub init()
         safeObserve("data", onDataSet)
         safeObserve("itemFocused", onHeroItemFocused, m.heroScrollGroup)
         setFocusMap({
-            ' "onFocus": m.heroScrollGroup
+            "onFocus": m.heroScrollGroup
         })
     end sub)
 end sub
@@ -55,7 +55,6 @@ end sub
 
 sub onCollectionHydrated(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    setFocus(m.heroSracrollGroup)
     onHeroItemFocused({ data: m.heroScrollGroup.itemFocused })
 end sub
 

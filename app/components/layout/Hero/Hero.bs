@@ -17,7 +17,10 @@ sub init()
         safeObserve("ctaSelected", onCTASelected, m.ctas)
 
         setFocusMap({
-            "onFocus": onHeroFocus
+            "onFocus": onHeroFocus,
+            "ctas": {
+                "default": false
+            }
         })
         stackChildren({ node: m.container, direction: "vertical" })
         redrawStyles()
@@ -26,7 +29,7 @@ end sub
 
 
 function onHeroFocus(options = {})
-    ?"onHeroFocus "
+    setFocus(m.ctas)
     return true
 end function
 
@@ -36,7 +39,7 @@ sub onCTASelected(options = {})
     if not rodash.isNode(m.content) then return
     actionType = options.data
     if actionType = "PLAY"
-
+        dispatch(events.PLAY_VIDEO, { content: m.content })
     else if actionType = "MORE_INFO"
         dispatch(events.NAVIGATE_TO, { slug: `/content/${m.content.id}`, content: m.content })
     end if
@@ -62,13 +65,12 @@ end sub
 sub onHydrated(options = {})
     if not rodash.isNonEmptyAA(options) then return
     content = options.node
-    ?"onHydrated " top().id
 
     setDescription(content.description)
     setLogoImage(content.logoImageUri)
     setCTAs(content)
     setMetadata(content)
-    ' applyDefaultFocus()
+    if top().hasFocus() then setFocus(m.ctas)
 end sub
 
 

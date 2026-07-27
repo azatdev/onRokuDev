@@ -30,17 +30,20 @@ class Focusable
 
 
     sub applyDefaultFocus()
-        ?"applyDefaultFocus "
-        defaultNode = m.focusMap.current ?? m.focusMap.onFocus ?? ""
-        ?"defaultNode " defaultNode
+        if top().isSameNode(m.focusMap.current)
+            defaultNode = m.focusMap.onFocus
+        else
+            defaultNode = m.focusMap.onFocus ?? m.focusMap.current
+        end if
+
         if rodash.isFunction(defaultNode)
             exec(defaultNode)
             return
         end if
 
         if not rodash.isNode(defaultNode) and rodash.isString(defaultNode) then defaultNode = top().findNode(defaultNode)
-        if not rodash.isNode(defaultNode) then defaultNode = top().getChild(0)
-        if not rodash.isNode(defaultNode) then defaultNode = top()
+        ' if not rodash.isNode(defaultNode) then defaultNode = top().getChild(0)
+        ' if not rodash.isNode(defaultNode) then defaultNode = top()
         m.setFocus({ nodeToFocus: defaultNode })
     end sub
 
@@ -108,15 +111,12 @@ class Focusable
     function processFocus(key as string)
         if m.exceedsFocusInterval() then return true
         handled = false
+        if not rodash.isNonEmptyAA(m.focusMap) then return handled
 
-        focusTarget = m.focusMap.current ?? top()
-        ?"focusTarget " top().subType(), focusTarget
+        focusTarget = m.focusMap.current ?? {}
+        nodeMap = m.focusMap[focusTarget.id] ?? m.focusMap.onKey
 
-        nodeMap = m.focusMap[focusTarget.id] ?? m.focusMap.onFocus
-
-        ?"nodeMap " top().subType(), nodeMap
-
-        if rodash.isInvalid(nodeMap) then return false
+        if rodash.isInvalid(nodeMap) then return handled
 
         if rodash.isFunction(nodeMap)
             focusArray = nodeMap
@@ -124,7 +124,7 @@ class Focusable
             focusArray = nodeMap[key] ?? nodeMap["default"]
         end if
 
-        if rodash.isInvalid(focusArray) then return false
+        if rodash.isInvalid(focusArray) then return handled
 
         if not rodash.isArray(focusArray) then focusArray = [focusArray]
 
@@ -166,13 +166,9 @@ class Focusable
         if not rodash.isNonEmptyAA(options) then return
         nodeToFocus = options.nodeToFocus
         focusMapNode = options.focusMapNode
-        ?"setFocus " top().subType(), nodeToFocus, focusMapNode
-
 
         m.focusMap.current = rodash.isNode(focusMapNode) ? focusMapNode : nodeToFocus
-        ?"m.focusMap.current " top().subType(), m.focusMap.current
         if rodash.isNode(nodeToFocus) then nodeToFocus.setFocus(true)
-
     end sub
 
 

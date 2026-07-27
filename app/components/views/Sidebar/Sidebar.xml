@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="Sidebar" extends="Rectangle" initialFocus="sidebarList">
+<component name="Sidebar" extends="Rectangle">
     <interface>
         <field id="openColor" type="string" />
         <field id="data" type="assocArray" />
