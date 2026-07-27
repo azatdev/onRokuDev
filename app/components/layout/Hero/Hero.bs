@@ -17,7 +17,7 @@ sub init()
         safeObserve("ctaSelected", onCTASelected, m.ctas)
 
         setFocusMap({
-            "onFocus": onHeroFocus,
+            "onFocus": m.ctas,
             "ctas": {
                 "default": false
             }
@@ -26,12 +26,6 @@ sub init()
         redrawStyles()
     end sub)
 end sub
-
-
-function onHeroFocus(options = {})
-    setFocus(m.ctas)
-    return true
-end function
 
 
 sub onCTASelected(options = {})
@@ -70,7 +64,6 @@ sub onHydrated(options = {})
     setLogoImage(content.logoImageUri)
     setCTAs(content)
     setMetadata(content)
-    if top().hasFocus() then setFocus(m.ctas)
 end sub
 
 

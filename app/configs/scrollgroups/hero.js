@@ -3,7 +3,7 @@ module.exports = {
         animationType: "fade",
         direction: "horizontal",
         flushEnd: false,
-        scrollTimer: 1000000,
+        scrollTimer: 10000,
         wrap: true
     }
 };

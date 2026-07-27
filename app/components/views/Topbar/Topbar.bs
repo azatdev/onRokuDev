@@ -50,11 +50,10 @@ sub onDataChange(options = {})
 end sub
 
 
-function onFocused(_options = {})
+sub onFocused(_options = {})
     userCarouselsToggle(1)
     setFocus(m.list)
-    return true
-end function
+end sub
 
 
 sub onUnfocused(_options = {})
