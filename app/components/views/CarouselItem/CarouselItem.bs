@@ -27,7 +27,9 @@ sub itemContentChanged(options = {})
     if content = invalid then return
     setThumbailImage({ data: content.thumbnailImageUri })
 
-    if top().index < top().getParent().animateToItem
+    parentList = top().getParent() ?? {}
+
+    if top().index < parentList.animateToItem ?? 0
         top().opacity = m.defaultUnfocusedOpacity
     else
         top().opacity = 1
@@ -68,7 +70,9 @@ end sub
 
 
 sub onFocusPercentChange(_options = {})
-    listCurrFocusIndex = top().getParent().currFocusItemIndex
+    parentList = top().getParent() ?? {}
+
+    listCurrFocusIndex = parentList.currFocusItemIndex ?? 0
     modifiedFocusIndex = abs(m.top.index - listCurrFocusIndex)
     opacityPercentage = abs(1 - modifiedFocusIndex)
     changeOpacity(listCurrFocusIndex > top().index, opacityPercentage)

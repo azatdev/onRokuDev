@@ -13,13 +13,13 @@ sub setupItem()
     m.container = top().findNode("textContainer")
     m.background = top().findNode("background")
     m.highlight = top().findNode("highlight")
-    m.parentList = top().getParent()
-    m.flexList = m.parentList.getParent()
 
     safeObserve("focusPercent", onFocusPercentChange)
     safeObserve("itemContent", itemContentChanged)
     safeObserve("currRect", onCurrRectChange)
-    safeObserve("focusPercent", onGroupFocusPercentChange, m.parentList)
+
+    parentList = top().getParent()
+    if rodash.isNode(parentList) then safeObserve("focusPercent", onGroupFocusPercentChange, parentList)
 end sub
 
 
@@ -41,11 +41,16 @@ sub onTextChange(_options = {})
     m.container.width = m.container.boundingRect().width
     m.container.height = m.container.boundingRect().height
 
+    parentList = top().getParent()
+    if not rodash.isNode(parentList) then return
+    flexList = parentList.getParent()
+    if not rodash.isNode(flexList) then return
+
     exec("registerChildRect", {
         smallSquare: getUnFocusedRectSize(),
         bigSquare: getFocusedRectSize(),
         index: m.top.index
-    }, top().getParent().getParent())
+    }, flexList)
 end sub
 
 
@@ -118,9 +123,10 @@ end function
 
 
 function getBackgroundPercentage(value = 0)
-    if not rodash.isNode(m.parentList) then return 0
+    parentList = top().getParent()
+    if not rodash.isNode(parentList) then return 0
 
-    selectedItem = m.parentList.itemFocused = top().index
+    selectedItem = parentList.itemFocused = top().index
     if not selectedItem then return 0
 
     if top().groupHasFocus
