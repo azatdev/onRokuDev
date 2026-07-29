@@ -164,7 +164,16 @@ end sub
 
 
 sub onScrollTimerFired(_options = {})
-    handleScrollKey({ key: get("advanceKey"), autoScroll: true })
+    if not rodash.isNode(m.scrollTimer) then return
+
+    lastPress = createObject("roDeviceInfo").timeSinceLastKeypress()
+    scrollTimerDuration = get("scrollTimer") ?? m.scrollTimer.duration
+
+    if scrollTimerDuration / 1000 < lastPress
+        handleScrollKey({ key: get("advanceKey"), autoScroll: true })
+    end if
+
+    m.scrollTimer.control = "start"
 end sub
 
 
