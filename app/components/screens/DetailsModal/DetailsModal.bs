@@ -46,7 +46,7 @@ end sub
 
 function beforeViewOpen(options = {}) as dynamic
     top().opacity = 0.001
-    fadeIn(top(), { duration: 1 })
+    fadeIn(top(), { duration: 0.5 })
     route = options.route ?? {}
     context = route.context ?? {}
     content = context.content

@@ -56,8 +56,9 @@ end sub
 
 sub setImage(newUri = "")
     oldPoster = m.poster
-    if rodash.isNode(oldPoster) and oldPoster.uri = newUri and oldPoster.opacity = 0
-        fadeIn(oldPoster)
+
+    if rodash.isNode(oldPoster) and oldPoster.uri = newUri
+        if oldPoster.opacity = 0 then fadeIn(oldPoster)
         return
     end if
 

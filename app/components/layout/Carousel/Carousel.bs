@@ -82,7 +82,6 @@ end sub
 
 sub onHydrated(_options = {})
     set({ hydrated: true })
-    applyDefaultFocus()
 end sub
 
 

@@ -54,7 +54,7 @@ function beforeViewOpen(options = {}) as dynamic
     top().opacity = 0.001
     top().visible = true
     top().translation = [0, 0]
-    fadeIn(top(), { duration: 1 })
+    fadeIn(top(), { duration: 0.5 })
 
     dispatch(events.SHOW_CONTENT_UI)
     dispatch(events.GET_CONTENT_DATA, { screenId: routeData.id, slug: routeData.path, content: content })
@@ -77,13 +77,13 @@ end function
 
 function onViewResume(_options = {})
     dispatch(events.SHOW_CONTENT_UI)
-    fadeIn(top(), { duration: 1 })
+    fadeIn(top(), { duration: 0.5 })
     return promises.resolve(invalid)
 end function
 
 
 function beforeViewSuspend(_options = {}) as dynamic
-    fadeOut(top(), { duration: 1 })
+    fadeOut(top(), { duration: 0.5 })
     return promises.resolve(invalid)
 end function
 

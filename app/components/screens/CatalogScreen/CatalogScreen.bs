@@ -18,6 +18,7 @@ sub init()
         })
 
         set({
+            dataSet: false,
             hasHero: false
         })
 
@@ -60,6 +61,8 @@ end function
 
 
 sub focusScreen(_options = {})
+    if not get("dataSet") then return
+
     if get("hasHero")
         setFocus(m.catalogHero)
     else
@@ -143,10 +146,11 @@ sub onDataSet(options = {})
         processScrollItem({ model: model })
     end for
 
-    set({ hasHero: hasHero })
+    set({ dataSet: true, hasHero: hasHero })
     if not hasHero then addClass("noHero", m.screenContainer)
 
     afterStyling()
+    applyDefaultFocus()
 
     safeObserve("change", onCollectionChildChange, content)
 end sub
@@ -208,7 +212,7 @@ end function
 
 function beforeViewSuspend(_options = {}) as dynamic
     suspendPromise = promises.create()
-    fadeOut(top(), { duration: 1, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
+    fadeOut(top(), { duration: 0.5, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
     return suspendPromise
 end function
 
@@ -219,18 +223,8 @@ sub onViewFadedOut(options = {})
 end sub
 
 
-function onViewOpen(options = {})
-    return promises.resolve(invalid)
-end function
-
-
 function onViewResume(_options = {})
     dispatch(events.SHOW_CATALOG_UI)
-    fadeIn(top(), { duration: 1 })
-    return promises.resolve(invalid)
-end function
-
-
-function onViewSuspend(_options = {})
+    fadeIn(top(), { duration: 0.5 })
     return promises.resolve(invalid)
 end function

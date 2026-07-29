@@ -23,22 +23,22 @@ end sub
 
 
 sub hideCatalogGradients(_options = {})
-    fadeOut(m.catalogGradientContainer, { duration: 1 })
+    fadeOut(m.catalogGradientContainer, { duration: 0.5 })
 end sub
 
 
 sub showCatalogGradients(_options = {})
-    fadeIn(m.catalogGradientContainer, { duration: 1 })
+    fadeIn(m.catalogGradientContainer, { duration: 0.5 })
 end sub
 
 
 sub showContentGradients(_options = {})
-    fadeIn(m.contentGradientContainer, { duration: 1 })
+    fadeIn(m.contentGradientContainer, { duration: 0.5 })
 end sub
 
 
 sub hideContentGradients(_options = {})
-    fadeOut(m.contentGradientContainer, { duration: 1 })
+    fadeOut(m.contentGradientContainer, { duration: 0.5 })
 end sub
 
 
