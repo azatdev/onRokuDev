@@ -22,6 +22,7 @@ end sub
 sub clearImages(_options = {})
     if not rodash.isNode(m.headerImageContainer) then return
     m.headerImageContainer.removeChildren(m.headerImageContainer.getChildren(-1, 0))
+    m.poster = invalid
 end sub
 
 

@@ -38,6 +38,7 @@ end sub
 sub onCarouselItemFocused(options = {})
     if not rodash.isNonEmptyAA(options) then return
     exec("updateHeaderAssets", options, layout())
+    exec("setComplimentaryColor", options, background())
 end sub
 
 

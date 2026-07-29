@@ -12,6 +12,7 @@ sub init()
             hideBackground: hideBackground,
             hideCatalogGradients: hideCatalogGradients,
             hideContentGradients: hideContentGradients,
+            setComplimentaryColor: setComplimentaryColor,
             showBackground: showBackground,
             showCatalogGradients: showCatalogGradients,
             showContentGradients: showContentGradients,
@@ -78,7 +79,7 @@ sub updateBackgroundAssets(options = {})
     content = options.content
     if not rodash.isNode(content) then return
 
-    setComplimentaryColor(content.complimentaryColor)
+    setComplimentaryColor(options)
 
     section = options.section
     if rodash.isEmpty(section) then return
@@ -101,7 +102,13 @@ sub updateHeaderImage(options = {})
 end sub
 
 
-sub setComplimentaryColor(newBlendColor = "")
+sub setComplimentaryColor(options = {})
+    if rodash.isEmpty(options) then return
+    content = options.content
+    if not rodash.isNode(content) then return
+
+    newBlendColor = content.complimentaryColor
+
     if rodash.isEmpty(newBlendColor) then return
     if not rodash.isNode(m.cornerGradient) then return
     if rodash.isEmpty(newBlendColor) then newBlendColor = "<%- s(STYLES.Palette.defaultCornerColor) %>"
