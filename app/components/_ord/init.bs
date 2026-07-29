@@ -47,7 +47,7 @@ end sub
 sub setUUID(node)
     if not rodash.isNode(node) then return
     node.addField("ord_uuid", "string", false)
-    node.ord_uuid = CreateObject("roDeviceInfo").getRandomUUID()
+    node.ord_uuid = createObject("roDeviceInfo").getRandomUUID()
 end sub
 
 

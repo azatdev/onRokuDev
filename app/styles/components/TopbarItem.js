@@ -1,6 +1,11 @@
 const mixins = require("../mixins");
 const palette = mixins["Palette"];
 
+const colorMorph = {
+    key: [0.0, 1.0],
+    keyValue: [palette.primaryColor, "#b9faa0"]
+}
+
 module.exports = {
     "TopbarItem": {
         "Rectangle": {
@@ -33,6 +38,16 @@ module.exports = {
                     size: 24,
                     vertAlign: "center"
                 }
+            }
+        },
+        "ColorFieldInterpolator": {
+            "&#labelColorInterpolator": {
+                fieldToInterp: "label.color",
+                ...colorMorph
+            },
+            "&#iconColorInterpolator": {
+                fieldToInterp: "icon.color",
+                ...colorMorph
             }
         }
     }
