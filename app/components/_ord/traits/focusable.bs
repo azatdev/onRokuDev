@@ -30,7 +30,9 @@ class Focusable
 
 
     sub applyDefaultFocus()
-        if top().isSameNode(m.focusMap.current)
+        if rodash.isNode(m.focusMap.current) and not top().isSameNode(m.focusMap.current)
+            defaultNode = m.focusMap.current
+        else if top().isSameNode(m.focusMap.current)
             defaultNode = m.focusMap.onFocus
         else
             defaultNode = m.focusMap.onFocus ?? m.focusMap.current
@@ -114,7 +116,7 @@ class Focusable
         if not rodash.isNonEmptyAA(m.focusMap) then return handled
 
         focusTarget = m.focusMap.current ?? {}
-        nodeMap = m.focusMap[focusTarget.id] ?? m.focusMap.onKey
+        nodeMap = m.focusMap[focusTarget.id ?? ""] ?? m.focusMap.onKey
 
         if rodash.isInvalid(nodeMap) then return handled
 

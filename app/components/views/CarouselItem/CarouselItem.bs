@@ -46,7 +46,7 @@ sub onCurrentRectChange(options = {})
     top().height = int(height / 3) * 3
     top().width = int(width / 3) * 3
 
-    if rect.x + width <= 0
+    if rect.x + width < 0
         top().opacity = m.defaultUnfocusedOpacity
     else if rect.x > width
         top().opacity = 1
@@ -65,6 +65,12 @@ sub onCurrentRectChange(options = {})
     if rodash.isNode(m.thumbnail)
         m.thumbnail.height = height - 12
         m.thumbnail.width = width - 12
+    end if
+
+    loadingPoster = top().findNode("loadingPoster")
+    if rodash.isNode(loadingPoster)
+        loadingPoster.height = height
+        loadingPoster.width = width
     end if
 end sub
 

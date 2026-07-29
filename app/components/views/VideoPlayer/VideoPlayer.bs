@@ -74,6 +74,7 @@ sub onDataSet(options = {})
     content = data.content
     m.content = content
     playerModel = exec("returnPlayerModel", {}, content)
+    if not rodash.isNode(playerModel) then return
     m.video.content = playerModel
     m.video.seek = playerModel.position
     m.video.control = "play"

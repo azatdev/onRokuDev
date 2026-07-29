@@ -6,6 +6,8 @@ sub init()
         m.cornerGradient = top().findNode("cornerGradient")
         m.catalogGradientContainer = top().findNode("catalogGradientContainer")
         m.contentGradientContainer = top().findNode("contentGradientContainer")
+        m.headerImage = top().findNode("headerImage")
+
         safeFunctions({
             hideBackground: hideBackground,
             hideCatalogGradients: hideCatalogGradients,
@@ -13,7 +15,8 @@ sub init()
             showBackground: showBackground,
             showCatalogGradients: showCatalogGradients,
             showContentGradients: showContentGradients,
-            updateAssets: updateAssets
+            updateBackgroundAssets: updateBackgroundAssets,
+            updateHeaderImage: updateHeaderImage
         })
     end sub)
 end sub
@@ -65,12 +68,12 @@ sub setBackground(newUri = "")
     newPoster.height = "<%- s(STYLES.Dimensions.viewport.height) %>"
     oldPoster = m.poster
     m.backgroundContainer.appendChild(newPoster)
-    fadeIn(newPoster, { callback: onBackgroundFadeIn, callbackOptions: { node: oldPoster }, duration: 0.5 })
+    fadeIn(newPoster, { callback: onBackgroundFadeIn, callbackOptions: { node: oldPoster }, duration: 0.3 })
     m.poster = newPoster
 end sub
 
 
-sub updateAssets(options = {})
+sub updateBackgroundAssets(options = {})
     if rodash.isEmpty(options) then return
     content = options.content
     if not rodash.isNode(content) then return
@@ -80,11 +83,21 @@ sub updateAssets(options = {})
     section = options.section
     if rodash.isEmpty(section) then return
 
+    showBackground()
+
     if section = sections.HERO
         setBackground(content.headerImageUri)
     else if section = sections.CONTENT_HERO
         setBackground(content.posterImageUri)
     end if
+end sub
+
+
+sub updateHeaderImage(options = {})
+    if rodash.isEmpty(options) then return
+    if not rodash.isNode(m.headerImage) then return
+    m.headerImage.data = options
+    showHeaderImage()
 end sub
 
 
@@ -110,5 +123,22 @@ end sub
 
 
 sub showBackground(_options = {})
+    hideHeaderImage()
     fadeIn(m.backgroundContainer, { duration: 0.3 })
+end sub
+
+
+sub hideHeaderImage(_options = {})
+    fadeOut(m.headerImage, { callback: clearHeaderImages, duration: 0.3 })
+end sub
+
+
+sub showHeaderImage(_options = {})
+    hideBackground()
+    fadeIn(m.headerImage, { duration: 0.3 })
+end sub
+
+
+sub clearHeaderImages(_options = {})
+    exec("clearImages", {}, m.headerImage)
 end sub

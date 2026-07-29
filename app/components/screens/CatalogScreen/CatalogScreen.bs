@@ -13,8 +13,16 @@ sub init()
         safeObserve("data", onDataSet)
         safeObserve("itemFocused", onScrollGroupItemFocused, m.scrollGroup)
 
+        safeFunctions({
+            "updateHeader": updateHeader
+        })
+
+        set({
+            hasHero: false
+        })
+
         setFocusMap({
-            "onFocus": m.catalogHero,
+            "onFocus": focusScreen,
             "catalogHero": {
                 "down": focusScrollGroup
             },
@@ -30,47 +38,6 @@ sub init()
 end sub
 
 
-function beforeViewOpen(options = {}) as dynamic
-    dispatch(events.GET_CATALOG_DATA, { screenId: options.route?.id, slug: options.route?.path })
-    return promises.resolve(invalid)
-end function
-
-
-sub onViewFadedOut(options = {})
-    ' suspendPromise = options.promise
-    ' promises.resolve(true, suspendPromise)
-end sub
-
-
-function beforeViewSuspend(_options = {}) as dynamic
-    ' suspendPromise = promises.create()
-    fadeOut(top(), { duration: 1, callback: onViewFadedOut })
-    ' return suspendPromise
-    return promises.resolve(invalid)
-end function
-
-
-function beforeViewClose(_options = {})
-    ' suspendPromise = promises.create()
-    fadeOut(top(), { duration: 1, callback: onViewFadedOut })
-    return promises.resolve(invalid)
-
-    ' return suspendPromise
-end function
-
-
-function onViewResume(_options = {})
-    dispatch(events.SHOW_CATALOG_UI)
-    fadeIn(top(), { duration: 1 })
-    return promises.resolve(invalid)
-end function
-
-
-function onViewSuspend(_options = {})
-    return promises.resolve(invalid)
-end function
-
-
 sub checkPagination(options = {})
     if not rodash.isNode(m.content) then return
     itemFocused = options.itemFocused ?? 0
@@ -81,15 +48,28 @@ sub checkPagination(options = {})
 end sub
 
 
-sub focusCatalogHero(_options = {})
-    scrollPage(-1, onCatalogHeroFocused)
-    dispatch(events.CATALOG_HERO_FOCUSED)
+function focusCatalogHero(_options = {})
+    if get("hasHero")
+        scrollPage(-1, onCatalogHeroFocused)
+        dispatch(events.CATALOG_HERO_FOCUSED)
+        return true
+    else
+        return false
+    end if
+end function
+
+
+sub focusScreen(_options = {})
+    if get("hasHero")
+        setFocus(m.catalogHero)
+    else
+        setFocus(m.scrollGroup)
+    end if
 end sub
 
 
 sub focusScrollGroup(_options = {})
     scrollPage(1, onScrollGroupFocused)
-    onScrollGroupFocused()
     dispatch(events.CATALOG_CAROUSELS_FOCUSED)
 end sub
 
@@ -115,14 +95,12 @@ end sub
 
 sub scrollPage(direction = 0, callbackFunc = invalid)
     morphObject = {}
-    heightDelta = 195 * direction
+    heightDelta = 150 * direction
+
     morphObject[m.scrollGroup.id] = {
         fields: {
             height: m.scrollGroup.height + heightDelta,
-            translation: [
-                0,
-                m.catalogHero.height - heightDelta
-            ]
+            translation: [0, m.catalogHero.height - heightDelta]
         }
     }
     morphObject[m.catalogHero.id] = {
@@ -134,14 +112,14 @@ sub scrollPage(direction = 0, callbackFunc = invalid)
 
     morphObject[m.catalogHeader.id] = {
         fields: {
-            height: direction = -1 ? m.catalogHero.height - heightDelta : 0,
+            height: direction = 1 ? m.catalogHero.height - heightDelta : 0,
             opacity: 0 + direction
         }
     }
 
     m.catalogHeader.visible = direction = 1 ? true : false
 
-    morph(morphObject, { callback: callbackFunc, duration: 0.3 })
+    morph(morphObject, { callback: callbackFunc })
 end sub
 
 
@@ -158,10 +136,15 @@ sub onDataSet(options = {})
     data = options.data
     content = data.content
     m.content = content
+    hasHero = false
 
     for each model in content.getChildren(-1, 0)
+        if not hasHero then hasHero = model.carouselType = carouselTypes.HERO
         processScrollItem({ model: model })
     end for
+
+    set({ hasHero: hasHero })
+    if not hasHero then addClass("noHero", m.screenContainer)
 
     afterStyling()
 
@@ -206,3 +189,48 @@ sub processScrollItem(options = {})
         m.scrollGroup.appendChild(component)
     end if
 end sub
+
+
+sub updateHeader(options = {})
+    if rodash.isEmpty(options) then return
+    if not rodash.isNode(m.catalogHeader) then return
+    m.catalogHeader.data = options
+end sub
+
+
+' Methods exteded from sgRouter
+
+function beforeViewOpen(options = {}) as dynamic
+    dispatch(events.GET_CATALOG_DATA, { screenId: options.route?.id, slug: options.route?.path })
+    return promises.resolve(invalid)
+end function
+
+
+function beforeViewSuspend(_options = {}) as dynamic
+    suspendPromise = promises.create()
+    fadeOut(top(), { duration: 1, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
+    return suspendPromise
+end function
+
+
+sub onViewFadedOut(options = {})
+    suspendPromise = options.promise
+    promises.resolve(true, suspendPromise)
+end sub
+
+
+function onViewOpen(options = {})
+    return promises.resolve(invalid)
+end function
+
+
+function onViewResume(_options = {})
+    dispatch(events.SHOW_CATALOG_UI)
+    fadeIn(top(), { duration: 1 })
+    return promises.resolve(invalid)
+end function
+
+
+function onViewSuspend(_options = {})
+    return promises.resolve(invalid)
+end function

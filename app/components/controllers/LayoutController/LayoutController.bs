@@ -37,11 +37,7 @@ end sub
 
 sub onCarouselItemFocused(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    itemHeader = catalogHeader()
-    if not rodash.isNode(itemHeader) then return
-    itemHeader.data = options
-
-    exec("updateBackgroundAssets", options, layout())
+    exec("updateHeaderAssets", options, layout())
 end sub
 
 

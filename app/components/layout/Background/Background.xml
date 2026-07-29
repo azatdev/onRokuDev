@@ -4,6 +4,7 @@
         <function name="safeFunc" />
     </interface>
     <children>
+        <HeaderImage id="headerImage" />
         <Div id="backgroundContainer" />
         <Div id="catalogGradientContainer">
             <Poster id="bottomGradient" />

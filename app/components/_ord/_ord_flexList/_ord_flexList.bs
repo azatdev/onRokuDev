@@ -103,6 +103,8 @@ function handleScrollKey(options = {})
     key = options.key
     if rodash.isEmptyString(key) then return false
 
+    if key <> top().advanceKey and key <> top().reverseKey then return false
+
     carousel = m.carousel
     if not rodash.isNode(carousel) then return false
 
@@ -110,7 +112,7 @@ function handleScrollKey(options = {})
     if not rodash.isNode(carousel) then return true
 
     if calculate.floatMOD(carousel.currFocusItemIndex, 1) <> 0 then return true
-    if key <> top().advanceKey and key <> top().reverseKey then return false
+
 
     direction = key = top().reverseKey ? -1 : 1
     currentIndex = top().focusedContentIndex
@@ -232,7 +234,6 @@ sub setActiveItem(options = {})
 
     activeIndex = options.activeIndex ?? 0
     m.carousel.itemSelected = activeIndex
-    top().itemSelected = activeIndex
     top().focusedContentIndex = activeIndex
     top().focusedTargetsetIndex = activeIndex
 end sub
@@ -482,8 +483,6 @@ sub processConfig(options = {})
     applyClippingRect({ percentage: top().focusPercent })
 
     if not m.carousel.hasFocus() then m.carousel.targetSet = m.unFocusedTargetSet
-
-    if top().hasFocus() then setFocus(m.carousel, top())
 
     if get("externalFocusControl")
         safeObserve("focusPercent", onExternalFocusPercentChange)

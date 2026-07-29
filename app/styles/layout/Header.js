@@ -4,9 +4,6 @@ const viewport = dimensions["viewport"]
 
 module.exports = {
     "Header": {
-        height: 0,
-        visible: false,
-        width: viewport.width,
         "Div": {
             translation: [180, 150],
             "Poster": {

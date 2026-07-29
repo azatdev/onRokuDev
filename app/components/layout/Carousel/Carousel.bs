@@ -8,13 +8,22 @@ sub init()
         safeObserve("data", onDataSet)
         safeObserve("itemFocused", onCarouselItemFocused, m.carouselList)
         safeObserve("itemSelected", onCarouselItemSelected, m.carouselList)
+        set({
+            hydrated: false
+        })
         setFocusMap({
-            "onFocus": m.carouselList
+            "onFocus": focusCarousel
         })
         styleHooks({
             after: afterStyling
         })
     end sub)
+end sub
+
+
+sub focusCarousel(_options = {})
+    if not get("hydrated") or not top().hasFocus() then return
+    setFocus(m.carouselList)
 end sub
 
 
@@ -38,7 +47,7 @@ sub onCarouselItemSelected(options = {})
     itemContent = m.content.getChild(selectedChild)
     if not rodash.isNode(itemContent) then return
 
-    dispatch(events.NAVIGATE_TO, { slug: `/content/${itemContent.id}`, content: itemContent })
+    dispatch(events.NAVIGATE_TO, { slug: `/content/${itemContent.id}`, context: { content: itemContent }})
 end sub
 
 
@@ -53,9 +62,6 @@ sub onDataSet(options = {})
 
     if not rodash.isNode(content) then return
 
-    ' configKey = thumbnailType = thumbnailTypes.LANDSCAPE ? "LandscapeCarousel" : "PortraitCarousel"
-    ' liveConfig({ field: "config", keyPath: configKey }, content)
-
     m.content = content
     m.carouselTitle.text = content.carouselTitle
     m.carouselList.data = { content: content }
@@ -65,6 +71,18 @@ sub onDataSet(options = {})
 
     afterStyling()
     dispatch(events.PAGINATE_CAROUSEL, { collection: content })
+
+    if content.hydrated ?? false
+        onHydrated()
+    else
+        safeObserve("hydrated", onHydrated, content)
+    end if
+end sub
+
+
+sub onHydrated(_options = {})
+    set({ hydrated: true })
+    applyDefaultFocus()
 end sub
 
 

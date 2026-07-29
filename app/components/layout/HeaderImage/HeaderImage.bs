@@ -3,7 +3,7 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(_options = {})
         m.headerImageContainer = top().findNode("headerImageContainer")
-        safeObserve("newUri", setImage)
+        safeObserve("data", onDataSet)
         m.headerImageGradients = top().findNode("headerImageGradients")
         m.headerImageMask = top().findNode("headerImageMask")
 
@@ -12,7 +12,38 @@ sub init()
             m.headerImageGradients.visible = true
             m.headerImageMask.maskuri = ""
         end if
+        safeFunctions({
+            "clearImages": clearImages
+        })
     end sub)
+end sub
+
+
+sub clearImages(_options = {})
+    if not rodash.isNode(m.headerImageContainer) then return
+    m.headerImageContainer.removeChildren(m.headerImageContainer.getChildren(-1, 0))
+end sub
+
+
+sub onDataSet(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    data = options.data
+    content = data.content
+    m.content = content
+
+    if content.hydrated ?? false
+        onHydrated({ node: m.content })
+    else
+        safeObserve("hydrated", onHydrated, content)
+    end if
+end sub
+
+
+sub onHydrated(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    content = options.node
+
+    setImage(content.posterImageUri)
 end sub
 
 
@@ -23,24 +54,23 @@ sub onImageFadeOut(options = {})
 end sub
 
 
-sub setImage(options = {})
-    if rodash.isEmpty(options) then return
-    newUri = options.data
-    if rodash.isEmpty(newUri) then return
+sub setImage(newUri = "")
+    oldPoster = m.poster
+    if rodash.isNode(oldPoster) and oldPoster.uri = newUri and oldPoster.opacity = 0
+        fadeIn(oldPoster)
+        return
+    end if
+
     newPoster = createObject("roSGNode", "Poster")
     newPoster.id = rodash.now().toStr()
     newPoster.opacity = 0
     newPoster.uri = newUri
     newPoster.width = top().width
     newPoster.height = top().height
-    m.headerImageContainer.insertChild(newPoster, 0)
-    if rodash.isInvalid(m.poster)
-        m.poster = newPoster
-        fadeIn(newPoster, { duration: 0.5 })
-    else
-        newPoster.opacity = 1
-        oldPoster = m.poster
-        m.poster = newPoster
-        fadeOut(oldPoster, { callback: onImageFadeOut, callbackOptions: { node: oldPoster }, duration: 0.5 })
-    end if
+    m.headerImageContainer.appendChild(newPoster)
+
+    if rodash.isNode(oldPoster) then fadeOut(oldPoster, { callback: onImageFadeOut, callbackOptions: { node: oldPoster }, duration: 0.3 })
+
+    fadeIn(newPoster, { duration: 0.3 })
+    m.poster = newPoster
 end sub

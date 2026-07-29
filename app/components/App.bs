@@ -3,6 +3,7 @@ import "pkg:/components/_ord/wrappers.bs"
 
 sub init()
     exec(sub(_options = {})
+        set({ startTime: rodash.now() })
         top().backExitsScene = false
 
         subscribe({
@@ -34,4 +35,7 @@ end sub
 
 sub onEventTaskReady(_options = {})
     dispatch(events.APP_STARTED)
+    startTime = get("startTime")
+    endTime = rodash.now()
+    ?"delta " endTime - startTime
 end sub

@@ -42,7 +42,13 @@ sub onItemSelected(options = {})
     itemModel = m.content.getChild(itemSelected)
     if not rodash.isNode(itemModel) then return
 
-    dispatch(events.NAVIGATE_TO, { slug: itemModel.id, documentId: itemModel.documentId })
+    dispatch(events.NAVIGATE_TO, {
+        slug: itemModel.id,
+        documentId: itemModel.documentId,
+        outgoingRouteConfigOverrides: {
+            suspendMode: "detach"
+        }
+    })
 end sub
 
 
