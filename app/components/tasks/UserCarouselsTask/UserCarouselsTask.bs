@@ -1,4 +1,4 @@
-import "pkg:/components/_ord/wrappers.bs"
+import "pkg:/components/_ord/init.bs"
 import "pkg:/components/tasks/shared/content.bs"
 
 sub init()

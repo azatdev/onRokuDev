@@ -38,26 +38,53 @@ sub ord_init()
 end sub
 
 
-sub setCreatedAt(node)
-    if not rodash.isNode(node) then return
-    node.addField("createdAt", "longinteger", false)
-    node.createdAt = rodash.now()
-end sub
-
-
-sub setUUID(node)
-    if not rodash.isNode(node) then return
-    node.addField("ord_uuid", "string", false)
-    node.ord_uuid = createObject("roDeviceInfo").getRandomUUID()
-end sub
-
-
 function getNodeIdentifier(node)
     if not rodash.isNode(node) then return ""
     if rodash.isInvalid(node.ord_uuid) then setUUID(node)
 
     return node.ord_uuid
 end function
+
+
+function interfaceFunction(name = "", options = {})
+    if rodash.isEmptyString(name) then return invalid
+    if not rodash.isNonEmptyAA(options) then return invalid
+    interface = m.ord_interfaces[name]
+    if interface = invalid then return invalid
+    return interface[name](options)
+end function
+
+
+function onError(e)
+    'bs:disable-next-line
+    ?"ERROR: " formatJSON(e)
+    return invalid
+end function
+
+
+sub registerControllers(controllers = [])
+    if not rodash.isNonEmptyArray(controllers) then return
+    if not top().isSubtype("Scene") then return
+
+    for each controllerName in controllers
+        updateObject = {}
+        updateObject[controllerName] = createObject("roSGNode", controllerName)
+        set(updateObject)
+    end for
+end sub
+
+
+function runTask()
+    if not rodash.isFunction(m._ord_taskFunction) then return invalid
+    return exec(m._ord_taskFunction)
+end function
+
+
+sub setCreatedAt(node)
+    if not rodash.isNode(node) then return
+    node.addField("createdAt", "longinteger", false)
+    node.createdAt = rodash.now()
+end sub
 
 
 sub setRole()
@@ -73,3 +100,38 @@ sub setRole()
 
     m.ord_role = componentRole
 end sub
+
+
+sub setUUID(node)
+    if not rodash.isNode(node) then return
+    node.addField("ord_uuid", "string", false)
+    node.ord_uuid = createObject("roDeviceInfo").getRandomUUID()
+end sub
+
+
+' Helper functions.
+
+function app()
+    return m.global.getScene()
+end function
+
+
+function devMode()
+    return true
+end function
+
+
+function global()
+    return getGlobalAA().global
+end function
+
+
+function top()
+    return getGlobalAA().top
+end function
+
+
+function user()
+    return get("UserController", app())
+end function
+
