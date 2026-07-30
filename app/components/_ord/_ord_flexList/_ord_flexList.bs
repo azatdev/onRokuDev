@@ -24,7 +24,6 @@ sub init()
             clip: true,
             debugClippingRect: false,
             defaultVisibleIndex: 0,
-            ' lastIndex: 2,
             direction: "horizontal",
             externalFocusControl: false,
             focusType: "floating",
@@ -55,8 +54,8 @@ sub init()
         })
 
         safeFunctions({
-            registerChildRect: registerChildRect,
-            setActiveItem: setActiveItem
+            "registerChildRect": registerChildRect,
+            "setActiveItem": setActiveItem
         })
 
         m.focusTimer = getFloatFieldInterpolator(m.carousel.getChildren(-1, 0))

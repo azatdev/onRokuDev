@@ -18,8 +18,8 @@ sub init()
         })
 
         set({
-            dataSet: false,
-            hasHero: false
+            "dataSet": false,
+            "hasHero": false
         })
 
         setFocusMap({
@@ -33,7 +33,7 @@ sub init()
         })
 
         styleHooks({
-            after: afterStyling
+            "after": afterStyling
         })
     end sub)
 end sub

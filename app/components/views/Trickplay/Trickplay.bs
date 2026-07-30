@@ -7,16 +7,16 @@ sub init()
         m.tip = top().findNode("tip")
 
         safeFunctions({
-            setTrickplayInfo: setTrickplayInfo,
-            hideTrickplay: hideTrickplay
+            "setTrickplayInfo": setTrickplayInfo,
+            "hideTrickplay": hideTrickplay
         })
 
         styleHooks({
-            after: afterStyling
+            "after": afterStyling
         })
 
         set({
-            active: false
+            "active": false
         })
 
         afterStyling()

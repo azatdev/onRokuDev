@@ -15,7 +15,7 @@ sub init()
             "onFocus": focusCarousel
         })
         styleHooks({
-            after: afterStyling
+            "after": afterStyling
         })
     end sub)
 end sub

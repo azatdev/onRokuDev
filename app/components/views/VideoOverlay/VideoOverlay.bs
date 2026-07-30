@@ -16,12 +16,12 @@ sub init()
         safeObserve("data", onDataSet)
 
         safeFunctions({
-            onPositionChange: onPositionChange,
-            setPositionLabel: setPositionLabel
+            "onPositionChange": onPositionChange,
+            "setPositionLabel": setPositionLabel
         })
 
         styleHooks({
-            after: afterStyling
+            "after": afterStyling
         })
 
         afterStyling()

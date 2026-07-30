@@ -4,11 +4,11 @@ sub init()
     exec(sub(_options = {})
         m.paginationConfigs = "<%- o(CONFIG.Pagination) %>"
         safeFunctions({
-            generateDefaultModels: generateDefaultModels,
-            getChildFields: getChildFields,
-            getVariables: getVariables,
-            processCarouselData: processCarouselData,
-            returnInitialPagination: returnInitialPagination
+            "generateDefaultModels": generateDefaultModels,
+            "getChildFields": getChildFields,
+            "getVariables": getVariables,
+            "processCarouselData": processCarouselData,
+            "returnInitialPagination": returnInitialPagination
         })
     end sub)
 end sub

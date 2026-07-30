@@ -4,7 +4,7 @@ sub init()
     exec(sub(_options = {})
         setupItem()
         styleHooks({
-            after: afterStyling
+            "after": afterStyling
         })
     end sub)
 end sub

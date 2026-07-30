@@ -3,7 +3,7 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(_options = {})
         safeFunctions({
-            getVariables: getVariables
+            "getVariables": getVariables
         })
     end sub)
 end sub

@@ -38,7 +38,7 @@ sub init()
         })
 
         styleHooks({
-            after: afterStyling
+            "after": afterStyling
         })
     end sub)
 end sub

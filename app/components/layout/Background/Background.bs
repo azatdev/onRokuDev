@@ -9,15 +9,15 @@ sub init()
         m.headerImage = top().findNode("headerImage")
 
         safeFunctions({
-            hideBackground: hideBackground,
-            hideCatalogGradients: hideCatalogGradients,
-            hideContentGradients: hideContentGradients,
-            setComplimentaryColor: setComplimentaryColor,
-            showBackground: showBackground,
-            showCatalogGradients: showCatalogGradients,
-            showContentGradients: showContentGradients,
-            updateBackgroundAssets: updateBackgroundAssets,
-            updateHeaderImage: updateHeaderImage
+            "hideBackground": hideBackground,
+            "hideCatalogGradients": hideCatalogGradients,
+            "hideContentGradients": hideContentGradients,
+            "setComplimentaryColor": setComplimentaryColor,
+            "showBackground": showBackground,
+            "showCatalogGradients": showCatalogGradients,
+            "showContentGradients": showContentGradients,
+            "updateBackgroundAssets": updateBackgroundAssets,
+            "updateHeaderImage": updateHeaderImage
         })
     end sub)
 end sub
