@@ -1,3 +1,6 @@
+const mixins = require("../../styles/mixins");
+const palette = mixins["Palette"]
+
 module.exports = {
     "DetailsScrollGroup": {
         animationType: "scroll",
@@ -13,7 +16,7 @@ module.exports = {
                 width: 15
             },
             thumb: {
-                blendColor: "#352357",
+                blendColor: palette.barColor,
                 margin: 0,
                 translation: [0, 0],
                 width: 15,

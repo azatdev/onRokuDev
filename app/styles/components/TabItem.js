@@ -5,7 +5,7 @@ module.exports = {
     "TabItem": {
         "Rectangle": {
             "&#textContainer": {
-                "color": "#33333300",
+                "color": palette.transparent,
                 "Icon": {
                     "color": palette.primaryColor,
                     "height": 0,
@@ -29,11 +29,11 @@ module.exports = {
             "opacity": 0,
             "Poster": {
                 "&#tabTop": {
-                    "blendColor": `${palette.highlightColor}`,
+                    "blendColor": palette.lowlightColor,
                     "uri": "pkg:/static/images/9patches/tab-top-18px.9.png"
                 },
                 "&#tabBottom": {
-                    "blendColor": `${palette.highlightColor}`,
+                    "blendColor": palette.lowlightColor,
                     "uri": "pkg:/static/images/9patches/tab-bottom-18px.9.png"
                 }
             },

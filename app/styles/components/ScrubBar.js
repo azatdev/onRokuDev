@@ -17,11 +17,11 @@ module.exports = {
             "&#scrubTrack": {
                 "Rectangle": {
                     "&#progressBar": {
-                        "color": "#352357",
+                        "color": palette.barColor,
                         "height": player.seekbarHeight
                     },
                     "&#scrubber": {
-                        "color": "#8f9483",
+                        "color": palette.playheadColor,
                         "height": player.seekbarHeight,
                         "translation": [-6, 0],
                         "width": 6

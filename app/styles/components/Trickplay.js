@@ -14,7 +14,7 @@ module.exports = {
         "width": scrubBarWidth,
         "Poster": {
             "&#frame": {
-                "blendColor": "#8f9483",
+                "blendColor": palette.playheadColor,
                 "height": 180,
                 "uri": "pkg:/static/images/white-block.webp",
                 "translation": [0, 0],
@@ -27,7 +27,7 @@ module.exports = {
                 }
             },
             "&#tip": {
-                "blendColor": "#8f9483",
+                "blendColor": palette.playheadColor,
                 "height": 18,
                 "translation": [0, 0],
                 "uri": "pkg:/static/images/playhead.webp",

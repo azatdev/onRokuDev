@@ -1,7 +1,3 @@
-const mixins = require("../mixins");
-const dimensions = mixins["Dimensions"]
-const viewport = dimensions["viewport"]
-
 module.exports = {
     "Header": {
         "Div": {

@@ -1,6 +1,9 @@
+const mixins = require("../../styles/mixins");
+const palette = mixins["Palette"]
+
 module.exports = {
     "_ord_scrollGroup": {
-        "color": "#00000000",
+        "color": palette.transparent,
         "Poster": {
             "&#scrollTrack": {
                 "blendColor": "#FFFFFF80",
@@ -8,7 +11,7 @@ module.exports = {
                 "visible": false,
                 "width": 42,
                 "Poster": {
-                    "blendColor": "#d2f3dfff",
+                    "blendColor": "#d2f3df",
                     "height": 72,
                     "margin": 3,
                     "translation": [3, 3],
@@ -18,7 +21,7 @@ module.exports = {
             }
         },
         "Rectangle": {
-            "color": "#00000000"
+            "color": palette.transparent
         }
     }
 };

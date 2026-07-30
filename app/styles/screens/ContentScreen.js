@@ -1,6 +1,5 @@
 const mixins = require("../mixins");
 const dimensions = mixins["Dimensions"]
-const palette = mixins["Palette"]
 const viewport = dimensions["viewport"]
 
 module.exports = {

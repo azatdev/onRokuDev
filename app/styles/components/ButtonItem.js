@@ -1,12 +1,13 @@
 const mixins = require("../mixins");
+const assets = mixins["Assets"]
 const palette = mixins["Palette"]
 
 module.exports = {
     "ButtonItem": {
         "Rectangle": {
             "&#textContainer": {
-                "color": "#33333300",
-                "uri": "pkg:/static/images/9patches/fill-18px.9.png",
+                "color": palette.transparent,
+                "uri": assets.rounded18,
                 "Icon": {
                     "color": palette.primaryColor,
                     "height": 75,
@@ -14,7 +15,7 @@ module.exports = {
                     "size": 33,
                     "vertAlign": "center",
                     "&.active": {
-                        "color": "#b9faa0",
+                        "color": palette.highlightText,
                     }
                 },
                 "QuanticoBold": {
@@ -32,13 +33,13 @@ module.exports = {
             "&#focusColorInterpolator": {
                 "fieldToInterp": "background.blendColor",
                 "key": [0.0, 0.25, 0.5, 1.0],
-                "keyValue": ["#575345", "#53582E", "#4F5C17", "#4b6100"]
+                "keyValue": [palette.inactiveColor, "#53582E", "#4F5C17", palette.highlightColor]
             }
         },
         "Poster": {
             "&#background": {
-                "blendColor": "#575345",
-                "uri": "pkg:/static/images/9patches/fill-18px.9.png",
+                "blendColor": palette.inactiveColor,
+                "uri": assets.rounded18,
             },
             "&#highlightBottom": {
                 "blendColor": `${palette.primaryColor}14`,

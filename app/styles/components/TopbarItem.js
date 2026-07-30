@@ -1,28 +1,29 @@
 const mixins = require("../mixins");
+const assets = mixins["Assets"]
 const palette = mixins["Palette"];
 
 const colorMorph = {
     "key": [0.0, 1.0],
-    "keyValue": [palette.primaryColor, "#b9faa0"]
+    "keyValue": [palette.primaryColor, palette.highlightText]
 }
 
 module.exports = {
     "TopbarItem": {
         "Rectangle": {
             "&#background": {
-                "color": "#5c5c4b23",
+                "color": palette.userCarouselBackground,
                 "height": 108,
                 "opacity": 0
             },
             "&#highlight": {
-                "color": "#b8bca414",
+                "color": `${palette.lowlightColor}14`,
                 "height": 108,
                 "opacity": 0,
                 "width": 800
             },
             "&#textContainer": {
-                "color": "#b8bca400",
-                "uri": "pkg:/static/images/9patches/fill-18px.9.png",
+                "color": palette.transparent,
+                "uri": assets.rounded18,
                 "Icon": {
                     "color": palette.primaryColor,
                     "height": 108,

@@ -1,5 +1,4 @@
 const mixins = require("../mixins");
-const palette = mixins["Palette"];
 const dimensions = mixins["Dimensions"];
 const gradients = mixins["Gradients"];
 const viewport = dimensions["viewport"];

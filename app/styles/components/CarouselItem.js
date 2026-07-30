@@ -12,7 +12,7 @@ module.exports = {
                         "translation": [6, 6]
                     },
                     "&#outline": {
-                        "blendColor": palette.highlightColor,
+                        "blendColor": palette.lowlightColor,
                         "loadSync": true,
                         "uri": "pkg:/static/images/9patches/9px-outline-18px.9.png",
                     }
