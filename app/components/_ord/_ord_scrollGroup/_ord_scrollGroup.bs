@@ -24,8 +24,8 @@ sub init()
         }
 
         set({
-            defaultConfig: defaultConfig,
-            itemFocused: -1
+            "defaultConfig": defaultConfig,
+            "itemFocused": -1
         })
 
         setFocusMap({
@@ -70,7 +70,7 @@ sub focusOnScrollGroup(_options = {})
     setFocus(focusRow, top())
 
     if get("itemFocused") = -1
-        set({ itemFocused: get("lastFocused") ?? 0 })
+        set({ "itemFocused": get("lastFocused") ?? 0 })
     end if
 
     if get("scrollTimer") <> 0 and rodash.isNode(m.scrollTimer)
@@ -81,8 +81,8 @@ end sub
 
 sub onCarouselUnfocus(_options = {})
     set({
-        itemfocused: -1,
-        lastFocused: get("itemfocused")
+        "itemfocused": -1,
+        "lastFocused": get("itemfocused")
     })
     if not get("autoFocus") then resetFocus()
     if rodash.isNode(m.scrollTimer) then m.scrollTimer.control = "stop"
@@ -155,7 +155,7 @@ sub onChildChange(options = {})
     if top().isSameNode(top().focusedChild)
         childToFocus = m.container.getChild(currentFocusIndex)
         if rodash.isNode(childToFocus) and not childToFocus.isInFocusChain()
-            set({ itemFocused: currentFocusIndex })
+            set({ "itemFocused": currentFocusIndex })
             if not scrollAnimation then performFadeMorph([childToFocus])
             if get("autoFocus") then setFocus(childToFocus, top())
         end if
@@ -196,8 +196,8 @@ sub setGroupSizes()
     })
 
     set({
-        scrollContainerDimensions: scrollContainerDimensions,
-        viewportDimensions: viewportDimensions
+        "scrollContainerDimensions": scrollContainerDimensions,
+        "viewportDimensions": viewportDimensions
     })
 
     setClippingRect()
@@ -299,7 +299,7 @@ function performAnimation(options = {})
 
     if rodash.isNode(nextFocusNode)
         if get("autoFocus") then setFocus(nextFocusNode, top())
-        set({ itemFocused: nextFocusedItem })
+        set({ "itemFocused": nextFocusedItem })
     end if
 
     return true

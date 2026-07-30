@@ -33,7 +33,7 @@ end sub
 sub hideTrickplay(_options = {})
     if not get("active") then return
     fadeOut(top())
-    set({ active: false })
+    set({ "active": false })
 end sub
 
 
@@ -41,7 +41,7 @@ sub setTrickplayInfo(options = {})
     if not rodash.isNonEmptyAA(options) then return
     if not get("active")
         fadeIn(top())
-        set({ active: true })
+        set({ "active": true })
     end if
 
     setThumbnail(options)

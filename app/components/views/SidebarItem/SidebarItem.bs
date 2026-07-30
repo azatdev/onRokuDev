@@ -47,7 +47,7 @@ sub itemContentChanged(options = {})
 
     setColors()
 
-    set({ totalItemCount: totalItemCount})
+    set({ "totalItemCount": totalItemCount})
     onTextChange()
 end sub
 

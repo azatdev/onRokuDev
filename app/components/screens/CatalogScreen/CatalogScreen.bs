@@ -152,7 +152,7 @@ sub onDataSet(options = {})
         processScrollItem({ model: model })
     end for
 
-    set({ dataSet: true, hasHero: hasHero })
+    set({ "dataSet": true, "hasHero": hasHero })
     if not hasHero then addClass("noHero", m.screenContainer)
 
     afterStyling()

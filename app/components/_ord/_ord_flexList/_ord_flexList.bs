@@ -17,32 +17,32 @@ sub init()
         safeObserve("focusedChild", onCarouselFocusedChildChange, m.carousel)
         safeObserve("data", onDataSet)
 
-        set({ defaultConfig: {
-            animationDuration: 0.1,
-            bigSquare: [0, 0],
-            carouselType: "default",
-            clip: true,
-            debugClippingRect: false,
-            defaultVisibleIndex: 0,
-            direction: "horizontal",
-            externalFocusControl: false,
-            focusType: "floating",
-            gutterSize: 0,
-            horizAlign: "center",
-            itemComponentName: "",
-            maxHeight: 0,
-            maxWidth: 0,
-            resetOnChange: false,
-            smallSquare: [0, 0],
-            squareMargins: [0, 0],
-            squareTotalArea: [0, 0],
-            startingPositionOffsets: [0],
-            uniformCrossAxisSize: false,
-            useUnfocusedTargetSet: false,
-            vertAlign: "center",
-            visibleTiles: 0,
-            wrap: false,
-            wrapFirstToLast: true
+        set({ "defaultConfig": {
+            "animationDuration": 0.1,
+            "bigSquare": [0, 0],
+            "carouselType": "default",
+            "clip": true,
+            "debugClippingRect": false,
+            "defaultVisibleIndex": 0,
+            "direction": "horizontal",
+            "externalFocusControl": false,
+            "focusType": "floating",
+            "gutterSize": 0,
+            "horizAlign": "center",
+            "itemComponentName": "",
+            "maxHeight": 0,
+            "maxWidth": 0,
+            "resetOnChange": false,
+            "smallSquare": [0, 0],
+            "squareMargins": [0, 0],
+            "squareTotalArea": [0, 0],
+            "startingPositionOffsets": [0],
+            "uniformCrossAxisSize": false,
+            "useUnfocusedTargetSet": false,
+            "vertAlign": "center",
+            "visibleTiles": 0,
+            "wrap": false,
+            "wrapFirstToLast": true
         }})
 
         setFocusMap({
@@ -259,10 +259,10 @@ sub setClippingRects(options = {})
     end if
 
     set({
-        unfocusedClippingRect: applyGutters({
-            clippingRect: unfocusedClippingRect,
-            direction: direction,
-            gutters: gutters
+        "unfocusedClippingRect": applyGutters({
+            "clippingRect": unfocusedClippingRect,
+            "direction": direction,
+            "gutters": gutters
         })
     })
 
@@ -271,10 +271,10 @@ sub setClippingRects(options = {})
     end for
 
     set({
-        focusedClippingRect: applyGutters({
-            clippingRect: focusedClippingRect,
-            direction: direction,
-            gutters: options.gutters
+        "focusedClippingRect": applyGutters({
+            "clippingRect": focusedClippingRect,
+            "direction": direction,
+            "gutters": options.gutters
         })
     })
 end sub
@@ -295,7 +295,7 @@ sub onCarouselUnfocus(_options = {})
     end sub, 100, [m.carousel, unFocusedTargetSet])
 
     m.carousel.animateToItem = top().focusedContentIndex
-    set({ itemfocused: -1 })
+    set({ "itemfocused": -1 })
 end sub
 
 
@@ -356,7 +356,7 @@ end sub
 sub onTotalCountChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     totalCarouselItems = options.data
-    if rodash.isNumber(totalCarouselItems) then set({ totalCarouselItems: totalCarouselItems })
+    if rodash.isNumber(totalCarouselItems) then set({ "totalCarouselItems": totalCarouselItems })
 
     processConfig()
 
@@ -370,7 +370,7 @@ end sub
 
 sub onItemFocused(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    set({ itemfocused: options.data })
+    set({ "itemfocused": options.data })
 end sub
 
 
@@ -464,19 +464,19 @@ sub processConfig(options = {})
     end if
 
     set({
-        clip: config.clip,
-        debugClippingRect: config.debugClippingRect,
-        direction: config.direction,
-        dynamicSize: dynamicSize,
-        externalFocusControl: config.externalFocusControl,
-        extraRects: extraRects,
-        focusableIndexArray: focusableIndexArray,
-        gutters: gutters,
-        lastFocusableIndex: lastFocusableIndex,
-        useUnfocusedTargetSet: config.useUnfocusedTargetSet,
-        resetOnChange: config.resetOnChange,
-        wrap: config.wrap,
-        wrapFirstToLast: config.wrapFirstToLast
+        "clip": config.clip,
+        "debugClippingRect": config.debugClippingRect,
+        "direction": config.direction,
+        "dynamicSize": dynamicSize,
+        "externalFocusControl": config.externalFocusControl,
+        "extraRects": extraRects,
+        "focusableIndexArray": focusableIndexArray,
+        "gutters": gutters,
+        "lastFocusableIndex": lastFocusableIndex,
+        "useUnfocusedTargetSet": config.useUnfocusedTargetSet,
+        "resetOnChange": config.resetOnChange,
+        "wrap": config.wrap,
+        "wrapFirstToLast": config.wrapFirstToLast
     })
 
     applyClippingRect({ percentage: top().focusPercent })

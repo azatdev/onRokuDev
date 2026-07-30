@@ -9,7 +9,7 @@ sub init()
         safeObserve("itemFocused", onCarouselItemFocused, m.carouselList)
         safeObserve("itemSelected", onCarouselItemSelected, m.carouselList)
         set({
-            hydrated: false
+            "hydrated": false
         })
         setFocusMap({
             "onFocus": focusCarousel
@@ -81,7 +81,7 @@ end sub
 
 
 sub onHydrated(_options = {})
-    set({ hydrated: true })
+    set({ "hydrated": true })
 end sub
 
 

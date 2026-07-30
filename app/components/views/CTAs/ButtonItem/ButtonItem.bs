@@ -40,7 +40,7 @@ sub itemContentChanged(options = {})
     setIconInfo(content)
 
     dynamicWidth = content.dynamicWidth ?? false
-    set({ dynamicWidth: dynamicWidth })
+    set({ "dynamicWidth": dynamicWidth })
     onTextChange()
 end sub
 

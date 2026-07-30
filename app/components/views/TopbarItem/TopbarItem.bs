@@ -33,7 +33,7 @@ sub itemContentChanged(options = {})
     listContent = content.getParent()
     totalItemCount = listContent.totalCount
 
-    set({ totalItemCount: totalItemCount})
+    set({ "totalItemCount": totalItemCount})
     onTextChange()
 end sub
 

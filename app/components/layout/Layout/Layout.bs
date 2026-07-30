@@ -53,9 +53,9 @@ sub init()
         })
 
         set({
-            catalogUIHidden: false,
-            contentUIHidden: true,
-            navigationHidden: false
+            "catalogUIHidden": false,
+            "contentUIHidden": true,
+            "navigationHidden": false
         })
 
         safeObserve("routerState", onRouterStateChanged, sgRouter.getRouter())
@@ -171,12 +171,12 @@ end sub
 
 sub showCatalogUI(options = {})
     if get("navigationHidden")
-        set({ navigationHidden: false })
+        set({ "navigationHidden": false })
         fadeIn(m.navigation, { duration: 0.5 })
     end if
 
     if get("catalogUIHidden")
-        set({ catalogUIHidden: false, contentUIHidden: true })
+        set({ "catalogUIHidden": false, "contentUIHidden": true })
         exec("showCatalogGradients", options, m.background)
         exec("hideContentGradients", options, m.background)
     end if
@@ -185,12 +185,12 @@ end sub
 
 sub showContentUI(options = {})
     if not get("navigationHidden")
-        set({ navigationHidden: true })
+        set({ "navigationHidden": true })
         fadeOut(m.navigation, { duration: 0.5 })
     end if
 
     if get("contentUIHidden")
-        set({ catalogUIHidden: true, contentUIHidden: false })
+        set({ "catalogUIHidden": true, "contentUIHidden": false })
         exec("hideCatalogGradients", options, m.background)
         exec("showContentGradients", options, m.background)
     end if

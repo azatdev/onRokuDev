@@ -170,7 +170,7 @@ sub onScreenActive(options = {})
     if not rodash.isNonEmptyAA(options) then return
     exec("setActiveView", options, layout())
     exec("setActiveSlug", options, sidebar())
-    set({ activeSlug: options.slug ?? "" })
+    set({ "activeSlug": options.slug ?? "" })
 end sub
 
 
