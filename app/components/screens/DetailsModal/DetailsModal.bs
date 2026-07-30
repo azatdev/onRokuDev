@@ -25,8 +25,8 @@ end sub
 
 
 sub afterStyling(_options = {})
-    stackChildren({ node: m.modalContainer, direction: "vertical" })
-    centerComponent({ node: m.modalContainer, horizontal: true, vertical: true })
+    stackChildren({ direction: "vertical" }, m.modalContainer)
+    centerComponent({ horizontal: true, vertical: true }, m.modalContainer)
 end sub
 
 

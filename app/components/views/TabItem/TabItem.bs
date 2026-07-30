@@ -52,7 +52,7 @@ end sub
 
 
 sub onTextChange(_options = {})
-    stackChildren({ node: m.container, direction: "horizontal" })
+    stackChildren({ direction: "horizontal" }, m.container)
     tabWidth = m.container.boundingRect().width
     tabHeight = m.container.boundingRect().height
     m.container.width = tabWidth

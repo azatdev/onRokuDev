@@ -20,31 +20,12 @@ class Animatable
 
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
 
-        m.publicFunctions.push("animate")
-        m.publicFunctions.push("reverse")
         m.publicFunctions.push("morph")
-        m.publicFunctions.push("finishAnimation")
         m.publicFunctions.push("runAnimation")
-        m.publicFunctions.push("findAnimation")
-        m.publicFunctions.push("stopAnimation")
         m.publicFunctions.push("removeAnimation")
         m.publicFunctions.push("fadeIn")
         m.publicFunctions.push("fadeOut")
     end sub
-
-
-    function animate(animation, options = {})
-        animationId = m.prepareAnimation(animation, options)
-        m.runAnimation(animationId)
-        return animationId
-    end function
-
-
-    function reverse(animation, options = {})
-        animationId = m.prepareAnimation(animation, options)
-        m.runAnimation(animationId, true)
-        return animationId
-    end function
 
 
     function prepareAnimation(animation = "", options = {})
@@ -75,46 +56,14 @@ class Animatable
     end function
 
 
-    sub runAnimation(id = "", isReverse = false)
+    sub runAnimation(id = "")
         if rodash.isEmptyString(id) then return
 
         animation = m.animations[id] ?? invalid
         if not rodash.isNode(animation) then return
-
-        m.setReverse(animation.getChildren(-1, 0), isReverse)
 
         safeObserve("state", m.onAnimationComplete, animation)
         animation.control = "start"
-
-        if rodash.isAA(m.continuousAnimations) and not m.continuousAnimations.doesExist(id)
-            m.activeAnimations({ action: "add", id: id, node: animation })
-        end if
-    end sub
-
-
-    function findAnimation(id = "")
-        if rodash.isEmpty(m.animations) then return invalid
-        return m.animations[id]
-    end function
-
-
-    sub finishAnimation(id = "")
-        if rodash.isEmptyString(id) then return
-
-        animation = m.animations[id] ?? invalid
-        if not rodash.isNode(animation) then return
-        animation.control = "finish"
-        safeUnobserve("state", animation)
-    end sub
-
-
-    sub stopAnimation(id = "")
-        if rodash.isEmptyString(id) then return
-
-        animation = m.animations[id] ?? invalid
-        if not rodash.isNode(animation) then return
-        animation.control = "stop"
-        safeUnobserve("state", animation)
     end sub
 
 
@@ -235,17 +184,6 @@ class Animatable
     end function
 
 
-    sub setReverse(animationChildren, isReverse = false as Boolean)
-        for each child in animationChildren
-            if child.subType() = "Animation" or child.subType() = "ParallelAnimation"
-                m.setReverse(child.getChildren(-1, 0), isReverse)
-            else if rodash.indexOf(["Vector2DFieldInterpolator", "FloatFieldInterpolator", "ColorFieldInterpolator"], child.subType()) <> -1
-                child.reverse = isReverse
-            end if
-        end for
-    end sub
-
-
     sub onAnimationComplete(options = {})
         state = options.data ?? ""
         animation = options.node
@@ -254,10 +192,6 @@ class Animatable
         if not rodash.isNode(animation) then return
 
         safeUnobserve("state", animation)
-
-        if rodash.isAA(m.continuousAnimations) and m.continuousAnimations.doesExist(animation.id)
-            m.activeAnimations({ action: "delete", id: animation.id })
-        end if
 
         callback = animation.hasField("callback") ? animation.getRef("callback") : invalid
         if not rodash.isNonEmptyAA(callback) then return
@@ -436,19 +370,6 @@ class Animatable
         }
 
         return m.morph(morphObject, sharedOptions)
-    end function
-
-
-    function activeAnimations(options = {}) as Object
-        if not rodash.isAA(options) then return invalid
-
-        scene = app()
-        if not rodash.isNode(scene) then return invalid
-        if not scene.hasFunc("manageActiveAnimations") then return invalid
-
-        payload = options
-        payload.nodeId = m.getNodeId()
-        return scene.callFunc("manageActiveAnimations", payload)
     end function
 
 

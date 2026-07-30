@@ -21,11 +21,8 @@ class Focusable
         m.publicFunctions.push("onFocusedChildChange")
         m.publicFunctions.push("setFocus")
         m.publicFunctions.push("onKeyEvent")
-        m.publicFunctions.push("processFocus")
         m.publicFunctions.push("resetFocus")
-        m.publicFunctions.push("readyToFocus")
         m.publicFunctions.push("setFocusMap")
-        m.publicFunctions.push("waitToFocus")
     end sub
 
 
@@ -180,41 +177,5 @@ class Focusable
         'bs:disable-next-line
         if rodash.isFunction(onFocusedChildChange) then return
         safeObserve("focusedChild", "onFocusedChildChange", top())
-    end sub
-
-
-    sub waitToFocus(focusTarget)
-        if rodash.isNode(focusTarget)
-            if m.focusReady
-                m.setFocus({ nodeToFocus: focusTarget })
-                return
-            end if
-
-            m.focusFunction = invalid
-            m.focusNode = focusTarget
-        else if rodash.isFunction(focusTarget)
-            if m.focusReady
-                exec(focusTarget)
-                return
-            end if
-
-            m.focusFunction = focusTarget
-            m.focusNode = invalid
-        end if
-    end sub
-
-
-    sub readyToFocus()
-        if m.focusReady then return
-        m.focusReady = true
-
-        focusFunction = m.focusFunction
-        focusNode = m.focusNode
-
-        if rodash.isNode(focusNode)
-            m.setFocus({ nodeToFocus: focusNode })
-        else if rodash.isFunction(focusFunction)
-            exec(focusFunction)
-        end if
     end sub
 end class

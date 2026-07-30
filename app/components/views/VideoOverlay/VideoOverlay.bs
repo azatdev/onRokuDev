@@ -30,8 +30,8 @@ end sub
 
 
 sub afterStyling(_options = {})
-    stackChildren({ node: m.container, direction: "vertical" })
-    stackChildren({ node: m.contentContainer, direction: "vertical" })
+    stackChildren({ direction: "vertical" }, m.container)
+    stackChildren({ direction: "vertical" }, m.contentContainer)
 end sub
 
 

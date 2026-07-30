@@ -184,7 +184,7 @@ sub setGroupSizes()
     horizontal = get("horizontal") ?? false
     if rodash.isEmptyString(direction) then return
 
-    if scrollAnimation then stackChildren({ node: m.container, direction: direction })
+    if scrollAnimation then stackChildren({ direction: direction }, m.container)
 
     viewportDimensions = calculate.viewportSize({
         horizontal: horizontal,
@@ -418,7 +418,7 @@ sub setupScrollbar(options = {})
         m.scrolltrack.update(trackOptions, true)
     end if
 
-    stackChildren({ node: m.scrollTrack })
+    stackChildren({}, m.scrollTrack)
 
     m.scrolltrack[targetDimension] = viewportDimensions[axisIndex]
     m.scrollKnob[targetDimension] = (viewportDimensions[axisIndex] / scrollContainerDimensions[axisIndex]) * viewportDimensions[axisIndex]

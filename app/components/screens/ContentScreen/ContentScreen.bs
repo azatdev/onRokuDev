@@ -82,8 +82,8 @@ end sub
 sub afterStyling(_options = {})
     if not rodash.isNode(m.screenContainer) then return
     if not rodash.isNode(m.bottomContainer) then return
-    stackChildren({ node: m.screenContainer, direction: "vertical" })
-    stackChildren({ node: m.bottomContainer, direction: "vertical" })
+    stackChildren({ direction: "vertical" }, m.screenContainer)
+    stackChildren({ direction: "vertical" }, m.bottomContainer)
 end sub
 
 

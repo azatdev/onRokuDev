@@ -21,5 +21,5 @@ sub onConfigChange(options = {})
     end for
 
     redrawStyles()
-    stackChildren({ node: top(), direction: "horizontal" })
+    stackChildren({ direction: "horizontal" })
 end sub

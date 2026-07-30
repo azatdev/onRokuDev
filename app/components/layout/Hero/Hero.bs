@@ -22,7 +22,7 @@ sub init()
                 "default": false
             }
         })
-        stackChildren({ node: m.container, direction: "vertical" })
+        stackChildren({ direction: "vertical" }, m.container)
         redrawStyles()
     end sub)
 end sub

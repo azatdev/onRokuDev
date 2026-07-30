@@ -53,7 +53,7 @@ end sub
 
 
 sub onTextChange(_options = {})
-    stackChildren({ node: m.container, direction: "horizontal" })
+    stackChildren({ direction: "horizontal" }, m.container)
     m.container.width = m.container.boundingRect().width
     m.container.height = m.container.boundingRect().height
 
@@ -79,7 +79,7 @@ function getFocusedRectSize(_options = {})
     labelSquare = [getVisibleWidth(m.label), getVisibleHeight(m.label)]
     set({ "labelSquare": labelSquare })
 
-    stackChildren({ node: m.container, direction: "horizontal" })
+    stackChildren({ direction: "horizontal" }, m.container)
     return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
 end function
 
@@ -91,7 +91,7 @@ function getUnfocusedRectSize(_options = {})
     m.label.text = ""
     m.label.visible = false
 
-    stackChildren({ node: m.container, direction: "horizontal" })
+    stackChildren({ direction: "horizontal" }, m.container)
     return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
 end function
 

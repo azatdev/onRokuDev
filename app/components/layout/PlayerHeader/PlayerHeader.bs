@@ -20,7 +20,7 @@ sub onDataSet(options = {})
     end if
 
     setMetadata(content)
-    stackChildren({ node: m.container, direction: "vertical" })
+    stackChildren({ direction: "vertical" }, m.container)
 end sub
 
 

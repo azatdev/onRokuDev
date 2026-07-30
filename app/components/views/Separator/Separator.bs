@@ -20,5 +20,5 @@ end sub
 
 
 sub afterStyling(_options = {})
-    stackChildren({ node: top(), direction: "horizontal" })
+    stackChildren({ direction: "horizontal" })
 end sub
