@@ -44,6 +44,27 @@ sub onDataSet(options = {})
 end sub
 
 
+sub processScrollItem(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    model = options.model
+    if not rodash.isNode(model) then return
+
+    component = createObject("roSGNode", "Credit")
+    component.data = { content: model }
+    m.detailsScrollGroup.appendChild(component)
+end sub
+
+
+' Methods exteded from sgRouter
+
+function beforeViewClose(_options = {})
+    suspendPromise = promises.create()
+    fadeOut(top(), { duration: 0.3, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise }})
+    return suspendPromise
+end function
+
+
 function beforeViewOpen(options = {}) as dynamic
     top().opacity = 0.001
     fadeIn(top(), { duration: 0.5 })
@@ -58,23 +79,4 @@ end function
 sub onViewFadedOut(options = {})
     suspendPromise = options.promise
     promises.resolve(true, suspendPromise)
-end sub
-
-
-function beforeViewClose(_options = {})
-    suspendPromise = promises.create()
-    fadeOut(top(), { duration: 0.3, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise }})
-    return suspendPromise
-end function
-
-
-sub processScrollItem(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
-    model = options.model
-    if not rodash.isNode(model) then return
-
-    component = createObject("roSGNode", "Credit")
-    component.data = { content: model }
-    m.detailsScrollGroup.appendChild(component)
 end sub

@@ -4,6 +4,9 @@ sub init()
     exec(sub(_options = {})
         m.gradient = top().findNode("gradient")
         m.list = top().findNode("sidebarList")
+        safeFunctions({
+            "setActiveSlug": setActiveSlug
+        })
         setFocusMap({
             "onFocus": m.list
         })
@@ -13,6 +16,20 @@ sub init()
 
         safeObserve("data", onDataChange)
     end sub)
+end sub
+
+
+sub setActiveSlug(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    slug = options.slug ?? ""
+
+    if not rodash.isNode(m.content) then return
+    if not rodash.isNode(m.list) then return
+
+    itemModel = m.content.findNode(slug)
+    selectedItemIndex = rodash.indexOf(m.content.getChildren(-1, 0), itemModel)
+    if selectedItemIndex = m.list.itemSelected then return
+    exec("setActiveItem", { activeIndex: selectedItemIndex }, m.list)
 end sub
 
 
@@ -28,9 +45,7 @@ sub onDataChange(options = {})
     m.list.data = data
 
     defaultSlug = content.defaultSlug
-    itemModel = content.findNode(defaultSlug)
-    selectedItemIndex = rodash.indexOf(content.getChildren(-1, 0), itemModel)
-    exec("setActiveItem", { activeIndex: selectedItemIndex }, m.list)
+    setActiveSlug({ slug: defaultSlug })
 end sub
 
 

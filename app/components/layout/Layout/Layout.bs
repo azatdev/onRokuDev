@@ -19,7 +19,7 @@ sub init()
             { pattern: "/documentaries", component: "CatalogScreen", suspendMode: "show" },
             { pattern: "/content/:id", component: "ContentScreen", suspendMode: "show" },
             { pattern: "/details/:id", component: "DetailsModal", keepAlive: { enabled: false } },
-            ' { pattern: "/:screenName", component: "DefaultScreen" }
+            { pattern: "/:screenName", component: "WIPScreen" }
         ])
 
         safeFunctions({
@@ -217,5 +217,6 @@ end sub
 sub onRouterStateChanged(options = {})
     data = options.data
     if data.type <> "NavigationEnd" then return
-    setActiveView({ screenId: data.id })
+
+    dispatch(events.SCREEN_ACTIVE, { screenId: data.id, slug: data.url })
 end sub

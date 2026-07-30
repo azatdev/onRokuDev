@@ -44,48 +44,12 @@ sub init()
 end sub
 
 
-function beforeViewOpen(options = {}) as dynamic
-    routeData = options.route
-    if not rodash.isNode(routeData) then return promises.resolve(invalid)
-    context = routeData.context ?? {}
-    content = context.content
-    if not rodash.isNode(content) then return promises.resolve(invalid)
-
-    top().opacity = 0.001
-    top().visible = true
-    top().translation = [0, 0]
-    fadeIn(top(), { duration: 0.5 })
-
-    dispatch(events.SHOW_CONTENT_UI)
-    dispatch(events.GET_CONTENT_DATA, { screenId: routeData.id, slug: routeData.path, content: content })
-    return promises.resolve(invalid)
-end function
-
-
 sub onTabFocused(options = {})
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(m.contentScrollGroup) then return
 
     m.contentScrollGroup.animateToItem = options.data ?? 0
 end sub
-
-
-function onViewOpen(_options = {})
-    return promises.resolve(invalid)
-end function
-
-
-function onViewResume(_options = {})
-    dispatch(events.SHOW_CONTENT_UI)
-    fadeIn(top(), { duration: 0.5 })
-    return promises.resolve(invalid)
-end function
-
-
-function beforeViewSuspend(_options = {}) as dynamic
-    fadeOut(top(), { duration: 0.5 })
-    return promises.resolve(invalid)
-end function
 
 
 sub onDataSet(options = {})
@@ -213,3 +177,41 @@ sub scrollPage(direction = 0, callbackFunc = invalid)
 
     morph(morphObject, { callback: callbackFunc, duration: 0.3 })
 end sub
+
+
+' Methods exteded from sgRouter
+
+function beforeViewOpen(options = {}) as dynamic
+    routeData = options.route
+    if not rodash.isNode(routeData) then return promises.resolve(invalid)
+    context = routeData.context ?? {}
+    content = context.content
+    if not rodash.isNode(content) then return promises.resolve(invalid)
+
+    top().opacity = 0.001
+    top().visible = true
+    top().translation = [0, 0]
+    fadeIn(top(), { duration: 0.5 })
+
+    dispatch(events.SHOW_CONTENT_UI)
+    dispatch(events.GET_CONTENT_DATA, { screenId: routeData.id, slug: routeData.path, content: content })
+    return promises.resolve(invalid)
+end function
+
+
+function beforeViewSuspend(_options = {}) as dynamic
+    fadeOut(top(), { duration: 0.5 })
+    return promises.resolve(invalid)
+end function
+
+
+function onViewOpen(_options = {})
+    return promises.resolve(invalid)
+end function
+
+
+function onViewResume(_options = {})
+    dispatch(events.SHOW_CONTENT_UI)
+    fadeIn(top(), { duration: 0.5 })
+    return promises.resolve(invalid)
+end function

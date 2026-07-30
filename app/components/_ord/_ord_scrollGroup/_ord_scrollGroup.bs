@@ -6,7 +6,6 @@ sub init()
         m.scrolltrack = top().findNode("scrollTrack")
         m.scrollKnob = top().findNode("scrollKnob")
         m.scrollTimer = createObject("roSGNode", "Timer")
-        safeObserve("fire", onScrollTimerFired, m.scrollTimer)
 
         defaultConfig = {
             advanceKey: "down",
@@ -42,6 +41,7 @@ sub init()
         safeObserve("change", onChildChange)
         safeObserve("width", onConfigChange)
         safeObserve("height", onConfigChange)
+        safeObserve("fire", onScrollTimerFired, m.scrollTimer)
     end sub)
 end sub
 
