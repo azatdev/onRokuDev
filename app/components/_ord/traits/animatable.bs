@@ -56,7 +56,8 @@ class Animatable
     end function
 
 
-    sub runAnimation(id = "")
+    sub runAnimation(options = {})
+        id = options.id ?? ""
         if rodash.isEmptyString(id) then return
 
         animation = m.animations[id] ?? invalid
@@ -153,7 +154,8 @@ class Animatable
     end sub
 
 
-    sub removeAnimation(id = "")
+    sub removeAnimation(options = {})
+        id = options.id ?? ""
         if rodash.isEmptyString(id) then return
 
         animationShell = m.animations[id] ?? invalid
@@ -258,7 +260,9 @@ class Animatable
     end function
 
 
-    function morph(morphObject = {}, sharedOptions = {})
+    function morph(options = {})
+        morphObject = options.morphObject ?? {}
+        sharedOptions = options.sharedOptions ?? {}
         if not rodash.isNonEmptyAA(morphObject) then return invalid
         if m.animations = invalid then m.animations = {}
 
@@ -306,7 +310,7 @@ class Animatable
 
         deferred = sharedOptions.deferred ?? false
 
-        if not deferred then m.runAnimation(animationId)
+        if not deferred then m.runAnimation({ id: animationId })
 
         return animation
     end function
@@ -345,15 +349,17 @@ class Animatable
     end sub
 
 
-    function fadeIn(node = invalid, options = {})
+    function fadeIn(options = {})
+        node = options.node
         if not rodash.isNode(node) then return invalid
-        return m.fade(node, { opacity: 1 }, options)
+        return m.fade(node, { opacity: 1 }, options.options ?? {})
     end function
 
 
-    function fadeOut(node = invalid, options = {})
+    function fadeOut(options = {})
+        node = options.node
         if not rodash.isNode(node) then return invalid
-        return m.fade(node, { opacity: 0 }, options)
+        return m.fade(node, { opacity: 0 }, options.options ?? {})
     end function
 
 
@@ -369,7 +375,7 @@ class Animatable
             fields: options
         }
 
-        return m.morph(morphObject, sharedOptions)
+        return m.morph({ morphObject: morphObject, sharedOptions: sharedOptions })
     end function
 
 
@@ -384,3 +390,31 @@ class Animatable
         return floatValue!
     end function
 end class
+
+
+function runAnimation(id = "")
+    return interfaceFunction("runAnimation", { id: id })
+end function
+
+
+function removeAnimation(id = "")
+    return interfaceFunction("removeAnimation", { id: id })
+end function
+
+
+function morph(morphObject = {}, sharedOptions = {})
+    return interfaceFunction("morph", {
+        morphObject: morphObject,
+        sharedOptions: sharedOptions
+    })
+end function
+
+
+function fadeIn(node = invalid, options = {})
+    return interfaceFunction("fadeIn", { node: node, options: options })
+end function
+
+
+function fadeOut(node = invalid, options = {})
+    return interfaceFunction("fadeOut", { node: node, options: options })
+end function

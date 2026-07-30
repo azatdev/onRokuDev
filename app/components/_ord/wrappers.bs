@@ -128,41 +128,6 @@ function styleHooks(options = {})
 end function
 
 
-function runAnimation(id = "")
-    interface = m.ord_interfaces["runAnimation"]
-    if interface = invalid then return invalid
-    return interface.runAnimation(id)
-end function
-
-
-function removeAnimation(id = "")
-    interface = m.ord_interfaces["removeAnimation"]
-    if interface = invalid then return invalid
-    return interface.removeAnimation(id)
-end function
-
-
-function morph(morphObject = {}, sharedOptions = {})
-    interface = m.ord_interfaces["morph"]
-    if interface = invalid then return invalid
-    return interface.morph(morphObject, sharedOptions)
-end function
-
-
-function fadeIn(node = invalid, options = {})
-    interface = m.ord_interfaces["fadeIn"]
-    if interface = invalid then return invalid
-    return interface.fadeIn(node, options)
-end function
-
-
-function fadeOut(node = invalid, options = {})
-    interface = m.ord_interfaces["fadeOut"]
-    if interface = invalid then return invalid
-    return interface.fadeOut(node, options)
-end function
-
-
 function dispatch(eventId, options = {})
     interface = m.ord_interfaces["dispatch"]
     if interface = invalid then return invalid
@@ -252,4 +217,3 @@ function onError(e)
     ?"ERROR: " formatJSON(e)
     return invalid
 end function
-
