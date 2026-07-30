@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="_ord_flexList" extends="Rectangle">
+<component name="ord_flexList" extends="Rectangle">
     <interface>
         <field id="data" type="assocarray" />
         <field id="focusedContentIndex" type="integer" />
@@ -16,5 +16,5 @@
     <children>
         <TargetGroup id="carousel" />
     </children>
-    <script type="text/brightscript" uri="_ord_flexList.bs" />
+    <script type="text/brightscript" uri="ord_flexList.bs" />
 </component>

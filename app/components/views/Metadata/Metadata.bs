@@ -1,4 +1,4 @@
-import "pkg:/components/_ord/wrappers.bs"
+import "pkg:/components/_ord/init.bs"
 
 sub init()
     exec(sub(_options = {})
@@ -36,7 +36,7 @@ sub onDataSet(options = {})
     end for
 
     redrawStyles()
-    stackChildren({ node: m.container, direction: "horizontal" })
+    stackChildren({ direction: "horizontal" }, m.container)
 end sub
 
 

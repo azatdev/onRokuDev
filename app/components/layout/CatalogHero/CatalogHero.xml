@@ -5,7 +5,7 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <_ord_scrollGroup id="heroScrollGroup" />
+        <ord_scrollGroup id="heroScrollGroup" />
     </children>
     <script type="text/brightscript" uri="CatalogHero.bs" />
 </component>

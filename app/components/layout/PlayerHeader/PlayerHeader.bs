@@ -1,4 +1,4 @@
-import "pkg:/components/_ord/wrappers.bs"
+import "pkg:/components/_ord/init.bs"
 
 sub init()
     exec(sub(_options = {})
@@ -20,7 +20,7 @@ sub onDataSet(options = {})
     end if
 
     setMetadata(content)
-    stackChildren({ node: m.container, direction: "vertical" })
+    stackChildren({ direction: "vertical" }, m.container)
 end sub
 
 

@@ -7,7 +7,7 @@
     <children>
         <Div id="screenContainer">
             <Poster id="modalContainer">
-                <_ord_scrollGroup id="detailsScrollGroup" />
+                <ord_scrollGroup id="detailsScrollGroup" />
             </Poster>
         </Div>
     </children>

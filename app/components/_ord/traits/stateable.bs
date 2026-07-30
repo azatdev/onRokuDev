@@ -2,7 +2,7 @@ class Stateable
     publicFunctions = []
 
     sub new(_options = {})
-        top().addField("_ord_State", "assocarray", false)
+        top().addField("ord_state", "assocarray", false)
 
         m.setExportFunctions(getGlobalAA().ord_role)
     end sub
@@ -21,18 +21,21 @@ class Stateable
         if rodash.isEmpty(key) then return invalid
         if not rodash.isInvalid(node[key]) then return node[key]
 
-        nodeState = node.getRef("_ord_State") ?? {}
+        nodeState = node.getRef("ord_state") ?? {}
         return nodeState[key]
     end function
 
 
-    function get(options = {}, node = getGlobalAA().top)
-        if rodash.isString(options)
-            return m.getStateValue(options, node)
-        else if rodash.isArray(options)
+    function get(options = {})
+        stateOptions = options.options
+        node = options.node
+
+        if rodash.isString(stateOptions)
+            return m.getStateValue(stateOptions, node)
+        else if rodash.isArray(stateOptions)
             lookupObj = {}
 
-            for each key in options
+            for each key in stateOptions
                 lookupObj[key] = m.getStateValue(key, node)
             end for
 
@@ -43,12 +46,15 @@ class Stateable
     end function
 
 
-    sub set(options = {}, node = top())
-        if not rodash.isNonEmptyAA(options) then return
+    sub set(options = {})
+        stateOptions = options.options
+        node = options.node
 
-        nodeState = node.getRef("_ord_State") ?? {}
+        if not rodash.isNonEmptyAA(stateOptions) then return
 
-        for each item in options.items()
+        nodeState = node.getRef("ord_state") ?? {}
+
+        for each item in stateOptions.items()
             key = item.key ?? ""
             value = item.value
             if rodash.isEmptyString(key) then continue for
@@ -62,6 +68,16 @@ class Stateable
             end if
         end for
 
-        node.setRef("_ord_State", nodeState)
+        node.setRef("ord_state", nodeState)
     end sub
 end class
+
+
+function get(options, node = top())
+    return interfaceFunction("get", { options: options, node: node })
+end function
+
+
+function set(options = {}, node = top())
+    return interfaceFunction("set", { options: options, node: node })
+end function

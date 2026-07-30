@@ -1,7 +1,7 @@
-import "pkg:/components/_ord/_ord_flexList/_ord_flexList.bs"
+import "pkg:/components/_ord/ord_flexList/ord_flexList.bs"
 
 
-@suite("_ord_flexList tests")
+@suite("ord_flexList tests")
 class OrdFlexListTests extends rooibos.BaseTestSuite
 
     @describe("calculate.alignmentOffsets")

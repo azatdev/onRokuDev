@@ -12,8 +12,8 @@
             "dest": "source/main.brs"
         },
         {
-            "src": "tests/_ord_flexList.spec.bs",
-            "dest": "source/tests/_ord_flexList.spec.bs"
+            "src": "tests/ord_flexList.spec.bs",
+            "dest": "source/tests/ord_flexList.spec.bs"
         }
     ],
     "outFile": "out/rooibos-tests.zip",

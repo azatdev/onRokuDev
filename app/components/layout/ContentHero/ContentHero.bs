@@ -1,4 +1,4 @@
-import "pkg:/components/_ord/wrappers.bs"
+import "pkg:/components/_ord/init.bs"
 
 sub init()
     exec(sub(_options = {})
@@ -43,7 +43,7 @@ sub onDataSet(options = {})
 
     m.content = content
     onHydrated({ node: m.content })
-    stackChildren({ node: m.container, direction: "vertical" })
+    stackChildren({ direction: "vertical" }, m.container)
     dispatch(events.HERO_ITEM_FOCUSED, { content: content, section: sections.CONTENT_HERO })
 
     safeObserve("favorited", onFavoriteToggle, content)

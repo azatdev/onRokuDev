@@ -6,7 +6,7 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <_ord_flexList id="ctasList" />
+        <ord_flexList id="ctasList" />
     </children>
     <script type="text/brightscript" uri="CTAs.bs" />
 </component>

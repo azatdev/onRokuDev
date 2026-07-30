@@ -112,7 +112,7 @@ class Safeable
         proxyData = top().ord_proxyData ?? {}
         options = proxyData.input ?? {}
         top().ord_proxyData = invalid
-        returnData = exec(functionName, options, top())
+        returnData = m.exec({ func: functionName, options: options, node: top() })
 
         if returnData <> invalid
             proxyData.input = invalid
@@ -122,7 +122,12 @@ class Safeable
     end sub
 
 
-    sub safeObserve(fieldName = "", callbackFunc = "", node = getGlobalAA().top, infoFields = [])
+    sub safeObserve(options = {})
+        fieldName = options.fieldName ?? ""
+        callbackFunc = options.callbackFunc ?? ""
+        node = options.node ?? getGlobalAA().top
+        infoFields = options.infoFields ?? []
+
         if rodash.isEmptyString(fieldName) then return
         if not rodash.isNode(node) then return
 
@@ -146,7 +151,10 @@ class Safeable
     end sub
 
 
-    sub safeUnobserve(fieldName = "", node = getGlobalAA().top)
+    sub safeUnobserve(options = {})
+        fieldName = options.fieldName ?? ""
+        node = options.node ?? getGlobalAA().top
+
         if rodash.isEmptyString(fieldName) then return
         nodeIdentifier = getNodeIdentifier(node)
         uniqueFieldName = `${fieldName}${nodeIdentifier}`
@@ -182,7 +190,9 @@ class Safeable
     end sub
 
 
-    function safeFunc(functionName = "")
+    function safeFunc(options = {})
+        functionName = options.functionName ?? ""
+
         if devMode()
             return m.processSafeFunc(functionName)
         else
@@ -229,22 +239,43 @@ class Safeable
     sub setTaskFunction(options = {})
         if not rodash.isNonEmptyAA(options) then return
         taskFunction = options.function
-        getGlobalAA()._ord_taskFunction = taskFunction
+        if not rodash.isFunction(taskFunction) then return
+        getGlobalAA().ord_taskFunction = taskFunction
     end sub
 end class
 
 
 function exec(func, options = {}, node = top())
     if m.ord_initiated = invalid then ord_init()
+    return interfaceFunction("exec", { func: func, options: options, node: node })
+end function
 
-    if not rodash.isNonEmptyAA(m.ord_interfaces) then return invalid
 
-    interface = m.ord_interfaces["exec"]
-    if interface = invalid then return invalid
+function safeFunctions(options = {})
+    return interfaceFunction("safeFunctions", options)
+end function
 
-    return interface.exec({
-        func: func,
-        options: options,
+
+function safeFunc(functionName = "")
+    return interfaceFunction("safeFunc", { functionName: functionName })
+end function
+
+
+function safeObserve(fieldName = "", callbackFunc = "", node = top(), infoFields = [])
+    return interfaceFunction("safeObserve", {
+        fieldName: fieldName,
+        callbackFunc: callbackFunc,
+        infoFields: infoFields,
         node: node
     })
+end function
+
+
+function safeUnobserve(fieldName = "", node = top())
+    return interfaceFunction("safeUnobserve", { fieldName: fieldName, node: node })
+end function
+
+
+function setTaskFunction(taskFunction = invalid)
+    return interfaceFunction("setTaskFunction", { function: taskFunction })
 end function

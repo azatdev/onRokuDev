@@ -21,15 +21,12 @@ class Focusable
         m.publicFunctions.push("onFocusedChildChange")
         m.publicFunctions.push("setFocus")
         m.publicFunctions.push("onKeyEvent")
-        m.publicFunctions.push("processFocus")
         m.publicFunctions.push("resetFocus")
-        m.publicFunctions.push("readyToFocus")
         m.publicFunctions.push("setFocusMap")
-        m.publicFunctions.push("waitToFocus")
     end sub
 
 
-    sub applyDefaultFocus()
+    sub applyDefaultFocus(_options = {})
         if rodash.isNode(m.focusMap.current) and not top().isSameNode(m.focusMap.current)
             defaultNode = m.focusMap.current
         else if top().isSameNode(m.focusMap.current)
@@ -77,7 +74,7 @@ class Focusable
         if not rodash.isNonEmptyAA(options) then return
         focusedChild = options.data
         if not rodash.isNode(focusedChild) then m.onFocusRemoved(): return
-        if top().isSameNode(focusedChild) then m.applyDefaultFocus()
+        if top().isSameNode(focusedChild) then m.applyDefaultFocus({})
     end sub
 
 
@@ -181,40 +178,29 @@ class Focusable
         if rodash.isFunction(onFocusedChildChange) then return
         safeObserve("focusedChild", "onFocusedChildChange", top())
     end sub
-
-
-    sub waitToFocus(focusTarget)
-        if rodash.isNode(focusTarget)
-            if m.focusReady
-                m.setFocus({ nodeToFocus: focusTarget })
-                return
-            end if
-
-            m.focusFunction = invalid
-            m.focusNode = focusTarget
-        else if rodash.isFunction(focusTarget)
-            if m.focusReady
-                exec(focusTarget)
-                return
-            end if
-
-            m.focusFunction = focusTarget
-            m.focusNode = invalid
-        end if
-    end sub
-
-
-    sub readyToFocus()
-        if m.focusReady then return
-        m.focusReady = true
-
-        focusFunction = m.focusFunction
-        focusNode = m.focusNode
-
-        if rodash.isNode(focusNode)
-            m.setFocus({ nodeToFocus: focusNode })
-        else if rodash.isFunction(focusFunction)
-            exec(focusFunction)
-        end if
-    end sub
 end class
+
+
+function resetFocus()
+    return interfaceFunction("resetFocus", { node: top() })
+end function
+
+
+function setFocusMap(options = {})
+    return interfaceFunction("setFocusMap", options)
+end function
+
+
+function applyDefaultFocus()
+    return interfaceFunction("applyDefaultFocus", { node: top() })
+end function
+
+
+function setFocus(node, focusMapNode = invalid)
+    return interfaceFunction("setFocus", { nodeToFocus: node, focusMapNode: focusMapNode })
+end function
+
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    return interfaceFunction("onKeyEvent", { key: key, press: press }) ?? false
+end function

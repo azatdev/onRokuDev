@@ -1,0 +1,209 @@
+class Positionable
+    publicFunctions = []
+
+    sub new(_options = {})
+        m.setExportFunctions(getGlobalAA().ord_role)
+    end sub
+
+
+    sub setExportFunctions(componentRole = "")
+        if rodash.isEmptyString(componentRole) then return
+        if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
+
+        m.publicFunctions.push("centerComponent")
+        m.publicFunctions.push("getVisibleHeight")
+        m.publicFunctions.push("getVisibleWidth")
+        m.publicFunctions.push("quadrupleMargins")
+        m.publicFunctions.push("stackChildren")
+    end sub
+
+
+    sub centerComponent(options = {})
+        if not rodash.isNonEmptyAA(options) then return
+
+        node = options.node
+        if not rodash.isNode(node) then return
+
+        horizontal = options.horizontal ?? false
+        vertical = options.vertical ?? false
+
+        if horizontal
+            parentWidth = m.getVisibleWidth({ node: node.getParent() })
+            translation = node.translation
+            width = m.getVisibleWidth({ node: node })
+            translationX = (parentWidth / 2) - (width / 2)
+            node.translation = [translationX, translation[1]]
+        end if
+
+        if vertical
+            parentHeight = m.getVisibleHeight({ node: node.getParent() })
+            translation = node.translation
+            height = m.getVisibleHeight({ node: node })
+            translationY = (parentHeight / 2) - (height / 2)
+            node.translation = [translation[0], translationY]
+        end if
+    end sub
+
+
+    function getVisibleHeight(options = {})
+        node = options.node
+        if not rodash.isNode(node) then return 0
+        if not node.visible then return 0
+
+        nodeHeight = 0
+        clippingRect = node.clippingRect
+        boundingRect = node.boundingRect()
+        nodeMargins = m.quadrupleMargins({ margin: node.margin })
+
+        if not rodash.isNonEmptyAA(clippingRect) then return 0
+
+        nodeHeight = clippingRect.height
+
+        if clippingRect.height > 0
+        else if rodash.isNumber(node.height) and node.height > 0
+            nodeHeight = node.height
+        else if rodash.isNonEmptyAA(boundingRect)
+            nodeHeight = boundingRect.height
+        end if
+
+        nodeHeight += nodeMargins.top
+        nodeHeight += nodeMargins.bottom
+
+        return nodeHeight
+    end function
+
+
+    function getVisibleWidth(options = {})
+        node = options.node
+        if not rodash.isNode(node) then return 0
+
+        nodeWidth = 0
+        clippingRect = node.clippingRect
+        boundingRect = node.boundingRect()
+        nodeMargins = m.quadrupleMargins({ margin: node.margin })
+
+        if not node.visible then return 0
+        if not rodash.isNonEmptyAA(clippingRect) then return 0
+
+        if clippingRect.width > 0
+            nodeWidth = clippingRect.width
+        else if rodash.isNumber(node.width) and node.width > 0
+            nodeWidth = node.width
+        else if rodash.isNonEmptyAA(boundingRect)
+            nodeWidth = boundingRect.width
+        end if
+
+        nodeWidth += nodeMargins.left
+        nodeWidth += nodeMargins.right
+
+        return nodeWidth
+    end function
+
+
+    function quadrupleMargins(options = {})
+        returnObj = {
+            "left": 0,
+            "top": 0,
+            "right": 0,
+            "bottom": 0
+        }
+
+        if not rodash.isNonEmptyAA(options) then return returnObj
+
+        margin = options.margin
+        if margin = invalid then return returnObj
+
+        if rodash.isNumber(margin) then margin = [margin]
+        if rodash.isString(margin) then margin = [val(margin)]
+
+        if margin.count() = 1
+            returnObj["left"] = margin[0]
+            returnObj["top"] = margin[0]
+            returnObj["right"] = margin[0]
+            returnObj["bottom"] = margin[0]
+        else if margin.count() = 2 or margin.count() = 3
+            returnObj["left"] = margin[0]
+            returnObj["top"] = margin[1]
+            returnObj["right"] = margin[0]
+            returnObj["bottom"] = margin[1]
+        else if margin.count() = 4
+            returnObj["left"] = margin[3]
+            returnObj["top"] = margin[0]
+            returnObj["right"] = margin[1]
+            returnObj["bottom"] = margin[2]
+        end if
+
+        return returnObj
+    end function
+
+
+    sub stackChildren(options = {})
+        if not rodash.isNonEmptyAA(options) then return
+
+        node = options.node
+        children = node.getChildren(-1, 0)
+        totalHeight = 0
+        totalWidth = 0
+        direction = options.direction ?? "horizontal"
+        horizontal = direction = "horizontal"
+
+        for each child in children
+            if not child.isSubtype("Group") then continue for
+            childMargins = m.quadrupleMargins({ margin: child.margin })
+
+            topMargin = childMargins.top
+            leftMargin = childMargins.left
+
+            childHeight = m.getVisibleHeight({ node: child })
+            childWidth = m.getVisibleWidth({ node: child })
+
+            if horizontal
+                if childWidth = 0 then continue for
+                child.translation = [totalWidth + leftMargin, child.translation[1]]
+                totalWidth += childWidth
+            else
+                if childHeight = 0 then continue for
+                child.translation = [child.translation[0], totalHeight + topMargin]
+                totalHeight += childHeight
+            end if
+        end for
+
+        minWidth = node.minWidth ?? 0
+        minHeight = node.minHeight ?? 0
+
+        if horizontal
+            node.width = totalWidth > minWidth ? totalWidth : minWidth
+            node.height = node.boundingRect().height
+        else
+            node.height = totalHeight > minHeight ? totalHeight : minHeight
+            node.width = node.boundingRect().width
+        end if
+    end sub
+end class
+
+
+function centerComponent(options = {}, node = top())
+    options.append({ node: node })
+    return interfaceFunction("centerComponent", options)
+end function
+
+
+function getVisibleHeight(node = top())
+    return interfaceFunction("getVisibleHeight", { node: node })
+end function
+
+
+function getVisibleWidth(node = top())
+    return interfaceFunction("getVisibleWidth", { node: node })
+end function
+
+
+function quadrupleMargins(margin = 0)
+    return interfaceFunction("quadrupleMargins", { margin: margin })
+end function
+
+
+function stackChildren(options = {}, node = top())
+    options.append({ node: node })
+    return interfaceFunction("stackChildren", options)
+end function

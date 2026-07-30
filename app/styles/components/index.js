@@ -1,6 +1,6 @@
 module.exports = {
-    ...require("./_ord_flexList"),
-    ...require("./_ord_scrollGroup"),
+    ...require("./ord_flexList"),
+    ...require("./ord_scrollGroup"),
     ...require("./ButtonItem"),
     ...require("./CarouselItem"),
     ...require("./Controls"),

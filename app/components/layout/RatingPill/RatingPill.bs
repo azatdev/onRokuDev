@@ -1,4 +1,4 @@
-import "pkg:/components/_ord/wrappers.bs"
+import "pkg:/components/_ord/init.bs"
 
 sub init()
     exec(sub(_options = {})
@@ -14,5 +14,5 @@ sub onTextSet(options = {})
 
     rating = options.data
     m.ratingText.text = ucase("Rated " + rating.replace("_", "-"))
-    stackChildren({ node: m.pill, direction: "horizontal" })
+    stackChildren({ direction: "horizontal" }, m.pill)
 end sub

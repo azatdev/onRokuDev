@@ -18,7 +18,7 @@ module.exports = {
                     "visible": false,
                     "width": viewport.width
                 },
-                "_ord_scrollGroup":{
+                "ord_scrollGroup":{
                     "height": scrollGroupHeight,
                     "width": viewport.width
                 }
@@ -31,7 +31,7 @@ module.exports = {
                     "height": scrollGroupHeight - heightDelta,
                     "visible": true
                 },
-                "_ord_scrollGroup":{
+                "ord_scrollGroup":{
                     "height": scrollGroupHeight + heightDelta,
                     "margin": [0, 120]
                 }
