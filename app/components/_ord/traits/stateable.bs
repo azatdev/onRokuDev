@@ -26,13 +26,16 @@ class Stateable
     end function
 
 
-    function get(options = {}, node = getGlobalAA().top)
-        if rodash.isString(options)
-            return m.getStateValue(options, node)
-        else if rodash.isArray(options)
+    function get(options = {})
+        stateOptions = options.options
+        node = options.node
+
+        if rodash.isString(stateOptions)
+            return m.getStateValue(stateOptions, node)
+        else if rodash.isArray(stateOptions)
             lookupObj = {}
 
-            for each key in options
+            for each key in stateOptions
                 lookupObj[key] = m.getStateValue(key, node)
             end for
 
@@ -43,12 +46,15 @@ class Stateable
     end function
 
 
-    sub set(options = {}, node = top())
-        if not rodash.isNonEmptyAA(options) then return
+    sub set(options = {})
+        stateOptions = options.options
+        node = options.node
+
+        if not rodash.isNonEmptyAA(stateOptions) then return
 
         nodeState = node.getRef("_ord_State") ?? {}
 
-        for each item in options.items()
+        for each item in stateOptions.items()
             key = item.key ?? ""
             value = item.value
             if rodash.isEmptyString(key) then continue for
@@ -65,3 +71,13 @@ class Stateable
         node.setRef("_ord_State", nodeState)
     end sub
 end class
+
+
+function get(options, node = top())
+    return interfaceFunction("get", { options: options, node: node })
+end function
+
+
+function set(options = {}, node = top())
+    return interfaceFunction("set", { options: options, node: node })
+end function

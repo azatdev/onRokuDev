@@ -62,20 +62,6 @@ function setTaskFunction(taskFunction = invalid)
 end function
 
 
-function get(options, node = top())
-    interface = m.ord_interfaces["get"]
-    if interface = invalid then return invalid
-    return interface.get(options, node)
-end function
-
-
-function set(options = {}, node = top())
-    interface = m.ord_interfaces["set"]
-    if interface = invalid then return invalid
-    return interface.set(options, node)
-end function
-
-
 function publish(name = "", options = {})
     interface = m.ord_interfaces["publish"]
     if interface = invalid then return invalid
