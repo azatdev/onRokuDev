@@ -45,8 +45,10 @@ end sub
 sub onPositionChange(options = {})
     if rodash.isEmpty(options) then return
     position = options.position ?? 0
-    duration = options.duration ?? 0
+    duration = options.duration ?? get("duration") ?? 0
     exec("updateProgress", { position: position, duration: duration }, m.scrubBar)
+
+    set({ duration: duration })
 
     setPositionLabel({ position: position })
     m.durationLabel.text = formatSeekText(duration)

@@ -31,11 +31,12 @@ sub init()
 
         safeObserve("data", onDataSet)
         safeObserve("state", onVideoStateChange, m.video)
-        safeObserve("position", onVideoPositionChange, m.video, ["duration"])
+        safeObserve("position", onVideoPositionChange, m.video)
         safeObserve("duration", onVideoDurationChange, m.video)
 
         setFocusMap({
             "onFocus": m.videoOverlay,
+            "onUnfocus": resetUI,
             "videoOverlay": {
                 "left": [showOverlay, scrubLeft],
                 "right": [showOverlay, scrubRight],
@@ -157,9 +158,8 @@ end sub
 sub onVideoPositionChange(options = {})
     if rodash.isEmpty(options) then return
     position = options.data ?? 0
-    duration = options.info?.duration ?? 0
     set({ "scrubPosition": position })
-    exec("onPositionChange", { position: position, duration: duration }, m.videoOverlay)
+    exec("onPositionChange", { position: position }, m.videoOverlay)
 
     if not rodash.isNode(m.content) then return
     options.append({ contentModel: m.content })
@@ -206,6 +206,12 @@ sub performScrub(options = {})
     m.scrubTimer.control = "start"
     sendTrickplayInfo({ trickplayPosition: nextPosition })
     updateControl({ controlId: "scrubControl" })
+end sub
+
+
+sub resetUI(_options = {})
+    exec("onPositionChange", { position: 0, duration: 0 }, m.videoOverlay)
+    m.video.duration = 0
 end sub
 
 

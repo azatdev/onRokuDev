@@ -7,7 +7,6 @@
     <children>
         <Video id="video" />
         <VideoOverlay id="videoOverlay" />
-        <Separator id="separator" />
     </children>
     <script type="text/brightscript" uri="VideoPlayer.bs" />
 </component>

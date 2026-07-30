@@ -7,6 +7,9 @@ function getContentData(options = {})
     contentImages = data.images ?? []
     imageFields = getImageFields(contentImages)
 
+    videoServerURI = "<%- s(CONFIG.ENV.VIDEO_SERVER_URI) %>"
+    playlistUrl = data.playlistUrl ?? ""
+
     updateObject = {
         bifs: data.bifs ?? [],
         credits: data.credits ?? [],
@@ -17,7 +20,7 @@ function getContentData(options = {})
         genres: data.v2genres,
         id: data.documentId,
         rating: data.rating,
-        playlistUrl: data.playlistUrl,
+        playlistUrl:  videoServerURI + playlistUrl,
         position: data.position ?? 0,
         subtype: "ContentModel",
         title: data.title,

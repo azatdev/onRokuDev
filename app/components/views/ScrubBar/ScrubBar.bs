@@ -12,11 +12,16 @@ sub init()
     end sub)
 end sub
 
+
 sub updateProgress(options = {})
     if rodash.isEmpty(options) then return
     position = options.position ?? 0
     duration = options.duration ?? 0
-    if position = 0 or duration = 0 then return
+
+    if position = 0 or duration = 0
+        redrawStyles()
+        return
+    end if
 
     totalWidth = top().width
     scrubberWidth = m.scrubber.width
