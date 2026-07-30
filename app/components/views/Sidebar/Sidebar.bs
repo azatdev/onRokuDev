@@ -25,6 +25,7 @@ sub setActiveSlug(options = {})
 
     if not rodash.isNode(m.content) then return
     if not rodash.isNode(m.list) then return
+    if rodash.isEmptyString(slug) then return
 
     itemModel = m.content.findNode(slug)
     selectedItemIndex = rodash.indexOf(m.content.getChildren(-1, 0), itemModel)

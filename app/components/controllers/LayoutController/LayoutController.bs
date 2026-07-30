@@ -120,9 +120,11 @@ end sub
 
 
 sub navigateTo(options = {})
-    documentId = options.documentId
-    slug = options.slug
+    documentId = options.documentId ?? ""
+    slug = options.slug ?? ""
     content = options.content
+    activeSlug = get("activeSlug") ?? ""
+    if activeSlug = slug then return
 
     screenConfig = get(slug) ?? {}
     screenConfig["documentId"] = documentId
@@ -168,6 +170,7 @@ sub onScreenActive(options = {})
     if not rodash.isNonEmptyAA(options) then return
     exec("setActiveView", options, layout())
     exec("setActiveSlug", options, sidebar())
+    set({ activeSlug: options.slug ?? "" })
 end sub
 
 
