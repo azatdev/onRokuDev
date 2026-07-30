@@ -23,7 +23,7 @@ class Styleable
             if rodash.isAA(appStyles) then styleNode.setField(top().subType(), appStyles[top().subType()])
         end if
 
-        m.setStyles(styleNode[top().subType()])
+        m.setStyles({ stylesheet: styleNode[top().subType()], node: top() })
         safeObserve(top().subType(), "stylesUpdated", styleNode)
         safeObserve("change", "onChildChange")
         safeObserve("id", "onIdClassChange")
@@ -81,7 +81,7 @@ class Styleable
         m.setClassNames(node, filteredClassNames)
 
         nodeStyles = m.findNodeStyles({ node: node })
-        m.setStyles(nodeStyles, node)
+        m.setStyles({ stylesheet: nodeStyles, node: node })
     end sub
 
 
@@ -134,7 +134,7 @@ class Styleable
         if not hasRenderableNodes then return
 
         if operation = "add" or operation = "remove" or operation = "insert"
-            m.redrawStyles()
+            m.redrawStyles({})
         end if
     end sub
 
@@ -158,11 +158,11 @@ class Styleable
     end sub
 
 
-    sub redrawStyles()
+    sub redrawStyles(_options = {})
         styleObject = global()._ord_styles.getField(top().subType())
         if rodash.isEmpty(styleObject) then return
 
-        setStyles(styleObject)
+        m.setStyles({ stylesheet: styleObject, node: top() })
     end sub
 
 
@@ -174,7 +174,7 @@ class Styleable
             exec(m.hookFunctions.before, styleObject)
         end if
 
-        setStyles(styleObject)
+        m.setStyles({ stylesheet: styleObject, node: top() })
 
         if rodash.isAA(m.hookFunctions) and rodash.isFunction(m.hookFunctions.after)
             exec(m.hookFunctions.after, styleObject)
@@ -215,7 +215,10 @@ class Styleable
     end function
 
 
-    sub setStyles(stylesheet, node = top())
+    sub setStyles(options = {})
+        stylesheet = options.stylesheet
+        node = options.node ?? top()
+
         if not rodash.isNonEmptyAA(stylesheet) then return
         m.styleField(node, stylesheet)
 
@@ -224,7 +227,7 @@ class Styleable
         for each child in children
             childStyles = stylesheet[child.subType()]
             if rodash.isEmpty(childStyles) then continue for
-            m.setStyles(childStyles, child)
+            m.setStyles({ stylesheet: childStyles, node: child })
         end for
 
         m.setIdStyles(stylesheet, node)
@@ -260,7 +263,7 @@ class Styleable
     sub setIdStyles(stylesheet = {}, node = top())
         if not rodash.isNonEmptyAA(stylesheet) then return
         idStyles = stylesheet[`&#${node.id ?? ""}`]
-        if rodash.isNonEmptyAA(idStyles) then m.setStyles(idStyles, node)
+        if rodash.isNonEmptyAA(idStyles) then m.setStyles({ stylesheet: idStyles, node: node })
     end sub
 
 
@@ -268,7 +271,7 @@ class Styleable
         classNames = m.getClassNames(node)
         for each className in classNames
             classStyles = stylesheet[`&.${className}`]
-            if rodash.isNonEmptyAA(classStyles) then m.setStyles(classStyles, node)
+            if rodash.isNonEmptyAA(classStyles) then m.setStyles({ stylesheet: classStyles, node: node })
         end for
     end sub
 
@@ -302,3 +305,28 @@ class Styleable
         node.setField("class", rodash.join(classNames, " "))
     end sub
 end class
+
+
+function setStyles(options, node = top())
+    return interfaceFunction("setStyles", options = { stylesheet: options, node: node })
+end function
+
+
+function addClass(className = "", node = top())
+    return interfaceFunction("addClass", { class: className, node: node })
+end function
+
+
+function removeClass(className = "", node = top())
+    return interfaceFunction("removeClass", { class: className, node: node })
+end function
+
+
+function redrawStyles()
+    return interfaceFunction("redrawStyles", { node: top() })
+end function
+
+
+function styleHooks(options = {})
+    return interfaceFunction("styleHooks", options)
+end function

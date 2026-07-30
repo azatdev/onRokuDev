@@ -121,3 +121,18 @@ class Eventable
         m.eventQueue.eventData = options
     end sub
 end class
+
+
+function publish(name = "", options = {})
+    return interfaceFunction("publish", { id: name, options: options })
+end function
+
+
+function subscribe(options)
+    return interfaceFunction("subscribe", options)
+end function
+
+
+function dispatch(eventId, options = {})
+    return interfaceFunction("dispatch", { id: eventId, options: options })
+end function

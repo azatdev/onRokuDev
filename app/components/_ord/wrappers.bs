@@ -62,68 +62,6 @@ function setTaskFunction(taskFunction = invalid)
 end function
 
 
-function publish(name = "", options = {})
-    interface = m.ord_interfaces["publish"]
-    if interface = invalid then return invalid
-    return interface.publish({
-        id: name,
-        options: options
-    })
-end function
-
-
-function subscribe(options)
-    interface = m.ord_interfaces["subscribe"]
-    if interface = invalid then return invalid
-    return interface.subscribe(options)
-end function
-
-
-function setStyles(options, node = top())
-    interface = m.ord_interfaces["setStyles"]
-    if interface = invalid then return invalid
-    return interface.setStyles(options, node)
-end function
-
-
-function addClass(className = "", node = top())
-    interface = m.ord_interfaces["addClass"]
-    if interface = invalid then return invalid
-    return interface.addClass({ class: className, node: node })
-end function
-
-
-function removeClass(className = "", node = top())
-    interface = m.ord_interfaces["removeClass"]
-    if interface = invalid then return invalid
-    return interface.removeClass({ class: className, node: node })
-end function
-
-
-function redrawStyles()
-    interface = m.ord_interfaces["redrawStyles"]
-    if interface = invalid then return invalid
-    return interface.redrawStyles()
-end function
-
-
-function styleHooks(options = {})
-    interface = m.ord_interfaces["styleHooks"]
-    if interface = invalid then return invalid
-    return interface.styleHooks(options)
-end function
-
-
-function dispatch(eventId, options = {})
-    interface = m.ord_interfaces["dispatch"]
-    if interface = invalid then return invalid
-    return interface.dispatch({
-        id: eventId,
-        options: options
-    })
-end function
-
-
 function resetFocus()
     interface = m.ord_interfaces["resetFocus"]
     if interface = invalid then return invalid
@@ -163,13 +101,6 @@ function onKeyEvent(key as string, press as boolean) as boolean
     interface = m.ord_interfaces["onKeyEvent"]
     if interface = invalid then return false
     return interface["onKeyEvent"]({ key: key, press: press })
-end function
-
-
-function liveConfig(options = {}, node = top())
-    interface = m.ord_interfaces["liveConfig"]
-    if interface = invalid then return invalid
-    return interface.liveConfig(options, node)
 end function
 
 

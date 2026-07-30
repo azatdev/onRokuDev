@@ -27,9 +27,10 @@ class Configable
     end sub
 
 
-    function liveConfig(options = {}, node = top())
+    function liveConfig(options = {})
         field = options.field
         keyPath = options.keyPath
+        node = options.node
 
         if rodash.isEmptyString(field) then return invalid
         if rodash.isEmptyString(keyPath) then return invalid
@@ -75,3 +76,9 @@ class Configable
         node[nodeField] = configData
     end sub
 end class
+
+
+function liveConfig(options = {}, node = top())
+    options.append({ node: node })
+    return interfaceFunction("liveConfig", options)
+end function
