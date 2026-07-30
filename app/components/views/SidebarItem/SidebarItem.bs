@@ -13,15 +13,17 @@ sub setupItem()
     m.container = top().findNode("textContainer")
     m.background = top().findNode("background")
     m.highlight = top().findNode("highlight")
-    m.parentList = top().getParent()
-    m.flexList = m.parentList.getParent()
 
     safeObserve("focusPercent", onFocusPercentChange)
     safeObserve("itemContent", itemContentChanged)
     safeObserve("currRect", onCurrRectChange)
     safeObserve("groupHasFocus", onGroupFocusChange)
-    safeObserve("focusPercent", onGroupFocusPercentChange, m.parentList)
-    safeObserve("itemSelected", onListItemSelected, m.parentList)
+
+    parentList = top().getParent()
+    if not rodash.isNode(parentList) then return
+
+    safeObserve("focusPercent", onGroupFocusPercentChange, parentList)
+    safeObserve("itemSelected", onListItemSelected, parentList)
 end sub
 
 
@@ -45,7 +47,7 @@ sub itemContentChanged(options = {})
 
     setColors()
 
-    set({ totalItemCount: totalItemCount})
+    set({ "totalItemCount": totalItemCount})
     onTextChange()
 end sub
 
@@ -55,11 +57,16 @@ sub onTextChange(_options = {})
     m.container.width = m.container.boundingRect().width
     m.container.height = m.container.boundingRect().height
 
+    parentList = top().getParent()
+    if not rodash.isNode(parentList) then return
+    flexList = parentList.getParent()
+    if not rodash.isNode(flexList) then return
+
     exec("registerChildRect", {
         smallSquare: getUnFocusedRectSize(),
         bigSquare: getFocusedRectSize(),
-        index: m.top.index
-    }, top().getParent().getParent())
+        index: top().index
+    }, flexList)
 
     m.label.clippingRect = [0,0,0,0]
 end sub
@@ -122,8 +129,12 @@ end sub
 
 
 sub onFocusPercentChange(options = {})
-    if not rodash.isNode(m.flexList) then return
-    itemSelected = m.flexList.itemSelected = top().index
+    parentList = top().getParent()
+    if not rodash.isNode(parentList) then return
+    flexList = parentList.getParent()
+    if not rodash.isNode(flexList) then return
+
+    itemSelected = flexList.itemSelected = top().index
     if itemSelected then return
 
     focusPercentage = options.data ?? {}
@@ -145,8 +156,13 @@ end function
 
 
 sub setColors()
-    activeItem = m.flexList.itemSelected <> -1 and m.parentList.itemSelected = top().index
-    selectedItem = m.parentList.itemFocused = top().index
+    parentList = top().getParent()
+    if not rodash.isNode(parentList) then return
+    flexList = parentList.getParent()
+    if not rodash.isNode(flexList) then return
+
+    activeItem = flexList.itemSelected <> -1 and parentList.itemSelected = top().index
+    selectedItem = parentList.itemFocused = top().index
     groupHasFocus = top().groupHasFocus
 
     m.background.opacity = 0

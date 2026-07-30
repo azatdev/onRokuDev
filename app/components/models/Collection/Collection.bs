@@ -4,11 +4,11 @@ sub init()
     exec(sub(_options = {})
         m.paginationConfigs = "<%- o(CONFIG.Pagination) %>"
         safeFunctions({
-            generateDefaultModels: generateDefaultModels,
-            getChildFields: getChildFields,
-            getVariables: getVariables,
-            processCarouselData: processCarouselData,
-            returnInitialPagination: returnInitialPagination
+            "generateDefaultModels": generateDefaultModels,
+            "getChildFields": getChildFields,
+            "getVariables": getVariables,
+            "processCarouselData": processCarouselData,
+            "returnInitialPagination": returnInitialPagination
         })
     end sub)
 end sub
@@ -88,7 +88,7 @@ end sub
 
 
 function returnInitialPagination(_options = {})
-    if m.top.carouselType = "HERO"
+    if top().carouselType = "HERO"
         return m.paginationConfigs["HeroInitial"]
     else
         return m.paginationConfigs["Initial"]
@@ -97,7 +97,7 @@ end function
 
 
 function returnSubsequentPagination(_options = {})
-    if m.top.carouselType = "HERO"
+    if top().carouselType = "HERO"
         return m.paginationConfigs["HeroSubsequent"]
     else
         return m.paginationConfigs["Subsequent"]

@@ -8,7 +8,7 @@ sub init()
         safeObserve("data", onDataSet)
 
         styleHooks({
-            after: afterStyling
+            "after": afterStyling
         })
     end sub)
 end sub

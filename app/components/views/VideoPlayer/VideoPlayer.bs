@@ -51,15 +51,15 @@ sub init()
         })
 
         set({
-            activeControlsConfig: activeControlsConfig,
-            controlsConfig: controlsConfig,
-            scrubInterval: 10,
-            scrubPosition: 0,
-            seekDirection: 0,
-            seeking: false,
-            seekIntervals: [30, 60, 120],
-            seekSpeed: 0,
-            overlayOpen: false
+            "activeControlsConfig": activeControlsConfig,
+            "controlsConfig": controlsConfig,
+            "scrubInterval": 10,
+            "scrubPosition": 0,
+            "seekDirection": 0,
+            "seeking": false,
+            "seekIntervals": [30, 60, 120],
+            "seekSpeed": 0,
+            "overlayOpen": false
         })
     end sub)
 end sub
@@ -74,6 +74,7 @@ sub onDataSet(options = {})
     content = data.content
     m.content = content
     playerModel = exec("returnPlayerModel", {}, content)
+    if not rodash.isNode(playerModel) then return
     m.video.content = playerModel
     m.video.seek = playerModel.position
     m.video.control = "play"
@@ -86,7 +87,7 @@ sub onScrubTimerFired(_options = {})
     if not rodash.isNode(m.trickplay) then return
     if not rodash.isNode(m.video) then return
     m.video.control = "resume"
-    set({ scrubPosition: m.video.position })
+    set({ "scrubPosition": m.video.position })
     exec("hideTrickplay", {}, m.trickplay)
     resetControls()
 end sub
@@ -107,7 +108,7 @@ sub onSeekTimerFired(_options = {})
     nextPosition = scrubPosition + (seekIntervals[seekSpeed] * seekDirection)
     if nextPosition >= duration then nextPosition = duration
 
-    set({ scrubPosition: nextPosition })
+    set({ "scrubPosition": nextPosition })
     sendTrickplayInfo({ trickplayPosition: nextPosition })
 
     if nextPosition = duration then m.seekTimer.control = "stop"
@@ -133,10 +134,10 @@ sub onSelection(_options = {})
         exec("hideTrickplay", {}, m.trickplay)
         m.video.seek = get("scrubPosition")
         set({
-            scrubPosition: m.video.position,
-            seekDirection: 0,
-            seeking: false,
-            seekSpeed: 0
+            "scrubPosition": m.video.position,
+            "seekDirection": 0,
+            "seeking": false,
+            "seekSpeed": 0
         })
     else
         hideOverlay()
@@ -157,7 +158,7 @@ sub onVideoPositionChange(options = {})
     if rodash.isEmpty(options) then return
     position = options.data ?? 0
     duration = options.info?.duration ?? 0
-    set({ scrubPosition: position })
+    set({ "scrubPosition": position })
     exec("onPositionChange", { position: position, duration: duration }, m.videoOverlay)
 
     if not rodash.isNode(m.content) then return
@@ -201,7 +202,7 @@ sub performScrub(options = {})
     positionDelta = options.positionDelta
     nextPosition = currentPosition + positionDelta
 
-    set({ scrubPosition: nextPosition })
+    set({ "scrubPosition": nextPosition })
     m.scrubTimer.control = "start"
     sendTrickplayInfo({ trickplayPosition: nextPosition })
     updateControl({ controlId: "scrubControl" })
@@ -251,9 +252,9 @@ sub onSeekCancel()
     if m.seekTimer.control = "start" then m.seekTimer.control = "stop"
     m.video.control = "resume"
     set({
-        seekDirection: 0,
-        seeking: false,
-        seekSpeed: 0
+        "seekDirection": 0,
+        "seeking": false,
+        "seekSpeed": 0
     })
     exec("hideTrickplay", {}, m.trickplay)
 end sub
@@ -262,7 +263,7 @@ end sub
 sub hideOverlay(_options = {})
     if not get("overlayOpen") then return
     fadeOut(m.videoOverlay)
-    set({ overlayOpen: false })
+    set({ "overlayOpen": false })
 end sub
 
 
@@ -273,7 +274,7 @@ sub showOverlay(_options = {})
     end if
 
     fadeIn(m.videoOverlay)
-    set({ overlayOpen: true })
+    set({ "overlayOpen": true })
     m.overlayTimer.control = "start"
 end sub
 
@@ -303,11 +304,11 @@ sub startSeek()
 
     if seeking
         if seekSpeed > seekIntervals.count() - 1 then seekSpeed = seekIntervals.count() - 1
-        set({ seekSpeed: seekSpeed })
+        set({ "seekSpeed": seekSpeed })
     else
         set({
-            scrubPosition: get("scrubPosition") ?? m.video.position,
-            seeking: true
+            "scrubPosition": get("scrubPosition") ?? m.video.position,
+            "seeking": true
         })
         m.seekTimer.control = "start"
         onSeekTimerFired()
@@ -322,7 +323,7 @@ sub seekForward(_options = {})
     if seekDirection = -1 then seekSpeed = 0
     if seekDirection = 1 then seekSpeed += 1
 
-    set({ seekDirection: 1, seekSpeed: seekSpeed })
+    set({ "seekDirection": 1, "seekSpeed": seekSpeed })
     startSeek()
 end sub
 
@@ -333,7 +334,7 @@ sub seekRewind(_options = {})
     if seekDirection = 1 then seekSpeed = 0
     if seekDirection = -1 then seekSpeed += 1
 
-    set({ seekDirection: -1, seekSpeed: seekSpeed })
+    set({ "seekDirection": -1, "seekSpeed": seekSpeed })
     startSeek()
 end sub
 

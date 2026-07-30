@@ -3,20 +3,38 @@ const dimensions = mixins["Dimensions"]
 const palette = mixins["Palette"]
 const viewport = dimensions["viewport"]
 
+const heroHeight = 600;
+const heightDelta = 150;
+const scrollGroupHeight = 480;
+
 module.exports = {
     "CatalogScreen": {
         "Div": {
             "&#screenContainer": {
                 "CatalogHero": {
-                    height: 600,
-                    width: viewport.width
+                    "height": heroHeight,
+                    "width": viewport.width
                 },
-                "Hero": {
-                    height: 0
+                "Header": {
+                    "visible": false,
+                    "width": viewport.width
                 },
                 "_ord_scrollGroup":{
-                    height: 480,
-                    width: viewport.width
+                    "height": scrollGroupHeight,
+                    "width": viewport.width
+                }
+            },
+            "&.noHero": {
+                "CatalogHero": {
+                    "visible": false,
+                },
+                "Header": {
+                    "height": scrollGroupHeight - heightDelta,
+                    "visible": true
+                },
+                "_ord_scrollGroup":{
+                    "height": scrollGroupHeight + heightDelta,
+                    "margin": [0, 120]
                 }
             }
         }

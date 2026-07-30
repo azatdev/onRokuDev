@@ -7,7 +7,7 @@ sub init()
         m.scrubber = top().findNode("scrubber")
 
         safeFunctions({
-            updateProgress: updateProgress
+            "updateProgress": updateProgress
         })
     end sub)
 end sub

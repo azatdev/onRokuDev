@@ -8,20 +8,20 @@ end sub
 
 
 sub setupItem()
-    m.label = m.top.findNode("label")
-    m.icon = m.top.findNode("icon")
-    m.container = m.top.findNode("textContainer")
+    m.label = top().findNode("label")
+    m.icon = top().findNode("icon")
+    m.container = top().findNode("textContainer")
     m.background = top().findNode("background")
     m.highlightTop = top().findNode("highlightTop")
     m.highlightBottom = top().findNode("highlightBottom")
     m.colorFieldInterpolator = top().findNode("focusColorInterpolator")
-    m.parentList = top().getParent()
-    m.flexList = m.parentList.getParent()
+    parentList = top().getParent()
 
     safeObserve("focusPercent", onFocusPercentChange)
     safeObserve("itemContent", itemContentChanged, top())
     safeObserve("currRect", onCurrRectChange, top())
-    safeObserve("focusPercent", onGroupFocusPercentChange, m.parentList)
+
+    if rodash.isNode(parentList) then safeObserve("focusPercent", onGroupFocusPercentChange, parentList)
 end sub
 
 
@@ -40,7 +40,7 @@ sub itemContentChanged(options = {})
     setIconInfo(content)
 
     dynamicWidth = content.dynamicWidth ?? false
-    set({ dynamicWidth: dynamicWidth })
+    set({ "dynamicWidth": dynamicWidth })
     onTextChange()
 end sub
 
@@ -70,16 +70,21 @@ sub onTextChange(_options = {})
     m.container.width = m.container.boundingRect().width
     m.container.height = m.container.boundingRect().height
 
-    exec("registerChildRect", {
-        smallSquare: getUnFocusedRectSize(),
-        bigSquare: getFocusedRectSize(),
-        index: m.top.index
-    }, top().getParent().getParent())
-
     if get("dynamicWidth")
         labelSquare = get("labelSquare") ?? [0,0]
         m.label.clippingRect = [0, 0, labelSquare[0] * clipPercentage, labelSquare[1]]
     end if
+
+    parentList = top().getParent()
+    if not rodash.isNode(parentList) then return
+    flexList = parentList.getParent()
+    if not rodash.isNode(flexList) then return
+
+    exec("registerChildRect", {
+        smallSquare: getUnFocusedRectSize(),
+        bigSquare: getFocusedRectSize(),
+        index: top().index
+    }, flexList)
 end sub
 
 
@@ -99,9 +104,12 @@ sub onGroupFocusPercentChange(options = {})
     labelSquare = get("labelSquare") ?? [0,0]
     labelWidth = labelSquare[0]
     labelHeight = labelSquare[1]
-    if m.parentList.itemFocused = top().index then m.colorFieldInterpolator.fraction = percentage
+    parentList = top().getParent()
+    if not rodash.isNode(parentList) then return
 
-    if m.parentList.itemFocused = top().index and get("dynamicWidth")
+    if parentList.itemFocused = top().index then m.colorFieldInterpolator.fraction = percentage
+
+    if parentList.itemFocused = top().index and get("dynamicWidth")
         m.label.clippingRect = [0, 0, labelWidth * percentage, labelHeight]
     end if
 end sub

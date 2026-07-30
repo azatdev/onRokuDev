@@ -18,7 +18,7 @@ sub init()
         })
 
         styleHooks({
-            after: afterStyling
+            "after": afterStyling
         })
     end sub)
 end sub
@@ -44,30 +44,6 @@ sub onDataSet(options = {})
 end sub
 
 
-function beforeViewOpen(options = {}) as dynamic
-    top().opacity = 0.001
-    fadeIn(top(), { duration: 1 })
-    route = options.route ?? {}
-    context = route.context ?? {}
-    content = context.content
-    if rodash.isNode(content) then top().data = { content: content }
-    return promises.resolve(invalid)
-end function
-
-
-sub onViewFadedOut(options = {})
-    suspendPromise = options.promise
-    promises.resolve(true, suspendPromise)
-end sub
-
-
-function beforeViewClose(_options = {})
-    suspendPromise = promises.create()
-    fadeOut(top(), { duration: 0.5, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise }})
-    return suspendPromise
-end function
-
-
 sub processScrollItem(options = {})
     if not rodash.isNonEmptyAA(options) then return
 
@@ -77,4 +53,35 @@ sub processScrollItem(options = {})
     component = createObject("roSGNode", "Credit")
     component.data = { content: model }
     m.detailsScrollGroup.appendChild(component)
+end sub
+
+
+' Methods exteded from sgRouter
+
+function beforeViewClose(_options = {})
+    suspendPromise = promises.create()
+    fadeOut(top(), { duration: 0.3, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise }})
+    return suspendPromise
+end function
+
+
+function beforeViewOpen(options = {}) as dynamic
+    if not rodash.isNonEmptyAA(options) then return invalid
+
+    top().opacity = 0.001
+    fadeIn(top(), { duration: 0.5 })
+
+    route = options.route ?? {}
+    context = route.context ?? {}
+    content = context.content
+
+    if rodash.isNode(content) then top().data = { content: content }
+    return promises.resolve(invalid)
+end function
+
+
+sub onViewFadedOut(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    suspendPromise = options.promise
+    promises.resolve(true, suspendPromise)
 end sub

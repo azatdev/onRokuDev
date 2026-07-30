@@ -1,4 +1,4 @@
-const { Dimensions: dimensions } = require("./Dimensions");
+const { "Dimensions": dimensions } = require("./Dimensions");
 const viewport = dimensions["viewport"];
 
 module.exports = {

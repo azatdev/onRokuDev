@@ -5,15 +5,15 @@ const viewport = dimensions["viewport"]
 
 module.exports = {
     "HeaderImage": {
-        height: 561,
-        translation: [921, 60],
-        width: 999,
+        "height": 561,
+        "translation": [921, 60],
+        "width": 999,
         "MaskGroup": {
             "maskuri": "pkg:/static/images/gradients/header-image-mask.webp"
         },
         "Div": {
             "&#headerImageGradients": {
-                visible: false,
+                "visible": false,
                 "Poster": {
                     "&#leftGradient": {
                         "blendColor": "#000000",

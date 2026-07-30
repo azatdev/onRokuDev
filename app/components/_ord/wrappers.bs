@@ -2,7 +2,7 @@ import "init.bs"
 
 sub registerControllers(controllers = [])
     if not rodash.isNonEmptyArray(controllers) then return
-    if not m.top.isSubtype("Scene") then return
+    if not top().isSubtype("Scene") then return
 
     for each controllerName in controllers
         updateObject = {}
@@ -41,14 +41,14 @@ function safeFunc(functionName = "")
 end function
 
 
-function safeObserve(fieldName = "", callbackFunc = "", node = m.top, infoFields = [])
+function safeObserve(fieldName = "", callbackFunc = "", node = top(), infoFields = [])
     interface = m.ord_interfaces["safeObserve"]
     if interface = invalid then return invalid
     return interface.safeObserve(fieldName, callbackFunc, node, infoFields)
 end function
 
 
-function safeUnobserve(fieldName = "", node = m.top)
+function safeUnobserve(fieldName = "", node = top())
     interface = m.ord_interfaces["safeUnobserve"]
     if interface = invalid then return invalid
     return interface.safeUnobserve(fieldName, node)
@@ -62,14 +62,14 @@ function setTaskFunction(taskFunction = invalid)
 end function
 
 
-function get(options, node = m.top)
+function get(options, node = top())
     interface = m.ord_interfaces["get"]
     if interface = invalid then return invalid
     return interface.get(options, node)
 end function
 
 
-function set(options = {}, node = m.top)
+function set(options = {}, node = top())
     interface = m.ord_interfaces["set"]
     if interface = invalid then return invalid
     return interface.set(options, node)
@@ -93,21 +93,21 @@ function subscribe(options)
 end function
 
 
-function setStyles(options, node = m.top)
+function setStyles(options, node = top())
     interface = m.ord_interfaces["setStyles"]
     if interface = invalid then return invalid
     return interface.setStyles(options, node)
 end function
 
 
-function addClass(className = "", node = m.top)
+function addClass(className = "", node = top())
     interface = m.ord_interfaces["addClass"]
     if interface = invalid then return invalid
     return interface.addClass({ class: className, node: node })
 end function
 
 
-function removeClass(className = "", node = m.top)
+function removeClass(className = "", node = top())
     interface = m.ord_interfaces["removeClass"]
     if interface = invalid then return invalid
     return interface.removeClass({ class: className, node: node })
@@ -302,7 +302,7 @@ end function
 
 
 sub stackChildren(options = {})
-    node = options.node ?? m.top
+    node = options.node ?? top()
     children = node.getChildren(-1, 0)
     totalHeight = 0
     totalWidth = 0

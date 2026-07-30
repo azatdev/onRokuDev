@@ -6,7 +6,6 @@ sub init()
         m.contentLogo = top().findNode("contentLogo")
         m.metadata = top().findNode("metadata")
         m.title = top().findNode("title")
-        m.headerImage = top().findNode("headerImage")
         safeObserve("data", onDataSet)
     end sub)
 end sub
@@ -16,6 +15,22 @@ sub onDataSet(options = {})
     if not rodash.isNonEmptyAA(options) then return
     data = options.data
     content = data.content
+    if not rodash.isNode(content) then return
+    m.content = content
+
+    if content.hydrated ?? false
+        onHydrated({ node: m.content })
+    else
+        safeObserve("hydrated", onHydrated, content)
+    end if
+end sub
+
+
+sub onHydrated(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    content = options.node
+    if not rodash.isNode(content) then return
+
     if not rodash.isEmpty(content.logoImageUri)
         m.contentLogo.visible = true
         m.title.visible = false
@@ -26,10 +41,7 @@ sub onDataSet(options = {})
         setLogoTitle(content.title)
     end if
 
-    m.headerImage.newUri = content.posterImageUri
-
     setMetadata(content)
-
     stackChildren({ node: m.container, direction: "vertical" })
 end sub
 

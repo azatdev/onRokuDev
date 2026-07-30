@@ -1,5 +1,6 @@
 module.exports = {
     ...require("./CatalogScreen"),
     ...require("./ContentScreen"),
-    ...require("./DetailsModal")
+    ...require("./DetailsModal"),
+    ...require("./WIPScreen")
 };

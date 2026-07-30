@@ -7,11 +7,13 @@ module.exports = {
             "&#container": {
                 "Poster": {
                     "&#thumbnail": {
+                        "loadDisplayMode": "scaleToZoom",
                         "loadSync": true,
                         "translation": [6, 6]
                     },
                     "&#outline": {
                         "blendColor": palette.highlightColor,
+                        "loadSync": true,
                         "uri": "pkg:/static/images/9patches/9px-outline-18px.9.png",
                     }
                 }
@@ -19,8 +21,8 @@ module.exports = {
         },
         "Label": {
             "&#label": {
-                color: palette.primaryColor,
-                translation: [33, 33]
+                "color": palette.primaryColor,
+                "translation": [33, 33]
             }
         }
     }

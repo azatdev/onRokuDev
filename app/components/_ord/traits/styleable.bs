@@ -118,6 +118,21 @@ class Styleable
         changeData = options.data
         if rodash.isEmpty(changeData) then return
         operation = changeData.operation ?? ""
+
+        numberOfNewNodes = changeData.index2 - changeData.index1 + 1
+        addedNodes = top().getChildren(numberOfNewNodes, changeData.index1)
+
+        hasRenderableNodes = false
+
+        for each newChild in addedNodes
+            if newChild.isSubtype("Group")
+                hasRenderableNodes = true
+                exit for
+            end if
+        end for
+
+        if not hasRenderableNodes then return
+
         if operation = "add" or operation = "remove" or operation = "insert"
             m.redrawStyles()
         end if

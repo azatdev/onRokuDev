@@ -6,36 +6,40 @@ sub init()
         m.cornerGradient = top().findNode("cornerGradient")
         m.catalogGradientContainer = top().findNode("catalogGradientContainer")
         m.contentGradientContainer = top().findNode("contentGradientContainer")
+        m.headerImage = top().findNode("headerImage")
+
         safeFunctions({
-            hideBackground: hideBackground,
-            hideCatalogGradients: hideCatalogGradients,
-            hideContentGradients: hideContentGradients,
-            showBackground: showBackground,
-            showCatalogGradients: showCatalogGradients,
-            showContentGradients: showContentGradients,
-            updateAssets: updateAssets
+            "hideBackground": hideBackground,
+            "hideCatalogGradients": hideCatalogGradients,
+            "hideContentGradients": hideContentGradients,
+            "setComplimentaryColor": setComplimentaryColor,
+            "showBackground": showBackground,
+            "showCatalogGradients": showCatalogGradients,
+            "showContentGradients": showContentGradients,
+            "updateBackgroundAssets": updateBackgroundAssets,
+            "updateHeaderImage": updateHeaderImage
         })
     end sub)
 end sub
 
 
 sub hideCatalogGradients(_options = {})
-    fadeOut(m.catalogGradientContainer, { duration: 1 })
+    fadeOut(m.catalogGradientContainer, { duration: 0.5 })
 end sub
 
 
 sub showCatalogGradients(_options = {})
-    fadeIn(m.catalogGradientContainer, { duration: 1 })
+    fadeIn(m.catalogGradientContainer, { duration: 0.5 })
 end sub
 
 
 sub showContentGradients(_options = {})
-    fadeIn(m.contentGradientContainer, { duration: 1 })
+    fadeIn(m.contentGradientContainer, { duration: 0.5 })
 end sub
 
 
 sub hideContentGradients(_options = {})
-    fadeOut(m.contentGradientContainer, { duration: 1 })
+    fadeOut(m.contentGradientContainer, { duration: 0.5 })
 end sub
 
 
@@ -65,20 +69,22 @@ sub setBackground(newUri = "")
     newPoster.height = "<%- s(STYLES.Dimensions.viewport.height) %>"
     oldPoster = m.poster
     m.backgroundContainer.appendChild(newPoster)
-    fadeIn(newPoster, { callback: onBackgroundFadeIn, callbackOptions: { node: oldPoster }, duration: 0.5 })
+    fadeIn(newPoster, { callback: onBackgroundFadeIn, callbackOptions: { node: oldPoster }, duration: 0.3 })
     m.poster = newPoster
 end sub
 
 
-sub updateAssets(options = {})
+sub updateBackgroundAssets(options = {})
     if rodash.isEmpty(options) then return
     content = options.content
     if not rodash.isNode(content) then return
 
-    setComplimentaryColor(content.complimentaryColor)
+    setComplimentaryColor(options)
 
     section = options.section
     if rodash.isEmpty(section) then return
+
+    showBackground()
 
     if section = sections.HERO
         setBackground(content.headerImageUri)
@@ -88,7 +94,21 @@ sub updateAssets(options = {})
 end sub
 
 
-sub setComplimentaryColor(newBlendColor = "")
+sub updateHeaderImage(options = {})
+    if rodash.isEmpty(options) then return
+    if not rodash.isNode(m.headerImage) then return
+    m.headerImage.data = options
+    showHeaderImage()
+end sub
+
+
+sub setComplimentaryColor(options = {})
+    if rodash.isEmpty(options) then return
+    content = options.content
+    if not rodash.isNode(content) then return
+
+    newBlendColor = content.complimentaryColor
+
     if rodash.isEmpty(newBlendColor) then return
     if not rodash.isNode(m.cornerGradient) then return
     if rodash.isEmpty(newBlendColor) then newBlendColor = "<%- s(STYLES.Palette.defaultCornerColor) %>"
@@ -110,5 +130,22 @@ end sub
 
 
 sub showBackground(_options = {})
+    hideHeaderImage()
     fadeIn(m.backgroundContainer, { duration: 0.3 })
+end sub
+
+
+sub hideHeaderImage(_options = {})
+    fadeOut(m.headerImage, { callback: clearHeaderImages, duration: 0.3 })
+end sub
+
+
+sub showHeaderImage(_options = {})
+    hideBackground()
+    fadeIn(m.headerImage, { duration: 0.3 })
+end sub
+
+
+sub clearHeaderImages(_options = {})
+    exec("clearImages", {}, m.headerImage)
 end sub

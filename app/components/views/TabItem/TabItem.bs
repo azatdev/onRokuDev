@@ -4,7 +4,7 @@ sub init()
     exec(sub(_options = {})
         setupItem()
         styleHooks({
-            after: afterStyling
+            "after": afterStyling
         })
     end sub)
 end sub
@@ -22,15 +22,15 @@ sub setupItem()
     m.tabBackground = top().findNode("tabBackground")
     m.tabTop = top().findNode("tabTop")
     m.tabBottom = top().findNode("tabBottom")
-    m.parentList = top().getParent()
-    m.flexList = m.parentList.getParent()
 
     safeObserve("focusPercent", onFocusPercentChange)
     safeObserve("itemContent", itemContentChanged, top())
     safeObserve("currRect", onCurrRectChange, top())
     safeObserve("width", onCurrRectChange, top())
     safeObserve("height", onCurrRectChange, top())
-    if rodash.isNode(m.parentList) then safeObserve("focusPercent", onGroupFocusPercentChange, m.parentList)
+
+    parentList = top().getParent()
+    if rodash.isNode(parentList) then safeObserve("focusPercent", onGroupFocusPercentChange, parentList)
 end sub
 
 
@@ -44,9 +44,10 @@ sub itemContentChanged(options = {})
 
     onTextChange()
 
-    if not rodash.isNode(m.parentList) then return
+    parentList = top().getParent()
+    if not rodash.isNode(parentList) then return
 
-    if top().index = m.parentList.itemFocused then addClass("active", top())
+    if top().index = parentList.itemFocused then addClass("active", top())
 end sub
 
 
@@ -59,13 +60,16 @@ sub onTextChange(_options = {})
     top().width = tabWidth
     top().height = tabHeight
 
-    if not rodash.isNode(m.parentList) then return
+    parentList = top().getParent()
+    if not rodash.isNode(parentList) then return
+    flexList = parentList.getParent()
+    if not rodash.isNode(flexList) then return
 
     exec("registerChildRect", {
         smallSquare: getFocusedRectSize(),
         bigSquare: getFocusedRectSize(),
         index: top().index
-    }, m.parentList.getParent())
+    }, flexList)
 end sub
 
 
@@ -92,7 +96,9 @@ end sub
 
 
 sub onGroupFocusPercentChange(options = {})
-    if not m.parentList.itemFocused = top().index then return
+    parentList = top().getParent()
+    if not rodash.isNode(parentList) then return
+    if not parentList.itemFocused = top().index then return
     percentage = options.data ?? 0
     m.tabBackground.opacity = 0.5 + (percentage * (0.9 - 0.5))
 end sub

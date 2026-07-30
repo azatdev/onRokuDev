@@ -19,7 +19,7 @@ sub init()
             { pattern: "/documentaries", component: "CatalogScreen", suspendMode: "show" },
             { pattern: "/content/:id", component: "ContentScreen", suspendMode: "show" },
             { pattern: "/details/:id", component: "DetailsModal", keepAlive: { enabled: false } },
-            ' { pattern: "/:screenName", component: "DefaultScreen" }
+            { pattern: "/:screenName", component: "WIPScreen" }
         ])
 
         safeFunctions({
@@ -29,6 +29,8 @@ sub init()
             "showContentUI": showContentUI,
             "navigateTo": navigateTo,
             "playVideo": playVideo,
+            "setActiveView": setActiveView,
+            "updateHeaderAssets": updateHeaderAssets,
             "updateBackgroundAssets": updateBackgroundAssets
         })
 
@@ -51,10 +53,9 @@ sub init()
         })
 
         set({
-            catalogCarouselsFocused: false,
-            catalogUIHidden: false,
-            contentUIHidden: true,
-            navigationHidden: false
+            "catalogUIHidden": false,
+            "contentUIHidden": true,
+            "navigationHidden": false
         })
 
         safeObserve("routerState", onRouterStateChanged, sgRouter.getRouter())
@@ -63,21 +64,19 @@ end sub
 
 
 sub catalogCarouselsFocused(options = {})
-    set({ catalogCarouselsFocused: true })
     exec("hideBackground", options, m.background)
 end sub
 
 
 sub catalogHeroFocused(options = {})
-    set({ catalogCarouselsFocused: false })
     exec("showBackground", options, m.background)
 end sub
 
 
 sub focusOnScreen(_options = {})
-    activeView = m.activeView
+    activeView = getActiveView()
     if not rodash.isNode(activeView) then return
-    setFocus(m.activeView, m.screenContainer)
+    setFocus(activeView, m.screenContainer)
 end sub
 
 
@@ -118,14 +117,10 @@ sub navigateTo(options = {})
     slug = options.slug ?? ""
     if rodash.isEmptyString(slug) then return
 
-    sgRouter.navigateTo(slug, { context: options })
-end sub
+    routeOptions = {}
+    routeOptions.append(options)
 
-
-sub onRouterStateChanged(options = {})
-    data = options.data
-    if data.type <> "NavigationEnd" then return
-    setActiveView(data.id)
+    sgRouter.navigateTo(slug, routeOptions)
 end sub
 
 
@@ -158,25 +153,30 @@ sub playVideo(options = {})
 end sub
 
 
-sub setActiveView(screenId = "")
+function getActiveView()
+    return top().findNode(m.activeViewId ?? "")
+end function
+
+
+sub setActiveView(options = {})
+    if rodash.isEmpty(options) then return
+
+    screenId = options.screenId ?? ""
     if rodash.isEmptyString(screenId) then return
-    m.activeView = top().findNode(screenId)
-    setFocus(m.activeView, m.screenContainer)
+
+    m.activeViewId = screenId
+    focusOnScreen()
 end sub
 
 
 sub showCatalogUI(options = {})
-    if get("catalogCarouselsFocused")
-        exec("hideBackground", options, m.background)
-    end if
-
     if get("navigationHidden")
-        set({ navigationHidden: false })
-        fadeIn(m.navigation, { duration: 1 })
+        set({ "navigationHidden": false })
+        fadeIn(m.navigation, { duration: 0.5 })
     end if
 
     if get("catalogUIHidden")
-        set({ catalogUIHidden: false, contentUIHidden: true })
+        set({ "catalogUIHidden": false, "contentUIHidden": true })
         exec("showCatalogGradients", options, m.background)
         exec("hideContentGradients", options, m.background)
     end if
@@ -184,25 +184,41 @@ end sub
 
 
 sub showContentUI(options = {})
-    if get("catalogCarouselsFocused")
-        exec("showBackground", options, m.background)
-    end if
-
     if not get("navigationHidden")
-        set({ navigationHidden: true })
-        fadeOut(m.navigation, { duration: 1 })
+        set({ "navigationHidden": true })
+        fadeOut(m.navigation, { duration: 0.5 })
     end if
 
     if get("contentUIHidden")
-        set({ catalogUIHidden: true, contentUIHidden: false })
+        set({ "catalogUIHidden": true, "contentUIHidden": false })
         exec("hideCatalogGradients", options, m.background)
         exec("showContentGradients", options, m.background)
     end if
 end sub
 
 
+sub updateHeaderAssets(options = {})
+    if rodash.isEmpty(options) then return
+    activeView = getActiveView()
+    if not rodash.isNode(activeView) then return
+    if not rodash.isNode(m.background) then return
+    exec("updateHeader", options, activeView)
+    exec("updateHeaderImage", options, m.background)
+end sub
+
+
 sub updateBackgroundAssets(options = {})
     if rodash.isEmpty(options) then return
     if not rodash.isNode(m.background) then return
-    exec("updateAssets", options, m.background)
+    exec("updateBackgroundAssets", options, m.background)
+end sub
+
+
+sub onRouterStateChanged(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
+    data = options.data
+    if data.type <> "NavigationEnd" then return
+
+    dispatch(events.SCREEN_ACTIVE, { screenId: data.id, slug: data.url })
 end sub

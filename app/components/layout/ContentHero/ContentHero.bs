@@ -30,7 +30,7 @@ sub onCTASelected(options = {})
     else if actionType = "FAVORITE"
         dispatch(events.TOGGLE_FAVORITE, { content: m.content })
     else if actionType = "DETAILS"
-        dispatch(events.NAVIGATE_TO, { slug: `/details/${m.content.id}`, content: m.content })
+        dispatch(events.NAVIGATE_TO, { slug: `/details/${m.content.id}`, context: { content: m.content }})
     end if
 end sub
 

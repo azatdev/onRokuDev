@@ -5,12 +5,12 @@ const viewport = dimensions["viewport"]
 
 module.exports = {
     "VideoPlayer": {
-        color: "#000000",
-        height: viewport.height,
-        width: viewport.width,
+        "color": "#000000",
+        "height": viewport.height,
+        "width": viewport.width,
         "Video": {
-            height: viewport.height,
-            width: viewport.width
+            "height": viewport.height,
+            "width": viewport.width
         }
     }
 };

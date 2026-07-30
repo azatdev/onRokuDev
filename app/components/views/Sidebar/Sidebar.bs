@@ -4,6 +4,9 @@ sub init()
     exec(sub(_options = {})
         m.gradient = top().findNode("gradient")
         m.list = top().findNode("sidebarList")
+        safeFunctions({
+            "setActiveSlug": setActiveSlug
+        })
         setFocusMap({
             "onFocus": m.list
         })
@@ -16,6 +19,21 @@ sub init()
 end sub
 
 
+sub setActiveSlug(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    slug = options.slug ?? ""
+
+    if not rodash.isNode(m.content) then return
+    if not rodash.isNode(m.list) then return
+    if rodash.isEmptyString(slug) then return
+
+    itemModel = m.content.findNode(slug)
+    selectedItemIndex = rodash.indexOf(m.content.getChildren(-1, 0), itemModel)
+    if selectedItemIndex = m.list.itemSelected then return
+    exec("setActiveItem", { activeIndex: selectedItemIndex }, m.list)
+end sub
+
+
 sub onDataChange(options = {})
     if not rodash.isNonEmptyAA(options) then return
     data = options.data
@@ -25,12 +43,10 @@ sub onDataChange(options = {})
     m.content = content
 
     liveConfig({ field: "config", keyPath: "Sidebar" }, content)
-    m.list.data = data
+    if rodash.isNode(m.list) then m.list.data = data
 
     defaultSlug = content.defaultSlug
-    itemModel = content.findNode(defaultSlug)
-    selectedItemIndex = rodash.indexOf(content.getChildren(-1, 0), itemModel)
-    exec("setActiveItem", { activeIndex: selectedItemIndex }, m.list)
+    setActiveSlug({ slug: defaultSlug })
 end sub
 
 
@@ -42,7 +58,13 @@ sub onItemSelected(options = {})
     itemModel = m.content.getChild(itemSelected)
     if not rodash.isNode(itemModel) then return
 
-    dispatch(events.NAVIGATE_TO, { slug: itemModel.id, documentId: itemModel.documentId })
+    dispatch(events.NAVIGATE_TO, {
+        slug: itemModel.id,
+        documentId: itemModel.documentId,
+        outgoingRouteConfigOverrides: {
+            suspendMode: "detach"
+        }
+    })
 end sub
 
 

@@ -10,10 +10,8 @@ sub init()
         tabModel.update("<%- o(CONFIG.SeparatorTab) %>", true)
         tabModel.title = tr(tabModel.title)
 
-        ' m.tabItem.itemContent = tabModel
-
         styleHooks({
-            after: afterStyling
+            "after": afterStyling
         })
 
         afterStyling()

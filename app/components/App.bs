@@ -4,12 +4,11 @@ import "pkg:/components/_ord/wrappers.bs"
 sub init()
     exec(sub(_options = {})
         top().backExitsScene = false
+        m.layout = top().findNode("layout")
 
         subscribe({
             [events.EVENT_TASK_READY]: onEventTaskReady
         })
-
-        m.layout = top().findNode("layout")
 
         setFocusMap({
             "onFocus": top().findNode("layout"),

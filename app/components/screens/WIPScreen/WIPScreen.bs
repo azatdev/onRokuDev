@@ -1,0 +1,41 @@
+import "pkg:/components/_ord/wrappers.bs"
+import "pkg:/source/roku_modules/promises/promises.brs"
+
+sub init()
+    exec(sub(_options = {})
+        safeObserve("data", onDataSet)
+        m.title = top().findNode("title")
+        onDataSet()
+    end sub)
+end sub
+
+
+sub onDataSet(_options = {})
+    content = createObject("roSGNode", "ContentModel")
+    content.headerImageUri = "pkg:/static/images/WIP-screen.webp"
+    content.complimentaryColor = "#075977"
+    dispatch(events.HERO_ITEM_FOCUSED, { content: content, section: sections.HERO })
+    m.title.text = "WORK IN PROGRESS"
+end sub
+
+
+' Methods exteded from sgRouter
+
+function beforeViewSuspend(_options = {}) as dynamic
+    suspendPromise = promises.create()
+    fadeOut(top(), { duration: 0.5, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
+    return suspendPromise
+end function
+
+
+sub onViewFadedOut(options = {})
+    suspendPromise = options.promise
+    promises.resolve(true, suspendPromise)
+end sub
+
+
+function onViewResume(_options = {})
+    fadeIn(top(), { duration: 0.5 })
+    onDataSet()
+    return promises.resolve(invalid)
+end function

@@ -6,6 +6,7 @@ sub init()
         subscribe({
             [events.APP_STARTED]: onAppStarted,
             [events.CATALOG_HERO_FOCUSED]: onCatalogHeroFocused,
+            [events.CATALOG_CAROUSELS_FOCUSED]: onCatalogCarouselsFocused,
             [events.CAROUSEL_ITEM_FOCUSED]: onCarouselItemFocused,
             [events.CAROUSEL_PAGINATED]: onCarouselPaginated,
             [events.CONTENT_DATA_RECEIVED]: onScreenDataReceived,
@@ -17,8 +18,8 @@ sub init()
             [events.NAVIGATE_TO]: navigateTo,
             [events.PAGINATE_CAROUSEL]: paginateCarousel,
             [events.PAGINATE_SCREEN]: getCatalogData,
+            [events.SCREEN_ACTIVE]: onScreenActive,
             [events.SCREEN_DATA_RECEIVED]: onScreenDataReceived,
-            [events.CATALOG_CAROUSELS_FOCUSED]: onCatalogCarouselsFocused,
             [events.SET_USER_CAROUSELS]: setUserCarousels,
             [events.SHOW_CATALOG_UI]: showCatalogUI,
             [events.SHOW_CONTENT_UI]: showContentUI,
@@ -37,11 +38,8 @@ end sub
 
 sub onCarouselItemFocused(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    itemHeader = catalogHeader()
-    if not rodash.isNode(itemHeader) then return
-    itemHeader.data = options
-
-    exec("updateBackgroundAssets", options, layout())
+    exec("updateHeaderAssets", options, layout())
+    exec("setComplimentaryColor", options, background())
 end sub
 
 
@@ -122,9 +120,11 @@ end sub
 
 
 sub navigateTo(options = {})
-    documentId = options.documentId
-    slug = options.slug
+    documentId = options.documentId ?? ""
+    slug = options.slug ?? ""
     content = options.content
+    activeSlug = get("activeSlug") ?? ""
+    if activeSlug = slug then return
 
     screenConfig = get(slug) ?? {}
     screenConfig["documentId"] = documentId
@@ -163,6 +163,14 @@ sub onHeroItemFocused(options = {})
     if not rodash.isNonEmptyAA(options) then return
     if not rodash.isNode(layout()) then return
     exec("updateBackgroundAssets", options, layout())
+end sub
+
+
+sub onScreenActive(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    exec("setActiveView", options, layout())
+    exec("setActiveSlug", options, sidebar())
+    set({ "activeSlug": options.slug ?? "" })
 end sub
 
 

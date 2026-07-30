@@ -27,7 +27,7 @@ module.exports = {
                 }
             },
             "&#contentGradientContainer": {
-                opacity: 0,
+                "opacity": 0,
                 "Poster": {
                     "&#bottomContentGradient": {
                         ...gradients.BottomGradient

@@ -5,14 +5,14 @@ const viewport = dimensions["viewport"]
 
 module.exports = {
     "Delimiter": {
-        height: 36,
-        width: 36,
+        "height": 36,
+        "width": 36,
         "Poster": {
-            blendColor: palette.primaryColor,
-            height: 12,
-            translation: [12, 12],
-            width: 12,
-            uri: "pkg:/static/images/9patches/fill-6px.9.png",
+            "blendColor": palette.primaryColor,
+            "height": 12,
+            "translation": [12, 12],
+            "width": 12,
+            "uri": "pkg:/static/images/9patches/fill-6px.9.png",
         }
     }
 };
