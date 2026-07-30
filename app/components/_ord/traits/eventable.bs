@@ -8,12 +8,12 @@ class Eventable
 
         if getGlobalAA().ord_role = "Task" or getGlobalAA().ord_role = "Model" then return
 
-        if global()._ord_eventQueue = invalid
+        if global().ord_eventQueue = invalid
             m.setupEventQueue()
         end if
 
-        m.eventQueue = global()._ord_eventQueue
-        top().addField("_ord_subscriptions", "assocarray", false)
+        m.eventQueue = global().ord_eventQueue
+        top().addField("ord_subscriptions", "assocarray", false)
     end sub
 
 
@@ -35,13 +35,13 @@ class Eventable
 
 
     sub setupEventQueue()
-        if rodash.isNode(global()._ord_eventQueue)
-            m.eventQueue = global()._ord_eventQueue
+        if rodash.isNode(global().ord_eventQueue)
+            m.eventQueue = global().ord_eventQueue
         else
-            eventQueue = createObject("roSGNode", "_ord_eventQueue")
+            eventQueue = createObject("roSGNode", "ord_eventQueue")
 
-            global().addField("_ord_eventQueue", "node", false)
-            global()._ord_eventQueue = eventQueue
+            global().addField("ord_eventQueue", "node", false)
+            global().ord_eventQueue = eventQueue
             m.eventQueue = eventQueue
         end if
 
@@ -51,7 +51,7 @@ class Eventable
 
 
     sub storeFunctions(options = {})
-        subscriptions = top().getRef("_ord_subscriptions") ?? {}
+        subscriptions = top().getRef("ord_subscriptions") ?? {}
 
         name = options.name
         functions = options.functions
@@ -64,7 +64,7 @@ class Eventable
         end if
 
         subscriptions[name] = functionArray
-        top().setRef("_ord_subscriptions", subscriptions)
+        top().setRef("ord_subscriptions", subscriptions)
     end sub
 
 
@@ -94,7 +94,7 @@ class Eventable
     sub callEventFunctions(data = {}, messageInfo = {})
         if rodash.isEmpty(messageInfo) then return
 
-        subscriptions = top().getRef("_ord_subscriptions") ?? {}
+        subscriptions = top().getRef("ord_subscriptions") ?? {}
 
         if rodash.isEmpty(subscriptions) then return
 

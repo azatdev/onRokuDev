@@ -2,7 +2,7 @@ import "pkg:/components/_ord/init.bs"
 
 sub init()
     exec(sub(_options = {})
-        m.socketTask = createObject("roSGNode", "_ord_socketTask")
+        m.socketTask = createObject("roSGNode", "ord_socketTask")
         m.socketTask.control = "RUN"
     end sub)
 end sub

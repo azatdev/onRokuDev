@@ -15,7 +15,7 @@ module.exports = {
                         "blendColor": "#18161d",
                         "uri": assets.rounded18,
                         "width": "1110px",
-                        "_ord_scrollGroup":{
+                        "ord_scrollGroup":{
                             "height": 786,
                             "margin": [81, 0, 81, 0],
                             "translation": [81, 81],

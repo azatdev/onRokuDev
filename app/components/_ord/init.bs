@@ -75,8 +75,8 @@ end sub
 
 
 function runTask()
-    if not rodash.isFunction(m._ord_taskFunction) then return invalid
-    return exec(m._ord_taskFunction)
+    if not rodash.isFunction(m.ord_taskFunction) then return invalid
+    return exec(m.ord_taskFunction)
 end function
 
 
@@ -134,4 +134,3 @@ end function
 function user()
     return get("UserController", app())
 end function
-

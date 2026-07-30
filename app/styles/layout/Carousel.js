@@ -16,14 +16,14 @@ module.exports = {
                 "vertAlign": "center"
             }
         },
-        "_ord_flexList": {
+        "ord_flexList": {
             "translation": [156, 0]
         },
         "&.portrait": {
             "Div": {
                 "margin": [0, 0, 9, 0],
             },
-            "_ord_flexList": {
+            "ord_flexList": {
                 "translation": [156, 0]
             },
         },

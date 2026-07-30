@@ -6,7 +6,7 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <_ord_flexList id="sidebarList" />
+        <ord_flexList id="sidebarList" />
         <Poster id="gradient" />
     </children>
     <script type="text/briSghtscript" uri="Sidebar.bs" />

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="_ord_scrollGroup" extends="Rectangle">
+<component name="ord_scrollGroup" extends="Rectangle">
     <interface>
         <field id="animateToItem" type="integer" />
         <field id="itemFocused" type="integer" value="-1" />
@@ -12,5 +12,5 @@
             <Poster id="scrollKnob"/>
         </Poster>
     </children>
-    <script type="text/brightscript" uri="_ord_scrollGroup.bs" />
+    <script type="text/brightscript" uri="ord_scrollGroup.bs" />
 </component>

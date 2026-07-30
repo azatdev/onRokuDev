@@ -11,11 +11,11 @@ class Styleable
             top().addField("class", "string", true)
         end if
 
-        if not global().hasField("_ord_styles")
+        if not global().hasField("ord_styles")
             m.setupGlobalStyles()
         end if
 
-        styleNode = global()._ord_styles
+        styleNode = global().ord_styles
         appStyles = "<%- o(STYLES) %>"
 
         if not styleNode.hasField(top().subType())
@@ -91,7 +91,7 @@ class Styleable
         node = options.node
         if not rodash.isNode(node) then return returnObj
 
-        styleObject = global()._ord_styles.getField(top().subType())
+        styleObject = global().ord_styles.getField(top().subType())
 
         nodeSubType = node.subType()
 
@@ -148,7 +148,7 @@ class Styleable
         node = options.node
         if not rodash.isNode(node) then return
 
-        styleObject = global()._ord_styles.getField(top().subType())
+        styleObject = global().ord_styles.getField(top().subType())
 
         if field = "id"
             m.setIdStyles(styleObject, node)
@@ -159,7 +159,7 @@ class Styleable
 
 
     sub redrawStyles(_options = {})
-        styleObject = global()._ord_styles.getField(top().subType())
+        styleObject = global().ord_styles.getField(top().subType())
         if rodash.isEmpty(styleObject) then return
 
         m.setStyles({ stylesheet: styleObject, node: top() })
@@ -183,8 +183,8 @@ class Styleable
 
 
     sub setupGlobalStyles()
-        global().addField("_ord_styles", "node", true)
-        global()._ord_styles = createObject("roSGNode", "Node")
+        global().addField("ord_styles", "node", true)
+        global().ord_styles = createObject("roSGNode", "Node")
     end sub
 
 

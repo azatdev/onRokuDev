@@ -1,5 +1,5 @@
 module.exports = {
-    "_ord_flexList": {
+    "ord_flexList": {
         "Poster": {
             "&#clippingRectOutline": {
                 "height": 0,

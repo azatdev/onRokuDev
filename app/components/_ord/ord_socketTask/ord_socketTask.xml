@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="ord_socketTask" extends="Task">
+    <script type="text/brightscript" uri="ord_socketTask.bs" />
+</component>

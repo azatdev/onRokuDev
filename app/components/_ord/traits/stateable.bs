@@ -2,7 +2,7 @@ class Stateable
     publicFunctions = []
 
     sub new(_options = {})
-        top().addField("_ord_State", "assocarray", false)
+        top().addField("ord_state", "assocarray", false)
 
         m.setExportFunctions(getGlobalAA().ord_role)
     end sub
@@ -21,7 +21,7 @@ class Stateable
         if rodash.isEmpty(key) then return invalid
         if not rodash.isInvalid(node[key]) then return node[key]
 
-        nodeState = node.getRef("_ord_State") ?? {}
+        nodeState = node.getRef("ord_state") ?? {}
         return nodeState[key]
     end function
 
@@ -52,7 +52,7 @@ class Stateable
 
         if not rodash.isNonEmptyAA(stateOptions) then return
 
-        nodeState = node.getRef("_ord_State") ?? {}
+        nodeState = node.getRef("ord_state") ?? {}
 
         for each item in stateOptions.items()
             key = item.key ?? ""
@@ -68,7 +68,7 @@ class Stateable
             end if
         end for
 
-        node.setRef("_ord_State", nodeState)
+        node.setRef("ord_state", nodeState)
     end sub
 end class
 

@@ -2,7 +2,7 @@ const mixins = require("../../styles/mixins");
 const palette = mixins["Palette"]
 
 module.exports = {
-    "_ord_scrollGroup": {
+    "ord_scrollGroup": {
         "color": palette.transparent,
         "Poster": {
             "&#scrollTrack": {

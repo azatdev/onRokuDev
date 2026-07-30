@@ -8,8 +8,8 @@
         <Div id="screenContainer">
             <ContentHero id="contentHero" />
             <Div id="bottomContainer">
-                <_ord_flexList id="tabs" />
-                <_ord_scrollGroup id="contentScrollGroup" />
+                <ord_flexList id="tabs" />
+                <ord_scrollGroup id="contentScrollGroup" />
             </Div>
         </Div>
     </children>

@@ -240,7 +240,7 @@ class Safeable
         if not rodash.isNonEmptyAA(options) then return
         taskFunction = options.function
         if not rodash.isFunction(taskFunction) then return
-        getGlobalAA()._ord_taskFunction = taskFunction
+        getGlobalAA().ord_taskFunction = taskFunction
     end sub
 end class
 

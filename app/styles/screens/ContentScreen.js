@@ -13,12 +13,12 @@ module.exports = {
                 "Div": {
                     "&#bottomContainer": {
                         "margin": [24, 0, 0, 0],
-                        "_ord_flexList": {
+                        "ord_flexList": {
                             "height": 51,
                             "margin": [0, 0, 39, 0],
                             "translation": [174, 0]
                         },
-                        "_ord_scrollGroup":{
+                        "ord_scrollGroup":{
                             "height": 480,
                             "width": viewport.width
                         }

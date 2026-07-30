@@ -6,7 +6,7 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <_ord_flexList id="tabList" />
+        <ord_flexList id="tabList" />
     </children>
     <script type="text/brightscript" uri="Tabs.bs" />
 </component>

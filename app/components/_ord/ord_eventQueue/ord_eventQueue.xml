@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<component name="_ord_eventQueue" extends="Task" >
+<component name="ord_eventQueue" extends="Task" >
     <interface>
         <field id="ready" type="boolean" />
         <field id="eventData" type="assocarray" />
     </interface>
-    <script type="text/brightscript" uri="_ord_eventQueue.bs"/>
+    <script type="text/brightscript" uri="ord_eventQueue.bs"/>
 </component>

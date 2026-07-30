@@ -16,7 +16,7 @@ module.exports = {
         "color": "#5d24691a",
         "openColor": "#251a38",
         "height": viewport.height,
-        "_ord_flexList":{
+        "ord_flexList":{
             "translation": [0, 162]
         },
         "Poster": {
@@ -40,7 +40,7 @@ module.exports = {
                 "opacity": 0,
                 "translation": [0, 111],
                 "width": viewport.width,
-                "_ord_scrollGroup":{
+                "ord_scrollGroup":{
                     "height": 189,
                     "translation": [0, 9],
                     "width": viewport.width
@@ -50,7 +50,7 @@ module.exports = {
         "MaskGroup": {
             "maskOffset": [0, 216],
             "maskuri": "pkg:/static/images/gradients/topbar-mask-white.webp",
-            "_ord_flexList": {
+            "ord_flexList": {
                 "translation": [-999, 0]
             },
             "Poster": {

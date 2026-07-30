@@ -7,11 +7,11 @@
     <children>
         <Div id="overlay" />
         <MaskGroup id="topbarMaskgroup">
-            <_ord_flexList id="topbarList" />
+            <ord_flexList id="topbarList" />
             <Poster id="gradient" />
         </MaskGroup>
         <Div id="userCarouselsContainer">
-            <_ord_scrollGroup id="userScrollGroup" />
+            <ord_scrollGroup id="userScrollGroup" />
         </Div>
     </children>
     <script type="text/brightscript" uri="Topbar.bs" />
