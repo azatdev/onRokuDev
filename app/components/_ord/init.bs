@@ -117,7 +117,9 @@ end function
 
 
 function devMode()
-    return true
+    appIsDev = createObject("roAppInfo").isDev()
+    devOverride = true
+    return appIsDev ? devOverride : appIsDev
 end function
 
 
