@@ -8,8 +8,8 @@ module.exports = {
         "Div": {
             "&#screenContainer": {
                 "ContentHero": {
-                    height: 780,
-                    width: viewport.width
+                    "height": 780,
+                    "width": viewport.width
                 },
                 "Div": {
                     "&#bottomContainer": {

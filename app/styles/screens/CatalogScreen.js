@@ -12,29 +12,29 @@ module.exports = {
         "Div": {
             "&#screenContainer": {
                 "CatalogHero": {
-                    height: heroHeight,
-                    width: viewport.width
+                    "height": heroHeight,
+                    "width": viewport.width
                 },
                 "Header": {
-                    visible: false,
-                    width: viewport.width
+                    "visible": false,
+                    "width": viewport.width
                 },
                 "_ord_scrollGroup":{
-                    height: scrollGroupHeight,
-                    width: viewport.width
+                    "height": scrollGroupHeight,
+                    "width": viewport.width
                 }
             },
             "&.noHero": {
                 "CatalogHero": {
-                    visible: false,
+                    "visible": false,
                 },
                 "Header": {
-                    height: scrollGroupHeight - heightDelta,
-                    visible: true
+                    "height": scrollGroupHeight - heightDelta,
+                    "visible": true
                 },
                 "_ord_scrollGroup":{
-                    height: scrollGroupHeight + heightDelta,
-                    margin: [0, 120]
+                    "height": scrollGroupHeight + heightDelta,
+                    "margin": [0, 120]
                 }
             }
         }

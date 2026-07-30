@@ -142,9 +142,9 @@ sub onDataSet(options = {})
 
     data = options.data
     content = data.content
-    m.content = content
     if not rodash.isNode(content) then return
 
+    m.content = content
     hasHero = false
 
     for each model in content.getChildren(-1, 0)

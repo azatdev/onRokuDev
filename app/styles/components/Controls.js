@@ -5,9 +5,9 @@ const viewport = dimensions["viewport"]
 
 module.exports = {
     "Controls": {
-        height: 45,
+        "height": 45,
         "ControlItem": {
-            margin: [0, 36, 0, 0]
+            "margin": [0, 36, 0, 0]
         }
     }
 };

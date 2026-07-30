@@ -9,12 +9,12 @@ const controlsWidth = viewport.width - (player.sideMargin * 2)
 
 module.exports = {
     "VideoOverlay": {
-        opacity: 0,
+        "opacity": 0,
         "Div": {
             "&#contentContainer": {
-                translation: [player.sideMargin, 66],
+                "translation": [player.sideMargin, 66],
                 "PlayerHeader": {
-                    margin: [24, 0, 0, 0]
+                    "margin": [24, 0, 0, 0]
                 }
             },
             "&#gradients": {
@@ -28,20 +28,20 @@ module.exports = {
                 }
             },
             "&#container": {
-                height: player.controlsHeight,
-                translation: [player.sideMargin, viewport.height - player.controlsHeight],
-                width: controlsWidth,
+                "height": player.controlsHeight,
+                "translation": [player.sideMargin, viewport.height - player.controlsHeight],
+                "width": controlsWidth,
                 "Div": {
                     "&#info": {
-                        height: 114,
+                        "height": 114,
                         "Quantico": {
-                            size: 30,
-                            translation: [0, 9],
-                            width: 300,
-                            wrap: false,
+                            "size": 30,
+                            "translation": [0, 9],
+                            "width": 300,
+                            "wrap": false,
                             "&#durationLabel": {
-                                horizAlign: "right",
-                                translation: [controlsWidth - 300, 9]
+                                "horizAlign": "right",
+                                "translation": [controlsWidth - 300, 9]
                             }
                         }
                     }

@@ -21,8 +21,8 @@ module.exports = {
         },
         "Label": {
             "&#label": {
-                color: palette.primaryColor,
-                translation: [33, 33]
+                "color": palette.primaryColor,
+                "translation": [33, 33]
             }
         }
     }

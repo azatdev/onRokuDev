@@ -5,7 +5,7 @@ module.exports = {
     "Metadata": {
         "Div": {
             "Quantico": {
-                size: 24
+                "size": 24
             }
         }
     }
