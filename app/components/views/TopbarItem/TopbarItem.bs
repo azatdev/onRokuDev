@@ -51,7 +51,7 @@ sub onTextChange(_options = {})
     exec("registerChildRect", {
         smallSquare: getUnFocusedRectSize(),
         bigSquare: getFocusedRectSize(),
-        index: m.top.index
+        index: top().index
     }, flexList)
 end sub
 

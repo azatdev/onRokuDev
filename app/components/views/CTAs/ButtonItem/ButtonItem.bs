@@ -8,9 +8,9 @@ end sub
 
 
 sub setupItem()
-    m.label = m.top.findNode("label")
-    m.icon = m.top.findNode("icon")
-    m.container = m.top.findNode("textContainer")
+    m.label = top().findNode("label")
+    m.icon = top().findNode("icon")
+    m.container = top().findNode("textContainer")
     m.background = top().findNode("background")
     m.highlightTop = top().findNode("highlightTop")
     m.highlightBottom = top().findNode("highlightBottom")
@@ -83,7 +83,7 @@ sub onTextChange(_options = {})
     exec("registerChildRect", {
         smallSquare: getUnFocusedRectSize(),
         bigSquare: getFocusedRectSize(),
-        index: m.top.index
+        index: top().index
     }, flexList)
 end sub
 

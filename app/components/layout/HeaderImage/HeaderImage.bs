@@ -30,6 +30,8 @@ sub onDataSet(options = {})
     if not rodash.isNonEmptyAA(options) then return
     data = options.data
     content = data.content
+    if not rodash.isNode(content) then return
+
     m.content = content
 
     if content.hydrated ?? false
@@ -43,6 +45,7 @@ end sub
 sub onHydrated(options = {})
     if not rodash.isNonEmptyAA(options) then return
     content = options.node
+    if not rodash.isNode(content) then return
 
     setImage(content.posterImageUri)
 end sub

@@ -377,13 +377,13 @@ end sub
 
 sub onItemSelected(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    m.top.itemSelected = options.data
+    top().itemSelected = options.data
 end sub
 
 
 sub onItemUnfocused(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    m.top.itemUnfocused = options.data
+    top().itemUnfocused = options.data
 end sub
 
 

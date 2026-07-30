@@ -54,10 +54,11 @@ end sub
 
 sub onDataSet(options = {})
     if not rodash.isNonEmptyAA(options) then return
-    if rodash.isNode(m.content) then return
 
     data = options.data
     content = data.content
+    if not rodash.isNode(content) then return
+
     m.content = content
 
     carousels = content.getChildren(-1, 0)
@@ -145,6 +146,11 @@ end sub
 
 
 sub scrollPage(direction = 0, callbackFunc = invalid)
+    if not rodash.isNode(m.bottomContainer) then return
+    if not rodash.isNode(m.contentHero) then return
+    if not rodash.isNode(m.description) then return
+    if not rodash.isNode(m.ctas) then return
+
     morphObject = {}
     heightDelta = 393 * direction
     morphObject[m.bottomContainer.id] = {
@@ -182,6 +188,7 @@ end sub
 ' Methods exteded from sgRouter
 
 function beforeViewOpen(options = {}) as dynamic
+    if not rodash.isNonEmptyAA(options) then return invalid
     routeData = options.route
     if not rodash.isNode(routeData) then return promises.resolve(invalid)
     context = routeData.context ?? {}
@@ -189,8 +196,6 @@ function beforeViewOpen(options = {}) as dynamic
     if not rodash.isNode(content) then return promises.resolve(invalid)
 
     top().opacity = 0.001
-    top().visible = true
-    top().translation = [0, 0]
     fadeIn(top(), { duration: 0.5 })
 
     dispatch(events.SHOW_CONTENT_UI)

@@ -234,7 +234,7 @@ class Safeable
 end class
 
 
-function exec(func, options = {}, node = m.top)
+function exec(func, options = {}, node = top())
     if m.ord_initiated = invalid then ord_init()
 
     if not rodash.isNonEmptyAA(m.ord_interfaces) then return invalid

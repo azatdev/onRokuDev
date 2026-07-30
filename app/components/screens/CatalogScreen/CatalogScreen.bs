@@ -50,7 +50,7 @@ end sub
 
 
 function focusCatalogHero(_options = {})
-    if get("hasHero")
+    if get("hasHero") ?? false
         scrollPage(-1, onCatalogHeroFocused)
         dispatch(events.CATALOG_HERO_FOCUSED)
         return true
@@ -61,9 +61,9 @@ end function
 
 
 sub focusScreen(_options = {})
-    if not get("dataSet") then return
+    if not get("dataSet") ?? false then return
 
-    if get("hasHero")
+    if get("hasHero") ?? false
         setFocus(m.catalogHero)
     else
         setFocus(m.scrollGroup)
@@ -97,6 +97,10 @@ end sub
 
 
 sub scrollPage(direction = 0, callbackFunc = invalid)
+    if not rodash.isNode(m.scrollGroup) then return
+    if not rodash.isNode(m.catalogHero) then return
+    if not rodash.isNode(m.catalogHeader) then return
+
     morphObject = {}
     heightDelta = 150 * direction
 
@@ -139,6 +143,8 @@ sub onDataSet(options = {})
     data = options.data
     content = data.content
     m.content = content
+    if not rodash.isNode(content) then return
+
     hasHero = false
 
     for each model in content.getChildren(-1, 0)
@@ -205,7 +211,7 @@ end sub
 ' Methods exteded from sgRouter
 
 function beforeViewOpen(options = {}) as dynamic
-    dispatch(events.GET_CATALOG_DATA, { screenId: options.route?.id, slug: options.route?.path })
+    if rodash.isNonEmptyAA(options) then dispatch(events.GET_CATALOG_DATA, { screenId: options.route?.id, slug: options.route?.path })
     return promises.resolve(invalid)
 end function
 
@@ -218,6 +224,7 @@ end function
 
 
 sub onViewFadedOut(options = {})
+    if not rodash.isNonEmptyAA(options) then return
     suspendPromise = options.promise
     promises.resolve(true, suspendPromise)
 end sub

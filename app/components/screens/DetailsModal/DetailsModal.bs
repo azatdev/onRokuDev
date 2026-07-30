@@ -66,17 +66,22 @@ end function
 
 
 function beforeViewOpen(options = {}) as dynamic
+    if not rodash.isNonEmptyAA(options) then return invalid
+
     top().opacity = 0.001
     fadeIn(top(), { duration: 0.5 })
+
     route = options.route ?? {}
     context = route.context ?? {}
     content = context.content
+
     if rodash.isNode(content) then top().data = { content: content }
     return promises.resolve(invalid)
 end function
 
 
 sub onViewFadedOut(options = {})
+    if not rodash.isNonEmptyAA(options) then return
     suspendPromise = options.promise
     promises.resolve(true, suspendPromise)
 end sub

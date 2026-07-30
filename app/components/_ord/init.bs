@@ -62,11 +62,11 @@ end function
 sub setRole()
     componentRole = "Controller"
 
-    if m.top.isSubtype("Group")
-        componentRole = m.top.isSubtype("Scene") ? "Scene" : "View"
-    else if m.top.isSubtype("Task")
+    if top().isSubtype("Group")
+        componentRole = top().isSubtype("Scene") ? "Scene" : "View"
+    else if top().isSubtype("Task")
         componentRole = "Task"
-    else if m.top.isSubtype("ContentNode")
+    else if top().isSubtype("ContentNode")
         componentRole = "Model"
     end if
 

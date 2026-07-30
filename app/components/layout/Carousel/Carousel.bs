@@ -86,7 +86,7 @@ end sub
 
 
 sub afterStyling(_options = {})
-    stackChildren({ node: m.top, direction: "vertical" })
+    stackChildren({ node: top(), direction: "vertical" })
 end sub
 
 sub checkPagination(options = {})

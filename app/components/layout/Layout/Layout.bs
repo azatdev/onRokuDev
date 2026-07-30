@@ -215,6 +215,8 @@ end sub
 
 
 sub onRouterStateChanged(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+
     data = options.data
     if data.type <> "NavigationEnd" then return
 

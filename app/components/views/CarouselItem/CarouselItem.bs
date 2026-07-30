@@ -79,7 +79,7 @@ sub onFocusPercentChange(_options = {})
     parentList = top().getParent() ?? {}
 
     listCurrFocusIndex = parentList.currFocusItemIndex ?? 0
-    modifiedFocusIndex = abs(m.top.index - listCurrFocusIndex)
+    modifiedFocusIndex = abs(top().index - listCurrFocusIndex)
     opacityPercentage = abs(1 - modifiedFocusIndex)
     changeOpacity(listCurrFocusIndex > top().index, opacityPercentage)
 end sub

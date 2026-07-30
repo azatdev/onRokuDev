@@ -43,7 +43,7 @@ sub onDataChange(options = {})
     m.content = content
 
     liveConfig({ field: "config", keyPath: "Sidebar" }, content)
-    m.list.data = data
+    if rodash.isNode(m.list) then m.list.data = data
 
     defaultSlug = content.defaultSlug
     setActiveSlug({ slug: defaultSlug })
