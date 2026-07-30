@@ -12,13 +12,6 @@ sub registerControllers(controllers = [])
 end sub
 
 
-function safeFunctions(options = {})
-    interface = m.ord_interfaces["safeFunctions"]
-    if interface = invalid then return invalid
-    return interface.safeFunctions(options)
-end function
-
-
 function devMode()
     return true
 end function
@@ -31,76 +24,6 @@ end function
 
 function user()
     return get("UserController", app())
-end function
-
-
-function safeFunc(functionName = "")
-    interface = m.ord_interfaces["safeFunc"]
-    if interface = invalid then return invalid
-    return interface.safeFunc(functionName)
-end function
-
-
-function safeObserve(fieldName = "", callbackFunc = "", node = top(), infoFields = [])
-    interface = m.ord_interfaces["safeObserve"]
-    if interface = invalid then return invalid
-    return interface.safeObserve(fieldName, callbackFunc, node, infoFields)
-end function
-
-
-function safeUnobserve(fieldName = "", node = top())
-    interface = m.ord_interfaces["safeUnobserve"]
-    if interface = invalid then return invalid
-    return interface.safeUnobserve(fieldName, node)
-end function
-
-
-function setTaskFunction(taskFunction = invalid)
-    if not rodash.isFunction(taskFunction) then return invalid
-    interface = m.ord_interfaces["setTaskFunction"]
-    return interface.setTaskFunction({ function: taskFunction })
-end function
-
-
-function resetFocus()
-    interface = m.ord_interfaces["resetFocus"]
-    if interface = invalid then return invalid
-    return interface.resetFocus()
-end function
-
-
-function setFocusMap(options = {})
-    interface = m.ord_interfaces["setFocusMap"]
-    if interface = invalid then return invalid
-    return interface.setFocusMap(options)
-end function
-
-
-function setLoadable(options = {})
-    interface = m.ord_interfaces["setLoadable"]
-    if interface = invalid then return invalid
-    return interface.setLoadable(options)
-end function
-
-
-function applyDefaultFocus()
-    interface = m.ord_interfaces["applyDefaultFocus"]
-    if interface = invalid then return invalid
-    return interface.applyDefaultFocus()
-end function
-
-
-function setFocus(node, focusMapNode = invalid)
-    interface = m.ord_interfaces["setFocus"]
-    if interface = invalid then return invalid
-    return interface.setFocus({ nodeToFocus: node, focusMapNode: focusMapNode })
-end function
-
-
-function onKeyEvent(key as string, press as boolean) as boolean
-    interface = m.ord_interfaces["onKeyEvent"]
-    if interface = invalid then return false
-    return interface["onKeyEvent"]({ key: key, press: press })
 end function
 
 

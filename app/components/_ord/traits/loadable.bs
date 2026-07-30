@@ -108,3 +108,8 @@ class Loadable
         safeObserve(updateField, m.onFieldUpdated, node)
     end sub
 end class
+
+
+function setLoadable(options = {})
+    return interfaceFunction("setLoadable", options)
+end function

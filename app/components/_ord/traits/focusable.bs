@@ -26,7 +26,7 @@ class Focusable
     end sub
 
 
-    sub applyDefaultFocus()
+    sub applyDefaultFocus(_options = {})
         if rodash.isNode(m.focusMap.current) and not top().isSameNode(m.focusMap.current)
             defaultNode = m.focusMap.current
         else if top().isSameNode(m.focusMap.current)
@@ -74,7 +74,7 @@ class Focusable
         if not rodash.isNonEmptyAA(options) then return
         focusedChild = options.data
         if not rodash.isNode(focusedChild) then m.onFocusRemoved(): return
-        if top().isSameNode(focusedChild) then m.applyDefaultFocus()
+        if top().isSameNode(focusedChild) then m.applyDefaultFocus({})
     end sub
 
 
@@ -179,3 +179,28 @@ class Focusable
         safeObserve("focusedChild", "onFocusedChildChange", top())
     end sub
 end class
+
+
+function resetFocus()
+    return interfaceFunction("resetFocus", { node: top() })
+end function
+
+
+function setFocusMap(options = {})
+    return interfaceFunction("setFocusMap", options)
+end function
+
+
+function applyDefaultFocus()
+    return interfaceFunction("applyDefaultFocus", { node: top() })
+end function
+
+
+function setFocus(node, focusMapNode = invalid)
+    return interfaceFunction("setFocus", { nodeToFocus: node, focusMapNode: focusMapNode })
+end function
+
+
+function onKeyEvent(key as string, press as boolean) as boolean
+    return interfaceFunction("onKeyEvent", { key: key, press: press }) ?? false
+end function
