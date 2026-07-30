@@ -1,23 +1,24 @@
 const mixins = require("../mixins");
+const assets = mixins["Assets"]
 const palette = mixins["Palette"];
 
 module.exports = {
     "SidebarItem": {
         "Rectangle": {
             "&#background": {
-                "color": "#4b6100FF",
+                "color": palette.highlightColor,
                 "height": 75,
                 "opacity": 0
             },
             "&#highlight": {
-                "color": "#b8bca414",
+                "color": `${palette.lowlightColor}14`,
                 "height": 75,
                 "opacity": 0,
                 "width": 800
             },
             "&#textContainer": {
-                "color": "#b8bca400",
-                "uri": "pkg:/static/images/9patches/fill-18px.9.png",
+                "color": palette.transparent,
+                "uri": assets.rounded18,
                 "Icon": {
                     "color": palette.primaryColor,
                     "height": 75,

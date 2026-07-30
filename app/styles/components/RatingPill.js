@@ -1,12 +1,13 @@
 const mixins = require("../mixins");
+const assets = mixins["Assets"]
 const palette = mixins["Palette"]
 
 module.exports = {
     "RatingPill": {
         "margin": [0, 0, 0, 12],
         "Poster": {
-            "blendColor": "#b8bca4",
-            "uri": "pkg:/static/images/9patches/fill-6px.9.png",
+            "blendColor": palette.lowlightColor,
+            "uri": assets.rounded6,
             "QuanticoBold": {
                 "color": "#392734",
                 "height": 36,

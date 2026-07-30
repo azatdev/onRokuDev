@@ -1,9 +1,10 @@
 const mixins = require("../mixins");
 const dimensions = mixins["Dimensions"]
+const palette = mixins["Palette"]
 const viewport = dimensions["viewport"]
 
 const gradientStyles = {
-    "blendColor": "#000000",
+    "blendColor": palette.black,
     "height": viewport.height,
     "opacity": 0.7,
     "uri": "pkg:/static/images/gradients/sidebar-gradient.webp",
@@ -27,13 +28,13 @@ module.exports = {
         "Div": {
             "&#overlay": {
                 "inheritParentTransform": false,
-                "color": "#000000",
+                "color": palette.black,
                 "opacity": 0,
                 "height": viewport.height,
                 "width": viewport.width,
             },
             "&#userCarouselsContainer": {
-                "color": "#5c5c4b23",
+                "color": palette.userCarouselBackground,
                 "height": 207,
                 "inheritParentTransform": false,
                 "opacity": 0,

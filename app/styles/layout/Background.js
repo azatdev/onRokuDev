@@ -1,4 +1,5 @@
 const mixins = require("../mixins");
+const assets = mixins["Assets"]
 const dimensions = mixins["Dimensions"]
 const palette = mixins["Palette"]
 const viewport = dimensions["viewport"]
@@ -10,10 +11,10 @@ module.exports = {
             "&#catalogGradientContainer": {
                 "Poster": {
                     "&#bottomGradient": {
-                        "blendColor": "#000000",
+                        "blendColor": palette.black,
                         "height": 561,
                         "translation": [0, viewport.height - 561],
-                        "uri": "pkg:/static/images/gradients/bottom-gradient.webp",
+                        "uri": assets.bottomGradient,
                         "width": viewport.width
                     },
                     "&#cornerGradient": {
@@ -36,7 +37,7 @@ module.exports = {
                         ...gradients.TopGradient
                     },
                     "&#leftContentGradient": {
-                        "blendColor": "#000000",
+                        "blendColor": palette.black,
                         "height": viewport.height,
                         "uri": "pkg:/static/images/gradients/content-left-gradient.webp",
                         "width": 1293
