@@ -222,38 +222,12 @@ function liveConfig(options = {}, node = top())
 end function
 
 
-function centerComponent(options = {}, node = top())
-    interface = m.ord_interfaces["centerComponent"]
+function interfaceFunction(name = "", options = {})
+    if rodash.isEmptyString(name) then return invalid
+    if not rodash.isNonEmptyAA(options) then return invalid
+    interface = m.ord_interfaces[name]
     if interface = invalid then return invalid
-    return interface.centerComponent(options, node)
-end function
-
-
-function getVisibleHeight(node = top())
-    interface = m.ord_interfaces["getVisibleHeight"]
-    if interface = invalid then return invalid
-    return interface.getVisibleHeight(node)
-end function
-
-
-function getVisibleWidth(node = top())
-    interface = m.ord_interfaces["getVisibleWidth"]
-    if interface = invalid then return invalid
-    return interface.getVisibleWidth(node)
-end function
-
-
-function quadrupleMargins(options = 0)
-    interface = m.ord_interfaces["quadrupleMargins"]
-    if interface = invalid then return invalid
-    return interface.quadrupleMargins(options)
-end function
-
-
-function stackChildren(options = {}, node = top())
-    interface = m.ord_interfaces["stackChildren"]
-    if interface = invalid then return invalid
-    return interface.stackChildren(options, node)
+    return interface[name](options)
 end function
 
 
@@ -278,5 +252,4 @@ function onError(e)
     ?"ERROR: " formatJSON(e)
     return invalid
 end function
-
 
