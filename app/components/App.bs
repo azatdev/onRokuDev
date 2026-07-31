@@ -11,7 +11,7 @@ sub init()
         })
 
         setFocusMap({
-            "onFocus": top().findNode("layout"),
+            "onFocus": m.layout,
             "onKey": {
                 "default": true
             }

@@ -47,7 +47,11 @@ sub onCarouselItemSelected(options = {})
     itemContent = m.content.getChild(selectedChild)
     if not rodash.isNode(itemContent) then return
 
-    dispatch(events.NAVIGATE_TO, { slug: `/content/${itemContent.id}`, context: { content: itemContent }})
+    if itemContent.type = contentTypes.EPISODE
+        dispatch(events.PLAY_VIDEO, { content: itemContent })
+    else
+        dispatch(events.NAVIGATE_TO, { slug: `/content/${itemContent.id}`, context: { content: itemContent }})
+    end if
 end sub
 
 
