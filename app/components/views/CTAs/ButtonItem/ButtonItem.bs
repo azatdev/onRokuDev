@@ -70,11 +70,6 @@ sub onTextChange(_options = {})
     m.container.width = m.container.boundingRect().width
     m.container.height = m.container.boundingRect().height
 
-    if get("dynamicWidth")
-        labelSquare = get("labelSquare") ?? [0,0]
-        m.label.clippingRect = [0, 0, labelSquare[0] * clipPercentage, labelSquare[1]]
-    end if
-
     parentList = top().getParent()
     if not rodash.isNode(parentList) then return
     flexList = parentList.getParent()
@@ -85,6 +80,11 @@ sub onTextChange(_options = {})
         bigSquare: getFocusedRectSize(),
         index: top().index
     }, flexList)
+
+    if get("dynamicWidth")
+        labelSquare = get("labelSquare") ?? [0,0]
+        m.label.clippingRect = [0, 0, labelSquare[0] * clipPercentage, labelSquare[1]]
+    end if
 end sub
 
 

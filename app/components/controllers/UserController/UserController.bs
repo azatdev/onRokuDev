@@ -76,7 +76,7 @@ sub onVideoPositionChange(options = {})
             collection: collection,
             contentModel: contentModel,
             duration: duration,
-            existingUserItemIds: exec("getChildIds", {}, collection),
+            existingUserItemIds: exec("getChildFields", { field: "userItemId" }, collection),
             position: position
         }
     })
@@ -124,7 +124,7 @@ sub toggleWatchlist(options = {})
         options: {
             collection: collection,
             contentModel: contentModel,
-            existingUserItemIds: exec("getChildIds", {}, collection)
+            existingUserItemIds: exec("getChildFields", { field: "userItemId" }, collection)
         }
     })
     userItemTask.control = "RUN"

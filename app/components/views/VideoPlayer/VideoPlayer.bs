@@ -31,7 +31,7 @@ sub init()
 
         safeObserve("data", onDataSet)
         safeObserve("state", onVideoStateChange, m.video)
-        safeObserve("position", onVideoPositionChange, m.video)
+        safeObserve("position", onVideoPositionChange, m.video, ["duration"])
         safeObserve("duration", onVideoDurationChange, m.video)
 
         setFocusMap({
