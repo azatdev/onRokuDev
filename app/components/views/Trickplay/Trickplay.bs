@@ -85,4 +85,3 @@ sub setPosition(options = {})
     m.tip.translation = [tipTranslation, tipVertTranslation]
     m.frame.translation = [frameTranslation, 0]
 end sub
-

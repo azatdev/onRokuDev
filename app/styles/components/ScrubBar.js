@@ -18,7 +18,8 @@ module.exports = {
                 "Rectangle": {
                     "&#progressBar": {
                         "color": palette.barColor,
-                        "height": player.seekbarHeight
+                        "height": player.seekbarHeight,
+                        "width": 0
                     },
                     "&#scrubber": {
                         "color": palette.playheadColor,

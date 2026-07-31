@@ -53,7 +53,17 @@ end sub
 
 
 sub playVideo(options = {})
-    exec("playVideo", options, layout())
+    if not rodash.isNonEmptyAA(options) then return
+    content = options.content
+    if not rodash.isNode(content) then return
+
+    if content.type = contentTypes.SHOW
+        episodeContent = exec("findShowEpisode", {}, content)
+        if not rodash.isNode(episodeContent) then return
+        exec("playVideo", { content: episodeContent }, layout())
+    else
+        exec("playVideo", options, layout())
+    end if
 end sub
 
 

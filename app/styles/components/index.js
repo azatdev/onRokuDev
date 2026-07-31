@@ -10,7 +10,6 @@ module.exports = {
     ...require("./SidebarItem"),
     ...require("./TopbarItem"),
     ...require("./RatingPill"),
-    ...require("./Separator"),
     ...require("./ScrubBar"),
     ...require("./TabItem"),
     ...require("./Trickplay"),

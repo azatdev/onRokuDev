@@ -127,6 +127,7 @@ end sub
 sub playVideo(options = {})
     if not rodash.isNode(m.videoPlayer) then return
     m.videoPlayer.data = options
+
     morphObject = {}
     morphObject[m.videoPlayer.id] = {
         fields: {
@@ -154,7 +155,7 @@ end sub
 
 
 function getActiveView()
-    return top().findNode(m.activeViewId ?? "")
+    return top().findNode(get("activeViewId") ?? "")
 end function
 
 
@@ -164,7 +165,7 @@ sub setActiveView(options = {})
     screenId = options.screenId ?? ""
     if rodash.isEmptyString(screenId) then return
 
-    m.activeViewId = screenId
+    set({ "activeViewId": screenId })
     focusOnScreen()
 end sub
 

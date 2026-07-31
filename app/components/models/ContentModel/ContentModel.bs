@@ -4,6 +4,7 @@ sub init()
     exec(sub(_options = {})
         safeFunctions({
             "getVariables": getVariables,
+            "findShowEpisode": findShowEpisode,
             "markUserAction": markUserAction,
             "returnContentCTAsModel": returnContentCTAsModel,
             "returnCreditsCollection": returnCreditsCollection,
@@ -13,6 +14,19 @@ sub init()
         })
     end sub)
 end sub
+
+
+function findShowEpisode(_options = {})
+    showCollections = top().getChildren(-1, 0)
+    episodeContent = invalid
+
+    for each collection in showCollections
+        if not collection.carouseltype = carouselTypes.EPISODES then continue for
+        episodeContent = collection.getChild(0)
+    end for
+
+    return episodeContent
+end function
 
 
 function getBifFields(bifs)

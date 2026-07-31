@@ -56,6 +56,15 @@ namespace carouselTypes
 end namespace
 
 
+namespace contentTypes
+    const CHANNEL = "CHANNEL"
+    const EPISODE = "EPISODE"
+    const EXTRA = "EXTRA"
+    const MOVIE = "MOVIE"
+    const SHOW = "SHOW"
+end namespace
+
+
 namespace userItemsTypes
     const CWITEM = "CWITEM"
     const FAVORITE = "FAVORITE"
