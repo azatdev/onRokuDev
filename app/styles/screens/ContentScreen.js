@@ -7,12 +7,11 @@ module.exports = {
         "Div": {
             "&#screenContainer": {
                 "ContentHero": {
-                    "height": 780,
+                    "height": 804,
                     "width": viewport.width
                 },
                 "Div": {
                     "&#bottomContainer": {
-                        "margin": [24, 0, 0, 0],
                         "ord_flexList": {
                             "height": 51,
                             "margin": [0, 0, 39, 0],

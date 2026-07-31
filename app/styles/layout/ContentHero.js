@@ -11,11 +11,11 @@ module.exports = {
             "translation": [180, 150],
             "Poster": {
                 "height": 111,
+                "margin": [0, 0, 30, 0],
                 "width": 507
             },
             "Metadata": {
                 "height": 48,
-                "margin": [30, 0, 0, 0],
                 "width": 642
             },
             "Quantico": {
@@ -32,7 +32,7 @@ module.exports = {
                 "height": 132,
                 "lineSpacing": -12,
                 "margin": [0, 0, 9, 0],
-                "vertAlign": "bottom",
+                "vertAlign": "center",
                 "width": 810,
                 "wrap": true
             },
