@@ -1,0 +1,31 @@
+import "pkg:/components/_ord/init.bs"
+
+
+sub init()
+    exec(sub(_options = {})
+        subscribe({
+            [events.API_ERROR]: onApiError,
+            [events.APP_CRASH]: onAppCrash,
+            [events.APP_ERROR]: onAppError
+        })
+    end sub)
+end sub
+
+
+sub onApiError(options = {})
+    ?"onApiError " options
+end sub
+
+
+sub onAppCrash(_options = {})
+    dispatch(events.UNSUBSCRIBE_EVENTS)
+    dispatch(events.RESTART_APP)
+end sub
+
+
+sub onAppError(options = {})
+    if rodash.isEmpty(options) then return
+    'bs:disable-next-line
+    ?"APP_ERROR: " formatJSON(options)
+    dispatch(events.ERROR_GO_BACK, options)
+end sub

@@ -1,15 +1,13 @@
 class Positionable
-    publicFunctions = []
-
     sub new(_options = {})
         m.setExportFunctions(getGlobalAA().ord_role)
     end sub
-
 
     sub setExportFunctions(componentRole = "")
         if rodash.isEmptyString(componentRole) then return
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
 
+        m.publicFunctions = []
         m.publicFunctions.push("centerComponent")
         m.publicFunctions.push("getVisibleHeight")
         m.publicFunctions.push("getVisibleWidth")

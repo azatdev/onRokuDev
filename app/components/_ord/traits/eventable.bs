@@ -1,7 +1,5 @@
 class Eventable
-    subscriptions = {}
-    publicFunctions = []
-
+    registrationsArray = []
     sub new(_options = {})
         m.renderQueue = createObject("roRenderThreadQueue")
         m.setExportFunctions(getGlobalAA().ord_role)
@@ -17,8 +15,26 @@ class Eventable
     end sub
 
 
+    sub reset(_options = {})
+        for each registration in m.registrationsArray
+            registration.unregister()
+        end for
+        m.registrationsArray = []
+
+        top().removeField("ord_subscriptions")
+        safeUnobserve("ready", m.eventQueue)
+        m.eventQueue = invalid
+        if rodash.isNode(global().ord_eventQueue)
+            global().ord_eventQueue.control = "STOP"
+            global().removeField("ord_eventQueue")
+        end if
+    end sub
+
+
     sub setExportFunctions(componentRole = "")
         if rodash.isEmptyString(componentRole) then return
+
+        m.publicFunctions = []
 
         if rodash.findIndex(["Scene", "View", "Model", "Controller", "Task"], componentRole) <> -1
             m.publicFunctions.push("dispatch")
@@ -39,7 +55,6 @@ class Eventable
             m.eventQueue = global().ord_eventQueue
         else
             eventQueue = createObject("roSGNode", "ord_eventQueue")
-
             global().addField("ord_eventQueue", "node", false)
             global().ord_eventQueue = eventQueue
             m.eventQueue = eventQueue
@@ -86,8 +101,13 @@ class Eventable
 
             observeFunction = m.callEventFunctions
             observeFunctionName = rodash.getFunctionName(observeFunction)
-            m.renderQueue.addMessageHandler(eventName, observeFunctionName)
+            registration = m.renderQueue.addMessageHandler(eventName, observeFunctionName)
+            m.registrationsArray.push(registration)
         end for
+
+        if getGlobalAA().ord_role = "Controller"
+            m.renderQueue.addMessageHandler(events.UNSUBSCRIBE_EVENTS, "ord_reset")
+        end if
     end sub
 
 
@@ -110,7 +130,8 @@ class Eventable
     sub publish(options = {})
         if m.renderQueue = invalid then return
         'bs:disable-next-line
-        if devMode() then ?"-=# EVENT: " options.id, rodash.now()
+        ' if devMode() then ?"-=# EVENT: " options.id, rodash.now()
+        ?"-=# EVENT: " options.id, rodash.now()
         m.renderQueue.postMessage(options.id, options.options)
     end sub
 

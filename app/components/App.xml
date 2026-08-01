@@ -5,7 +5,6 @@
         <function name="safeFunc" />
     </interface>
     <children>
-        <Layout id="layout" />
     </children>
     <script type="text/brightscript" uri="App.bs" />
 </component>

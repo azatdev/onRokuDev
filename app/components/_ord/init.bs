@@ -15,18 +15,19 @@ import "traits/styleable.bs"
 
 
 sub ord_init()
-    setCreatedAt(top())
     setRole()
 
     interfaces = [Safeable, Stateable, Eventable, Styleable, Animatable, Focusable, Configable, Loadable, Positionable]
 
-    m.ord_interfaces = {}
+    m.ord_allInterfaces = []
+    m.ord_publicInterfaces = {}
 
     for each interface in interfaces
         interfaceInstance = new interface()
+        m.ord_allInterfaces.push(interfaceInstance)
         interfacePublicFunctions = interfaceInstance.publicFunctions ?? []
         for each functionName in interfacePublicFunctions
-            m.ord_interfaces[functionName] = interfaceInstance
+            m.ord_publicInterfaces[functionName] = interfaceInstance
         end for
     end for
 
@@ -35,6 +36,15 @@ sub ord_init()
     end if
 
     m.ord_initiated = true
+end sub
+
+
+sub ord_reset(_options = {})
+    for each interfaceInstance in m.ord_allInterfaces
+        interfaceInstance.reset()
+    end for
+
+    m.ord_initiated = invalid
 end sub
 
 
@@ -48,16 +58,21 @@ end function
 
 function interfaceFunction(name = "", options = {})
     if rodash.isEmptyString(name) then return invalid
-    if not rodash.isNonEmptyAA(options) then return invalid
-    interface = m.ord_interfaces[name]
+    interface = m.ord_publicInterfaces[name]
     if interface = invalid then return invalid
     return interface[name](options)
 end function
 
 
-function onError(e)
-    'bs:disable-next-line
-    ?"ERROR: " formatJSON(e)
+function onError(options = {})
+    threadInfo = top().threadInfo()
+    options.threadType = threadInfo.currentThread.type
+    options.nodeName = threadInfo.currentThread.name
+    if options.threadType = "Task"
+        publish(events.API_ERROR, options)
+    else
+        dispatch(events.APP_ERROR, options)
+    end if
     return invalid
 end function
 
@@ -78,13 +93,6 @@ function runTask()
     if not rodash.isFunction(m.ord_taskFunction) then return invalid
     return exec(m.ord_taskFunction)
 end function
-
-
-sub setCreatedAt(node)
-    if not rodash.isNode(node) then return
-    node.addField("createdAt", "longinteger", false)
-    node.createdAt = rodash.now()
-end sub
 
 
 sub setRole()
@@ -118,7 +126,7 @@ end function
 
 function devMode()
     appIsDev = createObject("roAppInfo").isDev()
-    devOverride = true
+    devOverride = false
     return appIsDev ? devOverride : appIsDev
 end function
 

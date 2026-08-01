@@ -1,15 +1,19 @@
 class Safeable
-    publicFunctions = []
-
     sub new(_options = {})
         top().addField("ord_proxyData", "assocarray", true)
         m.setExportFunctions(getGlobalAA().ord_role)
     end sub
 
 
+    sub reset(_options = {})
+        top().removeField("ord_proxyData")
+    end sub
+
+
     sub setExportFunctions(componentRole = "")
         if rodash.isEmptyString(componentRole) then return
 
+        m.publicFunctions = []
         m.publicFunctions.push("exec")
         m.publicFunctions.push("safeObserve")
         m.publicFunctions.push("safeUnobserve")
@@ -77,7 +81,7 @@ class Safeable
             return targetFunction(functionArgument)
         end if
 
-        internalFunctions = getGlobalAA().ord_interfaces ?? {}
+        internalFunctions = getGlobalAA().ord_publicInterfaces ?? {}
         internalInterface = internalFunctions[func] ?? {}
 
         if rodash.isNonEmptyAA(internalInterface) then return internalInterface[func](functionArgument)
@@ -215,7 +219,7 @@ class Safeable
 
     sub removeCallback(options = {})
         callbacks = getGlobalAA().ord_callbacks
-
+        if callbacks = invalid then return
         field = options.field
         callbacks.delete(field)
     end sub

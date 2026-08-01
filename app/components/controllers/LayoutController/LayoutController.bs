@@ -10,6 +10,7 @@ sub init()
             [events.CAROUSEL_ITEM_FOCUSED]: onCarouselItemFocused,
             [events.CAROUSEL_PAGINATED]: onCarouselPaginated,
             [events.CONTENT_DATA_RECEIVED]: onScreenDataReceived,
+            [events.ERROR_GO_BACK]: errorGoBack,
             [events.GET_CATALOG_DATA]: getCatalogData,
             [events.GET_CONTENT_DATA]: getContentData,
             [events.GET_SIDEBAR]: getSidebar,
@@ -29,6 +30,10 @@ sub init()
     end sub)
 end sub
 
+
+sub errorGoBack(options = {})
+    exec("goBack", { error: true }, layout())
+end sub
 
 sub onAppStarted(_options = {})
     dispatch(events.GET_SIDEBAR)
@@ -266,8 +271,8 @@ end function
 
 
 function findNode(nodeId)
-    node = m[nodeId]
-    if rodash.isInvalid(node) then node = app().findNode(nodeId)
-    m[nodeId] = node
-    return node
+    ' node = m[nodeId]
+    ' if rodash.isInvalid(node) then node =
+    ' m[nodeId] = node
+    return app().findNode(nodeId)
 end function

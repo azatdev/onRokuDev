@@ -1,7 +1,4 @@
 class Loadable
-    publicFunctions = []
-    nodes = []
-
     sub new(_options = {})
         m.setExportFunctions(getGlobalAA().ord_role)
     end sub
@@ -12,6 +9,7 @@ class Loadable
 
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
 
+        m.publicFunctions = []
         m.publicFunctions.push("onParentFadedIn")
         m.publicFunctions.push("setLoadable")
         m.publicFunctions.push("onWidthHeightChange")

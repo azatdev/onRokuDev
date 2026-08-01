@@ -11,6 +11,7 @@
             <Topbar id="topbar" />
             <Sidebar id="sidebar" />
         </Div>
+        <Toaster />
     </children>
     <script type="text/brightscript" uri="Layout.bs" />
 </component>

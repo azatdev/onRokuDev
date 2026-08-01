@@ -25,6 +25,7 @@ sub init()
         safeFunctions({
             "catalogCarouselsFocused": catalogCarouselsFocused,
             "catalogHeroFocused": catalogHeroFocused,
+            "goBack": goBack,
             "showCatalogUI": showCatalogUI,
             "showContentUI": showContentUI,
             "navigateTo": navigateTo,
@@ -77,6 +78,18 @@ sub focusOnScreen(_options = {})
     activeView = getActiveView()
     if not rodash.isNode(activeView) then return
     setFocus(activeView, m.screenContainer)
+end sub
+
+
+sub goBack(options = {})
+    if sgrouter.goBack() then return
+
+    errorState = options.error ?? false
+
+    if errorState
+        sgrouter.destroy()
+        dispatch(events.APP_CRASH)
+    end if
 end sub
 
 
@@ -144,11 +157,13 @@ sub playVideo(options = {})
             opacity: 0
         }
     }
-    morphObject[m.navigation.id] = {
-        fields: {
-            opacity: 0
+    if get("contentUIHidden")
+        morphObject[m.navigation.id] = {
+            fields: {
+                opacity: 0
+            }
         }
-    }
+    end if
     morph(morphObject)
     setFocus(m.videoPlayer)
 end sub
