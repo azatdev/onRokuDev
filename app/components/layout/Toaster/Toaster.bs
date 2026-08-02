@@ -1,0 +1,16 @@
+import "pkg:/components/_ord/init.bs"
+
+sub init()
+    exec(sub(_options = {})
+        m.list = top().findNode("toastList")
+        safeObserve("data", onDataSet)
+    end sub)
+end sub
+
+
+sub onDataSet(options = {})
+    data = options.data
+    m.content = data.content
+    liveConfig({ field: "config", keyPath: "Toaster" }, m.content)
+    m.list.data = data
+end sub

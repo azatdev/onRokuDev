@@ -6,9 +6,64 @@ sub init()
         subscribe({
             [events.API_ERROR]: onApiError,
             [events.APP_CRASH]: onAppCrash,
-            [events.APP_ERROR]: onAppError
+            [events.APP_ERROR]: onAppError,
+            [events.NOTIFY_CLOSE]: notifyClose,
+            [events.NOTIFY_CRASH]: notifyCrash,
+            [events.NOTIFY_EXCEPTION]: notifyException
         })
     end sub)
+end sub
+
+
+sub notifyClose(options = {})
+    content = options.content
+    if not rodash.isNode(content) then return
+
+    toaster = top().getScene().findNode("toaster")
+    if not rodash.isNode(toaster) then return
+
+    collection = toaster.data?.content
+    if not rodash.isNode(collection) then return
+
+    modelIndex = rodash.indexOf(collection.getChildren(-1, 0), content)
+
+    if modelIndex + 1 = collection.totalCount
+        collection.removeChildren(collection.getChildren(-1, 0))
+    end if
+
+    if content.type = "warning"
+        dispatch(events.ERROR_GO_BACK)
+    else if content.type = "error"
+        dispatch(events.ERROR_PREPARE_CRASH)
+    end if
+end sub
+
+
+sub notifyException(_options = {})
+    sendToaster({ title: "Exception occured, going back to the previous page", type: "warning" })
+end sub
+
+
+sub notifyCrash(_options = {})
+    sendToaster({ title: "Unrecoverable error occurred.  Channel restarting.", type: "error" })
+end sub
+
+
+sub sendToaster(options = {})
+    toaster = top().getScene().findNode("toaster")
+    if not rodash.isNode(toaster) then return
+
+    if rodash.isInvalid(toaster.data)
+        toasterCollection = createObject("roSGNode", "Collection")
+        toaster.data = { content: toasterCollection }
+    else
+        toasterCollection = toaster.data.content
+    end if
+
+    options.append({ subtype: "Model" })
+    toasterCollection.update({
+        children: [options]
+    }, true)
 end sub
 
 
@@ -27,5 +82,8 @@ sub onAppError(options = {})
     if rodash.isEmpty(options) then return
     'bs:disable-next-line
     ?"APP_ERROR: " formatJSON(options)
-    dispatch(events.ERROR_GO_BACK, options)
+    layout = top().getScene().findNode("layout")
+    if not rodash.isNode(layout) then return
+    videoActive = get("videoActive", layout)
+    if not videoActive then dispatch(events.NOTIFY_EXCEPTION)
 end sub

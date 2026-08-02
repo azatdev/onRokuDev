@@ -10,5 +10,7 @@ module.exports = {
     ...require("./Layout"),
     ...require("./LoadingPoster"),
     ...require("./PlayerHeader"),
+    ...require("./Toaster"),
+    ...require("./ToastItem"),
     ...require("./Navigation")
 };

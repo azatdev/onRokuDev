@@ -16,11 +16,7 @@ class Eventable
 
 
     sub reset(_options = {})
-        for each registration in m.registrationsArray
-            registration.unregister()
-        end for
-        m.registrationsArray = []
-
+        m.unsubscribe()
         top().removeField("ord_subscriptions")
         safeUnobserve("ready", m.eventQueue)
         m.eventQueue = invalid
@@ -42,6 +38,7 @@ class Eventable
 
         if rodash.findIndex(["Scene", "Controller"], componentRole) <> -1
             m.publicFunctions.push("subscribe")
+            m.publicFunctions.push("unsubscribe")
         end if
 
         if rodash.findIndex(["Task"], componentRole) <> -1
@@ -130,8 +127,7 @@ class Eventable
     sub publish(options = {})
         if m.renderQueue = invalid then return
         'bs:disable-next-line
-        ' if devMode() then ?"-=# EVENT: " options.id, rodash.now()
-        ?"-=# EVENT: " options.id, rodash.now()
+        if devMode() then ?"-=# EVENT: " options.id, rodash.now()
         m.renderQueue.postMessage(options.id, options.options)
     end sub
 
@@ -140,6 +136,14 @@ class Eventable
         if not rodash.isNonEmptyAA(options) then return
         if m.eventQueue = invalid then return
         m.eventQueue.eventData = options
+    end sub
+
+
+    sub unsubscribe(_options = {})
+        for each registration in m.registrationsArray
+            registration.unregister()
+        end for
+        m.registrationsArray = []
     end sub
 end class
 

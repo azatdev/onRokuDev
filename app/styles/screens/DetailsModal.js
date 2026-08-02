@@ -1,6 +1,7 @@
 const mixins = require("../mixins");
 const assets = mixins["Assets"]
 const dimensions = mixins["Dimensions"]
+const palette = mixins["Palette"]
 const viewport = dimensions["viewport"]
 
 module.exports = {
@@ -12,7 +13,7 @@ module.exports = {
                 "width": viewport.width,
                 "Poster": {
                     "&#modalContainer": {
-                        "blendColor": "#18161d",
+                        "blendColor": palette.modalBackground,
                         "uri": assets.rounded18,
                         "width": "1110px",
                         "ord_scrollGroup":{

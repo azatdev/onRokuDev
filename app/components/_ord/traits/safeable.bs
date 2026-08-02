@@ -126,21 +126,20 @@ class Safeable
     end sub
 
 
-    sub safeObserve(options = {})
+    function safeObserve(options = {})
         fieldName = options.fieldName ?? ""
         callbackFunc = options.callbackFunc ?? ""
         node = options.node ?? getGlobalAA().top
         infoFields = options.infoFields ?? []
 
-        if rodash.isEmptyString(fieldName) then return
-        if not rodash.isNode(node) then return
+        if rodash.isEmptyString(fieldName) then return invalid
+        if not rodash.isNode(node) then return invalid
 
         if getGlobalAA().ord_role = "Task" and rodash.isMessagePort(callbackFunc)
-            node.observeFieldScopedEx(fieldName, callbackFunc, infoFields)
-            return
+            return node.observeFieldScopedEx(fieldName, callbackFunc, infoFields)
         end if
 
-        if rodash.isEmptyString(callbackFunc) then return
+        if rodash.isEmptyString(callbackFunc) then return invalid
 
         nodeIdentifier = getNodeIdentifier(node)
         uniqueFieldName = `${fieldName}${nodeIdentifier}`
@@ -151,8 +150,8 @@ class Safeable
         })
 
         node.unObserveFieldScoped(fieldName)
-        node.observeFieldScoped(fieldName, rodash.getFunctionName(m.safeCallback), infoFields)
-    end sub
+        return node.observeFieldScoped(fieldName, rodash.getFunctionName(m.safeCallback), infoFields)
+    end function
 
 
     sub safeUnobserve(options = {})

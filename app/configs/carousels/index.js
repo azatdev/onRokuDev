@@ -3,5 +3,6 @@ module.exports = {
     ...require("./landscape"),
     ...require("./portrait"),
     ...require("./tabs"),
+    ...require("./toaster"),
     ...require("./userCarousel")
 };

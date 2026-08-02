@@ -26,11 +26,12 @@ class Animatable
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
 
         m.publicFunctions = []
-        m.publicFunctions.push("morph")
-        m.publicFunctions.push("runAnimation")
-        m.publicFunctions.push("removeAnimation")
+        m.publicFunctions.push("getFloatFieldInterpolator")
         m.publicFunctions.push("fadeIn")
         m.publicFunctions.push("fadeOut")
+        m.publicFunctions.push("morph")
+        m.publicFunctions.push("removeAnimation")
+        m.publicFunctions.push("runAnimation")
     end sub
 
 
@@ -137,6 +138,16 @@ class Animatable
         if animationShell.hasField("callback") then animationShell.setRef("callback", {})
         m.animations.delete(id)
     end sub
+
+
+    function getFloatFieldInterpolator(options = {})
+        children = options.children ?? []
+        for each child in children
+            if child.subType() = "FloatFieldInterpolator" then return child
+            return getFloatFieldInterpolator(child.getChildren(-1, 0))
+        end for
+        return invalid
+    end function
 
 
     function getInterpName(field = "") as Object
@@ -356,6 +367,11 @@ class Animatable
         return floatValue!
     end function
 end class
+
+
+function getFloatFieldInterpolator(children = [])
+    return interfaceFunction("getFloatFieldInterpolator", { children: children })
+end function
 
 
 function runAnimation(id = "")

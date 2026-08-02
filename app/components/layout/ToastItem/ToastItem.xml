@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="ToastItem" extends="Div">
+    <interface>
+        <field id="groupHasFocus" type="boolean" />
+        <field id="index" type="integer" />
+        <field id="currRect" type="rect2d" />
+        <field id="itemContent" type="node" />
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <Poster id="toastItemContainer">
+            <QuanticoBold id="label" />
+        </Poster>
+        <Poster id="progress" />
+    </children>
+    <script type="text/brightscript" uri="ToastItem.bs" />
+</component>

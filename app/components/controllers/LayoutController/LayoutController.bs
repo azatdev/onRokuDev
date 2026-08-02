@@ -11,6 +11,7 @@ sub init()
             [events.CAROUSEL_PAGINATED]: onCarouselPaginated,
             [events.CONTENT_DATA_RECEIVED]: onScreenDataReceived,
             [events.ERROR_GO_BACK]: errorGoBack,
+            [events.ERROR_PREPARE_CRASH]: initiateCrash,
             [events.GET_CATALOG_DATA]: getCatalogData,
             [events.GET_CONTENT_DATA]: getContentData,
             [events.GET_SIDEBAR]: getSidebar,
@@ -31,8 +32,13 @@ sub init()
 end sub
 
 
-sub errorGoBack(options = {})
+sub errorGoBack(_options = {})
     exec("goBack", { error: true }, layout())
+end sub
+
+
+sub initiateCrash(_options = {})
+    exec("initiateCrash", { error: true }, layout())
 end sub
 
 sub onAppStarted(_options = {})

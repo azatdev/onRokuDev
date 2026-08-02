@@ -39,7 +39,7 @@ sub ord_init()
 end sub
 
 
-sub ord_reset(_options = {})
+sub ord_reset(_options = {}, _messageInfo = {})
     for each interfaceInstance in m.ord_allInterfaces
         interfaceInstance.reset()
     end for
@@ -126,7 +126,7 @@ end function
 
 function devMode()
     appIsDev = createObject("roAppInfo").isDev()
-    devOverride = false
+    devOverride = true
     return appIsDev ? devOverride : appIsDev
 end function
 

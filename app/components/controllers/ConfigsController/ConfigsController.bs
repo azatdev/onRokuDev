@@ -3,6 +3,8 @@ import "pkg:/components/_ord/init.bs"
 
 sub init()
     exec(sub(_options = {})
+        if not devMode() then return
+
         subscribe({
             [events.CONFIGS_UPDATE]: onConfigsUpdate,
             [events.REQUEST_CONFIGS]: requestConfigs
