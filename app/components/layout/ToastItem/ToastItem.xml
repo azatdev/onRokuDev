@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <component name="ToastItem" extends="Div">
     <interface>
-        <field id="groupHasFocus" type="boolean" />
         <field id="index" type="integer" />
         <field id="currRect" type="rect2d" />
         <field id="itemContent" type="node" />
