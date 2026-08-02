@@ -110,15 +110,6 @@ sub userCarouselsToggle(direction = 0)
 end sub
 
 
-function getFloatFieldInterpolator(children = [])
-    for each child in children
-        if child.subType() = "FloatFieldInterpolator" then return child
-        return getFloatFieldInterpolator(child.getChildren(-1, 0))
-    end for
-    return invalid
-end function
-
-
 sub onAnimationFraction(options = {})
     if not rodash.isNonEmptyAA(options) then return
     m.list.focusPercent = options.data

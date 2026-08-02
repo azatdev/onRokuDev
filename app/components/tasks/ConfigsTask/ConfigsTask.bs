@@ -19,7 +19,7 @@ function runConfigsTask(_options = {})
         return true
     end if
 
-    dispatch(events.CONFIGS_UPDATE, responseJSON)
+    publish(events.CONFIGS_UPDATE, responseJSON)
 
     return true
 end function

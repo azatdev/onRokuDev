@@ -1,7 +1,5 @@
 class Eventable
-    subscriptions = {}
-    publicFunctions = []
-
+    registrationsArray = []
     sub new(_options = {})
         m.renderQueue = createObject("roRenderThreadQueue")
         m.setExportFunctions(getGlobalAA().ord_role)
@@ -17,8 +15,22 @@ class Eventable
     end sub
 
 
+    sub reset(_options = {})
+        m.unsubscribe()
+        top().removeField("ord_subscriptions")
+        safeUnobserve("ready", m.eventQueue)
+        m.eventQueue = invalid
+        if rodash.isNode(global().ord_eventQueue)
+            global().ord_eventQueue.control = "STOP"
+            global().removeField("ord_eventQueue")
+        end if
+    end sub
+
+
     sub setExportFunctions(componentRole = "")
         if rodash.isEmptyString(componentRole) then return
+
+        m.publicFunctions = []
 
         if rodash.findIndex(["Scene", "View", "Model", "Controller", "Task"], componentRole) <> -1
             m.publicFunctions.push("dispatch")
@@ -26,6 +38,7 @@ class Eventable
 
         if rodash.findIndex(["Scene", "Controller"], componentRole) <> -1
             m.publicFunctions.push("subscribe")
+            m.publicFunctions.push("unsubscribe")
         end if
 
         if rodash.findIndex(["Task"], componentRole) <> -1
@@ -39,7 +52,6 @@ class Eventable
             m.eventQueue = global().ord_eventQueue
         else
             eventQueue = createObject("roSGNode", "ord_eventQueue")
-
             global().addField("ord_eventQueue", "node", false)
             global().ord_eventQueue = eventQueue
             m.eventQueue = eventQueue
@@ -86,8 +98,13 @@ class Eventable
 
             observeFunction = m.callEventFunctions
             observeFunctionName = rodash.getFunctionName(observeFunction)
-            m.renderQueue.addMessageHandler(eventName, observeFunctionName)
+            registration = m.renderQueue.addMessageHandler(eventName, observeFunctionName)
+            m.registrationsArray.push(registration)
         end for
+
+        if getGlobalAA().ord_role = "Controller"
+            m.renderQueue.addMessageHandler(events.UNSUBSCRIBE_EVENTS, "ord_reset")
+        end if
     end sub
 
 
@@ -119,6 +136,14 @@ class Eventable
         if not rodash.isNonEmptyAA(options) then return
         if m.eventQueue = invalid then return
         m.eventQueue.eventData = options
+    end sub
+
+
+    sub unsubscribe(_options = {})
+        for each registration in m.registrationsArray
+            registration.unregister()
+        end for
+        m.registrationsArray = []
     end sub
 end class
 

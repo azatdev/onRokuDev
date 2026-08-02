@@ -1,22 +1,22 @@
 class Focusable
-    focusReady = false
     focusMap = {}
-    focusNode = invalid
-    focusFunction = invalid
-    publicFunctions = []
-    lastFocus = rodash.now()
     focusInterval = 500
 
     sub new(_options = {})
         m.setExportFunctions(getGlobalAA().ord_role)
     end sub
 
+    sub reset(_options = {})
+        m.focusMap = {}
+        global().removeField("lastFocusedTime")
+    end sub
 
     sub setExportFunctions(componentRole = "")
         if rodash.isEmptyString(componentRole) then return
 
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
 
+        m.publicFunctions = []
         m.publicFunctions.push("applyDefaultFocus")
         m.publicFunctions.push("onFocusedChildChange")
         m.publicFunctions.push("setFocus")

@@ -25,6 +25,8 @@ sub init()
         safeFunctions({
             "catalogCarouselsFocused": catalogCarouselsFocused,
             "catalogHeroFocused": catalogHeroFocused,
+            "goBack": goBack,
+            "initiateCrash": initiateCrash,
             "showCatalogUI": showCatalogUI,
             "showContentUI": showContentUI,
             "navigateTo": navigateTo,
@@ -55,7 +57,8 @@ sub init()
         set({
             "catalogUIHidden": false,
             "contentUIHidden": true,
-            "navigationHidden": false
+            "navigationHidden": false,
+            "videoActive": false
         })
 
         safeObserve("routerState", onRouterStateChanged, sgRouter.getRouter())
@@ -73,6 +76,11 @@ sub catalogHeroFocused(options = {})
 end sub
 
 
+sub initiateCrash(_options = {})
+    fadeOut(top(), { callback: onLayoutFadedOut })
+end sub
+
+
 sub focusOnScreen(_options = {})
     activeView = getActiveView()
     if not rodash.isNode(activeView) then return
@@ -80,34 +88,54 @@ sub focusOnScreen(_options = {})
 end sub
 
 
+sub goBack(options = {})
+    if get("videoActive") then return
+    wentBack = sgrouter.goBack()
+    errorState = options.error ?? false
+
+    if errorState and not wentBack then dispatch(events.NOTIFY_CRASH)
+end sub
+
+
 sub hideVideoPlayer(_options = {})
+    toggleVideoPlayer(-1)
+    set({ "videoActive": false })
+    focusOnScreen()
+end sub
+
+
+sub toggleVideoPlayer(direction = 0)
     morphObject = {}
     morphObject[m.videoPlayer.id] = {
         fields: {
-            opacity: 0
+            opacity: 0 + direction
         }
     }
     morphObject[m.screenContainer.id] = {
         fields: {
-            opacity: 1
+            opacity: 1 - direction
         }
     }
     morphObject[m.background.id] = {
         fields: {
-            opacity: 1
+            opacity: 1 - direction
         }
     }
-
     if get("contentUIHidden")
         morphObject[m.navigation.id] = {
             fields: {
-                opacity: 1
+                opacity: 1 - direction
             }
         }
     end if
 
     morph(morphObject)
-    focusOnScreen()
+end sub
+
+
+sub onLayoutFadedOut(_options = {})
+    sgrouter.destroy()
+    dispatch(events.APP_CRASH)
 end sub
 
 
@@ -127,29 +155,8 @@ end sub
 sub playVideo(options = {})
     if not rodash.isNode(m.videoPlayer) then return
     m.videoPlayer.data = options
-
-    morphObject = {}
-    morphObject[m.videoPlayer.id] = {
-        fields: {
-            opacity: 1
-        }
-    }
-    morphObject[m.screenContainer.id] = {
-        fields: {
-            opacity: 0
-        }
-    }
-    morphObject[m.background.id] = {
-        fields: {
-            opacity: 0
-        }
-    }
-    morphObject[m.navigation.id] = {
-        fields: {
-            opacity: 0
-        }
-    }
-    morph(morphObject)
+    toggleVideoPlayer(1)
+    set({ "videoActive": true })
     setFocus(m.videoPlayer)
 end sub
 

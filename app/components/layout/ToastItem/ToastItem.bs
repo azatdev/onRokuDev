@@ -1,0 +1,126 @@
+import "pkg:/components/_ord/init.bs"
+
+sub init()
+    exec(sub(_options = {})
+        m.label = top().findNode("label")
+        m.toastItemContainer = top().findNode("toastItemContainer")
+        m.progress = top().findNode("progress")
+        safeObserve("itemContent", itemContentChanged)
+        safeObserve("currRect", onCurrRectChange)
+
+        styleHooks({
+            "after": afterStyling
+        })
+    end sub)
+end sub
+
+
+sub afterStyling(_options = {})
+    onTextChange()
+end sub
+
+
+function getFocusedRectSize(_options = {})
+    if not rodash.isNode(m.toastItemContainer) then return [0,0]
+    return [getVisibleWidth(m.toastItemContainer), getVisibleHeight(m.toastItemContainer)]
+end function
+
+
+sub itemContentChanged(options = {})
+    content = options.data
+    top().id = "toastitem-" + top().index.toStr()
+    m.content = content
+    m.label.text = ucase(content.title)
+
+    onTextChange()
+    addClass(content.type, m.progress)
+    fadeIn(top(), { callback: onFadedIn })
+end sub
+
+
+sub onAnimationFraction(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    progressWidth = top().width * options.data
+    topHeight = top().height - 12
+    progress = top().findNode("progress")
+    progress.width = progressWidth
+
+    progress.opacity = 1
+
+    progress.clippingRect = [
+        0,
+        topHeight,
+        progressWidth,
+        12
+    ]
+end sub
+
+
+sub onCurrRectChange(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    field = options.field
+    if field = "currRect"
+        rect = options.data
+    else
+        rect = top()
+    end if
+
+    for each node in [m.toastItemContainer, top(), m.progress]
+        node.width = rect.width
+        node.height = rect.height
+    end for
+end sub
+
+
+sub onTextChange(_options = {})
+    stackChildren({ direction: "both" }, m.toastItemContainer)
+
+    parentList = top().getParent()
+    if not rodash.isNode(parentList) then return
+    flexList = parentList.getParent()
+    if not rodash.isNode(flexList) then return
+
+    exec("registerChildRect", {
+        smallSquare: getFocusedRectSize(),
+        bigSquare: getFocusedRectSize(),
+        index: top().index
+    }, flexList)
+end sub
+
+
+sub startProgress(_options = {})
+    targetWidth = top().currRect.width
+
+    morphObject = {}
+    morphObject[m.progress.id] = {
+        fields: {
+            width: targetWidth
+        }
+    }
+
+    morphAnimation = morph(morphObject, { callback: onProgressFinished, deferred: true, duration: 3 })
+
+    floatFieldInterp = getFloatFieldInterpolator(morphAnimation.getChildren(-1, 0))
+    if not rodash.isNode(floatFieldInterp) then return
+
+    safeObserve("fraction", onAnimationFraction, floatFieldInterp)
+    runAnimation(morphAnimation.id)
+end sub
+
+
+sub onFadedIn(_options = {})
+    startProgress()
+end sub
+
+
+sub onFadedOut(_options = {})
+    m.progress.width = 0
+    m.progress.opacity = 0.1
+
+    dispatch(events.NOTIFY_CLOSE, { content: m.content })
+end sub
+
+
+sub onProgressFinished(_options = {})
+    fadeOut(top(), { callback: onFadedOut })
+end sub

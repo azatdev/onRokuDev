@@ -9,21 +9,14 @@ end sub
 
 function runQueue(_options = {})
     messagePort = createObject("roMessagePort")
-    safeObserve("eventData", messagePort)
-    top().ready = true
+    top().ready = safeObserve("eventData", messagePort)
 
     while true
         msg = wait(0, messagePort)
         if msg = invalid then continue while
 
         messageData = msg.getData()
-        if rodash.isEmpty(messageData) then continue while
-
-        eventId = messageData.id ?? ""
-        eventOptions = messageData.options ?? {}
-
-        if rodash.isEmpty(eventId) then continue while
-        publish(eventId, eventOptions)
+        publish(messageData.id, messageData.options)
     end while
 
     return true

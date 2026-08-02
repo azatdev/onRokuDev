@@ -4,14 +4,15 @@ import "pkg:/components/_ord/init.bs"
 sub init()
     exec(sub(_options = {})
         top().backExitsScene = false
-        m.layout = top().findNode("layout")
+        layout = top().createChild("Layout")
+        layout.id = "layout"
 
         subscribe({
-            [events.EVENT_TASK_READY]: onEventTaskReady
+            [events.EVENT_TASK_READY]: onEventTaskReady,
+            [events.RESTART_APP]: restartApp
         })
 
         setFocusMap({
-            "onFocus": m.layout,
             "onKey": {
                 "default": true
             }
@@ -21,16 +22,26 @@ sub init()
             "ConfigsController",
             "LayoutController",
             "PlayerController",
+            "QOSController",
             "SocketController",
             "StylesController",
             "UserController"
         ])
-
-        setFocus(m.layout)
     end sub)
 end sub
 
 
 sub onEventTaskReady(_options = {})
     dispatch(events.APP_STARTED)
+end sub
+
+
+sub restartApp(_options = {})
+    ' Since this callback is part of the roRenderQueue callstack, destroying it here will cause the app to crash.
+    ' Delaying it with rodash.delay will destroy the roRenderQueue in a new callstack.
+    rodash.delay(sub(_options = {})
+        top().removeChildren(top().getChildren(-1, 0))
+        ord_reset()
+        init()
+    end sub, 1000)
 end sub

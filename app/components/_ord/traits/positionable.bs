@@ -1,15 +1,13 @@
 class Positionable
-    publicFunctions = []
-
     sub new(_options = {})
         m.setExportFunctions(getGlobalAA().ord_role)
     end sub
-
 
     sub setExportFunctions(componentRole = "")
         if rodash.isEmptyString(componentRole) then return
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
 
+        m.publicFunctions = []
         m.publicFunctions.push("centerComponent")
         m.publicFunctions.push("getVisibleHeight")
         m.publicFunctions.push("getVisibleWidth")
@@ -145,7 +143,6 @@ class Positionable
         totalHeight = 0
         totalWidth = 0
         direction = options.direction ?? "horizontal"
-        horizontal = direction = "horizontal"
 
         for each child in children
             if not child.isSubtype("Group") then continue for
@@ -157,11 +154,13 @@ class Positionable
             childHeight = m.getVisibleHeight({ node: child })
             childWidth = m.getVisibleWidth({ node: child })
 
-            if horizontal
+            if direction = "horizontal" or direction = "both"
                 if childWidth = 0 then continue for
                 child.translation = [totalWidth + leftMargin, child.translation[1]]
                 totalWidth += childWidth
-            else
+            end if
+
+            if direction = "vertical" or direction = "both"
                 if childHeight = 0 then continue for
                 child.translation = [child.translation[0], totalHeight + topMargin]
                 totalHeight += childHeight
@@ -171,10 +170,12 @@ class Positionable
         minWidth = node.minWidth ?? 0
         minHeight = node.minHeight ?? 0
 
-        if horizontal
+        if direction = "horizontal" or direction = "both"
             node.width = totalWidth > minWidth ? totalWidth : minWidth
             node.height = node.boundingRect().height
-        else
+        end if
+
+        if direction = "vertical" or direction = "both"
             node.height = totalHeight > minHeight ? totalHeight : minHeight
             node.width = node.boundingRect().width
         end if

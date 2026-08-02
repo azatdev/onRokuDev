@@ -1,5 +1,4 @@
 class Styleable
-    publicFunctions = []
     hookFunctions = {}
 
     sub new(_options = {})
@@ -31,10 +30,19 @@ class Styleable
     end sub
 
 
+    sub reset(_options = {})
+        m.hookFunctions = {}
+        top().removeField("class")
+        global().removeField("ord_styles")
+    end sub
+
+
     sub setExportFunctions(componentRole)
         if rodash.isEmptyString(componentRole) then return
 
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
+
+        m.publicFunctions = []
         m.publicFunctions.push("addClass")
         m.publicFunctions.push("removeClass")
         m.publicFunctions.push("redrawStyles")

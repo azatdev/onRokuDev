@@ -1,5 +1,4 @@
 class Configable
-    publicFunctions = []
     appConfigs = "<%- o(CONFIG) %>"
     configPaths = {}
 
@@ -14,6 +13,12 @@ class Configable
     end sub
 
 
+    sub reset(_options = {})
+        m.configPaths = {}
+        global().removeField("ord_configs")
+    end sub
+
+
     sub setupGlobalConfigs()
         global().addField("ord_configs", "node", true)
         global().ord_configs = createObject("roSGNode", "Node")
@@ -22,6 +27,7 @@ class Configable
 
     sub setExportFunctions(componentRole)
         if rodash.isEmptyString(componentRole) then return
+        m.publicFunctions = []
         m.publicFunctions.push("liveConfig")
         m.publicFunctions.push("configUpdated")
     end sub

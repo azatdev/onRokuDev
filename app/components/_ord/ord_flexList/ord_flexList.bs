@@ -40,7 +40,7 @@ sub init()
             "uniformCrossAxisSize": false,
             "useUnfocusedTargetSet": false,
             "vertAlign": "center",
-            "visibleTiles": 0,
+            "visibleTiles": 9,
             "wrap": false,
             "wrapFirstToLast": true
         }})
@@ -61,15 +61,6 @@ sub init()
         m.focusTimer = getFloatFieldInterpolator(m.carousel.getChildren(-1, 0))
     end sub)
 end sub
-
-
-function getFloatFieldInterpolator(children = [])
-    for each child in children
-        if child.subType() = "FloatFieldInterpolator" then return child
-        return getFloatFieldInterpolator(child.getChildren(-1, 0))
-    end for
-    return invalid
-end function
 
 
 sub onCarouselFocusedChildChange(_options = {})
@@ -317,18 +308,19 @@ sub onDataSet(options = {})
     data = options.data ?? {}
     content = data.content
     if not rodash.isNode(content) then return
+    safeObserve("config", processDefaultConfig, content)
+
     if content.config = invalid then return
 
-    safeObserve("totalCount", onTotalCountChange, content)
-    safeObserve("config", processConfig, content)
+    config = processDefaultConfig({ data: content.config })
 
     m.content = content
     m.carousel.content = content
-    m.carousel.itemComponentName = content.config.itemComponentName
+    m.carousel.itemComponentName = config.itemComponentName
 
-    if content.config.carouselType = "dynamicSize"
+    if config.carouselType = "dynamicSize"
         rects = []
-        for x = 0 to m.content.getChildCount() -1
+        for x = 1 to config.visibleTiles
             rects.push({
                 height: 1,
                 width: 1,
@@ -343,7 +335,8 @@ sub onDataSet(options = {})
         })
         m.carousel.targetSet = unFocusedTargetSet
     else
-        processConfig({ data: content.config })
+        processConfig(config)
+        safeObserve("totalCount", onTotalCountChange, m.content)
     end if
 end sub
 
@@ -358,7 +351,8 @@ sub onTotalCountChange(options = {})
     totalCarouselItems = options.data
     if rodash.isNumber(totalCarouselItems) then set({ "totalCarouselItems": totalCarouselItems })
 
-    processConfig()
+    config = processDefaultConfig({ data: m.content.config })
+    processConfig(config)
 
     if get("resetOnChange")
         rodash.delay(sub(_options = {})
@@ -386,14 +380,8 @@ sub onItemUnfocused(options = {})
 end sub
 
 
-sub processConfig(options = {})
-    if not rodash.isNonEmptyAA(options) then return
+sub processConfig(config = {})
     if not rodash.isNode(m.content) then return
-
-    defaultConfig = get("defaultConfig")
-    config = {}
-    config.append(defaultConfig)
-    config.append(options.data ?? {})
 
     dynamicSize = config.carouselType = "dynamicSize"
     flushFocus = config.carouselType = "flushFocus"
@@ -475,6 +463,7 @@ sub processConfig(options = {})
         "lastFocusableIndex": lastFocusableIndex,
         "useUnfocusedTargetSet": config.useUnfocusedTargetSet,
         "resetOnChange": config.resetOnChange,
+        "visibleTiles": config.visibleTiles,
         "wrap": config.wrap,
         "wrapFirstToLast": config.wrapFirstToLast
     })
@@ -488,6 +477,15 @@ sub processConfig(options = {})
         safeObserve("focusPercent", onExternalFocusPercentChange)
     end if
 end sub
+
+
+function processDefaultConfig(options = {})
+    defaultConfig = get("defaultConfig")
+    config = {}
+    config.append(defaultConfig)
+    config.append(options.data)
+    return config
+end function
 
 
 function processRectSizes(options = {})
@@ -520,7 +518,8 @@ sub registerChildRect(options = {})
         bigSquare: options.bigSquare
     }
     if m.rectSizes.count() = m.content.getChildCount()
-        processConfig({ data: m.content.config })
+        config = processDefaultConfig({ data: m.content.config })
+        processConfig(config)
     end if
 end sub
 

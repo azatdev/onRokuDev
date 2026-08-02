@@ -15,45 +15,24 @@ class Animatable
     end sub
 
 
+    sub reset(_options = {})
+        m.animations = {}
+    end sub
+
+
     sub setExportFunctions(componentRole = "")
         if rodash.isEmptyString(componentRole) then return
 
         if rodash.findIndex(["Scene", "View"], componentRole) = -1 then return
 
-        m.publicFunctions.push("morph")
-        m.publicFunctions.push("runAnimation")
-        m.publicFunctions.push("removeAnimation")
+        m.publicFunctions = []
+        m.publicFunctions.push("getFloatFieldInterpolator")
         m.publicFunctions.push("fadeIn")
         m.publicFunctions.push("fadeOut")
+        m.publicFunctions.push("morph")
+        m.publicFunctions.push("removeAnimation")
+        m.publicFunctions.push("runAnimation")
     end sub
-
-
-    function prepareAnimation(animation = "", options = {})
-        if rodash.isString(animation)
-            animationId = animation
-        else
-            if not rodash.isAA(animation) and not rodash.isArray(animation) then return invalid
-            animationOptionsArray = rodash.isAA(animation) ? [animation] : animation
-            animationId = m.constructAnimationId(animationOptionsArray)
-            m.addAnimation(animationId, animationOptionsArray)
-        end if
-
-        if rodash.isNonEmptyAA(options)
-            animationCallback = options.callback
-            animationCallbackOptions = options.callbackOptions ?? {}
-
-            animation = m.animations[animationId] ?? invalid
-            if not rodash.isNode(animation) then return invalid
-
-            if rodash.isNotInvalid(animationCallback) then m.setAnimationCallback({
-                animation: animation,
-                callback: animationCallback,
-                options: animationCallbackOptions
-            })
-        end if
-
-        return animationId
-    end function
 
 
     sub runAnimation(options = {})
@@ -78,9 +57,7 @@ class Animatable
         animationOptions = settings.options ?? []
         settings.delete("options")
 
-        animation = top().findNode(animationId)
-        if rodash.isInvalid(animation) then animation = createObject("roSGNode", "Animation")
-
+        animation = createObject("roSGNode", "Animation")
         animation.id = animationId
         animation.setFields(settings)
 
@@ -127,12 +104,8 @@ class Animatable
         if animationCollection.count() = 0 then return
 
         if animationCollection.count() > 1
-            animationShell = top().findNode(id)
 
-            if not rodash.isNode(animationShell)
-                animationShell = createObject("roSGNode", "ParallelAnimation")
-                top().appendChild(animationShell)
-            end if
+            animationShell = createObject("roSGNode", "ParallelAnimation")
 
             duration = 0
 
@@ -165,6 +138,16 @@ class Animatable
         if animationShell.hasField("callback") then animationShell.setRef("callback", {})
         m.animations.delete(id)
     end sub
+
+
+    function getFloatFieldInterpolator(options = {})
+        children = options.children ?? []
+        for each child in children
+            if child.subType() = "FloatFieldInterpolator" then return child
+            return getFloatFieldInterpolator(child.getChildren(-1, 0))
+        end for
+        return invalid
+    end function
 
 
     function getInterpName(field = "") as Object
@@ -200,7 +183,6 @@ class Animatable
 
         callbackFunction = callback.function
         callbackOptions = callback.options
-
 
         if animation.hasField("callback") then animation.setRef("callback", {})
 
@@ -319,7 +301,7 @@ class Animatable
     function constructAnimationId(options = []) as String
         if not rodash.isNonEmptyArray(options) then return ""
 
-        animationId = top().createdAt.toStr() ?? ""
+        animationId = getNodeIdentifier(top())
 
         for each nodeOptions in options
             nodeId = nodeOptions.nodeId ?? ""
@@ -379,17 +361,17 @@ class Animatable
     end function
 
 
-    function getNodeId() as String
-        return `${top().subType()}_${top().createdAt.toStr() ?? ""}`
-    end function
-
-
     function toFloatValue(value)
         if not rodash.isNumber(value) then return value
         floatValue! = value
         return floatValue!
     end function
 end class
+
+
+function getFloatFieldInterpolator(children = [])
+    return interfaceFunction("getFloatFieldInterpolator", { children: children })
+end function
 
 
 function runAnimation(id = "")

@@ -125,7 +125,6 @@ sub scrollPage(direction = 0, callbackFunc = invalid)
     }
 
     m.catalogHeader.visible = direction = 1 ? true : false
-
     morph(morphObject, { callback: callbackFunc })
 end sub
 

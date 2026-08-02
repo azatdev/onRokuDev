@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="Toaster" extends="Div">
+    <interface>
+        <field id="data" type="assocarray" />
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <ord_flexList id="toastList" />
+    </children>
+    <script type="text/brightscript" uri="Toaster.bs" />
+</component>

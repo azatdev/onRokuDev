@@ -7,10 +7,13 @@ module.exports = {
         "highlightText": "#b9faa0",
         "inactiveColor": "#575345",
         "lowlightColor": "#b8bca4",
+        "modalBackground": "#18161d",
         "playheadColor": "#8f9483",
         "primaryColor": "#BBBBBB",
         "sidebarColor": "#3c1744",
         "transparent": "#FFFFFF00",
+        "warningColor": "#be9b00",
+        "errorColor": "#be0000",
         "userCarouselBackground": "#5c5c4b23"
     }
 };
