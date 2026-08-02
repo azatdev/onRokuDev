@@ -64,7 +64,6 @@ end sub
 
 
 sub onCarouselFocusedChildChange(_options = {})
-    if not rodash.isNode(m.focusTimer) then return
     safeObserve("fraction", onFocusTimerFired, m.focusTimer)
 end sub
 
@@ -95,13 +94,9 @@ function handleScrollKey(options = {})
 
     if key <> top().advanceKey and key <> top().reverseKey then return false
 
-    carousel = m.carousel
-    if not rodash.isNode(carousel) then return false
-
     if not rodash.isArray(m.focusedTargetSetArray) then return true
-    if not rodash.isNode(carousel) then return true
 
-    if calculate.floatMOD(carousel.currFocusItemIndex, 1) <> 0 then return true
+    if calculate.floatMOD(m.carousel.currFocusItemIndex, 1) <> 0 then return true
 
 
     direction = key = top().reverseKey ? -1 : 1
@@ -114,7 +109,7 @@ function handleScrollKey(options = {})
     if nextTargetSetIndex <= 0 then nextTargetSetIndex = 0
     if nextTargetSetIndex >= lastFocusableIndex then nextTargetSetIndex = lastFocusableIndex
 
-    if carousel.content.getChild(nextIndex) = invalid
+    if m.carousel.content.getChild(nextIndex) = invalid
         if not get("wrap") then return false
         wrapFirstToLast = get("wrapFirstToLast")
 
@@ -125,7 +120,7 @@ function handleScrollKey(options = {})
             wrapFirstToLast = get("wrapFirstToLast")
             firstToLast = nextIndex = -1
             if firstToLast and not wrapFirstToLast then return false
-            collection = carousel.content
+            collection = m.carousel.content
             if not rodash.isNode(collection) then return true
             nextIndex = collection.getChildCount() - 1
             nextTargetSetIndex = m.focusedTargetSetArray.count() - 1
@@ -134,10 +129,10 @@ function handleScrollKey(options = {})
 
     nextTargetSet = m.focusedTargetSetArray[nextTargetSetIndex]
 
-    carousel.animateToItem = nextIndex
+    m.carousel.animateToItem = nextIndex
 
-    if nextTargetSet <> invalid and carousel.currTargetSet <> invalid and nextTargetSet.focusIndex <> carousel.currTargetSet.focusIndex
-        carousel.animateToTargetSet = nextTargetSet
+    if nextTargetSet <> invalid and m.carousel.currTargetSet <> invalid and nextTargetSet.focusIndex <> m.carousel.currTargetSet.focusIndex
+        m.carousel.animateToTargetSet = nextTargetSet
         top().focusedTargetsetIndex = nextTargetSetIndex
     end if
 
@@ -198,7 +193,6 @@ end sub
 
 
 function applyGutters(options = {})
-    if not rodash.isNonEmptyAA(options) then return [0,0,0,0]
     clippingRect = options.clippingRect ?? [0,0,0,0]
     direction = options.direction ?? "horizontal"
     horizontal = direction = "horizontal"
@@ -220,8 +214,6 @@ end function
 
 
 sub setActiveItem(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     activeIndex = options.activeIndex ?? 0
     m.carousel.itemSelected = activeIndex
     top().focusedContentIndex = activeIndex
@@ -230,7 +222,6 @@ end sub
 
 
 sub setClippingRects(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     clippingRects = options.clippingRects ?? {}
     direction = options.direction
     dynamicSize = options.dynamicSize ?? false
@@ -272,8 +263,6 @@ end sub
 
 
 sub onCarouselUnfocus(_options = {})
-    if not rodash.isNode(m.carousel) then return
-    if not rodash.isNode(m.carousel.targetSet) then return
     dynamicSize = get("dynamicSize") ?? false
     useUnfocusedTargetSet = get("useUnfocusedTargetSet") ?? false
 
@@ -303,11 +292,8 @@ end sub
 
 
 sub onDataSet(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     data = options.data ?? {}
     content = data.content
-    if not rodash.isNode(content) then return
     safeObserve("config", processDefaultConfig, content)
 
     if content.config = invalid then return
@@ -347,7 +333,6 @@ end sub
 
 
 sub onTotalCountChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     totalCarouselItems = options.data
     if rodash.isNumber(totalCarouselItems) then set({ "totalCarouselItems": totalCarouselItems })
 
@@ -363,26 +348,21 @@ end sub
 
 
 sub onItemFocused(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     set({ "itemfocused": options.data })
 end sub
 
 
 sub onItemSelected(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     top().itemSelected = options.data
 end sub
 
 
 sub onItemUnfocused(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     top().itemUnfocused = options.data
 end sub
 
 
 sub processConfig(config = {})
-    if not rodash.isNode(m.content) then return
-
     dynamicSize = config.carouselType = "dynamicSize"
     flushFocus = config.carouselType = "flushFocus"
     totalCarouselItems = m.content.totalCount ?? 0
@@ -1134,8 +1114,6 @@ namespace calculate
     ' for *each side* of the carousel
     ' meaning ultimately it will be n*2
     function extraRectNumber(options = {})
-        if not rodash.isNonEmptyAA(options) then return 0
-
         direction = options.direction
         dynamicSize = options.dynamicSize ?? false
         gutters = options.gutters
@@ -1184,7 +1162,6 @@ namespace calculate
             "right": 0,
             "bottom": 0
         }
-        if not rodash.isNonEmptyAA(options) then return returnObj
 
         if rodash.isNumber(options.value)
             value = [options.value]
@@ -1214,8 +1191,6 @@ namespace calculate
 
 
     function squareTotalArea(options = {})
-        if not rodash.isNonEmptyAA(options) then return 0
-
         bigSquare = options.bigSquare
         squareMargins = options.margins
 
@@ -1227,7 +1202,6 @@ namespace calculate
 
 
     function totalCarouselRects(options = {})
-        if not rodash.isNonEmptyAA(options) then return 0
         extraRects = options.extraRects ?? 0
         visibleTiles = options.visibleTiles ?? {}
         return visibleTiles + (extraRects * 2)
@@ -1235,13 +1209,6 @@ namespace calculate
 
 
     function visibleWindow(options = {})
-        if not rodash.isNonEmptyAA(options) then return {
-            firstFocusableIndex: 0,
-            focusableIndexArray: [0, 0],
-            lastFocusableIndex: 0,
-            visibleTiles: 0
-        }
-
         defaultVisibleIndex = options.defaultVisibleIndex ?? 0
         extraRects = options.extraRects ?? 0
         configMaxTiles = options.visibleTiles ?? 0

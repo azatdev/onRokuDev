@@ -45,11 +45,7 @@ end sub
 
 
 sub processScrollItem(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     model = options.model
-    if not rodash.isNode(model) then return
-
     component = createObject("roSGNode", "Credit")
     component.data = { content: model }
     m.detailsScrollGroup.appendChild(component)
@@ -66,8 +62,6 @@ end function
 
 
 function beforeViewOpen(options = {}) as dynamic
-    if not rodash.isNonEmptyAA(options) then return invalid
-
     top().opacity = 0.001
     fadeIn(top(), { duration: 0.5 })
 
@@ -81,7 +75,6 @@ end function
 
 
 sub onViewFadedOut(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     suspendPromise = options.promise
     promises.resolve(true, suspendPromise)
 end sub

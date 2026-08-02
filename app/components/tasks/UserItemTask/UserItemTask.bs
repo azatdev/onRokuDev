@@ -10,14 +10,9 @@ end sub
 
 function runUserItemTask(_options = {})
     options = top().options ?? {}
-    if not rodash.isNonEmptyAA(options) then return true
-
     collection = options.collection
     contentModel = options.contentModel
     existingUserItemIds = options.existingUserItemIds ?? []
-
-    if not rodash.isNode(collection) then return true
-
     existingUserItemModel = collection.findNode(contentModel.id)
 
     if rodash.isNode(existingUserItemModel)
@@ -60,14 +55,8 @@ end function
 
 
 sub deleteUserItemModel(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     collection = options.collection
-    if not rodash.isNode(collection) then return
-
     model = options.model
-    if not rodash.isNode(model) then return
-
     userItemId = model.userItemId
 
     variables = {}
@@ -106,11 +95,7 @@ end sub
 
 
 sub updateUserItemModel(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     model = options.model
-    if not rodash.isNode(model) then return
-
     userItemId = model.userItemId
     position = options.position
 
@@ -136,17 +121,11 @@ end sub
 
 
 sub createUserItemModel(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     collection = options.collection
-    if not rodash.isNode(collection) then return
-
     userItemType = returnUserItemType(collection.type)
     if rodash.isEmptyString(userItemType) then return
 
     contentModel = options.contentModel
-    if not rodash.isNode(contentModel) then return
-
     existingUserItemIds = options.existingUserItemIds ?? []
 
     contentDocumentId = options.contentDocumentId
@@ -204,11 +183,7 @@ end sub
 
 
 sub attachUserItemModel(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     collection = options.collection
-    if not rodash.isNode(collection) then return
-
     newUserItemModel = options.newUserItemModel
     if not rodash.isNode(newUserItemModel) then return
 

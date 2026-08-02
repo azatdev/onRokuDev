@@ -6,7 +6,10 @@ sub runUserInterface(_args = {})
     screen.createScene("App")
     screen.show()
 
-    '-vscode_rale_tracker_entry
+    ' Remove leading - to enable RALE
+    'vscode_rale_tracker_entry
+
+    ' Remove leading - to enable RDB
     '-vscode_rdb_on_device_component_entry
 
     while true

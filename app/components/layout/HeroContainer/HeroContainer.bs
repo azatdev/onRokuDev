@@ -9,9 +9,6 @@ end sub
 
 
 sub onDataSet(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if rodash.isNode(m.content) then return
-
     data = options.data
     content = data.content
     m.content = content
@@ -23,14 +20,8 @@ end sub
 
 
 sub processScrollItem(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     model = options.model
-    if not rodash.isNode(model) then return
-
     component = createObject("roSGNode", "Hero")
     component.data = { content: model }
     m.heroScrollGroup.appendChild(component)
-
-    ' afterStyling()
 end sub

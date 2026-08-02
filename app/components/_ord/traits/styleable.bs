@@ -57,8 +57,6 @@ class Styleable
     sub addClass(options = {})
         node = options.node ?? top()
         className = (options.class ?? "").trim()
-
-        if not rodash.isNode(node) then return
         if rodash.isEmptyString(className) then return
 
         classNames = m.getClassNames(node)
@@ -74,8 +72,6 @@ class Styleable
     sub removeClass(options = {})
         node = options.node ?? top()
         className = (options.class ?? "").trim()
-
-        if not rodash.isNode(node) then return
         if rodash.isEmptyString(className) then return
 
         classNames = m.getClassNames(node)
@@ -95,14 +91,9 @@ class Styleable
 
     function findNodeStyles(options = {})
         returnObj = {}
-
         node = options.node
-        if not rodash.isNode(node) then return returnObj
-
         styleObject = global().ord_styles.getField(top().subType())
-
         nodeSubType = node.subType()
-
         nodeStyleObject = m.findStyles(nodeSubType, styleObject, returnObj)
 
         return nodeStyleObject
@@ -148,14 +139,9 @@ class Styleable
 
 
     sub onIdClassChange(options = {})
-        if not rodash.isNonEmptyAA(options) then return
-
         field = options.field
         if rodash.isEmptyString(field) then return
-
         node = options.node
-        if not rodash.isNode(node) then return
-
         styleObject = global().ord_styles.getField(top().subType())
 
         if field = "id"
@@ -194,33 +180,6 @@ class Styleable
         global().addField("ord_styles", "node", true)
         global().ord_styles = createObject("roSGNode", "Node")
     end sub
-
-
-    function returnHandles(options = {})
-        allNodeHandles = []
-
-        node = options.node
-        if not rodash.isNode(node) then return allNodeHandles
-
-        nodeSubtype = node.subType()
-
-        allNodeHandles.push(nodeSubtype)
-
-        classNames = m.getClassNames(node)
-        for each className in classNames
-            allNodeHandles.push(`${nodeSubtype}.${className}`)
-        end for
-
-        if rodash.isNonEmptyString(node.id) then allNodeHandles.push(`${nodeSubtype}#${node.id}`)
-
-        if rodash.isNonEmptyString(node.id)
-            for each className in classNames
-                allNodeHandles.push(`${nodeSubtype}#${node.id}.${className}`)
-            end for
-        end if
-
-        return allNodeHandles
-    end function
 
 
     sub setStyles(options = {})
@@ -263,7 +222,6 @@ class Styleable
 
 
     sub styleHooks(options = {})
-        if not rodash.isNonEmptyAA(options) then return
         m.hookFunctions = options
     end sub
 
@@ -286,8 +244,6 @@ class Styleable
 
     function getClassNames(node)
         classNames = []
-
-        if not rodash.isNode(node) then return classNames
         if not node.hasField("class") then return classNames
 
         rawClassNames = node.class ?? ""
@@ -304,8 +260,6 @@ class Styleable
 
 
     sub setClassNames(node, classNames = [])
-        if not rodash.isNode(node) then return
-
         if not node.hasField("class")
             node.addField("class", "string", true)
         end if

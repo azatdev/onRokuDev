@@ -9,8 +9,6 @@ end sub
 
 
 sub onDataSet(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     data = options.data
     metadataArray = data.metadataArray
     nodeArray = []
@@ -60,8 +58,6 @@ function returnNode(fieldName, fieldValue)
     end if
 
     node = createObject("roSGNode", nodeType)
-    if not rodash.isNode(node) then return invalid
-
     node[updateField] = updateValue
     return node
 end function

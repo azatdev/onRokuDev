@@ -86,10 +86,7 @@ end sub
 
 
 sub toggleFavorite(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     contentModel = options.content
-    if not rodash.isNode(contentModel) then return
-
     collections = get("collections")
     if not rodash.isNonEmptyAA(collections) then return
 
@@ -109,10 +106,7 @@ end sub
 
 
 sub toggleWatchlist(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     contentModel = options.content
-    if not rodash.isNode(contentModel) then return
-
     collections = get("collections")
     if not rodash.isNonEmptyAA(collections) then return
 
@@ -155,12 +149,8 @@ end sub
 
 
 sub userLoggedIn(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     userModel = options.model
     updateObject = options.updateObject ?? {}
-    if not rodash.isNode(userModel) then return
-
     userModel.update(updateObject, true)
     set({ "model": userModel })
 

@@ -2,11 +2,19 @@ module.exports = {
     "Pagination": {
         "HeroInitial": {
             "page": 1,
-            "pageSize": 2
+            "pageSize": 1
         },
         "HeroSubsequent": {
             "limit": 2,
             "start": 1
+        },
+        "ScreenInitial": {
+            "page": 1,
+            "pageSize": 3
+        },
+        "ScreenSubsequent": {
+            "limit": 2,
+            "start": 3
         },
         "Initial": {
             "page": 1,

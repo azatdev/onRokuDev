@@ -28,8 +28,6 @@ end sub
 
 
 sub onCarouselItemFocused(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(m.content) then return
     carouselItemFocused = options.data ?? -1
     if carouselItemFocused = -1 then return
     itemModel = m.content.getChild(carouselItemFocused)
@@ -40,9 +38,6 @@ end sub
 
 
 sub onCarouselItemSelected(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(m.content) then return
-
     selectedChild = options.data
     itemContent = m.content.getChild(selectedChild)
     if not rodash.isNode(itemContent) then return
@@ -56,15 +51,10 @@ end sub
 
 
 sub onDataSet(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if rodash.isNode(m.content) then return
-
     data = options.data
     content = data.content
 
     exec("generateDefaultModels", {}, content)
-
-    if not rodash.isNode(content) then return
 
     m.content = content
     m.carouselTitle.text = content.carouselTitle
@@ -94,7 +84,6 @@ sub afterStyling(_options = {})
 end sub
 
 sub checkPagination(options = {})
-    if not rodash.isNode(m.content) then return
     itemFocused = options.itemFocused ?? 0
     lastPaginatedIndex = m.content.totalCount - 1
     paginationDelta = lastPaginatedIndex - itemFocused

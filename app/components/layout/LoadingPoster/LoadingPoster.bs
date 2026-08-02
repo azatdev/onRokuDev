@@ -9,7 +9,6 @@ end sub
 
 
 sub onLoadingChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     loading = options.data ?? false
     if loading then startLoadingAnimation()
 end sub

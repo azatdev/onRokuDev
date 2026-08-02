@@ -33,15 +33,11 @@ end sub
 
 
 sub onBarItemFocused(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(m.userScrollGroup) then return
-
     m.userScrollGroup.animateToItem = options.data ?? 0
 end sub
 
 
 sub onDataChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     data = options.data
     content = data.content
     if not rodash.isNode(content) then return
@@ -63,8 +59,6 @@ end sub
 
 
 sub processScrollItem(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     model = options.model
     component = createObject("roSGNode", "Carousel")
 
@@ -77,7 +71,6 @@ end sub
 
 
 sub setUserCarousels(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     collections = options.collections
 
     for each collectionType in collections.items()
@@ -111,6 +104,5 @@ end sub
 
 
 sub onAnimationFraction(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     m.list.focusPercent = options.data
 end sub

@@ -48,14 +48,12 @@ end sub
 
 
 sub onCarouselItemFocused(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     exec("updateHeaderAssets", options, layout())
     exec("setComplimentaryColor", options, background())
 end sub
 
 
 sub getCatalogData(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     slug = options.slug ?? ""
     screenId = options.screenId ?? ""
     collection = options.collection
@@ -65,6 +63,7 @@ sub getCatalogData(options = {})
         documentId = screenConfig.documentId ?? ""
         collection = createObject("roSGNode", "Collection")
         collection.update({
+            carouselType: carouselTypes.SCREEN,
             id: documentId,
             screenId: screenId,
             slug: slug
@@ -91,7 +90,6 @@ end sub
 
 
 sub getContentData(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     slug = options.slug ?? ""
     screenId = options.screenId ?? ""
     content = options.content
@@ -160,25 +158,19 @@ end sub
 
 
 sub onCarouselPaginated(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     collection = options.collection
     updateObject = options.updateObject
-    if not rodash.isNode(collection) then return
-    if not rodash.isNonEmptyAA(updateObject) then return
     exec("processCarouselData", updateObject, collection)
     collection.paginating = false
 end sub
 
 
 sub onHeroItemFocused(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(layout()) then return
     exec("updateBackgroundAssets", options, layout())
 end sub
 
 
 sub onScreenActive(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     exec("setActiveView", options, layout())
     exec("setActiveSlug", options, sidebar())
     set({ "activeSlug": options.slug ?? "" })
@@ -186,8 +178,6 @@ end sub
 
 
 sub onScreenDataReceived(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     screenModel = options.content
     if not rodash.isNode(screenModel) then return
 
@@ -235,7 +225,6 @@ end sub
 
 
 sub paginateCarousel(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     collection = options.collection
     collection.paginating = true
 

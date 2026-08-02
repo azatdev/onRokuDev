@@ -20,9 +20,6 @@ end sub
 
 
 sub onCTASelected(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(m.content) then return
-
     actionType = options.data
     if actionType = "CWITEM"
         dispatch(events.PLAY_VIDEO, { content: m.content })
@@ -37,7 +34,6 @@ end sub
 
 
 sub onDataSet(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     data = options.data
     content = data.content
     if rodash.isNode(m.content) and content.isSameNode(m.content) then return
@@ -55,31 +51,24 @@ end sub
 
 
 sub onFavoriteToggle(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(m.contentCTAsModel) then return
     ctaItemModel = m.contentCTAsModel.findNode(userItemsTypes.FAVORITE)
     ctaItemModel.active = options.data
 end sub
 
 
 sub onPositionChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(m.contentCTAsModel) then return
     ctaItemModel = m.contentCTAsModel.findNode(userItemsTypes.CWITEM)
     ctaItemModel.active = options.data <> 0
 end sub
 
 
 sub onWatchlistToggle(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(m.contentCTAsModel) then return
     ctaItemModel = m.contentCTAsModel.findNode(userItemsTypes.WATCHLIST)
     ctaItemModel.active = options.data
 end sub
 
 
 sub onHydrated(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     content = options.node
 
     if not rodash.isEmpty(content.logoImageUri)
@@ -99,7 +88,6 @@ end sub
 
 
 sub setCTAs(content = {})
-    if not rodash.isNode(content) then return
     contentCTAsModel = exec("returnContentCTAsModel", {}, content)
     if not rodash.isNode(contentCTAsModel) then return
     m.contentCTAsModel = contentCTAsModel
@@ -126,7 +114,6 @@ end sub
 
 
 sub setMetadata(content = {})
-    if not rodash.isNode(content) then return
     metadataArray = []
 
     if rodash.isArray(content.genres)

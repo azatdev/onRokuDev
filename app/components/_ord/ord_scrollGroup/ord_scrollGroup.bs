@@ -47,7 +47,6 @@ end sub
 
 
 sub onAnimateToItem(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     nextFocusedItem = options.data ?? 0
     if nextFocusedItem = -1 then return
 
@@ -90,8 +89,6 @@ end sub
 
 
 sub onConfigChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     defaultConfig = get("defaultConfig") ?? {}
     config = {}
     config.append(defaultConfig)
@@ -119,9 +116,7 @@ end sub
 
 
 sub onChildChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     changeData = options.data
-    if not rodash.isNonEmptyAA(changeData) then return
 
     animationType = get("animationType") ?? "scroll"
     scrollAnimation = animationType = "scroll"
@@ -164,8 +159,6 @@ end sub
 
 
 sub onScrollTimerFired(_options = {})
-    if not rodash.isNode(m.scrollTimer) then return
-
     lastPress = createObject("roDeviceInfo").timeSinceLastKeypress()
     scrollTimerDuration = get("scrollTimer") ?? m.scrollTimer.duration
 
@@ -269,7 +262,6 @@ end function
 
 
 function performAnimation(options = {})
-    if not rodash.isNonEmptyAA(options) then return false
     itemFocused = options.itemFocused
     nextFocusedItem = options.nextFocusedItem
     children = options.children
@@ -307,8 +299,6 @@ end function
 
 
 function performScroll(options = {})
-    if not rodash.isNonEmptyAA(options) then return false
-
     axisIndex = get("axisIndex")
     children = options.children ?? []
     direction = get("direction")
@@ -372,7 +362,6 @@ end function
 
 
 function searchForVisibleNode()
-    if not rodash.isNode(m.container) then return invalid
     children = m.container.getChildren(-1, 0)
     for each node in children
         if node.opacity > 0 then return node
@@ -396,9 +385,6 @@ end sub
 
 
 sub setupScrollbar(options = {})
-    if not rodash.isNode(m.scrolltrack) then return
-    if not rodash.isNode(m.scrollKnob) then return
-
     axisIndex = options.axisIndex
     horizontal = options.horizontal
     thumbOptions = options.thumbOptions ?? {}

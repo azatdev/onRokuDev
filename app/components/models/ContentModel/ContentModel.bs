@@ -210,7 +210,6 @@ end function
 
 
 function returnTabsModel(options = {})
-    if not rodash.isNonEmptyAA(options) then return invalid
     carousels = options.carousels ?? []
     if not rodash.isArray(carousels) then return invalid
     model = createObject("roSGNode", "Model")

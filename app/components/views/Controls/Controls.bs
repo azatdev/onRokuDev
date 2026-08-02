@@ -8,7 +8,6 @@ end sub
 
 
 sub onConfigChange(options = {})
-    if rodash.isEmpty(options) then return
     for each option in options.data
         controlItem = top().findNode(option.id)
         if not rodash.isNode(controlItem)

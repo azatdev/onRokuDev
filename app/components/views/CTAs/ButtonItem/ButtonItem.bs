@@ -46,7 +46,6 @@ end sub
 
 
 sub setIconInfo(content)
-    if not rodash.isNode(content) then return
     m.icon.text = content.iconText
 
     ctaType = content.id
@@ -89,7 +88,6 @@ end sub
 
 
 sub onCurrRectChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     rect = options.data
 
     for each node in [m.background, m.highlightTop, m.highlightBottom]
@@ -122,8 +120,6 @@ end sub
 
 
 function getFocusedRectSize(_options = {})
-    if not rodash.isNode(m.label) then return [0,0]
-
     m.label.text = getTitleText()
     m.label.visible = true
 
@@ -150,8 +146,6 @@ end sub
 
 
 function getUnfocusedRectSize(_options = {})
-    if not rodash.isNode(m.label) then return [0,0]
-
     if get("dynamicWidth")
         m.label.width = 0
         m.label.text = ""

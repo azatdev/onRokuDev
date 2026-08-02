@@ -20,8 +20,6 @@ end sub
 
 
 sub onDataSet(options = {})
-    if rodash.isEmpty(options) then return
-
     data = options.data ?? {}
     content = data.content ?? {}
 

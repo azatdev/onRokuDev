@@ -45,7 +45,6 @@ end sub
 
 sub onBackgroundFadeIn(options = {})
     oldPoster = options.node
-    if not rodash.isNode(oldPoster) then return
     m.backgroundContainer.removeChild(oldPoster)
 end sub
 
@@ -59,7 +58,6 @@ end sub
 
 sub setBackground(newUri = "")
     if rodash.isEmpty(newUri) then return
-    if not rodash.isNode(m.backgroundContainer) then return
 
     newPoster = createObject("roSGNode", "Poster")
     newPoster.id = rodash.now().toStr()
@@ -75,15 +73,10 @@ end sub
 
 
 sub updateBackgroundAssets(options = {})
-    if rodash.isEmpty(options) then return
     content = options.content
-    if not rodash.isNode(content) then return
+    section = options.section ?? ""
 
     setComplimentaryColor(options)
-
-    section = options.section
-    if rodash.isEmpty(section) then return
-
     showBackground()
 
     if section = sections.HERO
@@ -95,22 +88,15 @@ end sub
 
 
 sub updateHeaderImage(options = {})
-    if rodash.isEmpty(options) then return
-    if not rodash.isNode(m.headerImage) then return
     m.headerImage.data = options
     showHeaderImage()
 end sub
 
 
 sub setComplimentaryColor(options = {})
-    if rodash.isEmpty(options) then return
     content = options.content
-    if not rodash.isNode(content) then return
-
     newBlendColor = content.complimentaryColor
 
-    if rodash.isEmpty(newBlendColor) then return
-    if not rodash.isNode(m.cornerGradient) then return
     if rodash.isEmpty(newBlendColor) then newBlendColor = "<%- s(STYLES.Palette.defaultCornerColor) %>"
 
     morphObject = {}

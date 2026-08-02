@@ -74,13 +74,11 @@ end sub
 
 
 function getFocusedRectSize(_options = {})
-    if not rodash.isNode(m.container) then return [0,0]
     return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
 end function
 
 
 sub onCurrRectChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     field = options.field
     if field = "currRect"
         rect = options.data

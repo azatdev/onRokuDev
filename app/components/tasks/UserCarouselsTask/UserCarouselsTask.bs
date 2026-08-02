@@ -10,8 +10,6 @@ end sub
 
 function runUserCarouselsTask(options = {})
     options = top().options ?? {}
-    if not rodash.isNonEmptyAA(options) then return true
-
     collectionTypes = options.collectionTypes
     userId = options.userId
     if rodash.isEmptyString(userId) then return true
@@ -119,8 +117,6 @@ end function
 
 
 sub attachCarouselsToUser(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     variables = {}
     variables.setModeCaseSensitive()
     variables = {

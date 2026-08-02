@@ -62,6 +62,7 @@ namespace carouselTypes
     const HERO = "HERO"
     const INDEX = "INDEX"
     const RELATED = "RELATED"
+    const SCREEN = "SCREEN"
     const WATCHLIST = "WATCHLIST"
 end namespace
 

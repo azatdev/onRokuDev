@@ -20,11 +20,7 @@ end sub
 
 
 sub setActiveSlug(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     slug = options.slug ?? ""
-
-    if not rodash.isNode(m.content) then return
-    if not rodash.isNode(m.list) then return
     if rodash.isEmptyString(slug) then return
 
     itemModel = m.content.findNode(slug)
@@ -35,11 +31,8 @@ end sub
 
 
 sub onDataChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     data = options.data
     content = data.content
-    if not rodash.isNode(content) then return
-
     m.content = content
 
     liveConfig({ field: "config", keyPath: "Sidebar" }, content)
@@ -51,9 +44,6 @@ end sub
 
 
 sub onItemSelected(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(m.content) then return
-
     itemSelected = options.data
     itemModel = m.content.getChild(itemSelected)
     if not rodash.isNode(itemModel) then return
@@ -80,8 +70,6 @@ end sub
 
 
 sub onListWidthChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     listWidth = options.data
     if not rodash.isNumber(listWidth) then return
 
