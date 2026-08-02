@@ -11,13 +11,7 @@ end sub
 
 function runContentTask(options = {})
     options = top().options ?? {}
-    if not rodash.isNonEmptyAA(options) then return true
-
-    model = options.content
-    if not rodash.isNode(model) then return true
-
     variables = options.variables ?? {}
-    if not rodash.isNonEmptyAA(variables) then return true
 
     detailsHydrated = options.detailsHydrated ?? false
     updateObject = {}
@@ -45,7 +39,7 @@ function runContentTask(options = {})
     end if
 
     publish(events.CONTENT_DATA_RECEIVED, {
-        content: model,
+        content: options.content,
         updateObject: updateObject
     })
     return true

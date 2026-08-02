@@ -17,13 +17,8 @@ class Loadable
 
 
     sub onFieldUpdated(options = {})
-        if not rodash.isNonEmptyAA(options) then return
-
         updatedField = options.field ?? ""
-        if rodash.isEmpty(updatedField) then return
-
         node = options.node
-        if not rodash.isNode(node) then return
 
         safeUnobserve(updatedField, node)
         safeUnobserve("width", node)
@@ -38,11 +33,8 @@ class Loadable
 
 
     sub onNodeRenderTracking(options = {})
-        if not rodash.isNonEmptyAA(options) then return
-
         renderTracking = options.data ?? "none"
         node = options.node
-        if not rodash.isNode(node) then return
         if renderTracking = "none" then return
 
         node.enableRenderTracking = false
@@ -71,7 +63,6 @@ class Loadable
 
     sub onParentFadedIn(options = {})
         node = options.node
-        if not rodash.isNode(node) then return
         poster = node.findNode("loadingPoster")
         if not rodash.isNode(poster) then return
         node.removeChild(poster)
@@ -79,11 +70,7 @@ class Loadable
 
 
     sub onWidthHeightChange(options = {})
-        if not rodash.isNonEmptyAA(options) then return
-
         node = options.node
-        if not rodash.isNode(node) then return
-
         poster = node.findNode("loadingPoster")
         if not rodash.isNode(poster) then return
 
@@ -93,10 +80,8 @@ class Loadable
 
 
     sub setLoadable(options = {})
-        if not rodash.isNonEmptyAA(options) then return
         node = options.node
         updateField = options.updateField ?? ""
-        if not rodash.isNode(node) then return
         if rodash.isEmptyString(updateField) then return
         if not rodash.isEmpty(node[updateField]) then return
 

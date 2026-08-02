@@ -45,20 +45,13 @@ end sub
 
 
 sub onTabFocused(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(m.contentScrollGroup) then return
-
     m.contentScrollGroup.animateToItem = options.data ?? 0
 end sub
 
 
 sub onDataSet(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     data = options.data
     content = data.content
-    if not rodash.isNode(content) then return
-
     m.content = content
 
     carousels = content.getChildren(-1, 0)
@@ -80,15 +73,12 @@ end sub
 
 
 sub afterStyling(_options = {})
-    if not rodash.isNode(m.screenContainer) then return
-    if not rodash.isNode(m.bottomContainer) then return
     stackChildren({ direction: "vertical" }, m.screenContainer)
     stackChildren({ direction: "vertical" }, m.bottomContainer)
 end sub
 
 
 sub focusContentHero(_options = {})
-    if not rodash.isNode(m.content) then return
     carouselCount = m.content.getChildCount()
 
     if carouselCount = 0 then return
@@ -102,21 +92,16 @@ end sub
 
 
 sub focusContentScrollGroup(_options = {})
-    if not rodash.isNode(m.content) then return
     scrollPage(1, onContentScrollGroupFocused)
 end sub
 
 
 sub onContentHeroFocused(_options = {})
-    if not rodash.isNode(m.contentHero) then return
     setFocus(m.contentHero)
 end sub
 
 
 sub onContentScrollGroupFocused(_options = {})
-    if not rodash.isNode(m.contentScrollGroup) then return
-    if not rodash.isNode(m.content) then return
-
     carouselCount = m.content.getChildCount()
 
     if carouselCount = 0 then return
@@ -130,8 +115,6 @@ end sub
 
 
 sub processScrollItem(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     model = options.model
     component = createObject("roSGNode", "Carousel")
 
@@ -146,11 +129,6 @@ end sub
 
 
 sub scrollPage(direction = 0, callbackFunc = invalid)
-    if not rodash.isNode(m.bottomContainer) then return
-    if not rodash.isNode(m.contentHero) then return
-    if not rodash.isNode(m.description) then return
-    if not rodash.isNode(m.ctas) then return
-
     morphObject = {}
     heightDelta = 393 * direction
     morphObject[m.bottomContainer.id] = {
@@ -188,12 +166,9 @@ end sub
 ' Methods exteded from sgRouter
 
 function beforeViewOpen(options = {}) as dynamic
-    if not rodash.isNonEmptyAA(options) then return invalid
     routeData = options.route
-    if not rodash.isNode(routeData) then return promises.resolve(invalid)
     context = routeData.context ?? {}
     content = context.content
-    if not rodash.isNode(content) then return promises.resolve(invalid)
 
     top().opacity = 0.001
     fadeIn(top(), { duration: 0.5 })

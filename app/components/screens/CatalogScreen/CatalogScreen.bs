@@ -40,7 +40,6 @@ end sub
 
 
 sub checkPagination(options = {})
-    if not rodash.isNode(m.content) then return
     itemFocused = options.itemFocused ?? 0
     lastPaginatedIndex = m.content.totalCount - 1
     paginationDelta = lastPaginatedIndex - itemFocused
@@ -83,24 +82,17 @@ end sub
 
 
 sub onScrollGroupFocused(_options = {})
-    if not rodash.isNode(m.scrollGroup) then return
     setFocus(m.scrollGroup)
 end sub
 
 
 sub onScrollGroupItemFocused(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     if options.data = -1 then return
-    if not rodash.isNonEmptyAA(options) then return
     checkPagination({ itemFocused: options.data })
 end sub
 
 
 sub scrollPage(direction = 0, callbackFunc = invalid)
-    if not rodash.isNode(m.scrollGroup) then return
-    if not rodash.isNode(m.catalogHero) then return
-    if not rodash.isNode(m.catalogHeader) then return
-
     morphObject = {}
     heightDelta = 150 * direction
 
@@ -130,19 +122,13 @@ end sub
 
 
 sub afterStyling(_options = {})
-    if not rodash.isNode(m.screenContainer) then return
     stackChildren({ direction: "vertical" }, m.screenContainer)
 end sub
 
 
 sub onDataSet(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if rodash.isNode(m.content) then return
-
     data = options.data
     content = data.content
-    if not rodash.isNode(content) then return
-
     m.content = content
     hasHero = false
 
@@ -164,8 +150,6 @@ end sub
 sub onCollectionChildChange(options = {})
     changeData = options.data
     collection = options.node
-
-    if rodash.isEmpty(changeData) then return
     operation = changeData.operation ?? ""
     if operation <> "add" and operation <> "remove" then return
 
@@ -180,12 +164,10 @@ end sub
 
 
 sub processScrollItem(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     model = options.model
     carouselType = model.carouselType ?? "INDEX"
 
-    if carouselType = "HERO"
+    if carouselType = carouselTypes.HERO
         m.catalogHero.data = { content: model }
     else
         component = createObject("roSGNode", "Carousel")
@@ -201,8 +183,6 @@ end sub
 
 
 sub updateHeader(options = {})
-    if rodash.isEmpty(options) then return
-    if not rodash.isNode(m.catalogHeader) then return
     m.catalogHeader.data = options
 end sub
 
@@ -210,7 +190,7 @@ end sub
 ' Methods exteded from sgRouter
 
 function beforeViewOpen(options = {}) as dynamic
-    if rodash.isNonEmptyAA(options) then dispatch(events.GET_CATALOG_DATA, { screenId: options.route?.id, slug: options.route?.path })
+    dispatch(events.GET_CATALOG_DATA, { screenId: options.route?.id, slug: options.route?.path })
     return promises.resolve(invalid)
 end function
 
@@ -223,7 +203,6 @@ end function
 
 
 sub onViewFadedOut(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     suspendPromise = options.promise
     promises.resolve(true, suspendPromise)
 end sub

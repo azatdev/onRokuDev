@@ -38,7 +38,6 @@ end sub
 
 
 sub setTrickplayInfo(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     if not get("active")
         fadeIn(top())
         set({ "active": true })
@@ -50,16 +49,12 @@ end sub
 
 
 sub setThumbnail(options = {})
-    if not rodash.isNode(m.trickplayThumbnail) then return
     trickplayFrame = options.trickplayFrame ?? ""
     m.trickplayThumbnail.uri = trickplayFrame
 end sub
 
 
 sub setPosition(options = {})
-    if not rodash.isNode(m.frame) then return
-    if not rodash.isNode(m.tip) then return
-
     position = options.trickplayPosition ?? 0
     duration = options.duration
     if position > duration then position = duration

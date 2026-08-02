@@ -13,9 +13,6 @@ end sub
 
 
 sub onDataChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(m.list) then return
-
     data = options.data
     m.model = data.content
 
@@ -28,8 +25,6 @@ end sub
 
 
 sub onItemSelected(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(m.model) then return
     itemSelected = options.data
     itemSelectedModel = m.model.getChild(itemSelected)
     top().ctaSelected = itemSelectedModel.id

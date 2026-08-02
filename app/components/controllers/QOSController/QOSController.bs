@@ -79,7 +79,6 @@ end sub
 
 
 sub onAppError(options = {})
-    if rodash.isEmpty(options) then return
     'bs:disable-next-line
     ?"APP_ERROR: " formatJSON(options)
     layout = top().getScene().findNode("layout")

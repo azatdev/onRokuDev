@@ -10,8 +10,6 @@ end sub
 
 
 sub onTextSet(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     rating = options.data
     m.ratingText.text = ucase("Rated " + rating.replace("_", "-"))
     stackChildren({ direction: "horizontal" }, m.pill)

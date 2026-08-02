@@ -17,11 +17,7 @@ class Positionable
 
 
     sub centerComponent(options = {})
-        if not rodash.isNonEmptyAA(options) then return
-
         node = options.node
-        if not rodash.isNode(node) then return
-
         horizontal = options.horizontal ?? false
         vertical = options.vertical ?? false
 
@@ -45,7 +41,6 @@ class Positionable
 
     function getVisibleHeight(options = {})
         node = options.node
-        if not rodash.isNode(node) then return 0
         if not node.visible then return 0
 
         nodeHeight = 0
@@ -73,8 +68,6 @@ class Positionable
 
     function getVisibleWidth(options = {})
         node = options.node
-        if not rodash.isNode(node) then return 0
-
         nodeWidth = 0
         clippingRect = node.clippingRect
         boundingRect = node.boundingRect()
@@ -106,8 +99,6 @@ class Positionable
             "bottom": 0
         }
 
-        if not rodash.isNonEmptyAA(options) then return returnObj
-
         margin = options.margin
         if margin = invalid then return returnObj
 
@@ -136,8 +127,6 @@ class Positionable
 
 
     sub stackChildren(options = {})
-        if not rodash.isNonEmptyAA(options) then return
-
         node = options.node
         children = node.getChildren(-1, 0)
         totalHeight = 0

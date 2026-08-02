@@ -14,7 +14,6 @@ end sub
 
 
 sub updateProgress(options = {})
-    if rodash.isEmpty(options) then return
     position = options.position ?? 0
     duration = options.duration ?? 0
 

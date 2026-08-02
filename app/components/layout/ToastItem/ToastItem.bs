@@ -21,7 +21,6 @@ end sub
 
 
 function getFocusedRectSize(_options = {})
-    if not rodash.isNode(m.toastItemContainer) then return [0,0]
     return [getVisibleWidth(m.toastItemContainer), getVisibleHeight(m.toastItemContainer)]
 end function
 
@@ -39,7 +38,6 @@ end sub
 
 
 sub onAnimationFraction(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     progressWidth = top().width * options.data
     topHeight = top().height - 12
     progress = top().findNode("progress")
@@ -57,8 +55,8 @@ end sub
 
 
 sub onCurrRectChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     field = options.field
+
     if field = "currRect"
         rect = options.data
     else

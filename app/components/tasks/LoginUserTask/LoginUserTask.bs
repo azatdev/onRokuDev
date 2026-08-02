@@ -9,13 +9,8 @@ end sub
 
 function runLoginUserTask(options = {})
     options = top().options ?? {}
-    if not rodash.isNonEmptyAA(options) then return true
-
     model = options.model
-    if not rodash.isNode(model) then return true
-
     variables = options.variables ?? {}
-    if rodash.isEmpty(variables) then return true
 
     response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Login) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>" })
     responseJSON = response.json ?? {}

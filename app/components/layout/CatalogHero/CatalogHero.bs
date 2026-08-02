@@ -14,9 +14,6 @@ end sub
 
 
 sub onDataSet(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if rodash.isNode(m.content) then return
-
     data = options.data
     content = data.content
     m.content = content
@@ -38,8 +35,6 @@ end sub
 sub onCollectionChildChange(options = {})
     changeData = options.data
     collection = options.node
-
-    if rodash.isEmpty(changeData) then return
     operation = changeData.operation ?? ""
     if operation <> "add" and operation <> "remove" then return
 
@@ -54,14 +49,11 @@ end sub
 
 
 sub onCollectionHydrated(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     onHeroItemFocused({ data: m.heroScrollGroup.itemFocused })
 end sub
 
 
 sub onHeroItemFocused(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(m.content) then return
     itemFocused = options.data
     itemFocusedModel = m.content.getChild(itemFocused)
     if not rodash.isNode(itemFocusedModel) then return
@@ -73,20 +65,14 @@ end sub
 
 
 sub processScrollItem(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     model = options.model
-    if not rodash.isNode(model) then return
-
     component = createObject("roSGNode", "Hero")
-
     component.data = { content: model }
     m.heroScrollGroup.appendChild(component)
 end sub
 
 
 sub checkPagination(options = {})
-    if not rodash.isNode(m.content) then return
     itemFocused = options.itemFocused ?? 0
     lastPaginatedIndex = m.content.totalCount - 1
     paginationDelta = lastPaginatedIndex - itemFocused

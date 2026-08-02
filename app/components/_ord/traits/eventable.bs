@@ -86,8 +86,6 @@ class Eventable
 
 
     sub subscribe(options = {})
-        if rodash.isEmpty(options) then return
-
         for each event in options.items()
             eventName = event.key
             eventFunctions = event.value
@@ -133,7 +131,6 @@ class Eventable
 
 
     sub dispatch(options = {})
-        if not rodash.isNonEmptyAA(options) then return
         if m.eventQueue = invalid then return
         m.eventQueue.eventData = options
     end sub

@@ -41,7 +41,6 @@ sub init()
                 "left": [showOverlay, scrubLeft],
                 "right": [showOverlay, scrubRight],
                 "up": showOverlay,
-                "down": exitPlayer,
                 "ok": onSelection,
                 "rewind": [showOverlay, seekRewind],
                 "fastforward": [showOverlay, seekForward],
@@ -67,10 +66,6 @@ end sub
 
 
 sub onDataSet(options = {})
-    if rodash.isEmpty(options) then return
-    if not rodash.isNode(m.video) then return
-    if not rodash.isNode(m.videoOverlay) then return
-
     data = options.data
     content = data.content
     m.content = content
@@ -85,8 +80,6 @@ end sub
 
 
 sub onScrubTimerFired(_options = {})
-    if not rodash.isNode(m.trickplay) then return
-    if not rodash.isNode(m.video) then return
     m.video.control = "resume"
     set({ "scrubPosition": m.video.position })
     exec("hideTrickplay", {}, m.trickplay)
@@ -95,8 +88,6 @@ end sub
 
 
 sub onSeekTimerFired(_options = {})
-    if not rodash.isNode(m.seekTimer) then return
-    if not rodash.isNode(m.video) then return
     seeking = get("seeking")
     if not seeking then return
 
@@ -121,10 +112,6 @@ end sub
 
 
 sub onSelection(_options = {})
-    if not rodash.isNode(m.seekTimer) then return
-    if not rodash.isNode(m.scrubTimer) then return
-    if not rodash.isNode(m.video) then return
-
     scrubbing = m.scrubTimer.control = "start"
     seeking = get("seeking") ?? false
 
@@ -147,8 +134,6 @@ end sub
 
 
 sub onVideoDurationChange(options = {})
-    if rodash.isEmpty(options) then return
-    if not rodash.isNode(m.video) then return
     position = m.video.position
     duration = options.data ?? 0
     exec("onPositionChange", { position: position, duration: duration }, m.videoOverlay)
@@ -156,19 +141,16 @@ end sub
 
 
 sub onVideoPositionChange(options = {})
-    if rodash.isEmpty(options) then return
     position = options.data ?? 0
     set({ "scrubPosition": position })
     exec("onPositionChange", { position: position }, m.videoOverlay)
 
-    if not rodash.isNode(m.content) then return
     options.append({ contentModel: m.content })
     dispatch(events.VIDEO_POSITION_CHANGE, options)
 end sub
 
 
 sub onVideoStateChange(options = {})
-    if rodash.isEmpty(options) then return
     state = options.data
     if state = "playing"
         resetControls()
@@ -189,9 +171,6 @@ end sub
 
 
 sub performScrub(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(m.video) then return
-    if not rodash.isNode(m.scrubTimer) then return
     if get("seeking") then return
 
     if m.video.state <> "playing" and m.video.state <> "paused" then return
@@ -216,10 +195,6 @@ end sub
 
 
 sub sendTrickplayInfo(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-    if not rodash.isNode(m.trickplay) then return
-    if not rodash.isNode(m.videoOverlay) then return
-
     options.trickplayFrame = getNearestFrameFromPosition(options.trickplayPosition ?? 0)
     options.duration = m.video.duration
 
@@ -245,15 +220,12 @@ function onBackButton(_options = {})
         return hideOverlay()
     end if
 
-    if not rodash.isNode(m.video) then return false
     m.video.control = "stop"
     return false
 end function
 
 
 sub onSeekCancel()
-    if not rodash.isNode(m.video) then return
-    if not rodash.isNode(m.trickplay) then return
     if m.scrubTimer.control = "start" then m.scrubTimer.control = "stop"
     if m.seekTimer.control = "start" then m.seekTimer.control = "stop"
     m.video.control = "resume"
@@ -285,15 +257,7 @@ sub showOverlay(_options = {})
 end sub
 
 
-sub exitPlayer(options = {})
-    if rodash.isEmpty(options) then return
-end sub
-
-
 sub startSeek()
-    if not rodash.isNode(m.scrubTimer) then return
-    if not rodash.isNode(m.seekTimer) then return
-    if not rodash.isNode(m.video) then return
     if m.video.state <> "playing" and m.video.state <> "paused" then return
 
     if m.scrubTimer.control = "start"
@@ -346,8 +310,6 @@ end sub
 
 
 sub togglePlayback(_options = {})
-    if not rodash.isNode(m.video) then return
-
     if get("seeking")
         onSelection()
         return
@@ -362,7 +324,6 @@ end sub
 
 
 sub restartPlayback(_options = {})
-    if not rodash.isNode(m.video) then return
     dispatch(events.VIDEO_RESTARTING)
     m.video.seek = 0
     updateControl({ controlId: "restartControl" })
@@ -374,13 +335,11 @@ end sub
 
 
 sub resetControls(_options = {})
-    if not rodash.isNode(m.controls) then return
     m.controls.config = get("controlsConfig")
 end sub
 
 
 sub updateControl(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     controlId = options.controlId ?? ""
     if rodash.isEmpty(controlId) then return
 

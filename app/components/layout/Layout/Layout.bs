@@ -140,8 +140,6 @@ end sub
 
 
 sub navigateTo(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     slug = options.slug ?? ""
     if rodash.isEmptyString(slug) then return
 
@@ -153,7 +151,6 @@ end sub
 
 
 sub playVideo(options = {})
-    if not rodash.isNode(m.videoPlayer) then return
     m.videoPlayer.data = options
     toggleVideoPlayer(1)
     set({ "videoActive": true })
@@ -167,8 +164,6 @@ end function
 
 
 sub setActiveView(options = {})
-    if rodash.isEmpty(options) then return
-
     screenId = options.screenId ?? ""
     if rodash.isEmptyString(screenId) then return
 
@@ -206,25 +201,19 @@ end sub
 
 
 sub updateHeaderAssets(options = {})
-    if rodash.isEmpty(options) then return
     activeView = getActiveView()
     if not rodash.isNode(activeView) then return
-    if not rodash.isNode(m.background) then return
     exec("updateHeader", options, activeView)
     exec("updateHeaderImage", options, m.background)
 end sub
 
 
 sub updateBackgroundAssets(options = {})
-    if rodash.isEmpty(options) then return
-    if not rodash.isNode(m.background) then return
     exec("updateBackgroundAssets", options, m.background)
 end sub
 
 
 sub onRouterStateChanged(options = {})
-    if not rodash.isNonEmptyAA(options) then return
-
     data = options.data
     if data.type <> "NavigationEnd" then return
 

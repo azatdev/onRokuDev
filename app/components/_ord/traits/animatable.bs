@@ -48,9 +48,6 @@ class Animatable
 
 
     function createAnimation(animationId = "", options = {})
-        if rodash.isEmptyString(animationId) then return invalid
-        if not rodash.isNonEmptyAA(options) then return invalid
-
         settings = {}
         settings.append(options)
         nodeId = settings.nodeId ?? ""

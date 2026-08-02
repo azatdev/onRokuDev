@@ -73,7 +73,6 @@ end sub
 
 
 function getFocusedRectSize(_options = {})
-    if not rodash.isNode(m.label) then return [0,0]
     m.label.visible = true
     m.label.text = ucase(top().itemContent.title)
     labelSquare = [getVisibleWidth(m.label), getVisibleHeight(m.label)]
@@ -85,8 +84,6 @@ end function
 
 
 function getUnfocusedRectSize(_options = {})
-    if not rodash.isNode(m.label) then return [0,0]
-
     m.label.width = 0
     m.label.text = ""
     m.label.visible = false
@@ -97,7 +94,6 @@ end function
 
 
 sub onCurrRectChange(options = {})
-    if not rodash.isNonEmptyAA(options) then return
     rect = options.data
     m.background.width = rect.width
     m.background.height = rect.height

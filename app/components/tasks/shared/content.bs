@@ -1,9 +1,5 @@
 function getContentData(options = {})
-    if not rodash.isNonEmptyAA(options) then return {}
-
     data = options.data
-    if not rodash.isNonEmptyAA(data) then return {}
-
     contentImages = data.images ?? []
     imageFields = getImageFields(contentImages)
 
