@@ -5,10 +5,12 @@ major_version=0
 minor_version=0
 build_version=0
 
-mm_icon_focus_hd=# TODO: Add path to 290x218 image
-mm_icon_focus_sd=# TODO: Add path to 246x140 image
-splash_screen_hd=# TODO: Add path to 1280x720 image
-splash_screen_sd=# TODO: Add path to 720x480 image
+mm_icon_focus_fhd=pkg:/static/images/ord-icon-fhd.webp
+mm_icon_focus_hd=pkg:/static/images/ord-icon-hd.webp
+mm_icon_focus_sd=pkg:/static/images/ord-icon-sd.webp
 
-splash_color=#00000000
+splash_screen_fhd=pkg:/static/images/transparent-pixel.webp
+splash_screen_hd=pkg:/static/images/transparent-pixel.webp
+
+splash_color=#000000
 splash_min_time=0
