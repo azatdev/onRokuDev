@@ -138,10 +138,11 @@ class Animatable
 
 
     function getFloatFieldInterpolator(options = {})
-        children = options.children ?? []
+        node = options.node
+        children = node.getChildren(-1, 0)
         for each child in children
             if child.subType() = "FloatFieldInterpolator" then return child
-            return getFloatFieldInterpolator(child.getChildren(-1, 0))
+            return getFloatFieldInterpolator(child)
         end for
         return invalid
     end function
@@ -366,8 +367,8 @@ class Animatable
 end class
 
 
-function getFloatFieldInterpolator(children = [])
-    return interfaceFunction("getFloatFieldInterpolator", { children: children })
+function getFloatFieldInterpolator(node = {})
+    return interfaceFunction("getFloatFieldInterpolator", { node: node })
 end function
 
 

@@ -98,7 +98,7 @@ sub startProgress(_options = {})
 
     morphAnimation = morph(morphObject, { callback: onProgressFinished, deferred: true, duration: 3 })
 
-    floatFieldInterp = getFloatFieldInterpolator(morphAnimation.getChildren(-1, 0))
+    floatFieldInterp = getFloatFieldInterpolator(morphAnimation)
     if not rodash.isNode(floatFieldInterp) then return
 
     safeObserve("fraction", onAnimationFraction, floatFieldInterp)

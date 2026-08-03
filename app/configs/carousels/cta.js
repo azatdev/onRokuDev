@@ -5,11 +5,8 @@ module.exports = {
         focusType: "floating",
         horizAlign: "center",
         itemComponentName: "ButtonItem",
-        maxWidth: 1800,
-        visibleTiles: 999,
+        maxWidth: 1500,
         squareMargins: [0, 16, 0, 0],
-        useUnfocusedTargetSet: true,
-        wrap: false,
-        wrapFirstToLast: false
+        useUnfocusedTargetSet: true
     }
 };

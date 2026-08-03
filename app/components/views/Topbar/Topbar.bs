@@ -43,6 +43,7 @@ sub onDataChange(options = {})
     if not rodash.isNode(content) then return
     liveConfig({ field: "config", keyPath: "Topbar" }, content)
     m.list.data = data
+    fadeIn(top())
 end sub
 
 
@@ -95,7 +96,7 @@ sub userCarouselsToggle(direction = 0)
     }
     deferredAnimation = morph(morphObject, { deferred: true, duration: 0.3 })
 
-    floatFieldInterp = getFloatFieldInterpolator(deferredAnimation.getChildren(-1, 0))
+    floatFieldInterp = getFloatFieldInterpolator(deferredAnimation)
     if not rodash.isNode(floatFieldInterp) then return
 
     safeObserve("fraction", onAnimationFraction, floatFieldInterp)

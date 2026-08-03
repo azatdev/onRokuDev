@@ -81,7 +81,10 @@ class Eventable
 
 
     sub onTaskReady(_options = {})
-        dispatch(events.EVENT_TASK_READY)
+        ' Roku bug where event is not actually ready.
+        rodash.delay(sub(_options = {})
+            dispatch(events.EVENT_TASK_READY)
+        end sub, 100)
     end sub
 
 
