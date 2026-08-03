@@ -58,7 +58,7 @@ sub init()
             "setActiveItem": setActiveItem
         })
 
-        m.focusTimer = getFloatFieldInterpolator(m.carousel.getChildren(-1, 0))
+        m.focusTimer = getFloatFieldInterpolator(m.carousel)
     end sub)
 end sub
 

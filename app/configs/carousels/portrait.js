@@ -1,7 +1,6 @@
 module.exports = {
     "PortraitCarousel": {
         animationDuration: 0.3,
-        carouselType: "default",
         clip: true,
         defaultVisibleIndex: 0,
         focusType: "fixed",
