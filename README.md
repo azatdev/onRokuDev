@@ -1,5 +1,16 @@
 **onRokuDev** is an "in-progress" sample channel which hopes to show an example of how a fast, familiar, and failure-tolerant structure could be implemented in a roku application.  It does this through patterns which prefer composition over inheritance, prevent and catch exceptions, and provide the tools to easily create modern and performant UI elements.
 
+- Abstraction hell alternative(#Over-abstraction)
+- Flow management
+- Thwarting crashes and stability issues
+- Focus management
+- View stack management
+- State consolidation
+- Easy animations
+- Style support
+- Config support
+- Full stack dev env
+- Install
 
 The world of roku makes it difficult for a programmer, who's new to the ecosystem, to know what to do, what not to do, and most importantly, how to do it. This results in applications which can quickly become unwieldly layers of abstraction lasagna with a side of spaghetti hell.  There are attempts out there which attempt bring some structure, but don't necessarily address all of the following problems:
 
