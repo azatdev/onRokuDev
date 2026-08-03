@@ -43,6 +43,7 @@ sub onDataChange(options = {})
     if not rodash.isNode(content) then return
     liveConfig({ field: "config", keyPath: "Topbar" }, content)
     m.list.data = data
+    fadeIn(top())
 end sub
 
 

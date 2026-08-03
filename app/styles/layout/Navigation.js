@@ -13,6 +13,7 @@ const gradientStyles = {
 
 module.exports = {
     "Sidebar": {
+        "opacity": 0,
         "color": "#5d24691a",
         "openColor": "#251a38",
         "height": viewport.height,
@@ -24,6 +25,7 @@ module.exports = {
         }
     },
     "Topbar": {
+        "opacity": 0,
         "translation": [1170, 0],
         "Div": {
             "&#overlay": {

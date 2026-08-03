@@ -40,6 +40,7 @@ sub onDataChange(options = {})
 
     defaultSlug = content.defaultSlug
     setActiveSlug({ slug: defaultSlug })
+    fadeIn(top())
 end sub
 
 
