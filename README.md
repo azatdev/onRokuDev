@@ -1,4 +1,6 @@
-**onRokuDev** is an "in-progress" sample channel with framework ambitions, which hopes to show an example of how a fast, familiar, and failure-tolerant structure could be implemented in a roku application.  It does this through patterns which prefer composition over inheritance, prevent and catch exceptions, and provide the tools needed to easily create custom, modern, and performant UI elements.
+# onRokuDev
+
+**onRokuDev** is a work-in-progress sample channel with framework ambitions. It demonstrates how a fast, familiar, and failure-tolerant structure could be implemented in a Roku application. It uses patterns that favor composition over inheritance, prevent and catch exceptions, and provide the tools needed to easily create custom, modern, and performant UI elements.
 
 - [Abstraction hell alternative](#over-abstraction)
 - [Thwarting crashes and stability issues](#application-stability)
@@ -9,30 +11,30 @@
 - [Easy animations](#animation-boilerplate)
 - [Style support](#no-stylesheets-theme-sharing-or-live-updates)
 - [Config support](#poor-configuration-file-support)
-- [Full stack dev env](#no-back-end-dev-or-video-server)
+- [Full-stack development environment](#no-back-end-dev-or-video-server)
 - [Install](#installation)
 
-The world of Roku Development makes it difficult for a programmer, who's new to the ecosystem, to know what to do, what not to do, and most importantly, how to do it. This results in applications which can quickly become unwieldy layers of abstraction lasagna with a side of spaghetti hell.  There are attempts out there which attempt bring some structure, but don't necessarily address all of the following problems:
+The world of Roku development makes it difficult for a programmer who is new to the ecosystem to know what to do, what not to do, and, most importantly, how to do it. This can result in applications that quickly become unwieldy layers of abstraction lasagna with a side of spaghetti hell. Other projects try to bring structure to Roku development, but they do not necessarily address all of the following problems:
 
 ## Over-abstraction
 
-Roku does not allow creation of custom interfaces akin to `ifAssociativeArray` or `ifToStr` and usage of them in user-defined objects.  This forces the developer to either create shared function files, the structure and rules of which are nebulous, or rely on inheritance to share code between components, often leading to over-abstraction.  **onRokuDev** tackles that problem with psudo-interfaces organized as `traits`, which expose functions encapsulated to their responsibilities with the help from brighterscript's `classes`.
+Roku does not allow developers to create custom interfaces akin to `ifAssociativeArray` or `ifToStr` and use them in user-defined objects. This forces developers either to create shared function files, whose structure and rules are nebulous, or to rely on inheritance to share code between components, often leading to over-abstraction. **onRokuDev** tackles that problem with pseudo-interfaces organized as `traits`. With help from BrighterScript classes, these traits expose functions scoped to specific responsibilities.
 
 ## Application stability
 
-There are a lot of Roku apps out there with a crash rate well above 1%.  It's not easy to make sure that every callstack entrypoint function is protected.  There could be a rigid development ruleset with mandatory `try catch` blocks and typechecking everywhere, but that increases the cognitive load on the developer as well as creating mountains of boilerplate code which needs to be maintained.  **onRokuDev's** `safeable` trait provides several methods to alleviate this burden.
+There are many Roku apps with crash rates well above 1%. It is not easy to ensure that every call-stack entry point is protected. A rigid development ruleset could require `try/catch` blocks and type checking everywhere, but that would increase the developer's cognitive load and create mountains of boilerplate code that must be maintained. **onRokuDev's** `safeable` trait provides several methods to alleviate this burden.
 
-The `init` and `onKeyEvent` functions, functional and observed field's handler functions, `roRenderQueue` handler functions, and the Task's `functionName` function are the entrypoints that all have to be protected from a possible exception.
+The `init` and `onKeyEvent` functions, handlers for functional and observed fields, `roRenderThreadQueue` handlers, and a Task's `functionName` entry point must all be protected from possible exceptions.
 
-`safeable`'s `exec` function provides a single catch-all function that's used behind the scenes for all other tools. Functions passed into `exec` are expected to receive a single assocarray argument.
+`safeable`'s `exec` function provides a single catch-all used behind the scenes by all other tools. In production, it executes every function inside a `try/catch` block; in development, it runs the function directly to support debugging. Functions passed to `exec` are expected to receive a single assocarray argument.
 
-In any component, other than Task:
+In any component other than a Task:
 
 ```brs
 import "pkg:/components/_ord/init.bs"
 
-' init is the only function that needs to explicitly be wrapped in the exec function.
-' onKeyEvent is handled with exec through focusable.
+' init is the only function that must be explicitly wrapped in exec.
+' onKeyEvent is handled by exec through focusable.
 sub init()
     exec(sub(_options = {})
         ' Functions replace functional fields
@@ -67,8 +69,7 @@ end function
 sub onDataSet(options = {})
     m.content = options.data?.content
     setTitle({ data: m.content.title })
-    ' Function also takes a node (default is m.top)
-    ' And info fields
+    ' The function also takes a node (the default is m.top) and info fields.
     safeObserve("title", setTitle, m.content, ["titleColor"])
 end sub
 
@@ -84,14 +85,20 @@ In a second node:
 ```brs
 function getModelVariables()
     ' Passing a string as a function expects that function name to exist in the target node's safeFunctions
-    modelVariables = exec("getVariables", ["id", "type"], m.firstNode)
+    modelVariables = exec("getVariables", { fields: ["id", "type"]}, m.firstNode)
     return modelVariables
 end function
 ```
 
+For cross-node `safeFunctions` calls to work, add a single functional field to the target component's XML:
+
+```xml
+<function name="safeFunc" />
+```
+
 ## Application flow
 
-Programmers can often start out feeling confident about their architecture until they encounter requirements demanding the tracking of every single user action that result in a cascade of procedures making calls to various analytics, tracking, and back-end services.  **onRokuDev** solves this problem with a trait `eventable`.
+Programmers often start out feeling confident about their architecture until they encounter requirements to track every user action, resulting in a cascade of procedures that call various analytics, tracking, and back-end services. **onRokuDev** solves this problem with the `eventable` trait.
 
 Dispatch an event from any view or controller:
 
@@ -104,11 +111,15 @@ end sub
 Subscribe to an event in any number of controllers:
 
 ```brs
+import "pkg:/components/_ord/init.bs"
+
 sub init()
-    subscribe({
-        [events.BUTTON_TOGGLED]: onButtonToggled ' || [array of functions]
-        [events.TOGGLE_BUTTON]: toggleButton
-    })
+    exec(sub(_options = {})
+        subscribe({
+            [events.BUTTON_TOGGLED]: onButtonToggled,
+            [events.TOGGLE_BUTTON]: toggleButton
+        })
+    end sub)
 end sub
 
 
@@ -137,16 +148,16 @@ function runUserTask()
     })
 
     return true
-end sub
+end function
 ```
 
-Under the hood, `dispatch`, `subscribe`, and `publish` use [roRenderThreadQueue](https://developer.roku.com/dev/docs/rorenderthreadqueue) which allows the transfer of assocarrays from Task thread nodes to Render thread nodes with no rendezvous penalty.  `dispatch` uses a separate, long-lived Task to `publish` events, with every handler function protected by `try catch` using `safeable#exec` function.
+Under the hood, `dispatch`, `subscribe`, and `publish` use [roRenderThreadQueue](https://developer.roku.com/dev/docs/rorenderthreadqueue), which allows assocarrays to be transferred from Task-thread nodes to render-thread nodes without a rendezvous penalty. `dispatch` uses a separate, long-lived Task to `publish` events, with every handler function protected by `try/catch` through the `safeable#exec` function.
 
-Using these methods, it's easy to create a coherent workflow that doesn't rely on bubbling of events or random observed or functional fields.  Each event name is unique, facilitating search, and in dev env, each event prints out in the console log making the app easy to follow and debug.
+These methods make it easy to create a coherent workflow that does not rely on event bubbling or arbitrary observed or functional fields. Unique event names make searches easier, and, in the development environment, each event is printed to the console, making the app easy to follow and debug.
 
 ## Focus handling nightmare
 
-Oh how easy is it to get into the weeds when it comes to focus handling in Roku development. `onKeyEvent` and `focusedChildChange` functions everywhere with their own logic, `node.hasFocus()` and `node.setFocus(true)` scattered all over the place, and God forbid `node.setFocus(false)`, which is pure chaos.  **onRokuDev's** `focusable` trait unwinds this mess by taking over the `onKeyEvent` and `focusedChildChange` in every component that imports `pkg:/components/_ord/init.bs` and utilizes `safable#exec` function to initialize the component.
+Oh, how easy it is to get into the weeds when handling focus in Roku development. `onKeyEvent` and `focusedChildChange` functions appear everywhere with their own logic, `node.hasFocus()` and `node.setFocus(true)` are scattered throughout the code, and God forbid `node.setFocus(false)`, which is pure chaos. **onRokuDev's** `focusable` trait unwinds this mess by taking over `onKeyEvent` and `focusedChildChange` in every component that imports `pkg:/components/_ord/init.bs` and uses `safeable#exec` to initialize the component.
 
 ```brs
 import "pkg:/components/_ord/init.bs"
@@ -167,36 +178,36 @@ sub init()
                 doStuff()
             end sub,
             ' "onKey map" fires when m.top.hasFocus() and a key is pressed
-            ' Accepts a map of keys with nodes to focus, functions to run, or handled boolean
+            ' Accepts a map of keys with nodes to focus, functions to run, or a handled Boolean
             ' Functions should return true or false the same way as in onKeyEvent to mark event as handled or allow it to bubble up.
             "onKey": {
                 ' If any key not specified is pressed.
                 "default": true,
                 "left": m.sidebar
             },
+            ' Node ID-specific onKey events.
             "header": {
                 "default": true,
                 ' Allow the left key to bubble up and open the sidebar
                 "left": false,
-                "down": scrollPage
+                "down": scrollDown
             },
-            ' If no default is specified, all keys other than ones specified will return false
+            ' If no default is specified, all keys other than those specified will return false
             "container": {
                 "left": navigateContainer,
                 "right": navigateContainer,
                 "up": scrollUp
-            },
-            "onKey": handleScrollKey
+            }
         })
     end sub)
 end sub
 
 
-' Key events will come with their key in options
+' Key events include their key in options.
 function navigateContainer(options = {})
     key = options.key
     nextFocusNode = findFocusNode(key)
-    ' Return false to bubble up event and potentially open the sidebar
+    ' Return false to bubble up the event and potentially open the sidebar.
     if nextFocusNode = invalid then return false
     ' nextFocusNode.setFocus(true), but use container node's focus map.
     setFocus(nextFocusNode, m.container)
@@ -207,7 +218,7 @@ end function
 function scrollDown(options = {})
     ' Do stuff
     runAnimation(options.key)
-    ' setFocus also saves the focused node in case the component is unfocused and then focused again
+    ' setFocus also saves the focused node in case the component is unfocused and then refocused.
     setFocus(m.container)
     return true
 end function
@@ -222,15 +233,14 @@ end function
 
 ## View stack management
 
-There are no native Roku tools to handle view navigation, lifecycle management, and view stack organization.  Developers often develop their own systems which require iterative refactors as requirements change and never end up feeling quite complete.  Thankfully, there is a fantastic solution!  **onRokuDev** uses the very excellent [**sgRouter**](https://github.com/rokucommunity/sgRouter/tree/master) view manager, which handles your view stack, provides detailed internal router state change data, has a plethora of view lifecycle hooks, and has a very smart set of features such as route guards and checkpoints. Big-ups to [Tyler Smith](https://github.com/iObject) for this absolute time-saver.
-
-
+There are no native Roku tools for view navigation, lifecycle management, and view-stack organization. Developers often build their own systems, which require iterative refactoring as requirements change and never feel quite complete. Thankfully, there is a fantastic solution! **onRokuDev** uses the excellent [**sgRouter**](https://github.com/rokucommunity/sgRouter/tree/master) view manager, which handles the view stack, provides detailed internal router-state data, offers a plethora of view-lifecycle hooks, and includes smart features such as route guards and checkpoints. Big ups to [Tyler Smith](https://github.com/iObject) for this absolute time-saver.
 
 ## State confusion
 
-How to store local state data?  Create `m.top` fields for everything?  This gets messy, ugly, and slow with the additional cost of accessing `m.top`.  Do you store thing in `m.` fields?  Before you know it the codebase is littered with `m.isActive` and various other various `m.` fields that, to dismay of everyone, seem to hold the structure of your logic.  What if there is one `m.state` object and everything goes there?  Hmm, but then, what if you want that data to be accessed from an external node?  `m.state` for private and `m.top` for public, which leads to the philosophical battle of "outside of tooling why private at all?"  Embrace the Roku "public everything" ways!  **onRokuDev's** `stateable` opens up the doors to a fun, but measured and responsible, public policy.
+How should local state data be stored? Should you create `m.top` fields for everything? That gets messy, ugly, and slow because of the additional cost of copying fields in and not of `m.top`. Should you store things in `m.` fields? Before long, the codebase is littered with `m.isActive` and various other `m.` fields that, to everyone's dismay, seem to define the structure of the logic. What if there were one `m.state` object and everything went there? Hmm, but what if that data must be accessed from an external node? Using `m.state` for private data and `m.top` for public data leads to the philosophical question, "Outside of tooling, why make anything private at all?" Embrace Roku's "public everything" ways! **onRokuDev's** `stateable` opens the door to a fun but measured and responsible public policy.
 
-In any component outside of a Task:
+In any component other than a Task:
+
 ```brs
 import "pkg:/components/_ord/init.bs"
 
@@ -240,7 +250,7 @@ sub init()
         m.video = m.top.findNode("video")
 
         set({
-            "catalogUIHidden": false,
+            "contentUIHidden": false,
             "videoActive": false
         })
         someFunction()
@@ -264,12 +274,12 @@ sub externalNodeFunction()
 end sub
 ```
 
-`stateable` works by setting a single assocarray `m.top` field and using `setRef` and `getRef` to access data with absolute minimal performance penalties.   This is in part why Tasks are not supported, since those methods are not supported in a Task, but also because life is easier when Tasks are nothing but stateless workers.
+`stateable` works by setting a single assocarray field on `m.top` and using `setRef` and `getRef` to access data with minimal performance penalties. This is partly why Tasks are not supported: those methods are unavailable in a Task, and life is easier when Tasks are nothing but stateless workers.
 
 
 ## Animation boilerplate
 
-Where do you put them?  XML?  Instantiate them in the script file?  Oh the bloat.  So many functions and nodes that need to be created and configured.  What if some animations are somewhat similar?  Do you then create a folder of animations with some runtime configuration options? It all such a schlep and it feels like a lot of developers try to avoid working with animations as a result.  **onRokuDev** completely transforms that relationship with `animatable` trait's `morph` function.  Supply it a simple config object and it will create all the animation nodes and the appropriate interpolators on its own automatically.
+Where do you put animations? In XML? Do you instantiate them in the script file? Oh, the bloat. So many functions and nodes must be created and configured. What if some animations are similar? Do you create a folder of animations with runtime configuration options? It is all such a schlep, and many developers seem to avoid working with animations as a result. **onRokuDev** completely transforms that relationship with the `animatable` trait's `morph` function. Supply it with a simple configuration object, and it automatically creates all the animation nodes and appropriate interpolators.
 
 
 ```brs
@@ -284,7 +294,7 @@ end sub
 
 
 sub simpleMorph()
-    ' Will animate from m.screenContainer's current translation to the one specified
+    ' Animates from m.screenContainer's current translation to the specified translation.
     morph({
         "screenContainer": {
             "fields": {
@@ -299,11 +309,11 @@ sub comboMorph()
     morph({
         "screenContainer": {
             "fields": {
-                opacity: 0
+                "opacity": 0
             }
         },
         "videoPlayer": {
-            "fields" {
+            "fields": {
                 "height": 1080,
                 "width": 1920,
                 "translation": [0, 0]
@@ -314,9 +324,9 @@ end sub
 
 
 sub shorthandMorphs()
-    ' Using animatable's other helpers.
+    ' Use animatable's other helpers.
     fadeOut(m.videoPlayer, { duration: 0.3 })
-    ' With a callback and callback options
+    ' Use a callback and callback options.
     fadeIn(m.screenContainer, { duration: 0.5, callback: onContainerFadeIn, callbackOptions: { data: getSomeData() } })
 end sub
 
@@ -329,13 +339,13 @@ end sub
 sub deferredMorph()
     deferredAnimation = morph({
         "videoPlayer": {
-            "fields: {
+            "fields": {
                 "opacity": 1
             }
         }
     }, { deferred: true })
 
-    ' animatable helper function
+    ' animatable helper function.
     floatFieldInterp = getFloatFieldInterpolator(deferredAnimation)
 
     safeObserve("fraction", onAnimationFraction, floatFieldInterp)
@@ -355,10 +365,11 @@ sub comboMorph()
 end sub
 ```
 
-' Then in a style file:
+Then in a style file:
 
 ```js
 const mixins = require("../mixins");
+const dimensions = mixins["Dimensions"];
 const viewport = dimensions["viewport"]
 
 module.exports = {
@@ -370,7 +381,7 @@ module.exports = {
                 }
             },
             "videoPlayer": {
-                "fields" {
+                "fields": {
                     "height": viewport.height,
                     "width": viewport.width,
                     "translation": [0, 0]
@@ -383,26 +394,25 @@ module.exports = {
 
 ## No stylesheets, theme sharing, or live updates
 
-It's difficult to overstate how annoying this is.  Some fields populated in XML, other fields strewn all over in BRS, having to edit multiple files to keep things consistent, the bugs, time spent constantly reloading the application, it's all so very tedious.  **onRokuDev** puts an end to this tom foolery with the `styleable` trait.
+It is difficult to overstate how annoying this is. Some fields are populated in XML, while others are strewn throughout BRS files. Editing multiple files to keep everything consistent, dealing with the resulting bugs, and constantly reloading the application are all incredibly tedious. **onRokuDev** puts an end to this tomfoolery with the `styleable` trait.
 
-The idea is simple.  What if you had a JSON style config file for each unique component that initiates onRokuDev (and its children)?  What if these config files had the ability to import other files like color palette, dimensions, assets paths, and share them across one another?  And what if there was a task which compiles and concatenates them in a single JSON object that is then injected in the project through a precompile build step using EJS?  Well, that's exactly that **onRokuDev** does with its build tools.
+The idea is simple. What if you had a JavaScript style configuration file for each unique component that initializes the onRokuDev traits, as well as for its children? What if these configuration files could import and share other files, such as a color palette, dimensions, and asset paths? And what if a build script could compile and concatenate them into a single JSON object that could then be injected into the project through a precompile step using EJS? Well, that is exactly what **onRokuDev** does with its build tools.
 
-A typical style file might look something like this: [ToastItem.js](https://github.com/azatdev/onRokuDev/blob/main/app/styles/layout/ToastItem.js).  When a `ToastItem` component initializes, it automatically applies the styles object to itself and its children.  The children are looked up by their `node.subType()` name and differentiated with either an `id` or a `class` field.  The class fields are used with `animatable`'s `addClass` and `removeClass` to change nodes' visual fields.  By nature of children being rendered first, a hierarchical structure of styles can be created to differentiate the visual styles of the same component being parented in different nodes.  It's nowhere near as powerful as CSS or its precompilers, but it's so much better than nothing!
+A typical style file might look like [ToastItem.js](app/styles/layout/ToastItem.js). When a `ToastItem` component initializes, it automatically applies the style object to itself and its children. Children are identified by their `node.subType()` names and differentiated by either an `id` or a `class` field. The class fields work with `styleable`'s `addClass` and `removeClass` functions to change nodes' visual fields. Because children are rendered first, styles can use a hierarchical structure to give the same component different visual styles under different parent nodes. It is nowhere near as powerful as CSS or its preprocessors, but it is so much better than nothing!
 
-To add a cherry on top, the build tools listen to file changes in style files and automatically send them to the Roku device with the help of `ord_socketTask` and apply them to the target node or its children.  It doesn't eliminate the need to reload the app on XML or script changes, however, but again, better than nothing.
-
+To add a cherry on top, the build tools listen for changes to style files, automatically send those changes to the Roku device with the help of `ord_socketTask`, and apply them to the target node or its children. This does not eliminate the need to reload the app after XML or script changes, but, again, it is better than nothing.
 
 ## Poor configuration file support
 
-It's the same issue as with styles.  I have a preference for components that are driven by homogenous content data, alongside a configuration object which changes how the component behaves, how it looks, and what does with the content data.  Naturally, lots of these configuration objects start to accrue.  Also, what if I wanted my `.env` configuration in there for development purposes or graphql queries?  And I don't want them scattered all over the BRS files, obfuscating the actual logic code with their mere presence?  Well, **onRokuDev's** `configable` trait has it covered
+It is the same issue as with styles. I prefer components driven by homogeneous content data alongside a configuration object that changes how the component behaves, how it looks, and what it does with the content data. Naturally, these configuration objects start to accumulate. What if I also want to include my `.env` configuration for development or my GraphQL queries without scattering them throughout the BRS files and obscuring the actual application logic? **onRokuDev's** `configable` trait has it covered.
 
-Just like `styleable`'s build scripts, it will watch and compile all configuration files in the `configs` folder and with`ord_socketTask` let the device know to download new config.  The configuration objects can then be appended to assocarray fields on a node and observed for changes, if need be.
+Like `styleable`'s build scripts, it watches and compiles all configuration files in the `configs` folder, then uses `ord_socketTask` to tell the device to download the new configuration. The configuration objects can then be assigned to assocarray fields on a node and observed for changes if necessary.
 
 ```brs
 sub init()
-    ' Loads the configuration object into the config field of m.scrollGroup
+    ' Loads the configuration object into m.scrollGroup's config field.
     liveConfig({ field: "config", keyPath: "ScrollGroup" }, m.scrollGroup)
-    ' Waits for updates to the config object
+    ' Waits for updates to the configuration object.
     safeObserve("config", onScrollGroupConfigChange, m.scrollGroup)
 end sub
 
@@ -415,9 +425,9 @@ end sub
 
 ## Components with dubious customizability
 
-Roku has a ton of built-in components that, frankly, look and behave like crap.  Trying to customize these components with a professional standard of being pixel-perfect to the designs is often impossible outside of building a fully custom component.  **onRokuDev** facilitates creation of custom components with traits like `positionable` alongside 2 powerful components that meet the vast majority of needs when building out a custom UI.
+Roku has a ton of built-in components that, frankly, look and behave like crap. Customizing these components to a pixel-perfect professional standard is often impossible without building a fully custom component. **onRokuDev** facilitates the creation of custom components with traits like `positionable`, alongside two powerful components that meet the vast majority of needs when building a custom UI.
 
-`ord_flexList` is the ultimate tool for building out list components.  Carousels, menus, buttons, toasters, forms, etc, can be easily built and customized with very little effort.  The secret is Roku's only cool native component `TargetGroup` and having a process which programatically generates the `TargetSet`s and their `targetRects` from a configuration file such as:
+`ord_flexList` is the ultimate tool for building list components. Carousels, menus, buttons, toasters, forms, and more can be easily built and customized with very little effort. The secret is Roku's only cool native component, `TargetGroup`, and a process that programmatically generates the `TargetSet`s and their `targetRects` from a configuration file such as this:
 
 ```js
 module.exports = {
@@ -440,8 +450,7 @@ module.exports = {
 
 This generates something like this:
 
-
-While a config such as:
+Another configuration looks like this:
 
 ```js
 module.exports = {
@@ -458,35 +467,34 @@ module.exports = {
 };
 ```
 
-Will generate something like:
+It generates something like this:
 
+Much of the nitty-gritty logic lives in the `itemComponent` and controls how it looks and behaves when either the item or its group is focused. Realistically, a standard `itemComponent` requires about 100 lines of code, while a fancy one with dynamic sizing and multiple animation sequences may require about 200. [SidebarItem.bs](app/components/views/SidebarItem/SidebarItem.bs) is as complicated as it gets in this project, at only about 170 lines.
 
-A lot of the nitty-gritty logic happens in the itemComponent in regards to how it looks, how it acts when it's focused, the group is focused, etc, but realistically, it's about 100 lines of code for a standard itemComponent and maybe 200 lines of code for fancy itemComponent with dynamic sizing and multiple animation sequences.  [SidebarItem.bs](https://github.com/azatdev/onRokuDev/blob/main/app/components/views/SidebarItem/SidebarItem.bs) is as complicated as it gets in this project with only ~170 lines.
+The flexibility of `ord_flexList` is unparalleled, and its documentation is underway.
 
-The flexibility of `flexList` is unparallelled and documentation for it is under way.
+`ord_scrollGroup` is another component in **onRokuDev's** toolkit that fills a certain void. If you want a scrolling hero, slideshows or elements that fade in and out, or scrollable regions with scrollbars triggered by either a key press or an automatic timer, give `ord_scrollGroup` a go.
 
-`ord_scrollGroup` is another component in **onRokuDev's** toolkit that fills a certain void.  If you want a scrolling hero, fade in and out slideshows/elements, scrollable regions with scrollbars, triggered by either key press or an automatic timer, give `ord_scrollGroup` a go.
-
-There is also the `positionable` trait which helps dealing with elements inside a group.  It has helpers like `getVisibleHeight`, `getVisibleWidth`, `centerComponent`, and `stackChildren` (`LayoutGroup` be damned!).  This trait can and will be expanded to fulfill many other usecases.
+There is also the `positionable` trait, which helps manage elements inside a group. It provides helpers such as `getVisibleHeight`, `getVisibleWidth`, `centerComponent`, and `stackChildren` (`LayoutGroup` be damned!). This trait can and will be expanded to fulfill many other use cases.
 
 ## No back-end dev or video server
 
-The Roku development ecosystem doesn't make it easy for you to get fully up and running with a cutomizable channel of your own.  The usual story is that you download some code, maybe you even find a "framework" of some sort, now what?  You have no data, no cms, no server api, no video server. You wouldn't believe it, but **onRokuDev** has that covered too.
+The Roku development ecosystem does not make it easy to get a customizable channel of your own fully up and running. The usual story is that you download some code and maybe even find a "framework" of some sort—but now what? You have no data, CMS, server API, or video server. You would not believe it, but **onRokuDev** has that covered too.
 
-By default, the app will use URLs to a hosted instance of the cms, see `.env.example` for details.  Very soon, a forked version of [strapi cms](https://github.com/strapi) will be made available.  It is lightly modified and has support for a local video server, as well as a simple download script to pull some public domain content into a folder that the video server will access.  [nginx-vod-live-hls](https://github.com/gdomod/nginx-vod-live-hls) is used for the video server.
+By default, the app uses URLs for a hosted CMS instance; see `.env.example` for details. A forked version of [Strapi CMS](https://github.com/strapi) will be made available soon. The planned fork is lightly modified to support a local video server and includes a simple download script that pulls public-domain content into a folder accessible to the video server. The video server uses [nginx-vod-live-hls](https://github.com/gdomod/nginx-vod-live-hls).
 
-**onRokuDev** also uses the following open source software from `rokucommunity`:
+**onRokuDev** also uses the following open-source software from the Roku developer community:
 
-- [BrightScript Language](https://marketplace.visualstudio.com/items?itemName=RokuCommunity.brightscript) extension for VSCode.
-- [BrighterScript](https://github.com/rokucommunity/brighterscript) superset language and compiler.
-- [Rodash](https://github.com/TKSS-Software/rodash) utility library.
-- [roku-requests](https://github.com/rokucommunity/roku-requests) package.
-- [promises](https://github.com/rokucommunity/promises) for use with the aforementioned [**sgRouter**](https://github.com/rokucommunity/sgRouter/tree/master) view manager.
-- [bslint](https://github.com/rokucommunity/bslint) linter for brs.
+- The [BrightScript Language](https://marketplace.visualstudio.com/items?itemName=RokuCommunity.brightscript) extension for VS Code.
+- [BrighterScript](https://github.com/rokucommunity/brighterscript), a superset of BrightScript and its compiler.
+- [Rodash](https://github.com/TKSS-Software/rodash), a utility library.
+- The [roku-requests](https://github.com/rokucommunity/roku-requests) package.
+- [promises](https://github.com/rokucommunity/promises), used with the aforementioned [**sgRouter**](https://github.com/rokucommunity/sgRouter/tree/master) view manager.
+- [bslint](https://github.com/rokucommunity/bslint), a linter for BrightScript.
 
 Thank you all for your hard work!
 
-There is still lots to do on this project and its progress will be on-going.  Having said that, it's ready for its core concepts to be scrutinzed and critiqued.  So please, if you have the time or the need, please check it out!
+There is still much to do on this project, and development is ongoing. That said, its core concepts are ready to be scrutinized and critiqued. If you have the time or the need, please check it out!
 
 ## Installation
 
@@ -516,7 +524,7 @@ cp .env.example .env
 
 Then open `.env` and update:
 
-- `ROKU_IP` and `ROKU_PASS` with your Roku's developer-mode credentials
+- `ROKU_IP` and `ROKU_PASS` with your Roku device's developer-mode credentials
 - `LOCAL_DEV_SERVER` and `LOCAL_SOCKET_SERVER` with your computer's local network address
 - The user and API values for the environment you want to run
 
