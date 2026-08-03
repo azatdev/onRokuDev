@@ -12,6 +12,7 @@
 - [Style support](#no-stylesheets-theme-sharing-or-live-updates)
 - [Config support](#poor-configuration-file-support)
 - [Full-stack development environment](#no-back-end-dev-or-video-server)
+- [Video Demos](#video-examples)
 - [Install](#installation)
 
 The world of Roku development makes it difficult for a programmer who is new to the ecosystem to know what to do, what not to do, and, most importantly, how to do it. This can result in applications that quickly become unwieldy layers of abstraction lasagna with a side of spaghetti hell. Other projects try to bring structure to Roku development, but they do not necessarily address all of the following problems:
@@ -450,6 +451,8 @@ module.exports = {
 
 This generates something like this:
 
+https://github.com/user-attachments/assets/2f2f7318-4d21-431f-bc28-2865d3c1a20d
+
 Another configuration looks like this:
 
 ```js
@@ -468,6 +471,10 @@ module.exports = {
 ```
 
 It generates something like this:
+
+https://github.com/user-attachments/assets/e1e1a018-8c64-4fed-90e5-a0f558533150
+
+
 
 Much of the nitty-gritty logic lives in the `itemComponent` and controls how it looks and behaves when either the item or its group is focused. Realistically, a standard `itemComponent` requires about 100 lines of code, while a fancy one with dynamic sizing and multiple animation sequences may require about 200. [SidebarItem.bs](app/components/views/SidebarItem/SidebarItem.bs) is as complicated as it gets in this project, at only about 170 lines.
 
@@ -495,6 +502,17 @@ By default, the app uses URLs for a hosted CMS instance; see `.env.example` for 
 Thank you all for your hard work!
 
 There is still much to do on this project, and development is ongoing. That said, its core concepts are ready to be scrutinized and critiqued. If you have the time or the need, please check it out!
+
+## Video Examples
+
+### 4660X - Typical High-End Device
+https://github.com/user-attachments/assets/99d50015-3b6e-44f8-a764-19fcf058303f
+
+### 3930RW - Popular Mainstream Device
+https://github.com/user-attachments/assets/3bce5c44-628c-4749-95ec-1ea45dad4e79
+
+### 3700X - Lowest Supported Device
+https://github.com/user-attachments/assets/1e13e46f-12d8-45e5-8feb-96c5e37766ec
 
 ## Installation
 
