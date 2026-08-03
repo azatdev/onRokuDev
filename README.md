@@ -1,6 +1,6 @@
 **onRokuDev** is an "in-progress" sample channel which hopes to show an example of how a fast, familiar, and failure-tolerant structure could be implemented in a roku application.  It does this through patterns which prefer composition over inheritance, prevent and catch exceptions, and provide the tools to easily create modern and performant UI elements.
 
-- Abstraction hell alternative(#Over-abstraction)
+- [Abstraction hell alternative](#Over-abstraction)
 - Flow management
 - Thwarting crashes and stability issues
 - Focus management
