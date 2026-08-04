@@ -15,6 +15,7 @@ import "traits/styleable.bs"
 
 
 sub ord_init()
+    m.ord_initiated = true
     setRole()
 
     interfaces = [Safeable, Stateable, Eventable, Styleable, Animatable, Focusable, Configable, Loadable, Positionable]
@@ -34,8 +35,6 @@ sub ord_init()
     if getGlobalAA().ord_role = "Task"
         top().functionName = "runTask"
     end if
-
-    m.ord_initiated = true
 end sub
 
 

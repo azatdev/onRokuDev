@@ -6,5 +6,12 @@ sub init()
 
         m.socketTask = createObject("roSGNode", "ord_socketTask")
         m.socketTask.control = "RUN"
+
+        subscribe({
+            [events.UNSUBSCRIBE_EVENTS]: sub(_options = {})
+                m.socketTask.control = "STOP"
+                m.socketTask = invalid
+            end sub
+        })
     end sub)
 end sub

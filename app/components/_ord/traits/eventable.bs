@@ -1,12 +1,11 @@
 class Eventable
     registrationsArray = []
     sub new(_options = {})
-        m.renderQueue = createObject("roRenderThreadQueue")
         m.setExportFunctions(getGlobalAA().ord_role)
 
         if getGlobalAA().ord_role = "Task" or getGlobalAA().ord_role = "Model" then return
 
-        if global().ord_eventQueue = invalid
+        if getGlobalAA().ord_role = "Scene"
             m.setupEventQueue()
         end if
 
@@ -20,7 +19,7 @@ class Eventable
         top().removeField("ord_subscriptions")
         safeUnobserve("ready", m.eventQueue)
         m.eventQueue = invalid
-        if rodash.isNode(global().ord_eventQueue)
+        if getGlobalAA().ord_role = "Scene"
             global().ord_eventQueue.control = "STOP"
             global().removeField("ord_eventQueue")
         end if
@@ -32,7 +31,7 @@ class Eventable
 
         m.publicFunctions = []
 
-        if rodash.findIndex(["Scene", "View", "Model", "Controller", "Task"], componentRole) <> -1
+        if rodash.findIndex(["Scene", "View", "Controller"], componentRole) <> -1
             m.publicFunctions.push("dispatch")
         end if
 
@@ -81,10 +80,7 @@ class Eventable
 
 
     sub onTaskReady(_options = {})
-        ' Roku bug where event is not actually ready.
-        rodash.delay(sub(_options = {})
-            dispatch(events.EVENT_TASK_READY)
-        end sub, 100)
+        dispatch(events.EVENT_TASK_READY)
     end sub
 
 
@@ -95,16 +91,14 @@ class Eventable
 
             m.storeFunctions({ name: eventName, functions: eventFunctions })
 
-            if m.renderQueue = invalid then return
-
             observeFunction = m.callEventFunctions
             observeFunctionName = rodash.getFunctionName(observeFunction)
-            registration = m.renderQueue.addMessageHandler(eventName, observeFunctionName)
+            registration = createObject("roRenderThreadQueue").addMessageHandler(eventName, observeFunctionName)
             m.registrationsArray.push(registration)
         end for
 
         if getGlobalAA().ord_role = "Controller"
-            m.renderQueue.addMessageHandler(events.UNSUBSCRIBE_EVENTS, "ord_reset")
+            createObject("roRenderThreadQueue").addMessageHandler(events.UNSUBSCRIBE_EVENTS, "ord_reset")
         end if
     end sub
 
@@ -126,10 +120,11 @@ class Eventable
 
 
     sub publish(options = {})
-        if m.renderQueue = invalid then return
         'bs:disable-next-line
         if devMode() then ?"-=# EVENT: " options.id, rodash.now()
-        m.renderQueue.postMessage(options.id, options.options)
+        createObject("roRenderThreadQueue").postMessage(options.id, options.options)
+        'Stress tests determined that a small break is needed
+        sleep(1)
     end sub
 
 
