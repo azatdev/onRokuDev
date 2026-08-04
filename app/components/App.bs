@@ -43,5 +43,5 @@ sub restartApp(_options = {})
         top().removeChildren(top().getChildren(-1, 0))
         ord_reset()
         init()
-    end sub, 1000)
+    end sub, 100)
 end sub
