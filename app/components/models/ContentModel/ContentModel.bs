@@ -37,7 +37,7 @@ function getBifFields(bifs)
         if rodash.isEmptyString(bifType) then return acc
         fieldName = bifType = "SD" ? "sdbifurl" : "hdbifurl"
         bifURL = cv.bif?.url ?? ""
-        serverPath = "<%- s(CONFIG.ENV.SERVER_URI) %>"
+        serverPath = "{{%- s(CONFIG.ENV.SERVER_URI) %}}"
         acc[fieldName] = serverPath + bifURL
         return acc
     end function, {})
@@ -77,7 +77,7 @@ end sub
 
 function returnContentCTAsModel(_options = {})
     model = createObject("roSGNode", "CTAsModel")
-    modelConfigArray = "<%- o(CONFIG.ContentCTAs) %>"
+    modelConfigArray = "{{%- o(CONFIG.ContentCTAs) %}}"
     updateObject = {
         children: []
     }
@@ -160,7 +160,7 @@ end function
 
 function returnHeroCTAsModel(_options = {})
     model = createObject("roSGNode", "CTAsModel")
-    modelConfigArray = "<%- o(CONFIG.HeroCTAs) %>"
+    modelConfigArray = "{{%- o(CONFIG.HeroCTAs) %}}"
     updateObject = {
         children: []
     }

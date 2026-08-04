@@ -1,9 +1,12 @@
+const mixins = require("../../styles/mixins");
+const assets = mixins["Assets"];
+
 module.exports = {
     "ord_flexList": {
         "Poster": {
             "&#clippingRectOutline": {
                 "height": 0,
-                "uri": "pkg:/static/images/thinner_rect.9.png",
+                "uri": assets.clippingRect,
                 "visible": false,
                 "width": 0
             }

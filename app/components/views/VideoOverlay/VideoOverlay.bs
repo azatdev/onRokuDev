@@ -11,7 +11,7 @@ sub init()
         m.hideOverlay = top().findNode("hideOverlay")
         m.playerHeader = top().findNode("playerHeader")
 
-        m.hideOverlay.config = "<%- o(CONFIG.ControlItems.hideOverlay) %>"
+        m.hideOverlay.config = "{{%- o(CONFIG.ControlItems.hideOverlay) %}}"
 
         safeObserve("data", onDataSet)
 

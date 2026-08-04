@@ -2,7 +2,7 @@ import "pkg:/components/_ord/init.bs"
 
 sub init()
     exec(sub(_options = {})
-        m.paginationConfigs = "<%- o(CONFIG.Pagination) %>"
+        m.paginationConfigs = "{{%- o(CONFIG.Pagination) %}}"
         safeFunctions({
             "generateDefaultModels": generateDefaultModels,
             "getChildFields": getChildFields,

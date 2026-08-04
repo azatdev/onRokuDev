@@ -15,7 +15,7 @@ module.exports = {
         "TopGradient": {
             "blendColor": palette.black,
             "height": 330,
-            "uri": "pkg:/static/images/gradients/content-top-gradient.webp",
+            "uri": assets.contentTopGradient,
             "width": viewport.width
         }
     }

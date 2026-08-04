@@ -1,5 +1,6 @@
 const mixins = require("../mixins");
-const palette = mixins["Palette"]
+const assets = mixins["Assets"];
+const palette = mixins["Palette"];
 
 module.exports = {
     "TabItem": {
@@ -28,13 +29,13 @@ module.exports = {
         "Group": {
             "opacity": 0,
             "Poster": {
-                "&#tabTop": {
-                    "blendColor": palette.lowlightColor,
-                    "uri": "pkg:/static/images/9patches/tab-top-18px.9.png"
-                },
                 "&#tabBottom": {
                     "blendColor": palette.lowlightColor,
-                    "uri": "pkg:/static/images/9patches/tab-bottom-18px.9.png"
+                    "uri": assets.tabBottom18
+                },
+                "&#tabTop": {
+                    "blendColor": palette.lowlightColor,
+                    "uri": assets.tabTop18
                 }
             },
         },

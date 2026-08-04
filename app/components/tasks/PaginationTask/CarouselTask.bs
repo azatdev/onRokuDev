@@ -14,7 +14,7 @@ function runCarouselTask(_options = {})
     collection = options.collection
     variables = options.variables ?? {}
 
-    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Carousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+    response = rokurequests_Requests().post("{{%- s(CONFIG.ENV.GRAPHQL_SERVER) %}}", { json: { query: "{{%- s(QUERY.Carousel) %}}", variables: variables }, headers: "{{%- o(CONFIG.Headers) %}}"})
     responseJSON = response.json ?? {}
 
     if not response.ok

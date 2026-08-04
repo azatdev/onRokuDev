@@ -1,5 +1,6 @@
 const mixins = require("../../styles/mixins");
-const palette = mixins["Palette"]
+const assets = mixins["Assets"];
+const palette = mixins["Palette"];
 
 module.exports = {
     "ord_scrollGroup": {
@@ -7,7 +8,7 @@ module.exports = {
         "Poster": {
             "&#scrollTrack": {
                 "blendColor": "#FFFFFF80",
-                "uri": "pkg:/static/images/white-block.webp",
+                "uri": assets.whiteBlock,
                 "visible": false,
                 "width": 42,
                 "Poster": {
@@ -16,7 +17,7 @@ module.exports = {
                     "margin": 3,
                     "translation": [3, 3],
                     "width": 36,
-                    "uri": "pkg:/static/images/9patches/fill-9px.9.png"
+                    "uri": assets.fill9
                 }
             }
         },

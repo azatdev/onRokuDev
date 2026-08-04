@@ -1,4 +1,5 @@
 const mixins = require("../../styles/mixins");
+const assets = mixins["Assets"]
 const palette = mixins["Palette"]
 
 module.exports = {
@@ -12,7 +13,7 @@ module.exports = {
             show: true,
             track: {
                 blendColor: "#FFFFFF80",
-                uri: "pkg:/static/images/white-block.webp",
+                uri: assets.whiteBlock,
                 width: 15
             },
             thumb: {
@@ -20,7 +21,7 @@ module.exports = {
                 margin: 0,
                 translation: [0, 0],
                 width: 15,
-                uri: "pkg:/static/images/white-block.webp"
+                uri: assets.whiteBlock
             }
         },
         maxSize: 786

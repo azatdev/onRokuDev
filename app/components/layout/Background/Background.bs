@@ -63,8 +63,8 @@ sub setBackground(newUri = "")
     newPoster.id = rodash.now().toStr()
     newPoster.opacity = 0
     newPoster.uri = newUri
-    newPoster.width = "<%- s(STYLES.Dimensions.viewport.width) %>"
-    newPoster.height = "<%- s(STYLES.Dimensions.viewport.height) %>"
+    newPoster.width = "{{%- s(STYLES.Dimensions.viewport.width) %}}"
+    newPoster.height = "{{%- s(STYLES.Dimensions.viewport.height) %}}"
     oldPoster = m.poster
     m.backgroundContainer.appendChild(newPoster)
     fadeIn(newPoster, { callback: onBackgroundFadeIn, callbackOptions: { node: oldPoster }, duration: 0.3 })
@@ -97,7 +97,7 @@ sub setComplimentaryColor(options = {})
     content = options.content
     newBlendColor = content.complimentaryColor
 
-    if rodash.isEmpty(newBlendColor) then newBlendColor = "<%- s(STYLES.Palette.defaultCornerColor) %>"
+    if rodash.isEmpty(newBlendColor) then newBlendColor = "{{%- s(STYLES.Palette.defaultCornerColor) %}}"
 
     morphObject = {}
     morphObject[m.cornerGradient.id] = {

@@ -1,5 +1,6 @@
 const mixins = require("../mixins");
 const palette = mixins["Palette"]
+const assets = mixins["Assets"]
 
 module.exports = {
     "CarouselItem": {
@@ -14,7 +15,8 @@ module.exports = {
                     "&#outline": {
                         "blendColor": palette.lowlightColor,
                         "loadSync": true,
-                        "uri": "pkg:/static/images/9patches/9px-outline-18px.9.png",
+                        "uri": assets.outline918,
+                        "opacity": 0
                     }
                 }
             }

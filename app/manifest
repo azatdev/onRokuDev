@@ -1,5 +1,6 @@
 title=Azat Roku
 ui_resolutions=fhd
+uri_resolution_autosub=$$RES$$,SD,720p,1080p
 
 major_version=0
 minor_version=0

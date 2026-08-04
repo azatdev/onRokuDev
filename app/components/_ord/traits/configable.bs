@@ -1,5 +1,5 @@
 class Configable
-    appConfigs = "<%- o(CONFIG) %>"
+    appConfigs = "{{%- o(CONFIG) %}}"
     configPaths = {}
 
     sub new(_options = {})
@@ -7,7 +7,7 @@ class Configable
 
         m.setExportFunctions(getGlobalAA().ord_role)
 
-        if not global().hasField("ord_configs")
+        if devMode() and not global().hasField("ord_configs")
             m.setupGlobalConfigs()
         end if
     end sub
@@ -15,7 +15,7 @@ class Configable
 
     sub reset(_options = {})
         m.configPaths = {}
-        global().removeField("ord_configs")
+        if devMode() then global().removeField("ord_configs")
     end sub
 
 
@@ -33,21 +33,23 @@ class Configable
     end sub
 
 
-    function liveConfig(options = {})
+    sub liveConfig(options = {})
         field = options.field
         keyPath = options.keyPath
         node = options.node
 
-        if rodash.isEmptyString(field) then return invalid
-        if rodash.isEmptyString(keyPath) then return invalid
-        if not rodash.isNode(node) then return invalid
+        if rodash.isEmptyString(field) then return
+        if rodash.isEmptyString(keyPath) then return
+        if not rodash.isNode(node) then return
 
         config = rodash.get(m.appConfigs, keyPath)
-        if rodash.isEmpty(config) then return invalid
+        if rodash.isEmpty(config) then return
 
         updateObject = {}
         updateObject[field] = config
         node.update(updateObject, true)
+
+        if not devMode() then return
 
         if not rodash.isNonEmptyAA(m.configPaths[keyPath])
             configsNode = global().ord_configs
@@ -60,15 +62,15 @@ class Configable
                 nodeUpdateObj[keyPath] = config
                 configsNode.update(nodeUpdateObj, true)
             end if
+
             safeObserve(keyPath, "configUpdated", configsNode)
         end if
-
-        return config
-    end function
+    end sub
 
 
     sub configUpdated(options = {})
         field = options.field
+        ?"configUpdated " field
         configObject = m.configPaths[field]
         if not rodash.isNonEmptyAA(configObject) then return
 

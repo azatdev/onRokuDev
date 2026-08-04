@@ -1,4 +1,5 @@
 class Styleable
+    appStyles = "{{%- o(STYLES) %}}"
     hookFunctions = {}
 
     sub new(_options = {})
@@ -10,23 +11,25 @@ class Styleable
             top().addField("class", "string", true)
         end if
 
-        if not global().hasField("ord_styles")
-            m.setupGlobalStyles()
-        end if
+        nodeStyles = m.appStyles[top().subType()]
+        m.setStyles({ stylesheet: nodeStyles, node: top() })
 
-        styleNode = global().ord_styles
-        appStyles = "<%- o(STYLES) %>"
-
-        if not styleNode.hasField(top().subType())
-            styleNode.addField(top().subType(), "assocarray", false)
-            if rodash.isAA(appStyles) then styleNode.setField(top().subType(), appStyles[top().subType()])
-        end if
-
-        m.setStyles({ stylesheet: styleNode[top().subType()], node: top() })
-        safeObserve(top().subType(), "stylesUpdated", styleNode)
         safeObserve("change", "onChildChange")
         safeObserve("id", "onIdClassChange")
         safeObserve("class", "onIdClassChange")
+
+        if not devMode() then return
+
+        if not global().hasField("ord_styles") then m.setupGlobalStyles()
+
+        styleNode = global().ord_styles
+
+        if not styleNode.hasField(top().subType())
+            styleNode.addField(top().subType(), "assocarray", false)
+            styleNode.setField(top().subType(), nodeStyles)
+        end if
+
+        safeObserve(top().subType(), "stylesUpdated", styleNode)
     end sub
 
 

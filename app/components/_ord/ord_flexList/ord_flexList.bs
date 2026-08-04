@@ -294,15 +294,14 @@ end sub
 sub onDataSet(options = {})
     data = options.data ?? {}
     content = data.content
-    safeObserve("config", processDefaultConfig, content)
+    safeObserve("config", onConfigChange, content)
 
     if content.config = invalid then return
 
-    config = processDefaultConfig({ data: content.config })
+    config = processDefaultConfig(content.config ?? {})
 
     m.content = content
     m.carousel.content = content
-    m.carousel.itemComponentName = config.itemComponentName
 
     if config.carouselType = "dynamicSize"
         rects = []
@@ -327,6 +326,12 @@ sub onDataSet(options = {})
 end sub
 
 
+sub onConfigChange(options = {})
+    config = processDefaultConfig(options.data)
+    processConfig(config)
+end sub
+
+
 sub onExternalFocusPercentChange(options = {})
     m.carousel.focusPercent = options.data
 end sub
@@ -336,7 +341,7 @@ sub onTotalCountChange(options = {})
     totalCarouselItems = options.data
     if rodash.isNumber(totalCarouselItems) then set({ "totalCarouselItems": totalCarouselItems })
 
-    config = processDefaultConfig({ data: m.content.config })
+    config = processDefaultConfig(m.content.config ?? {})
     processConfig(config)
 
     if get("resetOnChange")
@@ -463,7 +468,8 @@ function processDefaultConfig(options = {})
     defaultConfig = get("defaultConfig")
     config = {}
     config.append(defaultConfig)
-    config.append(options.data)
+    config.append(options)
+    m.carousel.itemComponentName = config.itemComponentName
     return config
 end function
 
@@ -498,7 +504,7 @@ sub registerChildRect(options = {})
         bigSquare: options.bigSquare
     }
     if m.rectSizes.count() = m.content.getChildCount()
-        config = processDefaultConfig({ data: m.content.config })
+        config = processDefaultConfig(m.content.config ?? {})
         processConfig(config)
     end if
 end sub

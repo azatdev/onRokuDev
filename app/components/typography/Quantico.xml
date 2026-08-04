@@ -7,6 +7,6 @@
         <Font
             id="font"
             role="font"
-            uri="pkg:/static/fonts/Quantico-Regular.ttf" />
+            uri="{{%- s(STYLES.Assets.fonts.quanticoRegular) %}}" />
     </children>
 </component>

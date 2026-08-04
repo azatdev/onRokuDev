@@ -16,8 +16,8 @@ type PageData = {
     [key: string]: any;
 };
 
-ejs.openDelimiter = "\"<";
-ejs.closeDelimiter = ">\"";
+ejs.openDelimiter = "\"{{";
+ejs.closeDelimiter = "}}\"";
 
 function getConfigDir(config: Config) {
     const cwd = config.cwd ?? process.cwd();

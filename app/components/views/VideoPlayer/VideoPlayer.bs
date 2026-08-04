@@ -24,10 +24,10 @@ sub init()
         safeObserve("fire", onSeekTimerFired, m.seekTimer)
 
         m.controls = top().findNode("controls")
-        controlsConfig = "<%- o(CONFIG.DefaultControls) %>"
+        controlsConfig = "{{%- o(CONFIG.DefaultControls) %}}"
         m.controls.config = controlsConfig
 
-        activeControlsConfig = "<%- o(CONFIG.ActiveControls) %>"
+        activeControlsConfig = "{{%- o(CONFIG.ActiveControls) %}}"
 
         safeObserve("data", onDataSet)
         safeObserve("state", onVideoStateChange, m.video)

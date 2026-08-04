@@ -366,7 +366,7 @@ end sub
 
 ' Morph objects can be stored as part of the styles
 sub comboMorph()
-    morph("<%- o(STYLES.ViewItem.fadeMorph) %>")
+    morph("{{%- o(STYLES.ViewItem.fadeMorph) %}}")
 end sub
 ```
 
