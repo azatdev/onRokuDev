@@ -12,7 +12,7 @@ function runLoginUserTask(options = {})
     model = options.model
     variables = options.variables ?? {}
 
-    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Login) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>" })
+    response = rokurequests_Requests().post("{{%- s(CONFIG.ENV.GRAPHQL_SERVER) %}}", { json: { query: "{{%- s(QUERY.Login) %}}", variables: variables }, headers: "{{%- o(CONFIG.Headers) %}}" })
     responseJSON = response.json ?? {}
 
     if not response.ok

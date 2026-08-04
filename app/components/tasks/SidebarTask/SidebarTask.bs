@@ -8,7 +8,7 @@ end sub
 
 
 function runSidebarTask(_options = {})
-    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.Sidebar) %>"}, headers: "<%- o(CONFIG.Headers) %>"})
+    response = rokurequests_Requests().post("{{%- s(CONFIG.ENV.GRAPHQL_SERVER) %}}", { json: { query: "{{%- s(QUERY.Sidebar) %}}"}, headers: "{{%- o(CONFIG.Headers) %}}"})
     responseJSON = response.json ?? {}
 
     if not response.ok
@@ -56,6 +56,6 @@ end function
 
 
 function getIcon(iconType)
-    iconsDictionary = "<%- o(CONFIG.Icons) %>"
+    iconsDictionary = "{{%- o(CONFIG.Icons) %}}"
     return iconsDictionary[iconType] ?? ""
 end function

@@ -3,7 +3,7 @@ function getContentData(options = {})
     contentImages = data.images ?? []
     imageFields = getImageFields(contentImages)
 
-    videoServerURI = "<%- s(CONFIG.ENV.VIDEO_SERVER_URI) %>"
+    videoServerURI = "{{%- s(CONFIG.ENV.VIDEO_SERVER_URI) %}}"
     playlistUrl = data.playlistUrl ?? ""
 
     updateObject = {
@@ -37,7 +37,7 @@ function getImageFields(images)
         if rodash.isEmptyString(imageType) then return acc
         fieldName = imageType + "ImageUri"
         imageURL = cv.data?.url ?? ""
-        serverPath = "<%- s(CONFIG.ENV.SERVER_URI) %>"
+        serverPath = "{{%- s(CONFIG.ENV.SERVER_URI) %}}"
         acc[fieldName] = serverPath + imageURL
         return acc
     end function, {})

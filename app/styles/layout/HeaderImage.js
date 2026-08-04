@@ -1,5 +1,6 @@
 const mixins = require("../mixins");
-const palette = mixins["Palette"]
+const assets = mixins["Assets"];
+const palette = mixins["Palette"];
 
 module.exports = {
     "HeaderImage": {
@@ -7,7 +8,7 @@ module.exports = {
         "translation": [921, 60],
         "width": 999,
         "MaskGroup": {
-            "maskuri": "pkg:/static/images/gradients/header-image-mask.webp"
+            "maskuri": assets.headerMask
         },
         "Div": {
             "&#headerImageGradients": {
@@ -17,21 +18,21 @@ module.exports = {
                         "blendColor": palette.black,
                         "height": 561,
                         "translation": [0, 0],
-                        "uri": "pkg:/static/images/gradients/header-image-left-gradient.webp",
+                        "uri": assets.headerLeft,
                         "width": 179
                     },
                     "&#topGradient": {
                         "blendColor": palette.black,
                         "height": 171,
                         "translation": [0, 0],
-                        "uri": "pkg:/static/images/gradients/header-image-top-gradient.webp",
+                        "uri": assets.headerTop,
                         "width": 999
                     },
                     "&#bottomGradient": {
                         "blendColor": palette.black,
                         "height": 294,
                         "translation": [0, 561 - 294],
-                        "uri": "pkg:/static/images/gradients/header-image-bottom-gradient.webp",
+                        "uri": assets.headerBottom,
                         "width": 999
                     },
                 }

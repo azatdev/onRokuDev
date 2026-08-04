@@ -9,7 +9,7 @@ end sub
 
 
 function setupSocket(_options = {})
-    serverAddress = "<%- s(CONFIG.ENV.LOCAL_SOCKET_SERVER) %>"
+    serverAddress = "{{%- s(CONFIG.ENV.LOCAL_SOCKET_SERVER) %}}"
     messagePort = createObject("roMessagePort")
     sendAddress = createObject("roSocketAddress")
     sendAddress.setAddress(serverAddress)

@@ -7,6 +7,6 @@
         <Font
             id="font"
             role="font"
-            uri="pkg:/static/fonts/Quantico-Bold.ttf" />
-    </children>
+            uri="{{%- s(STYLES.Assets.fonts.quanticoBoldItalic) %}}" />
+    </childre>
 </component>

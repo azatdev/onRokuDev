@@ -43,11 +43,11 @@ module.exports = {
             },
             "&#highlightBottom": {
                 "blendColor": `${palette.primaryColor}14`,
-                "uri": "pkg:/static/images/9patches/highlight-bottom-18px.9.png"
+                "uri": assets.highlightBottom18
             },
             "&#highlightTop": {
                 "blendColor": `${palette.primaryColor}14`,
-                "uri": "pkg:/static/images/9patches/highlight-top-18px.9.png"
+                "uri": assets.highlightTop18
             },
         }
     }

@@ -116,7 +116,7 @@ enum Icons
     liveTV = "t"
     movies = "m"
     pause = "P"
-    play = ">"
+    play = "}}"
     playSquare = "C"
     podcasts = "p"
     remote = "r"

@@ -1,4 +1,5 @@
 const mixins = require("../mixins");
+const assets = mixins["Assets"]
 const palette = mixins["Palette"]
 const dimensions = mixins["Dimensions"]
 const viewport = dimensions["viewport"]
@@ -16,7 +17,7 @@ module.exports = {
             "&#frame": {
                 "blendColor": palette.playheadColor,
                 "height": 180,
-                "uri": "pkg:/static/images/white-block.webp",
+                "uri": assets.whiteBlock,
                 "translation": [0, 0],
                 "width": 312,
                 "Poster": {
@@ -30,7 +31,7 @@ module.exports = {
                 "blendColor": palette.playheadColor,
                 "height": 18,
                 "translation": [0, 0],
-                "uri": "pkg:/static/images/playhead.webp",
+                "uri": assets.playHead,
                 "width": 24
             }
         }

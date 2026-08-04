@@ -1,4 +1,5 @@
 const mixins = require("../mixins");
+const assets = mixins["Assets"]
 const dimensions = mixins["Dimensions"]
 const palette = mixins["Palette"]
 const viewport = dimensions["viewport"]
@@ -7,7 +8,7 @@ const gradientStyles = {
     "blendColor": palette.black,
     "height": viewport.height,
     "opacity": 0.7,
-    "uri": "pkg:/static/images/gradients/sidebar-gradient.webp",
+    "uri": assets.sidebarGradient,
     "width": 111
 }
 
@@ -51,7 +52,7 @@ module.exports = {
         },
         "MaskGroup": {
             "maskOffset": [0, 216],
-            "maskuri": "pkg:/static/images/gradients/topbar-mask-white.webp",
+            "maskuri": assets.topbarMask,
             "ord_flexList": {
                 "translation": [-999, 0]
             },

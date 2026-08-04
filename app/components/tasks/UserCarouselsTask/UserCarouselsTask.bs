@@ -25,7 +25,7 @@ function runUserCarouselsTask(options = {})
         }
     }
 
-    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.UserCarousels) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+    response = rokurequests_Requests().post("{{%- s(CONFIG.ENV.GRAPHQL_SERVER) %}}", { json: { query: "{{%- s(QUERY.UserCarousels) %}}", variables: variables }, headers: "{{%- o(CONFIG.Headers) %}}"})
     responseJSON = response.json ?? {}
 
     if not response.ok
@@ -97,7 +97,7 @@ function createUserCarousel(carouselType = "")
         "carouselType": carouselType
     }
 
-    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.CreateUserCarousel) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+    response = rokurequests_Requests().post("{{%- s(CONFIG.ENV.GRAPHQL_SERVER) %}}", { json: { query: "{{%- s(QUERY.CreateUserCarousel) %}}", variables: variables }, headers: "{{%- o(CONFIG.Headers) %}}"})
     responseJSON = response.json ?? {}
 
     if not response.ok
@@ -124,7 +124,7 @@ sub attachCarouselsToUser(options = {})
         "carouselIds": options.carouselIds
     }
 
-    response = rokurequests_Requests().post("<%- s(CONFIG.ENV.GRAPHQL_SERVER) %>", { json: { query: "<%- s(QUERY.AttachCarouselToUser) %>", variables: variables }, headers: "<%- o(CONFIG.Headers) %>"})
+    response = rokurequests_Requests().post("{{%- s(CONFIG.ENV.GRAPHQL_SERVER) %}}", { json: { query: "{{%- s(QUERY.AttachCarouselToUser) %}}", variables: variables }, headers: "{{%- o(CONFIG.Headers) %}}"})
     responseJSON = response.json ?? {}
 
     if not response.ok

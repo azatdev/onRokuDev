@@ -266,8 +266,5 @@ end function
 
 
 function findNode(nodeId)
-    ' node = m[nodeId]
-    ' if rodash.isInvalid(node) then node =
-    ' m[nodeId] = node
     return app().findNode(nodeId)
 end function

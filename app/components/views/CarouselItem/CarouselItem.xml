@@ -13,7 +13,6 @@
         <Div id="container">
             <Poster id="thumbnail" />
             <Poster id="outline" />
-            <Label id="label" />
         </Div>
     </children>
     <script type="text/brightscript" uri="CarouselItem.bs" />

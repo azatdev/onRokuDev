@@ -8,17 +8,24 @@ end sub
 
 
 sub setupItem()
-    m.indexLabel = top().findNode("label")
     m.container = top().findNode("container")
     m.container.addField("loaded", "boolean", false)
     m.outline = top().findNode("outline")
     m.outline.visible = false
     m.thumbnail = top().findNode("thumbnail")
+
+    safeObserve("loadStatus", onLoadStatusChange, m.thumbnail)
+
     m.defaultUnfocusedOpacity = 0.2
     setLoadable({ node: m.container, updateField: "loaded" })
     safeObserve("currRect", onCurrentRectChange)
     safeObserve("focusPercent", onFocusPercentChange)
     safeObserve("itemContent", itemContentChanged)
+end sub
+
+
+sub onLoadStatusChange(options = {})
+    if options.data = "ready" then m.outline.opacity = 1
 end sub
 
 

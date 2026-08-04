@@ -20,7 +20,7 @@ module.exports = {
                     "&#cornerGradient": {
                         "blendColor": palette.defaultCornerColor,
                         "height": viewport.height,
-                        "uri": "pkg:/static/images/gradients/corner-gradient.webp",
+                        "uri": assets.cornerGradient,
                         "opacity": 1,
                         "translation": [0, 0],
                         "width": 1161
@@ -39,7 +39,7 @@ module.exports = {
                     "&#leftContentGradient": {
                         "blendColor": palette.black,
                         "height": viewport.height,
-                        "uri": "pkg:/static/images/gradients/content-left-gradient.webp",
+                        "uri": assets.contentLeftGradient,
                         "width": 1293
                     },
                 }

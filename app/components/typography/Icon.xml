@@ -7,6 +7,6 @@
         <Font
             id="font"
             role="font"
-            uri="pkg:/static/fonts/azatroku-icons.ttf" />
+            uri="{{%- s(STYLES.Assets.fonts.icons) %}}" />
     </children>
 </component>
