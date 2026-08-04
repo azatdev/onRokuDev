@@ -242,7 +242,7 @@ There are no native Roku tools for view navigation, lifecycle management, and vi
 
 ## State confusion
 
-How should local state data be stored? Should you create `m.top` fields for everything? That gets messy, ugly, and slow because of the additional cost of copying fields in and not of `m.top`. Should you store things in `m.` fields? Before long, the codebase is littered with `m.isActive` and various other `m.` fields that, to everyone's dismay, seem to define the structure of the logic. What if there were one `m.state` object and everything went there? Hmm, but what if that data must be accessed from an external node? Using `m.state` for private data and `m.top` for public data leads to the philosophical question, "Outside of tooling, why make anything private at all?" Embrace Roku's "public everything" ways! **onRokuDev's** `stateable` opens the door to a fun but measured and responsible public policy.
+How should local state data be stored? Should you create `m.top` fields for everything? That gets messy, ugly, and slow because of the additional cost of copying fields in and out of `m.top`. Should you store things in `m.` fields? Before long, the codebase is littered with `m.isActive` and various other `m.` fields that, to everyone's dismay, seem to define the structure of the logic. What if there were one `m.state` object and everything went there? Hmm, but what if that data must be accessed from an external node? Using `m.state` for private data and `m.top` for public data leads to the philosophical question, "Outside of tooling, why make anything private at all?" Embrace Roku's "public everything" ways! **onRokuDev's** `stateable` opens the door to a fun but measured and responsible public policy.
 
 In any component other than a Task:
 
@@ -490,7 +490,7 @@ There is also the `positionable` trait, which helps manage elements inside a gro
 
 ## No back-end dev or video server
 
-The Roku development ecosystem does not make it easy to get a customizable channel of your own fully up and running. The usual story is that you download some code and maybe even find a "framework" of some sort—but now what? You have no data, CMS, server API, or video server. You would not believe it, but **onRokuDev** has that covered too.
+The Roku development ecosystem does not make it easy to get a customizable channel of your own fully up and running. The usual story is that you download some code and maybe even find a "framework" of some sort, but now what? You have no data, CMS, API server, or video server. You would not believe it, but **onRokuDev** has that covered too.
 
 By default, the app uses URLs for a hosted CMS instance; see `.env.example` for details. A forked version of [Strapi CMS](https://github.com/strapi) will be made available soon. The planned fork is lightly modified to support a local video server and includes a simple download script that pulls public-domain content into a folder accessible to the video server. The video server uses [nginx-vod-live-hls](https://github.com/gdomod/nginx-vod-live-hls).
 
