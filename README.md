@@ -434,7 +434,7 @@ end sub
 
 ## Components with dubious customizability
 
-Roku has a ton of built-in components that, frankly, look and behave like crap. Customizing these components to a pixel-perfect professional standard is often impossible without building a fully custom component. **onRokuDev** facilitates the creation of custom components with traits like `positionable`, alongside two powerful components that meet the vast majority of needs when building a custom UI.
+Roku has a ton of built-in components that, frankly, look and behave in a way that leaves a lot to be desired. Customizing these components to a pixel-perfect professional standard is often impossible without building a fully custom component. **onRokuDev** facilitates the creation of custom components with traits like `positionable`, alongside two powerful components that meet the vast majority of needs when building a custom UI.
 
 `ord_flexList` is the ultimate tool for building list components. Carousels, menus, buttons, toasters, forms, and more can be easily built and customized with very little effort. The secret is Roku's only cool native component, `TargetGroup`, and a process that programmatically generates the `TargetSet`s and their `targetRects` from a configuration file such as this:
 
