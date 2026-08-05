@@ -8,6 +8,7 @@
     "rootDir": "app"
   },
   "scripts": {
+    "postinstall": "ropm copy",
     "dev": "concurrently --kill-others-on-fail --names socket,web,styles,configs,graphql --prefix-colors yellow,blue,green,magenta,cyan \"npm run socketserver\" \"npm run webserver\" \"npm run watch:styles\" \"npm run watch:configs\" \"npm run watch:graphql\"",
     "webserver": "node build/webserver.js",
     "socketserver": "node build/socketserver.js",
@@ -45,6 +46,8 @@
     "fs-extra": "^11.3.4",
     "graphql": "^16.14.0",
     "rooibos-roku": "^5.16.1",
-    "ts-node": "^10.9.2"
+    "ropm": "^0.11.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   }
 }
