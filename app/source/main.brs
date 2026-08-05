@@ -7,7 +7,7 @@ sub runUserInterface(_args = {})
     screen.show()
 
     ' Remove leading - to enable RALE
-    'vscode_rale_tracker_entry
+    '-vscode_rale_tracker_entry
 
     ' Remove leading - to enable RDB
     '-vscode_rdb_on_device_component_entry

@@ -18,8 +18,6 @@ class Styleable
         safeObserve("id", "onIdClassChange")
         safeObserve("class", "onIdClassChange")
 
-        if not devMode() then return
-
         if not global().hasField("ord_styles") then m.setupGlobalStyles()
 
         styleNode = global().ord_styles
@@ -28,6 +26,8 @@ class Styleable
             styleNode.addField(top().subType(), "assocarray", false)
             styleNode.setField(top().subType(), nodeStyles)
         end if
+
+        if not devMode() then return
 
         safeObserve(top().subType(), "stylesUpdated", styleNode)
     end sub
