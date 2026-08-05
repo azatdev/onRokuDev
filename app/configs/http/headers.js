@@ -1,5 +1,7 @@
+const { "ENV": env } = require("../environment");
+
 module.exports = {
     "Headers": {
-        "Authorization": "bearer 2565bfa9110281be16ee81c728b530cb45432c3f68e6eecde441b1a0a238f88412b7df4cd2913a0a295bc61f4d06b9e9d04de5860c5fa8efc983f49ac8b13cb882aa200ca8f84d99ebcd57c5ee7dbfa5f413050b82b48be01a44d0488aea7d5464e14aa64340d6ce3d33a292e93191c03ddeb383787684a82e3f09d93fa3cfca"
+        "Authorization": "bearer " + env.SERVER_API_TOKEN
     }
 };

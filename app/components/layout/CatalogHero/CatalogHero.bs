@@ -48,7 +48,7 @@ sub onCollectionChildChange(options = {})
 end sub
 
 
-sub onCollectionHydrated(options = {})
+sub onCollectionHydrated(_options = {})
     onHeroItemFocused({ data: m.heroScrollGroup.itemFocused })
 end sub
 
