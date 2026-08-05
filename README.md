@@ -35,7 +35,7 @@ The `init` and `onKeyEvent` functions, handlers for functional and observed fiel
 
 `safeable`'s `exec` function provides a single catch-all used behind the scenes by all other tools. In production, it executes every function inside a `try/catch` block; in development, it runs the function directly to support debugging. Functions passed to `exec` are expected to receive a single assocarray argument.
 
-In any component other than a Task:
+In any onRokuDev component:
 
 ```brs
 import "pkg:/components/_ord/init.bs"
