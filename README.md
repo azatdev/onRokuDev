@@ -6,7 +6,7 @@
 https://github.com/user-attachments/assets/8ad41fb0-ba30-4878-b323-ba38ed08e789
 
 
-**onRokuDev** is a work-in-progress sample channel with framework ambitions. It demonstrates how a fast, familiar, and failure-tolerant structure could be implemented in a Roku application. It uses patterns that favor composition over inheritance, prevent and catch exceptions, and provide the tools needed to easily create custom, modern, and performant UI elements.
+**onRokuDev** is a work-in-progress sample channel with framework ambitions. It demonstrates how a fast, familiar, and failure-tolerant structure could be implemented in a Roku application. It uses patterns that favor composition over inheritance, prevent and catch exceptions, and provides the tools needed to easily create custom, modern, and performant UI elements.
 
 - [Abstraction hell alternative](#over-abstraction)
 - [Thwarting crashes and stability issues](#application-stability)
@@ -44,7 +44,7 @@ import "pkg:/components/_ord/init.bs"
 ' onKeyEvent is handled by exec through focusable.
 sub init()
     exec(sub(_options = {})
-        ' Functions replace functional fields
+        ' safeFunctions replace functional fields
         safeFunctions({
             "getVariables": getVariables
         })
@@ -161,6 +161,8 @@ end function
 Under the hood, `dispatch`, `subscribe`, and `publish` use [roRenderThreadQueue](https://developer.roku.com/dev/docs/rorenderthreadqueue), which allows assocarrays to be transferred from Task-thread nodes to render-thread nodes without a rendezvous penalty. `dispatch` uses a separate, long-lived Task to `publish` events, with every handler function protected by `try/catch` through the `safeable#exec` function.
 
 These methods make it easy to create a coherent workflow that does not rely on event bubbling or arbitrary observed or functional fields. Unique event names make searches easier, and, in the development environment, each event is printed to the console, making the app easy to follow and debug.
+
+<img width="1557" height="779" alt="Screenshot_20260805_124614" src="https://github.com/user-attachments/assets/4879442b-00e9-4ef5-b3c0-70d62724131a" />
 
 ## Focus handling nightmare
 
