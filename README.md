@@ -532,9 +532,10 @@ Before getting started, make sure you have:
 
 ## Install dependencies
 
-From the project directory, run:
-
+Clone the repo and install packages:
 ```bash
+git clone https://github.com/azatdev/onRokuDev.git
+cd ./onRokuDev
 npm install
 ```
 
