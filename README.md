@@ -493,7 +493,8 @@ There is also the `positionable` trait, which helps manage elements inside a gro
 
 The Roku development ecosystem does not make it easy to get a customizable channel of your own fully up and running. The usual story is that you download some code and maybe even find a "framework" of some sort, but now what? You have no data, CMS, API server, or video server. You would not believe it, but **onRokuDev** has that covered too.
 
-By default, the app uses URLs for a hosted CMS instance; see `.env.example` for details. A forked version of [Strapi CMS](https://github.com/strapi) will be made available soon. The planned fork is lightly modified to support a local video server and includes a simple download script that pulls public-domain content into a folder accessible to the video server. The video server uses [nginx-vod-live-hls](https://github.com/gdomod/nginx-vod-live-hls).
+By default, the app uses URLs for a hosted CMS instance; see `.env.example` for details. To install the CMS and video server locally, please check out the companion repository [onRokuDev CMS](https://github.com/azatdev/onRokuDev-cms). The setup is very easy!
+
 
 **onRokuDev** also uses the following open-source software from the Roku developer community:
 
@@ -546,11 +547,14 @@ Then open `.env` and update:
 
 - `ROKU_IP` and `ROKU_PASS` with your Roku device's developer-mode credentials
 - `LOCAL_DEV_SERVER` and `LOCAL_SOCKET_SERVER` with your computer's local network address
-- The user and API values for the environment you want to run
 
-Do not use `localhost` for the local server addresses, because the Roku needs to connect to your computer over the network. The `.env` file is ignored by Git, so credentials and local settings remain on your machine.
+If you plan on using a local CMS instance, uncomment the "Local api info" keys, and comment out the "Hosted api info"/
+
+Please see [onRokuDev CMS](https://github.com/azatdev/onRokuDev-cms) documentation for the `SERVER_API_TOKEN` value.
 
 ## Launch the app
+
+Open VSCode and "Deploy and Debug"
 
 Start the local development services and leave them running:
 
@@ -558,12 +562,3 @@ Start the local development services and leave them running:
 npm run dev
 ```
 
-Then, in Visual Studio Code:
-
-1. Open **Run and Debug**.
-2. Select **Deploy and Debug**.
-3. Press **F5**.
-
-The launch configuration builds the project, deploys it to the configured Roku, and starts the app. Use `Ctrl+C` in the terminal when you want to stop the local development services.
-
-If deployment cannot connect, confirm that the Roku is in developer mode, `ROKU_IP` and `ROKU_PASS` are correct, and both devices are on the same network.
