@@ -238,6 +238,7 @@ function handleScrollKey(options = {})
 
     children = m.container.getChildren(-1, 0)
     if not rodash.isNonEmptyArray(children) then return false
+    if children.count() = 1 then return autoScroll
 
     itemFocused = get("itemFocused")
 
