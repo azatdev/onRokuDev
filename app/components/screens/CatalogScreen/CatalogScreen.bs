@@ -190,7 +190,8 @@ end sub
 ' Methods exteded from sgRouter
 
 function beforeViewOpen(options = {}) as dynamic
-    dispatch(events.GET_CATALOG_DATA, { screenId: options.route?.id, slug: options.route?.path })
+    route = options.route ?? {}
+    dispatch(events.GET_CATALOG_DATA, { documentId: route.context?.documentId, screenId: route.id, slug: route.path })
     return promises.resolve(invalid)
 end function
 

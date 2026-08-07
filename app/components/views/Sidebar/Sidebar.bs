@@ -51,7 +51,9 @@ sub onItemSelected(options = {})
 
     dispatch(events.NAVIGATE_TO, {
         slug: itemModel.id,
-        documentId: itemModel.documentId,
+        context: {
+            documentId: itemModel.documentId
+        },
         outgoingRouteConfigOverrides: {
             suspendMode: "detach"
         }
