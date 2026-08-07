@@ -1,6 +1,0 @@
-import "pkg:/components/_ord/init.bs"
-
-sub init()
-    exec(sub()
-    end sub)
-end sub

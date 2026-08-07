@@ -5,7 +5,7 @@ module.exports = {
         focusType: "floating",
         itemComponentName: "TopbarItem",
         maxWidth: 1800,
-        visibleTiles: 999,
+        visibleTiles: 3,
         useUnfocusedTargetSet: true,
         horizAlign: "left"
     }

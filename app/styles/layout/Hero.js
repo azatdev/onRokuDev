@@ -5,7 +5,6 @@ const viewport = dimensions["viewport"]
 module.exports = {
     "Hero": {
         "height": 441,
-        "translation": [0, 0],
         "width": viewport.width,
         "Div": {
             "translation": [180, 150],

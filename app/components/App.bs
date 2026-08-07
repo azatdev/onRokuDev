@@ -20,6 +20,7 @@ sub init()
 
         registerControllers([
             "ConfigsController",
+            "DataController",
             "LayoutController",
             "PlayerController",
             "QOSController",

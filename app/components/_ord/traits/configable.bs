@@ -70,7 +70,6 @@ class Configable
 
     sub configUpdated(options = {})
         field = options.field
-        ?"configUpdated " field
         configObject = m.configPaths[field]
         if not rodash.isNonEmptyAA(configObject) then return
 
