@@ -302,27 +302,8 @@ sub onDataSet(options = {})
 
     m.content = content
     m.carousel.content = content
-
-    if config.carouselType = "dynamicSize"
-        rects = []
-        for x = 1 to config.visibleTiles
-            rects.push({
-                height: 1,
-                width: 1,
-                x: 0,
-                y: 0
-            })
-        end for
-
-        unFocusedTargetSet = createTargetSet({
-            focusIndex: 0,
-            targetRects: rects
-        })
-        m.carousel.targetSet = unFocusedTargetSet
-    else
-        processConfig(config)
-        safeObserve("totalCount", onTotalCountChange, m.content)
-    end if
+    safeObserve("totalCount", onTotalCountChange, m.content)
+    processConfig(config)
 end sub
 
 

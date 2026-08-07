@@ -1,6 +1,7 @@
 module.exports = {
     "TabsCarousel": {
         carouselType: "dynamicSize",
+        clip: false,
         focusType: "floating",
         horizAlign: "center",
         itemComponentName: "TabItem",
