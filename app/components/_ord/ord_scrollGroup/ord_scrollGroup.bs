@@ -150,9 +150,12 @@ sub onChildChange(options = {})
     if top().isSameNode(top().focusedChild)
         childToFocus = m.container.getChild(currentFocusIndex)
         if rodash.isNode(childToFocus) and not childToFocus.isInFocusChain()
-            set({ "itemFocused": currentFocusIndex })
-            if not scrollAnimation then performFadeMorph([childToFocus])
-            if get("autoFocus") then setFocus(childToFocus, top())
+            if scrollAnimation
+                set({ "itemFocused": currentFocusIndex })
+                if get("autoFocus") then setFocus(childToFocus, top())
+            else
+                performFadeMorph({ nextFocusNode: childToFocus, nextFocusedItem: currentFocusIndex })
+            end if
         end if
     end if
 end sub
@@ -285,15 +288,14 @@ function performAnimation(options = {})
             currentFocusNode = searchForVisibleNode()
         end if
 
-        scrollPerformed = performFadeMorph([ nextFocusNode, currentFocusNode])
+        scrollPerformed = performFadeMorph({
+            nextFocusNode: nextFocusNode,
+            nextFocusedItem: nextFocusedItem,
+            nodeToFadeOut: currentFocusNode
+        })
     end if
 
     if not scrollPerformed then return false
-
-    if rodash.isNode(nextFocusNode)
-        if get("autoFocus") then setFocus(nextFocusNode, top())
-        set({ "itemFocused": nextFocusedItem })
-    end if
 
     return true
 end function
@@ -304,6 +306,7 @@ function performScroll(options = {})
     children = options.children ?? []
     direction = get("direction")
     horizontal = direction = "horizontal"
+    nextFocusNode = options.nextFocusNode
     nextFocusedItem = options.nextFocusedItem ?? 0
     scrollContainerDimensions = get("scrollContainerDimensions")
     viewportDimensions = get("viewportDimensions")
@@ -352,6 +355,8 @@ function performScroll(options = {})
 
     if m.scrollKnob.translation[axisIndex] <> scrollKnobTranslation[axisIndex]
         performMorph({
+            nextFocusNode: nextFocusNode,
+            nextFocusedItem: nextFocusedItem,
             scrollKnobTranslation: scrollKnobTranslation,
             trackTranslation: trackTranslation
         })
@@ -439,13 +444,31 @@ sub setupScrollbar(options = {})
 end sub
 
 
-function performFadeMorph(nodeArray = [])
-    if not rodash.isNonEmptyArray(nodeArray) then return false
-    nodeToFadeIn = nodeArray[0]
-    nodeToFadeOut = nodeArray[1]
+function performFadeMorph(options = {})
+    if not rodash.isNonEmptyAA(options) then return false
 
-    if rodash.isNode(nodeToFadeIn) then fadeIn(nodeToFadeIn, { duration: 0.3 })
-    if rodash.isNode(nodeToFadeOut) and not nodeToFadeOut.isSameNode(nodeToFadeIn) then fadeOut(nodeToFadeOut, { duration: 0.3 })
+    nextFocusNode = options.nextFocusNode
+    nodeToFadeOut = options.nodeToFadeOut
+
+    morphObject = {}
+
+    if rodash.isNode(nextFocusNode)
+        morphObject[nextFocusNode.id] = {
+            fields: {
+                opacity: 1
+            }
+        }
+    end if
+
+    if rodash.isNode(nodeToFadeOut) and not nodeToFadeOut.isSameNode(nextFocusNode)
+        morphObject[nodeToFadeOut.id] = {
+            fields: {
+                opacity: 0
+            }
+        }
+    end if
+
+    morph(morphObject, { callback: afterAnimation, callbackOptions: options })
 
     return true
 end function
@@ -473,7 +496,16 @@ sub performMorph(options = {})
         }
     end if
 
-    morph(morphObject)
+    morph(morphObject, { callback: afterAnimation, callbackOptions: options })
+end sub
+
+
+sub afterAnimation(options = {})
+    if not rodash.isNonEmptyAA(options) then return
+    nextFocusNode = options.nextFocusNode
+    nextFocusedItem = options.nextFocusedItem
+    if get("autoFocus") then setFocus(nextFocusNode, top())
+    set({ "itemFocused": nextFocusedItem })
 end sub
 
 
