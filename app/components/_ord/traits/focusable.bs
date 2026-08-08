@@ -107,7 +107,11 @@ class Focusable
         if not rodash.isNonEmptyAA(m.focusMap) then return handled
 
         focusTarget = m.focusMap.current ?? {}
-        nodeMap = m.focusMap[focusTarget.id ?? ""] ?? m.focusMap.onKey
+        nodeMap = m.focusMap[focusTarget.id ?? ""]
+
+        if rodash.isInvalid(nodeMap) or rodash.isInvalid(nodeMap[key]) or (rodash.isBoolean(nodeMap[key]) and nodeMap[key] = false)
+            nodeMap = m.focusMap.onKey
+        end if
 
         if rodash.isInvalid(nodeMap) then return handled
 
