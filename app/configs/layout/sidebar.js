@@ -5,7 +5,7 @@ module.exports = {
         focusType: "floating",
         itemComponentName: "SidebarItem",
         maxHeight: 1800,
-        visibleTiles: 999,
+        visibleTiles: 8,
         squareMargins: [0, 0, 0, 0],
         startingPositionOffsets: [0, 0, 0, 0, 0, 0, 225, 0],
         uniformCrossAxisSize: true,

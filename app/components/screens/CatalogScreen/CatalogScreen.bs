@@ -39,15 +39,6 @@ sub init()
 end sub
 
 
-sub checkPagination(options = {})
-    itemFocused = options.itemFocused ?? 0
-    lastPaginatedIndex = m.content.totalCount - 1
-    paginationDelta = lastPaginatedIndex - itemFocused
-    needsPaginating = paginationDelta <= 3 and m.content.canPaginate and not m.content.paginating
-    if needsPaginating then dispatch(events.PAGINATE_SCREEN, { collection: m.content })
-end sub
-
-
 function focusCatalogHero(_options = {})
     if get("hasHero") ?? false
         scrollPage(-1, onCatalogHeroFocused)
@@ -88,7 +79,7 @@ end sub
 
 sub onScrollGroupItemFocused(options = {})
     if options.data = -1 then return
-    checkPagination({ itemFocused: options.data })
+    if exec("needsToPaginate", { itemFocused: options.data }, m.content) then dispatch(events.PAGINATE_SCREEN, { collection: m.content })
 end sub
 
 
@@ -190,7 +181,8 @@ end sub
 ' Methods exteded from sgRouter
 
 function beforeViewOpen(options = {}) as dynamic
-    dispatch(events.GET_CATALOG_DATA, { screenId: options.route?.id, slug: options.route?.path })
+    route = options.route ?? {}
+    dispatch(events.GET_CATALOG_DATA, { documentId: route.context?.documentId, screenId: route.id, slug: route.path })
     return promises.resolve(invalid)
 end function
 

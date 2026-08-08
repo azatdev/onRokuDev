@@ -60,7 +60,8 @@ sub onHeroItemFocused(options = {})
 
     dispatch(events.HERO_ITEM_FOCUSED, { content: itemFocusedModel, section: sections.HERO })
 
-    checkPagination({ itemFocused: options.data })
+    if exec("needsToPaginate", { itemFocused: options.data }, m.content) then dispatch(events.PAGINATE_CAROUSEL, { collection: m.content })
+
 end sub
 
 
@@ -70,13 +71,3 @@ sub processScrollItem(options = {})
     component.data = { content: model }
     m.heroScrollGroup.appendChild(component)
 end sub
-
-
-sub checkPagination(options = {})
-    itemFocused = options.itemFocused ?? 0
-    lastPaginatedIndex = m.content.totalCount - 1
-    paginationDelta = lastPaginatedIndex - itemFocused
-    needsPaginating = paginationDelta <= 1 and m.content.canPaginate and not m.content.paginating
-    if needsPaginating then dispatch(events.PAGINATE_CAROUSEL, { collection: m.content })
-end sub
-

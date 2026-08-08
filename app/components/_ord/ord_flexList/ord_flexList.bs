@@ -7,6 +7,7 @@ sub init()
         m.carousel.advancing = true
         m.carousel.reversing = true
         m.carousel.easeFunction = "linear"
+        m.carousel.enableRenderTracking = true
         m.carousel.update({ focusPercent: 0.0 }, true)
         m.rectSizes = []
         ' m.carousel.showTargetRects = true
@@ -98,7 +99,6 @@ function handleScrollKey(options = {})
 
     if calculate.floatMOD(m.carousel.currFocusItemIndex, 1) <> 0 then return true
 
-
     direction = key = top().reverseKey ? -1 : 1
     currentIndex = top().focusedContentIndex
     lastFocusableIndex = get("lastFocusableIndex")
@@ -128,7 +128,6 @@ function handleScrollKey(options = {})
     end if
 
     nextTargetSet = m.focusedTargetSetArray[nextTargetSetIndex]
-
     m.carousel.animateToItem = nextIndex
 
     if nextTargetSet <> invalid and m.carousel.currTargetSet <> invalid and nextTargetSet.focusIndex <> m.carousel.currTargetSet.focusIndex
@@ -283,11 +282,23 @@ sub focusOnCarousel(_options = {})
     if m.carousel.hasFocus() then return
     if not rodash.isArray(m.focusedTargetSetArray) then return
 
-    m.carousel.animateToItem = top().focusedContentIndex ?? 0
-    setFocus(m.carousel, top())
+    ' Due to a bug introduced in Roku 15.3.4
+    ' where focusPercent of item comes before groupHasFocus
+    if m.carousel.renderTracking = "none"
+        safeObserve("renderTracking", onCarouselRendered, m.carousel)
+    else
+        onCarouselRendered({ data: ""})
+    end if
+end sub
 
+
+sub onCarouselRendered(options = {})
+    if options.data = "none" then return
+    m.carousel.animateToItem = top().focusedContentIndex ?? 0
     currentTargetSet = m.focusedTargetSetArray[top().focusedTargetsetIndex]
+    setFocus(m.carousel, top())
     m.carousel.animateToTargetSet = currentTargetSet
+    safeUnobserve("renderTracking", m.carousel)
 end sub
 
 
@@ -297,32 +308,12 @@ sub onDataSet(options = {})
     safeObserve("config", onConfigChange, content)
 
     if content.config = invalid then return
-
     config = processDefaultConfig(content.config ?? {})
 
     m.content = content
     m.carousel.content = content
-
-    if config.carouselType = "dynamicSize"
-        rects = []
-        for x = 1 to config.visibleTiles
-            rects.push({
-                height: 1,
-                width: 1,
-                x: 0,
-                y: 0
-            })
-        end for
-
-        unFocusedTargetSet = createTargetSet({
-            focusIndex: 0,
-            targetRects: rects
-        })
-        m.carousel.targetSet = unFocusedTargetSet
-    else
-        processConfig(config)
-        safeObserve("totalCount", onTotalCountChange, m.content)
-    end if
+    safeObserve("totalCount", onTotalCountChange, m.content)
+    processConfig(config)
 end sub
 
 
@@ -456,7 +447,7 @@ sub processConfig(config = {})
     applyClippingRect({ percentage: top().focusPercent })
 
     if not m.carousel.hasFocus() then m.carousel.targetSet = m.unFocusedTargetSet
-    if top().hasFocus() then setFocus(m.carousel, top())
+    if top().hasFocus() then applyDefaultFocus()
 
     if get("externalFocusControl")
         safeObserve("focusPercent", onExternalFocusPercentChange)
