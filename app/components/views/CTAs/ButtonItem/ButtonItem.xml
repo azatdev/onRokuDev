@@ -6,6 +6,7 @@
         <field id="focusPercent" type="float" />
         <field id="groupHasFocus" type="boolean" />
         <field id="itemContent" type="node" />
+        <field id="itemHasFocus" type="boolean" />
         <function name="safeFunc" />
     </interface>
     <children>
