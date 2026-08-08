@@ -3,19 +3,9 @@ import "pkg:/components/_ord/init.bs"
 
 sub init()
     exec(sub(_options = {})
-        top().backExitsScene = false
-        layout = top().createChild("Layout")
-        layout.id = "layout"
-
         subscribe({
             [events.EVENT_TASK_READY]: onEventTaskReady,
             [events.RESTART_APP]: restartApp
-        })
-
-        setFocusMap({
-            "onKey": {
-                "default": true
-            }
         })
 
         registerControllers([
@@ -28,6 +18,16 @@ sub init()
             "StylesController",
             "UserController"
         ])
+
+        top().backExitsScene = false
+        layout = top().createChild("Layout")
+        layout.id = "layout"
+
+        setFocusMap({
+            "onKey": {
+                "default": true
+            }
+        })
     end sub)
 end sub
 

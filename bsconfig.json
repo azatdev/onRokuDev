@@ -15,7 +15,7 @@
         "static/**/*",
         "source/**/*"
     ],
-    "lintConfig": "config/bslint.jsonc",
+    "lintConfig": "bslint.jsonc",
     "outputDir": "out",
     "require": [
         "ts-node/register"

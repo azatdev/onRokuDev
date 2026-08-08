@@ -18,7 +18,7 @@ sub ord_init()
     m.ord_initiated = true
     setRole()
 
-    interfaces = [Safeable, Stateable, Eventable, Styleable, Animatable, Focusable, Configable, Loadable, Positionable]
+    interfaces = [Safeable, Stateable, Styleable, Animatable, Focusable, Configable, Loadable, Positionable, Eventable]
 
     m.ord_allInterfaces = []
     m.ord_publicInterfaces = {}
