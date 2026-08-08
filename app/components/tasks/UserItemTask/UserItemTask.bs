@@ -76,7 +76,7 @@ sub deleteUserItemModel(options = {})
         return
     end if
 
-    userItemType = returnUserItemType(collection.type)
+    userItemType = returnUserItemType(collection.carouselType)
     if rodash.isEmptyString(userItemType) then return
 
     collection.removeChild(model)
@@ -122,7 +122,7 @@ end sub
 
 sub createUserItemModel(options = {})
     collection = options.collection
-    userItemType = returnUserItemType(collection.type)
+    userItemType = returnUserItemType(collection.carouselType)
     if rodash.isEmptyString(userItemType) then return
 
     contentModel = options.contentModel
