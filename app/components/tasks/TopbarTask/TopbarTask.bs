@@ -20,6 +20,7 @@ function runTopbarTask(_options = {})
     end if
 
     topbarModel = returnTopbarModel(responseJSON)
+    topbarModel.totalCount = topbarModel.getChildCount()
 
     if rodash.isNode(topbarModel)
         publish(events.TOPBAR_RECEIVED, { content: topbarModel })

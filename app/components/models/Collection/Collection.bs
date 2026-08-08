@@ -16,7 +16,6 @@ end sub
 
 
 function needsToPaginate(options = {})
-    ?"needsToPaginate " top().carouselType
     itemFocused = options.itemFocused ?? 0
     lastPaginatedIndex = top().totalCount - 1
     paginationDelta = lastPaginatedIndex - itemFocused
@@ -53,6 +52,8 @@ sub generateDefaultModels(_options = {})
 
         top().appendChild(model)
     end for
+
+    top().totalCount = top().getChildCount()
 end sub
 
 
@@ -102,6 +103,7 @@ sub processCarouselData(options = {})
 
     top().canPaginate = not rodash.isEmpty(children)
     removePendingNodes()
+    top().totalCount = top().getChildCount()
     top().hydrated = true
 end sub
 

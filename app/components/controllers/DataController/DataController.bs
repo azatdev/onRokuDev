@@ -27,14 +27,15 @@ sub getCatalogData(options = {})
     documentId = options.documentId ?? ""
     collection = options.collection
 
-    documentId = documentId
-    collection = createObject("roSGNode", "Collection")
-    collection.update({
-        carouselType: carouselTypes.SCREEN,
-        id: documentId,
-        screenId: screenId,
-        slug: slug
-    }, true)
+    if not rodash.isNode(collection)
+        collection = createObject("roSGNode", "Collection")
+        collection.update({
+            carouselType: carouselTypes.SCREEN,
+            id: documentId,
+            screenId: screenId,
+            slug: slug
+        }, true)
+    end if
 
     collection.paginating = true
 
@@ -98,9 +99,7 @@ end sub
 sub onCarouselPaginated(options = {})
     collection = options.collection
     updateObject = options.updateObject
-    start = rodash.now()
     exec("processCarouselData", updateObject, collection)
-    ?"onCarouselPaginated " rodash.now() - start
     collection.paginating = false
 end sub
 
@@ -133,6 +132,8 @@ sub onScreenDataReceived(options = {})
     if not rodash.isNode(screen) then return
 
     screenModel.update(updateObject, true)
+    screenModel.totalCount = screenModel.getChildCount()
+
     exec("markUserAction", {}, screenModel)
 
     screenModel.paginating = false

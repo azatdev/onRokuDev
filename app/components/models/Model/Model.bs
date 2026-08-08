@@ -2,14 +2,6 @@ import "pkg:/components/_ord/init.bs"
 
 sub init()
     exec(sub(_options)
-        safeObserve("change", onChildChange)
     end sub)
 end sub
 
-sub onChildChange(options = {})
-    changeData = options.data
-    operation = changeData.operation ?? ""
-    if operation <> "add" and operation <> "remove" and operation <> "insert" then return
-
-    top().totalCount = top().getChildCount()
-end sub

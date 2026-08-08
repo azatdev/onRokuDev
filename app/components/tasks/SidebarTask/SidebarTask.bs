@@ -20,6 +20,7 @@ function runSidebarTask(_options = {})
     end if
 
     sidebarModel = returnSidebarModel(responseJSON)
+    sidebarModel.totalCount = sidebarModel.getChildCount()
 
     if rodash.isNode(sidebarModel)
         publish(events.SIDEBAR_RECEIVED, { content: sidebarModel })
