@@ -50,6 +50,8 @@ function runUserItemTask(_options = {})
         })
     end if
 
+    collection.totalCount = collection.getChildCount()
+
     return true
 end function
 

@@ -35,6 +35,7 @@ sub init()
             "maxHeight": 0,
             "maxWidth": 0,
             "resetOnChange": false,
+            "resetOnUnfocus": false,
             "smallSquare": [0, 0],
             "squareMargins": [0, 0],
             "squareTotalArea": [0, 0],
@@ -282,6 +283,10 @@ sub onCarouselUnfocus(_options = {})
     end sub, 100, [m.carousel, unFocusedTargetSet])
 
     m.carousel.animateToItem = top().focusedContentIndex
+
+    if get("resetOnUnfocus")
+        resetCarousel()
+    end if
     set({ "itemfocused": -1 })
 end sub
 
@@ -295,7 +300,7 @@ sub focusOnCarousel(_options = {})
     if m.carousel.renderTracking = "none"
         safeObserve("renderTracking", onCarouselRendered, m.carousel)
     else
-        onCarouselRendered({ data: ""})
+        onCarouselRendered({ data: m.carousel.renderTracking })
     end if
 end sub
 
@@ -345,6 +350,7 @@ sub onTotalCountChange(options = {})
 
     if get("resetOnChange")
         rodash.delay(sub(_options = {})
+            m.carousel.jumpToItem = 0
             resetCarousel()
         end sub, 500, {})
     end if
@@ -447,6 +453,7 @@ sub processConfig(config = {})
         "lastFocusableIndex": lastFocusableIndex,
         "useUnfocusedTargetSet": config.useUnfocusedTargetSet,
         "resetOnChange": config.resetOnChange,
+        "resetOnUnfocus": config.resetOnUnfocus,
         "visibleTiles": config.visibleTiles,
         "wrap": config.wrap,
         "wrapFirstToLast": config.wrapFirstToLast
@@ -510,8 +517,8 @@ end sub
 
 
 sub resetCarousel()
-    m.carousel.jumpToItem = 0
     top().focusedContentIndex = 0
+    top().focusedTargetsetIndex = 0
 end sub
 
 
