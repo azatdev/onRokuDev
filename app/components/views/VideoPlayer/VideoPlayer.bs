@@ -337,7 +337,7 @@ function restartPlayback(_options = {})
     m.video.seek = 0
     updateControl({ controlId: "restartControl" })
 
-    rodash.delay(sub()
+    rodash.delay(sub(_options = {})
         hideOverlay()
     end sub, 1000)
 

@@ -354,8 +354,6 @@ sub onTotalCountChange(options = {})
     processConfig(config)
     processEmptyMessage({ totalCount: totalCarouselItems })
 
-    ?"onTotalCountChange " totalCarouselItems, top().id
-
     if get("resetOnChange")
         rodash.delay(sub(_options = {})
             m.carousel.jumpToItem = 0

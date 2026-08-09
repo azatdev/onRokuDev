@@ -15,17 +15,20 @@ function runUserItemTask(_options = {})
     existingUserItemIds = options.existingUserItemIds ?? []
     existingUserItemModel = collection.findNode(contentModel.id)
 
-    if rodash.isNode(existingUserItemModel)
-        if collection.type = carouselTypes.CONTINUE_WATCHING
-            duration = options.duration ?? 0
-            position = options.position ?? 0
-            if rodash.isNumber(duration) and duration = 0 or rodash.isNumber(position) and position = 0 then return true
 
-            if position > duration or duration - position <= 120
+    if collection.carouselType = carouselTypes.CONTINUE_WATCHING
+        duration = options.duration ?? 0
+        position = options.position ?? 0
+        if rodash.isNumber(duration) and duration = 0 or rodash.isNumber(position) and position = 0 then return true
+
+        thresholdMet = position > duration or duration - position <= 60
+
+        if rodash.isNode(existingUserItemModel)
+            if thresholdMet
                 deleteUserItemModel({
                     collection: collection,
                     contentModel: contentModel,
-                    model: existingUserItemModel
+                    userItemModel: existingUserItemModel
                 })
             else
                 updateUserItemModel({
@@ -33,21 +36,31 @@ function runUserItemTask(_options = {})
                     position: options.position ?? 0
                 })
             end if
-        else
-            deleteUserItemModel({
+        else if not thresholdMet
+            createUserItemModel({
                 collection: collection,
                 contentModel: contentModel,
-                model: existingUserItemModel
+                contentDocumentId: contentModel.id,
+                existingUserItemIds: existingUserItemIds,
+                position: options.position ?? 0
             })
         end if
     else
-        createUserItemModel({
-            collection: collection,
-            contentModel: contentModel,
-            contentDocumentId: contentModel.id,
-            existingUserItemIds: existingUserItemIds,
-            position: options.position ?? 0
-        })
+        if rodash.isNode(existingUserItemModel)
+            deleteUserItemModel({
+                collection: collection,
+                contentModel: contentModel,
+                userItemModel: existingUserItemModel
+            })
+        else
+            createUserItemModel({
+                collection: collection,
+                contentModel: contentModel,
+                contentDocumentId: contentModel.id,
+                existingUserItemIds: existingUserItemIds,
+                position: options.position ?? 0
+            })
+        end if
     end if
 
     collection.totalCount = collection.getChildCount()
@@ -58,8 +71,8 @@ end function
 
 sub deleteUserItemModel(options = {})
     collection = options.collection
-    model = options.model
-    userItemId = model.userItemId
+    userItemModel = options.userItemModel
+    userItemId = userItemModel.userItemId
 
     variables = {}
     variables.setModeCaseSensitive()
@@ -81,7 +94,7 @@ sub deleteUserItemModel(options = {})
     userItemType = returnUserItemType(collection.carouselType)
     if rodash.isEmptyString(userItemType) then return
 
-    collection.removeChild(model)
+    collection.removeChild(userItemModel)
 
     contentModel = options.contentModel
     if not rodash.isNode(contentModel) then return
