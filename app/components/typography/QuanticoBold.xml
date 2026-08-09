@@ -7,6 +7,6 @@
         <Font
             id="font"
             role="font"
-            uri="{{%- s(STYLES.Assets.fonts.quanticoBoldItalic) %}}" />
+            uri="{{%- s(STYLES.Assets.fonts.quanticoBold) %}}" />
     </childre>
 </component>
