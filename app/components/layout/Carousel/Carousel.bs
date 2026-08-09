@@ -12,7 +12,13 @@ sub init()
             "hydrated": false
         })
         setFocusMap({
-            "onFocus": focusCarousel
+            "onFocus": focusCarousel,
+            "onKey": {
+                "rewind": function(_options = {})
+                    m.carouselList.animateToItem = 0
+                    return true
+                end function
+            }
         })
         styleHooks({
             "after": afterStyling
@@ -33,7 +39,7 @@ sub onCarouselItemFocused(options = {})
     itemModel = m.content.getChild(carouselItemFocused)
     if not rodash.isNode(itemModel) then return
     if m.content.carouselType = carouselTypes.INDEX then dispatch(events.CAROUSEL_ITEM_FOCUSED, { content: itemModel })
-    checkPagination({ itemFocused: options.data })
+    if exec("needsToPaginate", { itemFocused: options.data }, m.content) then dispatch(events.PAGINATE_CAROUSEL, { collection: m.content })
 end sub
 
 
@@ -76,18 +82,10 @@ end sub
 
 sub onHydrated(_options = {})
     set({ "hydrated": true })
+    applyDefaultFocus()
 end sub
 
 
 sub afterStyling(_options = {})
     stackChildren({ direction: "vertical" })
-end sub
-
-sub checkPagination(options = {})
-    itemFocused = options.itemFocused ?? 0
-    lastPaginatedIndex = m.content.totalCount - 1
-    paginationDelta = lastPaginatedIndex - itemFocused
-
-    needsPaginating = paginationDelta <= 5 and m.content.canPaginate and not m.content.paginating
-    if needsPaginating then dispatch(events.PAGINATE_CAROUSEL, { collection: m.content })
 end sub

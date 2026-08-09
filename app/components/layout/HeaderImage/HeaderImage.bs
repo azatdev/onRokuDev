@@ -67,8 +67,8 @@ sub setImage(newUri = "")
     newPoster.height = top().height
     m.headerImageContainer.appendChild(newPoster)
 
-    if rodash.isNode(oldPoster) then fadeOut(oldPoster, { callback: onImageFadeOut, callbackOptions: { node: oldPoster }, duration: 0.3 })
+    if rodash.isNode(oldPoster) then fadeOut(oldPoster, { callback: onImageFadeOut, callbackOptions: { node: oldPoster }})
 
-    fadeIn(newPoster, { duration: 0.3 })
+    fadeIn(newPoster)
     m.poster = newPoster
 end sub

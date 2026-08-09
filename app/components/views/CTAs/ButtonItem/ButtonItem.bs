@@ -21,6 +21,13 @@ sub setupItem()
     safeObserve("itemContent", itemContentChanged, top())
     safeObserve("currRect", onCurrRectChange, top())
 
+    set({
+        "bigSquare": [0, 0],
+        "dynamicWidth": false,
+        "labelSquare": [0, 0],
+        "smallSquare": [0, 0]
+    })
+
     if rodash.isNode(parentList) then safeObserve("focusPercent", onGroupFocusPercentChange, parentList)
 end sub
 
@@ -74,11 +81,19 @@ sub onTextChange(_options = {})
     flexList = parentList.getParent()
     if not rodash.isNode(flexList) then return
 
+    smallSquare = getUnFocusedRectSize()
+    bigSquare = getFocusedRectSize()
+
     exec("registerChildRect", {
-        smallSquare: getUnFocusedRectSize(),
-        bigSquare: getFocusedRectSize(),
+        bigSquare: bigSquare,
+        smallSquare: smallSquare,
         index: top().index
     }, flexList)
+
+    set({
+        bigSquare: bigSquare,
+        smallSquare: smallSquare
+    })
 
     if get("dynamicWidth")
         labelSquare = get("labelSquare") ?? [0,0]
@@ -94,6 +109,15 @@ sub onCurrRectChange(options = {})
         node.width = rect.width
         node.height = node.id = "highlightTop" ? (rect.height / 3) * 2 : rect.height
     end for
+
+    if not get("dynamicWidth") or not top().itemHasFocus then return
+
+    squares = get(["smallSquare", "labelSquare"])
+    rectWidth = rect.width
+    smallSquare = squares.smallSquare
+    labelSquare = squares.labelSquare
+    labelWidth = rectWidth - smallSquare[0]
+    m.label.clippingRect = [0, 0, labelWidth, labelSquare[1]]
 end sub
 
 
@@ -132,6 +156,18 @@ function getFocusedRectSize(_options = {})
 end function
 
 
+function getUnfocusedRectSize(_options = {})
+    if get("dynamicWidth")
+        m.label.width = 0
+        m.label.text = ""
+        m.label.visible = false
+    end if
+
+    stackChildren({ direction: "horizontal" }, m.container)
+    return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
+end function
+
+
 sub runFocusTransformation(percentage)
     labelSquare = get("labelSquare") ?? [0,0]
     labelWidth = labelSquare[0]
@@ -143,15 +179,3 @@ sub runFocusTransformation(percentage)
         m.label.clippingRect = [0, 0, labelWidth * percentage, labelHeight]
     end if
 end sub
-
-
-function getUnfocusedRectSize(_options = {})
-    if get("dynamicWidth")
-        m.label.width = 0
-        m.label.text = ""
-        m.label.visible = false
-    end if
-
-    stackChildren({ direction: "horizontal" }, m.container)
-    return [getVisibleWidth(m.container), getVisibleHeight(m.container)]
-end function

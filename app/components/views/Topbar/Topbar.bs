@@ -94,7 +94,7 @@ sub userCarouselsToggle(direction = 0)
             opacity: direction
         }
     }
-    deferredAnimation = morph(morphObject, { deferred: true, duration: 0.3 })
+    deferredAnimation = morph(morphObject, { deferred: true })
 
     floatFieldInterp = getFloatFieldInterpolator(deferredAnimation)
     if not rodash.isNode(floatFieldInterp) then return

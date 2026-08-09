@@ -3,5 +3,4 @@
     <interface>
         <field id="config" type="assocarray" />
     </interface>
-    <script type="text/brightscript" uri="TopbarModel.bs" />
 </component>

@@ -1,0 +1,159 @@
+import "pkg:/components/_ord/init.bs"
+
+
+sub init()
+    exec(sub(_options = {})
+        subscribe({
+            [events.APP_STARTED]: onAppStarted,
+            [events.CAROUSEL_PAGINATED]: onCarouselPaginated,
+            [events.CONTENT_DATA_RECEIVED]: onScreenDataReceived,
+            [events.GET_CATALOG_DATA]: getCatalogData,
+            [events.GET_CONTENT_DATA]: getContentData,
+            [events.GET_SIDEBAR]: getSidebar,
+            [events.GET_TOPBAR]: getTopbar,
+            [events.PAGINATE_CAROUSEL]: paginateCarousel,
+            [events.PAGINATE_SCREEN]: getCatalogData,
+            [events.SCREEN_DATA_RECEIVED]: onScreenDataReceived,
+            [events.SIDEBAR_RECEIVED]: onSidebarReceived,
+            [events.TOPBAR_RECEIVED]: onTopbarReceived
+        })
+    end sub)
+end sub
+
+
+sub getCatalogData(options = {})
+    slug = options.slug ?? ""
+    screenId = options.screenId ?? ""
+    documentId = options.documentId ?? ""
+    collection = options.collection
+
+    if not rodash.isNode(collection)
+        collection = createObject("roSGNode", "Collection")
+        collection.update({
+            carouselType: carouselTypes.SCREEN,
+            id: documentId,
+            screenId: screenId,
+            slug: slug
+        }, true)
+    end if
+
+    collection.paginating = true
+
+    screenTask = createObject("roSGNode", "ScreenTask")
+    screenTask.update({
+        options: {
+            collection: collection,
+            variables: exec("getVariables", {}, collection)
+        }
+    }, true)
+
+    screenTask.control = "RUN"
+end sub
+
+
+sub getContentData(options = {})
+    slug = options.slug ?? ""
+    screenId = options.screenId ?? ""
+    content = options.content
+
+    if not rodash.isNode(content)
+        content = createObject("roSGNode", "ContentModel")
+    end if
+
+    content.update({
+        screenId: screenId,
+        slug: slug
+    }, true)
+
+    screenTask = createObject("roSGNode", "ContentTask")
+    screenTask.update({
+        options: {
+            content: content,
+            detailsHydrated: content.detailsHydrated,
+            variables: exec("getVariables", {}, content)
+        }
+    }, true)
+
+    screenTask.control = "RUN"
+end sub
+
+
+sub getSidebar(_options = {})
+    sidebarTask = createObject("roSGNode", "SidebarTask")
+    sidebarTask.control = "RUN"
+end sub
+
+
+sub getTopbar(_options = {})
+    topbarTask = createObject("roSGNode", "TopbarTask")
+    topbarTask.control = "RUN"
+end sub
+
+
+sub onAppStarted(_options = {})
+    dispatch(events.GET_SIDEBAR)
+    dispatch(events.GET_TOPBAR)
+end sub
+
+
+sub onCarouselPaginated(options = {})
+    collection = options.collection
+    updateObject = options.updateObject
+    exec("processCarouselData", updateObject, collection)
+    collection.paginating = false
+end sub
+
+
+sub onSidebarReceived(options = {})
+    sidebar = app().findNode("sidebar")
+    if rodash.isNode(sidebar) then sidebar.data = options
+end sub
+
+
+sub onTopbarReceived(options = {})
+    topbar = app().findNode("topbar")
+    if rodash.isNode(topbar) then topbar.data = options
+end sub
+
+
+sub onScreenDataReceived(options = {})
+    screenModel = options.content
+    if not rodash.isNode(screenModel) then return
+
+    updateObject = options.updateObject ?? {}
+
+    screenId = screenModel.screenId ?? ""
+    if rodash.isEmpty(screenId) then return
+
+    layout = app().findNode("layout")
+    if not rodash.isNode(layout) then return
+
+    screen = layout.findNode(screenId)
+    if not rodash.isNode(screen) then return
+
+    screenModel.update(updateObject, true)
+    screenModel.totalCount = screenModel.getChildCount()
+
+    exec("markUserAction", {}, screenModel)
+
+    screenModel.paginating = false
+
+    if rodash.isNonEmptyAA(screen.data) then return
+    screen.data = { content: screenModel }
+end sub
+
+
+sub paginateCarousel(options = {})
+    collection = options.collection
+    collection.paginating = true
+
+    carouselTask = createObject("roSGNode", "CarouselTask")
+    carouselTask.update({
+        options: {
+            collection: collection,
+            variables: exec("getVariables", {}, collection)
+        }
+    }, true)
+
+    carouselTask.control = "RUN"
+end sub

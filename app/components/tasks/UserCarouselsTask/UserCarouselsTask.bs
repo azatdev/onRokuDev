@@ -47,7 +47,7 @@ function runUserCarouselsTask(options = {})
             canPaginate: false,
             children: [],
             id: carousel.documentId,
-            type: carousel.type
+            carouselType: carousel.type
         }
 
         userItems = carousel.user_items
@@ -56,6 +56,7 @@ function runUserCarouselsTask(options = {})
             contentData = getContentData({ data: content })
             contentData.position = item.position
             contentData.userItemId = item.documentId
+            contentData.hydrated = true
             updateObject.children.push(contentData)
         end for
 
@@ -73,7 +74,7 @@ function runUserCarouselsTask(options = {})
         newCarouselId = createUserCarousel(carouselType)
         collectionTypes[carouselType] = {
             id: newCarouselId,
-            type: carouselType
+            carouselType: carouselType
         }
         if not rodash.isEmpty(newCarouselId) then newCarouselIds.push(newCarouselId)
     end for

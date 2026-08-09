@@ -4,29 +4,19 @@ import "pkg:/components/_ord/init.bs"
 sub init()
     exec(sub(_options = {})
         subscribe({
-            [events.APP_STARTED]: onAppStarted,
             [events.CATALOG_HERO_FOCUSED]: onCatalogHeroFocused,
             [events.CATALOG_CAROUSELS_FOCUSED]: onCatalogCarouselsFocused,
             [events.CAROUSEL_ITEM_FOCUSED]: onCarouselItemFocused,
-            [events.CAROUSEL_PAGINATED]: onCarouselPaginated,
-            [events.CONTENT_DATA_RECEIVED]: onScreenDataReceived,
             [events.ERROR_GO_BACK]: errorGoBack,
             [events.ERROR_PREPARE_CRASH]: initiateCrash,
-            [events.GET_CATALOG_DATA]: getCatalogData,
-            [events.GET_CONTENT_DATA]: getContentData,
-            [events.GET_SIDEBAR]: getSidebar,
-            [events.GET_TOPBAR]: getTopbar,
             [events.HERO_ITEM_FOCUSED]: onHeroItemFocused,
             [events.NAVIGATE_TO]: navigateTo,
-            [events.PAGINATE_CAROUSEL]: paginateCarousel,
-            [events.PAGINATE_SCREEN]: getCatalogData,
+            [events.REMOVE_BACKGROUND]: removeBackground,
             [events.SCREEN_ACTIVE]: onScreenActive,
-            [events.SCREEN_DATA_RECEIVED]: onScreenDataReceived,
+            [events.SET_NEW_BACKGROUND]: onHeroItemFocused,
             [events.SET_USER_CAROUSELS]: setUserCarousels,
             [events.SHOW_CATALOG_UI]: showCatalogUI,
-            [events.SHOW_CONTENT_UI]: showContentUI,
-            [events.SIDEBAR_RECEIVED]: onSidebarReceived,
-            [events.TOPBAR_RECEIVED]: onTopbarReceived
+            [events.SHOW_CONTENT_UI]: showContentUI
         })
     end sub)
 end sub
@@ -41,11 +31,6 @@ sub initiateCrash(_options = {})
     exec("initiateCrash", { error: true }, layout())
 end sub
 
-sub onAppStarted(_options = {})
-    dispatch(events.GET_SIDEBAR)
-    dispatch(events.GET_TOPBAR)
-end sub
-
 
 sub onCarouselItemFocused(options = {})
     exec("updateHeaderAssets", options, layout())
@@ -53,95 +38,10 @@ sub onCarouselItemFocused(options = {})
 end sub
 
 
-sub getCatalogData(options = {})
-    slug = options.slug ?? ""
-    screenId = options.screenId ?? ""
-    collection = options.collection
-    screenConfig = get(slug) ?? {}
-
-    if not rodash.isNode(collection)
-        documentId = screenConfig.documentId ?? ""
-        collection = createObject("roSGNode", "Collection")
-        collection.update({
-            carouselType: carouselTypes.SCREEN,
-            id: documentId,
-            screenId: screenId,
-            slug: slug
-        }, true)
-    end if
-
-    collection.paginating = true
-
-    screenConfig.collection = collection
-    saveObject = {}
-    saveObject[slug] = screenConfig
-    set(saveObject)
-
-    screenTask = createObject("roSGNode", "ScreenTask")
-    screenTask.update({
-        options: {
-            collection: collection,
-            variables: exec("getVariables", {}, collection)
-        }
-    }, true)
-
-    screenTask.control = "RUN"
-end sub
-
-
-sub getContentData(options = {})
-    slug = options.slug ?? ""
-    screenId = options.screenId ?? ""
-    content = options.content
-
-    if not rodash.isNode(content)
-        content = createObject("roSGNode", "ContentModel")
-    end if
-
-    content.update({
-        screenId: screenId,
-        slug: slug
-    }, true)
-
-    screenTask = createObject("roSGNode", "ContentTask")
-    screenTask.update({
-        options: {
-            content: content,
-            detailsHydrated: content.detailsHydrated,
-            variables: exec("getVariables", {}, content)
-        }
-    }, true)
-
-    screenTask.control = "RUN"
-end sub
-
-
-sub getSidebar(_options = {})
-    sidebarTask = createObject("roSGNode", "SidebarTask")
-    sidebarTask.control = "RUN"
-end sub
-
-
-sub getTopbar(_options = {})
-    topbarTask = createObject("roSGNode", "TopbarTask")
-    topbarTask.control = "RUN"
-end sub
-
-
 sub navigateTo(options = {})
-    documentId = options.documentId ?? ""
     slug = options.slug ?? ""
-    content = options.content
     activeSlug = get("activeSlug") ?? ""
     if activeSlug = slug then return
-
-    screenConfig = get(slug) ?? {}
-    screenConfig["documentId"] = documentId
-    screenConfig["content"] = content
-
-    saveObject = {}
-    saveObject[slug] = screenConfig
-    set(saveObject)
 
     exec("navigateTo", options, layout())
 end sub
@@ -157,14 +57,6 @@ sub onCatalogHeroFocused(options = {})
 end sub
 
 
-sub onCarouselPaginated(options = {})
-    collection = options.collection
-    updateObject = options.updateObject
-    exec("processCarouselData", updateObject, collection)
-    collection.paginating = false
-end sub
-
-
 sub onHeroItemFocused(options = {})
     exec("updateBackgroundAssets", options, layout())
 end sub
@@ -177,25 +69,8 @@ sub onScreenActive(options = {})
 end sub
 
 
-sub onScreenDataReceived(options = {})
-    screenModel = options.content
-    if not rodash.isNode(screenModel) then return
-
-    updateObject = options.updateObject ?? {}
-
-    screenId = screenModel.screenId ?? ""
-    if rodash.isEmpty(screenId) then return
-
-    screen = layout().findNode(screenId)
-    if not rodash.isNode(screen) then return
-
-    screenModel.update(updateObject, true)
-    exec("markUserAction", {}, screenModel)
-
-    screenModel.paginating = false
-
-    if rodash.isNonEmptyAA(screen.data) then return
-    screen.data = { content: screenModel }
+sub removeBackground(options = {})
+    exec("removeBackground", options, background())
 end sub
 
 
@@ -211,32 +86,6 @@ end sub
 
 sub showContentUI(_options = {})
     exec("showContentUI", {}, layout())
-end sub
-
-
-sub onSidebarReceived(options = {})
-    if rodash.isNode(sidebar()) then sidebar().data = options
-end sub
-
-
-sub onTopbarReceived(options = {})
-    if rodash.isNode(topbar()) then topbar().data = options
-end sub
-
-
-sub paginateCarousel(options = {})
-    collection = options.collection
-    collection.paginating = true
-
-    carouselTask = createObject("roSGNode", "CarouselTask")
-    carouselTask.update({
-        options: {
-            collection: collection,
-            variables: exec("getVariables", {}, collection)
-        }
-    }, true)
-
-    carouselTask.control = "RUN"
 end sub
 
 

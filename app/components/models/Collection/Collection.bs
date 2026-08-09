@@ -7,12 +7,32 @@ sub init()
             "generateDefaultModels": generateDefaultModels,
             "getChildFields": getChildFields,
             "getVariables": getVariables,
+            "needsToPaginate": needsToPaginate,
             "processCarouselData": processCarouselData,
             "returnInitialPagination": returnInitialPagination
         })
     end sub)
 end sub
 
+
+function needsToPaginate(options = {})
+    itemFocused = options.itemFocused ?? 0
+    lastPaginatedIndex = top().totalCount - 1
+    paginationDelta = lastPaginatedIndex - itemFocused
+    needsPaginating = paginationDelta <= paginationThreshold() and top().canPaginate and not top().paginating
+    return needsPaginating
+end function
+
+
+function paginationThreshold()
+    thresholdMap = {
+        [carouselTypes.INDEX]: 5,
+        [carouselTypes.SCREEN]: 3,
+        [carouselTypes.HERO]: 1
+    }
+    threshold = thresholdMap[top().carouselType]
+    return threshold ?? 3
+end function
 
 sub generateDefaultModels(_options = {})
     initialPagination = returnInitialPagination()
@@ -32,6 +52,8 @@ sub generateDefaultModels(_options = {})
 
         top().appendChild(model)
     end for
+
+    top().totalCount = top().getChildCount()
 end sub
 
 
@@ -81,6 +103,7 @@ sub processCarouselData(options = {})
 
     top().canPaginate = not rodash.isEmpty(children)
     removePendingNodes()
+    top().totalCount = top().getChildCount()
     top().hydrated = true
 end sub
 

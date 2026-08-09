@@ -64,6 +64,8 @@ sub sendToaster(options = {})
     toasterCollection.update({
         children: [options]
     }, true)
+
+    toasterCollection.totalCount = toasterCollection.getChildCount()
 end sub
 
 

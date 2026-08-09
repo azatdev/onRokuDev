@@ -4,5 +4,4 @@
         <field id="config" type="assocarray" />
         <field id="defaultSlug" type="string" />
     </interface>
-    <script type="text/brightscript" uri="SidebarModel.bs" />
 </component>

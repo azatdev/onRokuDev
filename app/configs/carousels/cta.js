@@ -3,6 +3,7 @@ module.exports = {
         carouselType: "dynamicSize",
         clip: false,
         focusType: "floating",
+        resetOnUnfocus: true,
         horizAlign: "center",
         itemComponentName: "ButtonItem",
         maxWidth: 1500,

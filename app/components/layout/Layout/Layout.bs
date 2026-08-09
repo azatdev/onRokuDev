@@ -13,10 +13,10 @@ sub init()
         sgrouter.initialize({ outlet: m.screenContainer })
 
         sgRouter.addRoutes([
-            { pattern: "/home", component: "CatalogScreen", suspendMode: "show" },
-            { pattern: "/movies", component: "CatalogScreen", suspendMode: "show" },
-            { pattern: "/tv-shows", component: "CatalogScreen", suspendMode: "show" },
-            { pattern: "/documentaries", component: "CatalogScreen", suspendMode: "show" },
+            { pattern: "/home", component: "CatalogScreen", suspendMode: "show", clearStackOnResolve: true },
+            { pattern: "/movies", component: "CatalogScreen", suspendMode: "show", clearStackOnResolve: true },
+            { pattern: "/tv-shows", component: "CatalogScreen", suspendMode: "show", clearStackOnResolve: true },
+            { pattern: "/documentaries", component: "CatalogScreen", suspendMode: "show", clearStackOnResolve: true },
             { pattern: "/content/:id", component: "ContentScreen", suspendMode: "show" },
             { pattern: "/details/:id", component: "DetailsModal", keepAlive: { enabled: false } },
             { pattern: "/:screenName", component: "WIPScreen" }
@@ -38,6 +38,10 @@ sub init()
 
         setFocusMap({
             "onFocus": m.screenContainer,
+            "onKey": {
+                "default": true,
+                "back": m.sidebar
+            },
             "screenContainer": {
                 "left": m.sidebar,
                 "up": m.topbar
@@ -46,6 +50,7 @@ sub init()
                 "right": focusOnScreen
             },
             "topbar": {
+                "back": focusOnScreen,
                 "down": focusOnScreen,
                 "left": m.sidebar
             },
@@ -143,6 +148,8 @@ sub navigateTo(options = {})
     slug = options.slug ?? ""
     if rodash.isEmptyString(slug) then return
 
+    setFocus(m.screenContainer)
+
     routeOptions = {}
     routeOptions.append(options)
 
@@ -175,7 +182,7 @@ end sub
 sub showCatalogUI(options = {})
     if get("navigationHidden")
         set({ "navigationHidden": false })
-        fadeIn(m.navigation, { duration: 0.5 })
+        fadeIn(m.navigation)
     end if
 
     if get("catalogUIHidden")
@@ -189,7 +196,7 @@ end sub
 sub showContentUI(options = {})
     if not get("navigationHidden")
         set({ "navigationHidden": true })
-        fadeOut(m.navigation, { duration: 0.5 })
+        fadeOut(m.navigation)
     end if
 
     if get("contentUIHidden")

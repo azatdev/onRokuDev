@@ -7,7 +7,7 @@ module.exports = {
         focusType: "fixed",
         itemComponentName: "CarouselItem",
         resetOnChange: true,
-        visibleTiles: 5,
+        visibleTiles: 7,
         wrap: true,
         wrapFirstToLast: false,
         bigSquare: [336, 189],

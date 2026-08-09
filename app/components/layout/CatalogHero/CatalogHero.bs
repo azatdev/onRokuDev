@@ -58,9 +58,9 @@ sub onHeroItemFocused(options = {})
     itemFocusedModel = m.content.getChild(itemFocused)
     if not rodash.isNode(itemFocusedModel) then return
 
-    dispatch(events.HERO_ITEM_FOCUSED, { content: itemFocusedModel, section: sections.HERO })
+    dispatch(events.SET_NEW_BACKGROUND, { content: itemFocusedModel, replace: true, section: sections.HERO })
 
-    checkPagination({ itemFocused: options.data })
+    if exec("needsToPaginate", { itemFocused: options.data }, m.content) then dispatch(events.PAGINATE_CAROUSEL, { collection: m.content })
 end sub
 
 
@@ -70,13 +70,3 @@ sub processScrollItem(options = {})
     component.data = { content: model }
     m.heroScrollGroup.appendChild(component)
 end sub
-
-
-sub checkPagination(options = {})
-    itemFocused = options.itemFocused ?? 0
-    lastPaginatedIndex = m.content.totalCount - 1
-    paginationDelta = lastPaginatedIndex - itemFocused
-    needsPaginating = paginationDelta <= 1 and m.content.canPaginate and not m.content.paginating
-    if needsPaginating then dispatch(events.PAGINATE_CAROUSEL, { collection: m.content })
-end sub
-

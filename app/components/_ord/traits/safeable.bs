@@ -67,9 +67,7 @@ class Safeable
 
         if rodash.isFunction(func)
             targetFunction = func
-        end if
-
-        if rodash.isString(func)
+        else if rodash.isString(func)
             nodeSafeFunctions = getGlobalAA().ord_safeFunctions ?? {}
             nodeFunction = nodeSafeFunctions[func]
             targetFunction = nodeFunction
@@ -77,6 +75,12 @@ class Safeable
 
         if rodash.isFunction(targetFunction)
             return targetFunction(functionArgument)
+        end if
+
+        if not rodash.isString(func) then return invalid
+
+        if rodash.isFunction(m[func])
+            return m[func](functionArgument)
         end if
 
         internalFunctions = getGlobalAA().ord_publicInterfaces ?? {}
@@ -109,11 +113,12 @@ class Safeable
     end function
 
 
-    sub processSafeFunc(functionName)
+    sub processSafeFunc(options = {})
+        functionName = options.functionName
         proxyData = top().ord_proxyData ?? {}
-        options = proxyData.input ?? {}
+        inputData = proxyData.input ?? {}
         top().ord_proxyData = invalid
-        returnData = m.exec({ func: functionName, options: options, node: top() })
+        returnData = m.exec({ func: functionName, options: inputData })
 
         if returnData <> invalid
             proxyData.input = invalid
@@ -190,17 +195,7 @@ class Safeable
 
 
     function safeFunc(options = {})
-        functionName = options.functionName ?? ""
-
-        if devMode()
-            return m.processSafeFunc(functionName)
-        else
-            try
-                return m.processSafeFunc(functionName)
-            catch e
-                return onError(e)
-            end try
-        end if
+        return m.exec({ func: "processSafeFunc", options: options })
     end function
 
 

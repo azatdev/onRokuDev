@@ -23,17 +23,15 @@ sub init()
                 "down": focusContentScrollGroup
             },
             "contentScrollGroup": {
-                "back": false,
+                "back": focusContentHero,
                 "default": true,
                 "up": focusContentHero
             },
             "tabs": {
-                "back": false,
+                "back": scrollToHero,
                 "default": true,
                 "down": m.contentScrollGroup,
-                "up": sub(_options = {})
-                    scrollPage(-1, onContentHeroFocused)
-                end sub
+                "up": scrollToHero
             }
         })
 
@@ -52,6 +50,8 @@ end sub
 sub onDataSet(options = {})
     data = options.data
     content = data.content
+    if not rodash.isNode(content) then return
+
     m.content = content
 
     carousels = content.getChildren(-1, 0)
@@ -68,6 +68,7 @@ sub onDataSet(options = {})
         m.tabs.data = { content: tabsModel }
     end if
 
+    setBackground()
     afterStyling()
 end sub
 
@@ -84,7 +85,7 @@ sub focusContentHero(_options = {})
     if carouselCount = 0 then return
 
     if carouselCount = 1
-        scrollPage(-1, onContentHeroFocused)
+        scrollToHero()
     else
         setFocus(m.tabs)
     end if
@@ -159,7 +160,17 @@ sub scrollPage(direction = 0, callbackFunc = invalid)
         }
     }
 
-    morph(morphObject, { callback: callbackFunc, duration: 0.3 })
+    morph(morphObject, { callback: callbackFunc })
+end sub
+
+
+sub scrollToHero(_options = {})
+    scrollPage(-1, onContentHeroFocused)
+end sub
+
+
+sub setBackground()
+    dispatch(events.SET_NEW_BACKGROUND, { content: m.content, section: sections.CONTENT_HERO })
 end sub
 
 
@@ -171,7 +182,7 @@ function beforeViewOpen(options = {}) as dynamic
     content = context.content
 
     top().opacity = 0.001
-    fadeIn(top(), { duration: 0.5 })
+    fadeIn(top())
 
     dispatch(events.SHOW_CONTENT_UI)
     dispatch(events.GET_CONTENT_DATA, { screenId: routeData.id, slug: routeData.path, content: content })
@@ -180,9 +191,24 @@ end function
 
 
 function beforeViewSuspend(_options = {}) as dynamic
-    fadeOut(top(), { duration: 0.5 })
+    fadeOut(top())
     return promises.resolve(invalid)
 end function
+
+
+function beforeViewClose(_options = {}) as dynamic
+    dispatch(events.REMOVE_BACKGROUND, { content: m.content, section: sections.CONTENT_HERO })
+
+    suspendPromise = promises.create()
+    fadeOut(top(), { callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
+    return suspendPromise
+end function
+
+
+sub onViewFadedOut(options = {})
+    suspendPromise = options.promise
+    promises.resolve(true, suspendPromise)
+end sub
 
 
 function onViewOpen(_options = {})
@@ -191,7 +217,8 @@ end function
 
 
 function onViewResume(_options = {})
+    if rodash.isNode(m.content) then setBackground()
     dispatch(events.SHOW_CONTENT_UI)
-    fadeIn(top(), { duration: 0.5 })
+    fadeIn(top())
     return promises.resolve(invalid)
 end function

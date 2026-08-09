@@ -15,7 +15,7 @@ end sub
 
 
 sub startLoadingAnimation(_options = {})
-    m.animationId = fadeIn(top(), { callback: onFadedIn, duration: 0.5 })
+    m.animationId = fadeIn(top(), { callback: onFadedIn })
 end sub
 
 
@@ -31,5 +31,5 @@ end sub
 
 
 sub onFadedIn(_options = {})
-    fadeOut(top(), { callback: onFadedOut, duration: 0.5 })
+    fadeOut(top(), { callback: onFadedOut })
 end sub

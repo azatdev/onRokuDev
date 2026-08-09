@@ -28,7 +28,7 @@ class Loadable
         poster = node.findNode("loadingPoster")
         if rodash.isNode(poster) then poster.loading = false
 
-        fadeIn(node, { callback: "onParentFadedIn", callbackOptions: { node: node }, duration: 0.5 })
+        fadeIn(node, { callback: "onParentFadedIn", callbackOptions: { node: node }})
     end sub
 
 

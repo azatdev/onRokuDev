@@ -14,7 +14,8 @@ sub onDataSet(_options = {})
     content = createObject("roSGNode", "ContentModel")
     content.headerImageUri = "pkg:/static/images/WIP-screen.webp"
     content.complimentaryColor = "#075977"
-    dispatch(events.HERO_ITEM_FOCUSED, { content: content, section: sections.HERO })
+    content.hydrated = true
+    dispatch(events.SET_NEW_BACKGROUND, { content: content, replace: true, section: sections.HERO })
     m.title.text = "WORK IN PROGRESS"
 end sub
 
@@ -23,7 +24,7 @@ end sub
 
 function beforeViewSuspend(_options = {}) as dynamic
     suspendPromise = promises.create()
-    fadeOut(top(), { duration: 0.5, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
+    fadeOut(top(), { callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
     return suspendPromise
 end function
 
@@ -35,7 +36,7 @@ end sub
 
 
 function onViewResume(_options = {})
-    fadeIn(top(), { duration: 0.5 })
-    onDataSet()
+    dispatch(events.SHOW_CATALOG_UI)
+    fadeIn(top())
     return promises.resolve(invalid)
 end function

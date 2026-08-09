@@ -107,6 +107,8 @@ function returnContentCTAsModel(_options = {})
         updateObject.children.push(buttonItemObject)
     end for
 
+    updateObject.totalCount = updateObject.children.count()
+
     model.update(updateObject, true)
     return model
 end function
@@ -176,6 +178,8 @@ function returnHeroCTAsModel(_options = {})
         })
     end for
 
+    updateObject.totalCount = updateObject.children.count()
+
     model.update(updateObject, true)
     return model
 end function
@@ -221,6 +225,8 @@ function returnTabsModel(options = {})
         tabModel.title = carouselType
         model.appendChild(tabModel)
     end for
+
+    model.totalCount = model.getChildCount()
 
     return model
 end function
