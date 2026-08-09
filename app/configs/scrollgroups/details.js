@@ -8,7 +8,6 @@ module.exports = {
         autoFocus: true,
         direction: "vertical",
         flushEnd: true,
-        showScrollbar: true,
         scrollBar: {
             show: true,
             track: {

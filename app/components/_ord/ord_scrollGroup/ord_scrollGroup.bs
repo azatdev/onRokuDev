@@ -353,17 +353,20 @@ function performScroll(options = {})
 
     trackTranslation[axisIndex] = trackTranslation[axisIndex] * -1
 
-    if m.scrollKnob.translation[axisIndex] <> scrollKnobTranslation[axisIndex]
-        performMorph({
-            nextFocusNode: nextFocusNode,
-            nextFocusedItem: nextFocusedItem,
-            scrollKnobTranslation: scrollKnobTranslation,
-            trackTranslation: trackTranslation
-        })
-        return true
-    end if
+    scrollbarOptions = get("scrollBar") ?? {}
+    showScrollbar = scrollbarOptions.show ?? false
 
-    return false
+    if showScrollbar and m.scrollKnob.translation[axisIndex] = scrollKnobTranslation[axisIndex] then return false
+
+    performMorph({
+        showScrollbar: showScrollbar,
+        nextFocusNode: nextFocusNode,
+        nextFocusedItem: nextFocusedItem,
+        scrollKnobTranslation: scrollKnobTranslation,
+        trackTranslation: trackTranslation
+    })
+
+    return true
 end function
 
 
@@ -476,6 +479,7 @@ end function
 
 sub performMorph(options = {})
     scrollKnobTranslation = options.scrollKnobTranslation ?? [0, 0]
+    showScrollbar = options.showScrollbar
     trackTranslation = options.trackTranslation ?? [0, 0]
 
     morphObject = {}
@@ -488,7 +492,7 @@ sub performMorph(options = {})
         }
     end if
 
-    if rodash.isNode(m.scrollKnob) and rodash.isNonEmptyString(m.scrollKnob.id)
+    if showScrollbar and rodash.isNode(m.scrollKnob) and rodash.isNonEmptyString(m.scrollKnob.id)
         morphObject[m.scrollKnob.id] = {
             fields: {
                 translation: scrollKnobTranslation

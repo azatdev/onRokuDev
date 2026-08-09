@@ -277,16 +277,15 @@ sub onCarouselUnfocus(_options = {})
     if m.unFocusedTargetSet = invalid then return
     unFocusedTargetSet = dynamicSize and not useUnfocusedTargetSet ? m.carousel.targetSet : m.unFocusedTargetSet
 
-    unFocusedTargetSet.focusIndex = m.carousel.targetSet.focusIndex
-    rodash.delay(sub(args)
-        args[0].animateToTargetSet = args[1]
-    end sub, 100, [m.carousel, unFocusedTargetSet])
-
-    m.carousel.animateToItem = top().focusedContentIndex
-
     if get("resetOnUnfocus")
         resetCarousel()
+    else
+        unFocusedTargetSet.focusIndex = m.carousel.targetSet.focusIndex
+        m.carousel.animateToItem = top().focusedContentIndex
     end if
+
+    m.carousel.animateToTargetSet = unFocusedTargetSet
+
     set({ "itemfocused": -1 })
 end sub
 
@@ -517,6 +516,7 @@ end sub
 
 
 sub resetCarousel()
+    m.carousel.animateToItem = 0
     top().focusedContentIndex = 0
     top().focusedTargetsetIndex = 0
 end sub
