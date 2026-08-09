@@ -34,6 +34,10 @@
             <translation>Description</translation>
         </message>
         <message>
+            <source>TKEY_EMPTY_COLLECTION</source>
+            <translation>This collection is empty.</translation>
+        </message>
+        <message>
             <source>TKEY_HIDE_OVERLAY</source>
             <translation>HIDE OVERLAY</translation>
         </message>

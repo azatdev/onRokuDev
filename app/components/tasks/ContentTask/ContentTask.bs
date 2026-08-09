@@ -35,7 +35,7 @@ function runContentTask(options = {})
 
         carouselsArray = content.carousels ?? []
         updateObject.append(returnCarouselsArray(carouselsArray))
-        updateObject.append({ detailsHydrated: true })
+        updateObject.append({ detailsHydrated: true, hydrated: true })
     end if
 
     publish(events.CONTENT_DATA_RECEIVED, {

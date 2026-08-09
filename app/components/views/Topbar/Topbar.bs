@@ -21,7 +21,7 @@ sub init()
             "onUnfocus": onUnfocused,
             "topbarList": {
                 "default": false,
-                "down": m.userScrollGroup
+                "down": focusOnUserCarousel
             },
             "userScrollGroup": {
                 "default": false,
@@ -32,6 +32,20 @@ sub init()
 end sub
 
 
+function focusOnUserCarousel(_options = {})
+    if not rodash.isNode(m.content) then return false
+
+    currentNavFocus = m.list.itemFocused
+    currentScrollItem = exec("getScrollItem", { itemIndex: currentNavFocus}, m.userScrollGroup)
+    if not rodash.isNode(currentScrollItem) then return false
+    carouselCollection = currentScrollItem.data?.content
+    if not rodash.isNode(carouselCollection) then return false
+    if carouselCollection.totalCount = 0 then return false
+
+    setFocus(m.userScrollGroup)
+    return true
+end function
+
 sub onBarItemFocused(options = {})
     m.userScrollGroup.animateToItem = options.data ?? 0
 end sub
@@ -41,6 +55,7 @@ sub onDataChange(options = {})
     data = options.data
     content = data.content
     if not rodash.isNode(content) then return
+    m.content = content
     liveConfig({ field: "config", keyPath: "Topbar" }, content)
     m.list.data = data
     fadeIn(top())

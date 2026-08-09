@@ -9,6 +9,10 @@ sub init()
         m.carousel.easeFunction = "linear"
         m.carousel.enableRenderTracking = true
         m.carousel.update({ focusPercent: 0.0 }, true)
+
+        m.emptyContainer = top().findNode("emptyContainer")
+        m.emptyLabel = top().findNode("emptyLabel")
+
         m.rectSizes = []
         ' m.carousel.showTargetRects = true
 
@@ -27,6 +31,7 @@ sub init()
             "debugClippingRect": false,
             "defaultVisibleIndex": 0,
             "direction": "horizontal",
+            "emptyMessage": tr("TKEY_EMPTY_COLLECTION"),
             "externalFocusControl": false,
             "focusType": "floating",
             "gutterSize": 0,
@@ -326,6 +331,7 @@ sub onDataSet(options = {})
     m.carousel.content = content
     safeObserve("totalCount", onTotalCountChange, m.content)
     processConfig(config)
+    processEmptyMessage({ totalCount: content.totalCount })
 end sub
 
 
@@ -346,6 +352,9 @@ sub onTotalCountChange(options = {})
 
     config = processDefaultConfig(m.content.config ?? {})
     processConfig(config)
+    processEmptyMessage({ totalCount: totalCarouselItems })
+
+    ?"onTotalCountChange " totalCarouselItems, top().id
 
     if get("resetOnChange")
         rodash.delay(sub(_options = {})
@@ -445,6 +454,7 @@ sub processConfig(config = {})
         "debugClippingRect": config.debugClippingRect,
         "direction": config.direction,
         "dynamicSize": dynamicSize,
+        "emptyMessage": config.emptyMessage,
         "externalFocusControl": config.externalFocusControl,
         "extraRects": extraRects,
         "focusableIndexArray": focusableIndexArray,
@@ -477,6 +487,30 @@ function processDefaultConfig(options = {})
     m.carousel.itemComponentName = config.itemComponentName
     return config
 end function
+
+
+sub processEmptyMessage(options = {})
+    totalCount = options.totalCount
+    if totalCount > 0
+        m.emptyContainer.visible = false
+        return
+    end if
+
+    emptyMessage = get("emptyMessage")
+    emptyMessage = emptyMessage.inStr("TKEY") <> -1 ? tr(emptyMessage) : emptyMessage
+
+    carouselWidth = getVisibleWidth(m.carousel)
+    carouselHeight = getVisibleHeight(m.carousel)
+
+    m.emptyContainer.width = carouselWidth
+    m.emptyContainer.height = carouselHeight
+    m.emptyLabel.width = carouselWidth
+    m.emptyLabel.height = carouselHeight
+    if get("clip") then top().clippingRect = [0, 0, carouselWidth, carouselHeight]
+
+    m.emptyContainer.visible = true
+    m.emptyLabel.text = emptyMessage
+end sub
 
 
 function processRectSizes(options = {})

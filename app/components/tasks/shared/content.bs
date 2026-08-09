@@ -17,7 +17,6 @@ function getContentData(options = {})
         id: data.documentId,
         rating: data.rating,
         playlistUrl:  videoServerURI + playlistUrl,
-        position: data.position ?? 0,
         subtype: "ContentModel",
         title: data.title,
         type: data.type,

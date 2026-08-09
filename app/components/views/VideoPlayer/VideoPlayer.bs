@@ -111,7 +111,7 @@ sub onSeekTimerFired(_options = {})
 end sub
 
 
-sub onSelection(_options = {})
+function onSelection(_options = {})
     scrubbing = m.scrubTimer.control = "start"
     seeking = get("seeking") ?? false
 
@@ -130,7 +130,9 @@ sub onSelection(_options = {})
     else
         hideOverlay()
     end if
-end sub
+
+    return true
+end function
 
 
 sub onVideoDurationChange(options = {})
@@ -203,14 +205,16 @@ sub sendTrickplayInfo(options = {})
 end sub
 
 
-sub scrubLeft(_options = {})
+function scrubLeft(_options = {})
     performScrub({ positionDelta: get("scrubInterval") * -1 })
-end sub
+    return true
+end function
 
 
-sub scrubRight(_options = {})
+function scrubRight(_options = {})
     performScrub({ positionDelta: get("scrubInterval")})
-end sub
+    return true
+end function
 
 
 function onBackButton(_options = {})
@@ -238,23 +242,25 @@ sub onSeekCancel()
 end sub
 
 
-sub hideOverlay(_options = {})
-    if not get("overlayOpen") then return
+function hideOverlay(_options = {})
+    if not get("overlayOpen") then return true
     fadeOut(m.videoOverlay)
     set({ "overlayOpen": false })
-end sub
+    return true
+end function
 
 
-sub showOverlay(_options = {})
+function showOverlay(_options = {})
     if get("overlayOpen")
         m.overlayTimer.control = "start"
-        return
+        return true
     end if
 
     fadeIn(m.videoOverlay)
     set({ "overlayOpen": true })
     m.overlayTimer.control = "start"
-end sub
+    return true
+end function
 
 
 sub startSeek()
@@ -286,7 +292,7 @@ sub startSeek()
 end sub
 
 
-sub seekForward(_options = {})
+function seekForward(_options = {})
     seekSpeed = get("seekSpeed")
     seekDirection = get("seekDirection")
 
@@ -295,10 +301,11 @@ sub seekForward(_options = {})
 
     set({ "seekDirection": 1, "seekSpeed": seekSpeed })
     startSeek()
-end sub
+    return true
+end function
 
 
-sub seekRewind(_options = {})
+function seekRewind(_options = {})
     seekSpeed = get("seekSpeed")
     seekDirection = get("seekDirection")
     if seekDirection = 1 then seekSpeed = 0
@@ -306,13 +313,14 @@ sub seekRewind(_options = {})
 
     set({ "seekDirection": -1, "seekSpeed": seekSpeed })
     startSeek()
-end sub
+    return true
+end function
 
 
-sub togglePlayback(_options = {})
+function togglePlayback(_options = {})
     if get("seeking")
         onSelection()
-        return
+        return true
     end if
 
     if m.video.state = "paused"
@@ -320,10 +328,11 @@ sub togglePlayback(_options = {})
     else if m.video.state = "playing"
         m.video.control = "pause"
     end if
-end sub
+    return true
+end function
 
 
-sub restartPlayback(_options = {})
+function restartPlayback(_options = {})
     dispatch(events.VIDEO_RESTARTING)
     m.video.seek = 0
     updateControl({ controlId: "restartControl" })
@@ -331,7 +340,9 @@ sub restartPlayback(_options = {})
     rodash.delay(sub()
         hideOverlay()
     end sub, 1000)
-end sub
+
+    return true
+end function
 
 
 sub resetControls(_options = {})

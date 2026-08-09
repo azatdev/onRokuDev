@@ -56,7 +56,6 @@ function runUserCarouselsTask(options = {})
             contentData = getContentData({ data: content })
             contentData.position = item.position
             contentData.userItemId = item.documentId
-            contentData.hydrated = true
             updateObject.children.push(contentData)
         end for
 

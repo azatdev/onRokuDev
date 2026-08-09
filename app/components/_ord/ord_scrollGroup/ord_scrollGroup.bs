@@ -34,6 +34,10 @@ sub init()
             "onKey": handleScrollKey
         })
 
+        safeFunctions({
+            "getScrollItem": getScrollItem
+        })
+
         onConfigChange({ data: defaultConfig })
 
         safeObserve("animateToItem", onAnimateToItem)
@@ -44,6 +48,11 @@ sub init()
         safeObserve("fire", onScrollTimerFired, m.scrollTimer)
     end sub)
 end sub
+
+
+function getScrollItem(options = {})
+    return m.container.getChild(options.itemIndex)
+end function
 
 
 sub onAnimateToItem(options = {})

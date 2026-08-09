@@ -92,9 +92,12 @@ sub focusContentHero(_options = {})
 end sub
 
 
-sub focusContentScrollGroup(_options = {})
+function focusContentScrollGroup(_options = {})
+    if not rodash.isNode(m.content) then return true
+    if m.content.getChildCount() = 0 then return true
     scrollPage(1, onContentScrollGroupFocused)
-end sub
+    return true
+end function
 
 
 sub onContentHeroFocused(_options = {})

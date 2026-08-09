@@ -3,6 +3,13 @@ const assets = mixins["Assets"];
 
 module.exports = {
     "ord_flexList": {
+        "Div": {
+            "QuanticoBold": {
+                "horizAlign": "center",
+                "size": 30,
+                "vertAlign": "center",
+            }
+        },
         "Poster": {
             "&#clippingRectOutline": {
                 "height": 0,
