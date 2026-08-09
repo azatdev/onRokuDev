@@ -16,6 +16,7 @@ sub init()
         safeObserve("itemFocused", onItemFocused, m.carousel)
         safeObserve("itemUnfocused", onItemUnfocused, m.carousel)
         safeObserve("focusedChild", onCarouselFocusedChildChange, m.carousel)
+        safeObserve("animateToItem", onAnimateToItem)
         safeObserve("data", onDataSet)
 
         set({ "defaultConfig": {
@@ -61,6 +62,13 @@ sub init()
 
         m.focusTimer = getFloatFieldInterpolator(m.carousel)
     end sub)
+end sub
+
+
+sub onAnimateToItem(options = {})
+    newFocusItem = options.data
+    m.carousel.animateToItem = newFocusItem
+    top().focusedContentIndex = newFocusItem
 end sub
 
 

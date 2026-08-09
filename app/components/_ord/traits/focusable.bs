@@ -109,7 +109,7 @@ class Focusable
         focusTarget = m.focusMap.current ?? {}
         nodeMap = m.focusMap[focusTarget.id ?? ""]
 
-        if rodash.isInvalid(nodeMap) or rodash.isInvalid(nodeMap[key]) or (rodash.isBoolean(nodeMap[key]) and nodeMap[key] = false)
+        if rodash.isInvalid(nodeMap) or rodash.isInvalid(nodeMap[key]) and rodash.isInvalid(nodeMap["default"])
             nodeMap = m.focusMap.onKey
         end if
 

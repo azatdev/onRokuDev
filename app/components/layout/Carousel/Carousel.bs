@@ -12,7 +12,13 @@ sub init()
             "hydrated": false
         })
         setFocusMap({
-            "onFocus": focusCarousel
+            "onFocus": focusCarousel,
+            "onKey": {
+                "rewind": function(_options = {})
+                    m.carouselList.animateToItem = 0
+                    return true
+                end function
+            }
         })
         styleHooks({
             "after": afterStyling
