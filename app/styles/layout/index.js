@@ -1,5 +1,6 @@
 module.exports = {
     ...require("./Background"),
+    ...require("./BackgroundImage"),
     ...require("./Carousel"),
     ...require("./CatalogHero"),
     ...require("./Delimiter"),

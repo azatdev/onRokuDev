@@ -52,6 +52,8 @@ end sub
 sub onDataSet(options = {})
     data = options.data
     content = data.content
+    if not rodash.isNode(content) then return
+
     m.content = content
 
     carousels = content.getChildren(-1, 0)
@@ -68,6 +70,7 @@ sub onDataSet(options = {})
         m.tabs.data = { content: tabsModel }
     end if
 
+    setBackground()
     afterStyling()
 end sub
 
@@ -163,6 +166,11 @@ sub scrollPage(direction = 0, callbackFunc = invalid)
 end sub
 
 
+sub setBackground()
+    dispatch(events.SET_NEW_BACKGROUND, { content: m.content, section: sections.CONTENT_HERO })
+end sub
+
+
 ' Methods exteded from sgRouter
 
 function beforeViewOpen(options = {}) as dynamic
@@ -185,12 +193,21 @@ function beforeViewSuspend(_options = {}) as dynamic
 end function
 
 
+function beforeViewClose(_options = {}) as dynamic
+    dispatch(events.REMOVE_BACKGROUND, { content: m.content, section: sections.CONTENT_HERO })
+
+    fadeOut(top(), { duration: 0.5 })
+    return promises.resolve(invalid)
+end function
+
+
 function onViewOpen(_options = {})
     return promises.resolve(invalid)
 end function
 
 
 function onViewResume(_options = {})
+    if rodash.isNode(m.content) then setBackground()
     dispatch(events.SHOW_CONTENT_UI)
     fadeIn(top(), { duration: 0.5 })
     return promises.resolve(invalid)

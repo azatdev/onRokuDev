@@ -58,10 +58,9 @@ sub onHeroItemFocused(options = {})
     itemFocusedModel = m.content.getChild(itemFocused)
     if not rodash.isNode(itemFocusedModel) then return
 
-    dispatch(events.HERO_ITEM_FOCUSED, { content: itemFocusedModel, section: sections.HERO })
+    dispatch(events.SET_NEW_BACKGROUND, { content: itemFocusedModel, replace: true, section: sections.HERO })
 
     if exec("needsToPaginate", { itemFocused: options.data }, m.content) then dispatch(events.PAGINATE_CAROUSEL, { collection: m.content })
-
 end sub
 
 

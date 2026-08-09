@@ -12,6 +12,7 @@ sub init()
             "hideBackground": hideBackground,
             "hideCatalogGradients": hideCatalogGradients,
             "hideContentGradients": hideContentGradients,
+            "removeBackground": removeBackground,
             "setComplimentaryColor": setComplimentaryColor,
             "showBackground": showBackground,
             "showCatalogGradients": showCatalogGradients,
@@ -56,34 +57,56 @@ sub onBackgroundFadeOut(_options = {})
 end sub
 
 
-sub setBackground(newUri = "")
-    if rodash.isEmpty(newUri) then return
+sub removeBackground(options = {})
+    content = options.content
+    section = options.section ?? sections.CONTENT_HERO
+    if not rodash.isNode(content) then return
+    posterId = content.id + section
+    poster = m.backgroundContainer.findNode(posterId)
+    m.backgroundContainer.removeChild(poster)
+end sub
 
-    newPoster = createObject("roSGNode", "Poster")
-    newPoster.id = rodash.now().toStr()
-    newPoster.opacity = 0
-    newPoster.uri = newUri
-    newPoster.width = "{{%- s(STYLES.Dimensions.viewport.width) %}}"
-    newPoster.height = "{{%- s(STYLES.Dimensions.viewport.height) %}}"
-    oldPoster = m.poster
-    m.backgroundContainer.appendChild(newPoster)
-    fadeIn(newPoster, { callback: onBackgroundFadeIn, callbackOptions: { node: oldPoster }, duration: 0.3 })
-    m.poster = newPoster
+
+sub setBackground(options = {})
+    content = options.content
+    if not rodash.isNode(content) then return
+    if not content.hydrated then return
+
+    section = options.section ?? ""
+    posterId = content.id + section
+    replaceCurrent = options.replace ?? false
+    newUri = ""
+
+    newPoster = m.backgroundContainer.findNode(posterId)
+
+    if section = sections.HERO
+        newUri = content.headerImageUri
+    else if section = sections.CONTENT_HERO
+        newUri = content.posterImageUri
+    end if
+
+    oldNode = not rodash.isNode(newPoster) and replaceCurrent ? m.backgroundContainer.getChild(0) : invalid
+
+    if not rodash.isNode(newPoster)
+        newPoster = createObject("roSGNode", "BackgroundImage")
+        newPoster.id = posterId
+
+        if rodash.isNonEmptyString(newUri)
+            newPoster.blendColor = -1
+            newPoster.uri = newUri
+        end if
+
+        m.backgroundContainer.appendChild(newPoster)
+    end if
+
+    fadeIn(newPoster, { callback: onBackgroundFadeIn, callbackOptions: { node: oldNode }, duration: 0.3 })
 end sub
 
 
 sub updateBackgroundAssets(options = {})
-    content = options.content
-    section = options.section ?? ""
-
     setComplimentaryColor(options)
     showBackground()
-
-    if section = sections.HERO
-        setBackground(content.headerImageUri)
-    else if section = sections.CONTENT_HERO
-        setBackground(content.posterImageUri)
-    end if
+    setBackground(options)
 end sub
 
 

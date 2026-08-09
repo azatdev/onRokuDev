@@ -1,0 +1,7 @@
+import "pkg:/components/_ord/init.bs"
+
+sub init()
+    exec(sub(_options = {})
+
+    end sub)
+end sub

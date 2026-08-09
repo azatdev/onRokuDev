@@ -42,8 +42,6 @@ sub onDataSet(options = {})
     onHydrated({ node: m.content })
     stackChildren({ direction: "vertical" }, m.container)
 
-    dispatch(events.HERO_ITEM_FOCUSED, { content: content, section: sections.CONTENT_HERO })
-
     safeObserve("favorited", onFavoriteToggle, content)
     safeObserve("position", onPositionChange, content)
     safeObserve("watchlisted", onWatchlistToggle, content)

@@ -11,7 +11,9 @@ sub init()
             [events.ERROR_PREPARE_CRASH]: initiateCrash,
             [events.HERO_ITEM_FOCUSED]: onHeroItemFocused,
             [events.NAVIGATE_TO]: navigateTo,
+            [events.REMOVE_BACKGROUND]: removeBackground,
             [events.SCREEN_ACTIVE]: onScreenActive,
+            [events.SET_NEW_BACKGROUND]: onHeroItemFocused,
             [events.SET_USER_CAROUSELS]: setUserCarousels,
             [events.SHOW_CATALOG_UI]: showCatalogUI,
             [events.SHOW_CONTENT_UI]: showContentUI
@@ -64,6 +66,11 @@ sub onScreenActive(options = {})
     exec("setActiveView", options, layout())
     exec("setActiveSlug", options, sidebar())
     set({ "activeSlug": options.slug ?? "" })
+end sub
+
+
+sub removeBackground(options = {})
+    exec("removeBackground", options, background())
 end sub
 
 
