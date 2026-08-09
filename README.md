@@ -334,8 +334,9 @@ end sub
 
 sub shorthandMorphs()
     ' Use animatable's other helpers.
-    fadeOut(m.videoPlayer, { duration: 0.3 })
+    fadeOut(m.videoPlayer)
     ' Use a callback and callback options.
+    ' Default duration is 0.3
     fadeIn(m.screenContainer, { duration: 0.5, callback: onContainerFadeIn, callbackOptions: { data: getSomeData() } })
 end sub
 
