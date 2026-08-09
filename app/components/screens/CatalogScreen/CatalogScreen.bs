@@ -132,7 +132,7 @@ sub onDataSet(options = {})
     if not hasHero then addClass("noHero", m.screenContainer)
 
     afterStyling()
-    applyDefaultFocus()
+    if top().hasFocus() then applyDefaultFocus()
 
     safeObserve("change", onCollectionChildChange, content)
 end sub
@@ -184,6 +184,13 @@ function beforeViewOpen(options = {}) as dynamic
     route = options.route ?? {}
     dispatch(events.GET_CATALOG_DATA, { documentId: route.context?.documentId, screenId: route.id, slug: route.path })
     return promises.resolve(invalid)
+end function
+
+
+function beforeViewClose(_options = {}) as dynamic
+    suspendPromise = promises.create()
+    fadeOut(top(), { duration: 0.5, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
+    return suspendPromise
 end function
 
 

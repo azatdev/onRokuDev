@@ -4,7 +4,11 @@ sub init()
     exec(sub(_options = {})
         m.list = top().findNode("ctasList")
         setFocusMap({
-            "onFocus": m.list
+            "onFocus": m.list,
+            "onKey": {
+                "back": false,
+                "left": true
+            }
         })
         safeObserve("data", onDataChange)
         safeObserve("itemSelected", onItemSelected, m.list)

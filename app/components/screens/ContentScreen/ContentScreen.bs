@@ -23,17 +23,15 @@ sub init()
                 "down": focusContentScrollGroup
             },
             "contentScrollGroup": {
-                "back": false,
+                "back": focusContentHero,
                 "default": true,
                 "up": focusContentHero
             },
             "tabs": {
-                "back": false,
+                "back": scrollToHero,
                 "default": true,
                 "down": m.contentScrollGroup,
-                "up": sub(_options = {})
-                    scrollPage(-1, onContentHeroFocused)
-                end sub
+                "up": scrollToHero
             }
         })
 
@@ -87,7 +85,7 @@ sub focusContentHero(_options = {})
     if carouselCount = 0 then return
 
     if carouselCount = 1
-        scrollPage(-1, onContentHeroFocused)
+        scrollToHero()
     else
         setFocus(m.tabs)
     end if
@@ -163,6 +161,11 @@ sub scrollPage(direction = 0, callbackFunc = invalid)
     }
 
     morph(morphObject, { callback: callbackFunc, duration: 0.3 })
+end sub
+
+
+sub scrollToHero(_options = {})
+    scrollPage(-1, onContentHeroFocused)
 end sub
 
 
