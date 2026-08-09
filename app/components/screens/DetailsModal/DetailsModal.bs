@@ -56,14 +56,14 @@ end sub
 
 function beforeViewClose(_options = {})
     suspendPromise = promises.create()
-    fadeOut(top(), { duration: 0.3, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise }})
+    fadeOut(top(), { callback: onViewFadedOut, callbackOptions: { promise: suspendPromise }})
     return suspendPromise
 end function
 
 
 function beforeViewOpen(options = {}) as dynamic
     top().opacity = 0.001
-    fadeIn(top(), { duration: 0.5 })
+    fadeIn(top())
 
     route = options.route ?? {}
     context = route.context ?? {}

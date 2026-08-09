@@ -189,14 +189,14 @@ end function
 
 function beforeViewClose(_options = {}) as dynamic
     suspendPromise = promises.create()
-    fadeOut(top(), { duration: 0.5, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
+    fadeOut(top(), { callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
     return suspendPromise
 end function
 
 
 function beforeViewSuspend(_options = {}) as dynamic
     suspendPromise = promises.create()
-    fadeOut(top(), { duration: 0.5, callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
+    fadeOut(top(), { callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
     return suspendPromise
 end function
 
@@ -209,6 +209,6 @@ end sub
 
 function onViewResume(_options = {})
     dispatch(events.SHOW_CATALOG_UI)
-    fadeIn(top(), { duration: 0.5 })
+    fadeIn(top())
     return promises.resolve(invalid)
 end function

@@ -25,22 +25,22 @@ end sub
 
 
 sub hideCatalogGradients(_options = {})
-    fadeOut(m.catalogGradientContainer, { duration: 0.5 })
+    fadeOut(m.catalogGradientContainer)
 end sub
 
 
 sub showCatalogGradients(_options = {})
-    fadeIn(m.catalogGradientContainer, { duration: 0.5 })
+    fadeIn(m.catalogGradientContainer)
 end sub
 
 
 sub showContentGradients(_options = {})
-    fadeIn(m.contentGradientContainer, { duration: 0.5 })
+    fadeIn(m.contentGradientContainer)
 end sub
 
 
 sub hideContentGradients(_options = {})
-    fadeOut(m.contentGradientContainer, { duration: 0.5 })
+    fadeOut(m.contentGradientContainer)
 end sub
 
 
@@ -61,9 +61,11 @@ sub removeBackground(options = {})
     content = options.content
     section = options.section ?? sections.CONTENT_HERO
     if not rodash.isNode(content) then return
+
     posterId = content.id + section
     poster = m.backgroundContainer.findNode(posterId)
-    m.backgroundContainer.removeChild(poster)
+
+    fadeOut(poster, { callback: onBackgroundFadeIn, callbackOptions: { node: poster } })
 end sub
 
 
@@ -99,7 +101,7 @@ sub setBackground(options = {})
         m.backgroundContainer.appendChild(newPoster)
     end if
 
-    fadeIn(newPoster, { callback: onBackgroundFadeIn, callbackOptions: { node: oldNode }, duration: 0.3 })
+    fadeIn(newPoster, { callback: onBackgroundFadeIn, callbackOptions: { node: oldNode }})
 end sub
 
 
@@ -134,24 +136,24 @@ end sub
 
 
 sub hideBackground(_options = {})
-    fadeOut(m.backgroundContainer, { callback: onBackgroundFadeOut, duration: 0.3 })
+    fadeOut(m.backgroundContainer, { callback: onBackgroundFadeOut })
 end sub
 
 
 sub showBackground(_options = {})
     hideHeaderImage()
-    fadeIn(m.backgroundContainer, { duration: 0.3 })
+    fadeIn(m.backgroundContainer)
 end sub
 
 
 sub hideHeaderImage(_options = {})
-    fadeOut(m.headerImage, { callback: clearHeaderImages, duration: 0.3 })
+    fadeOut(m.headerImage, { callback: clearHeaderImages })
 end sub
 
 
 sub showHeaderImage(_options = {})
     hideBackground()
-    fadeIn(m.headerImage, { duration: 0.3 })
+    fadeIn(m.headerImage)
 end sub
 
 

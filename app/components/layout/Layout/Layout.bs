@@ -182,7 +182,7 @@ end sub
 sub showCatalogUI(options = {})
     if get("navigationHidden")
         set({ "navigationHidden": false })
-        fadeIn(m.navigation, { duration: 0.5 })
+        fadeIn(m.navigation)
     end if
 
     if get("catalogUIHidden")
@@ -196,7 +196,7 @@ end sub
 sub showContentUI(options = {})
     if not get("navigationHidden")
         set({ "navigationHidden": true })
-        fadeOut(m.navigation, { duration: 0.5 })
+        fadeOut(m.navigation)
     end if
 
     if get("contentUIHidden")

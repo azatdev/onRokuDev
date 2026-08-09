@@ -160,7 +160,7 @@ sub scrollPage(direction = 0, callbackFunc = invalid)
         }
     }
 
-    morph(morphObject, { callback: callbackFunc, duration: 0.3 })
+    morph(morphObject, { callback: callbackFunc })
 end sub
 
 
@@ -182,7 +182,7 @@ function beforeViewOpen(options = {}) as dynamic
     content = context.content
 
     top().opacity = 0.001
-    fadeIn(top(), { duration: 0.5 })
+    fadeIn(top())
 
     dispatch(events.SHOW_CONTENT_UI)
     dispatch(events.GET_CONTENT_DATA, { screenId: routeData.id, slug: routeData.path, content: content })
@@ -191,7 +191,7 @@ end function
 
 
 function beforeViewSuspend(_options = {}) as dynamic
-    fadeOut(top(), { duration: 0.5 })
+    fadeOut(top())
     return promises.resolve(invalid)
 end function
 
@@ -199,9 +199,16 @@ end function
 function beforeViewClose(_options = {}) as dynamic
     dispatch(events.REMOVE_BACKGROUND, { content: m.content, section: sections.CONTENT_HERO })
 
-    fadeOut(top(), { duration: 0.5 })
-    return promises.resolve(invalid)
+    suspendPromise = promises.create()
+    fadeOut(top(), { callback: onViewFadedOut, callbackOptions: { promise: suspendPromise } })
+    return suspendPromise
 end function
+
+
+sub onViewFadedOut(options = {})
+    suspendPromise = options.promise
+    promises.resolve(true, suspendPromise)
+end sub
 
 
 function onViewOpen(_options = {})
@@ -212,6 +219,6 @@ end function
 function onViewResume(_options = {})
     if rodash.isNode(m.content) then setBackground()
     dispatch(events.SHOW_CONTENT_UI)
-    fadeIn(top(), { duration: 0.5 })
+    fadeIn(top())
     return promises.resolve(invalid)
 end function
