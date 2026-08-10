@@ -18,7 +18,7 @@ module.exports = {
                         "width": viewport.width
                     },
                     "&#cornerGradient": {
-                        "blendColor": palette.defaultCornerColor,
+                        "blendColor": palette.transparent,
                         "height": viewport.height,
                         "uri": assets.cornerGradient,
                         "opacity": 1,

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<component name="LoadingOverlay" extends="Poster">
+    <interface>
+        <function name="safeFunc" />
+    </interface>
+    <children>
+        <QuanticoBold id="title" />
+    </children>
+    <script type="text/brightscript" uri="LoadingOverlay.bs" />
+</component>

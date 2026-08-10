@@ -1,0 +1,29 @@
+import "pkg:/components/_ord/init.bs"
+
+sub init()
+    exec(sub(_options = {})
+        m.title = top().findNode("title")
+        m.title.text = tr("TKEY_LOADING")
+
+        set({
+            "active": false
+        })
+
+        safeFunctions({
+            "toggleOverlay": toggleOverlay
+        })
+    end sub)
+end sub
+
+
+sub toggleOverlay(options = {})
+    toggle = options.toggle ?? false
+
+    if toggle
+        fadeIn(top())
+    else
+        if get("active") then fadeOut(top())
+    end if
+
+    set({ "active": toggle })
+end sub

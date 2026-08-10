@@ -42,6 +42,10 @@
             <translation>HIDE OVERLAY</translation>
         </message>
         <message>
+            <source>TKEY_LOADING</source>
+            <translation>Loading...</translation>
+        </message>
+        <message>
             <source>TKEY_MORE_INFO</source>
             <translation>More Info</translation>
         </message>

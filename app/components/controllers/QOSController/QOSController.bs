@@ -3,13 +3,19 @@ import "pkg:/components/_ord/init.bs"
 
 sub init()
     exec(sub(_options = {})
+        m.loadingTimer = createObject("roSGNode", "Timer")
+        m.loadingTimer.duration = 1
+        safeObserve("fire", onLoadingTimerFire, m.loadingTimer)
+
         subscribe({
             [events.API_ERROR]: onApiError,
             [events.APP_CRASH]: onAppCrash,
             [events.APP_ERROR]: onAppError,
+            [events.APP_STARTED]: onAppStarted,
             [events.NOTIFY_CLOSE]: notifyClose,
             [events.NOTIFY_CRASH]: notifyCrash,
-            [events.NOTIFY_EXCEPTION]: notifyException
+            [events.NOTIFY_EXCEPTION]: notifyException,
+            [events.SCREEN_ACTIVE]: onScreenActive
         })
     end sub)
 end sub
@@ -87,4 +93,27 @@ sub onAppError(options = {})
     if not rodash.isNode(layout) then return
     videoActive = get("videoActive", layout)
     if not videoActive then dispatch(events.NOTIFY_EXCEPTION)
+end sub
+
+
+sub onAppStarted(_options = {})
+    m.loadingTimer.control = "start"
+end sub
+
+
+sub onLoadingTimerFire(_options = {})
+    toggleLoadingOverlay({ toggle: true })
+end sub
+
+
+sub onScreenActive(_options = {})
+    m.loadingTimer.control = "stop"
+    toggleLoadingOverlay({ toggle: false })
+end sub
+
+
+sub toggleLoadingOverlay(options = {})
+    layoutOverlay = top().getScene().findNode("loadingOverlay")
+    if not rodash.isNode(layoutOverlay) then return
+    exec("toggleOverlay", options, layoutOverlay)
 end sub

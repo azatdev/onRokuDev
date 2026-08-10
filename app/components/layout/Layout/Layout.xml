@@ -12,6 +12,7 @@
             <Sidebar id="sidebar" />
         </Div>
         <Toaster id="toaster" />
+        <LoadingOverlay id="loadingOverlay" />
     </children>
     <script type="text/brightscript" uri="Layout.bs" />
 </component>

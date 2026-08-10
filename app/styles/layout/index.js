@@ -9,6 +9,7 @@ module.exports = {
     ...require("./HeaderImage"),
     ...require("./Hero"),
     ...require("./Layout"),
+    ...require("./LoadingOverlay"),
     ...require("./LoadingPoster"),
     ...require("./PlayerHeader"),
     ...require("./Toaster"),
