@@ -3,7 +3,7 @@
 
 ### 3930RW - Popular Mainstream Device
 
-https://github.com/user-attachments/assets/8ad41fb0-ba30-4878-b323-ba38ed08e789
+https://github.com/user-attachments/assets/5ceb9aa4-913e-4120-ab3b-ca2366a29c61
 
 
 **onRokuDev** is a work-in-progress sample channel with framework ambitions. It demonstrates how a fast, familiar, and failure-tolerant structure could be implemented in a Roku application. It uses patterns that favor composition over inheritance, prevent and catch exceptions, and provides the tools needed to easily create custom, modern, and performant UI elements.
@@ -516,10 +516,10 @@ There is still much to do on this project, and development is ongoing. That said
 ## Video Examples
 
 ### 4660X - Typical High-End Device
-https://github.com/user-attachments/assets/99d50015-3b6e-44f8-a764-19fcf058303f
+https://github.com/user-attachments/assets/bc7896f9-65d0-4277-8466-21771eccab0b
 
 ### 3700X - Lowest Supported Device
-https://github.com/user-attachments/assets/80ceea10-752c-44f1-bc21-6e296aefc509
+https://github.com/user-attachments/assets/26a74aeb-51e5-4e7d-b620-2878ccebb93f
 
 ## Installation
 
