@@ -12,7 +12,6 @@ module.exports = {
         },
         "Div": {
             "&#headerImageGradients": {
-                "visible": false,
                 "Poster": {
                     "&#leftGradient": {
                         "blendColor": palette.black,

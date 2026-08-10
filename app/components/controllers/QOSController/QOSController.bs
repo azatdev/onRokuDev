@@ -4,7 +4,7 @@ import "pkg:/components/_ord/init.bs"
 sub init()
     exec(sub(_options = {})
         m.loadingTimer = createObject("roSGNode", "Timer")
-        m.loadingTimer.duration = 1
+        m.loadingTimer.duration = 2
         safeObserve("fire", onLoadingTimerFire, m.loadingTimer)
 
         subscribe({

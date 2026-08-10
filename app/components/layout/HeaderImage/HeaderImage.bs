@@ -3,15 +3,9 @@ import "pkg:/components/_ord/init.bs"
 sub init()
     exec(sub(_options = {})
         m.headerImageContainer = top().findNode("headerImageContainer")
-        safeObserve("data", onDataSet)
-        m.headerImageGradients = top().findNode("headerImageGradients")
-        m.headerImageMask = top().findNode("headerImageMask")
 
-        rokuDevice = createObject("roDeviceInfo")
-        if rokuDevice.getGraphicsPlatform() <> "opengl"
-            m.headerImageGradients.visible = true
-            m.headerImageMask.maskuri = ""
-        end if
+        safeObserve("data", onDataSet)
+
         safeFunctions({
             "clearImages": clearImages
         })
@@ -69,6 +63,6 @@ sub setImage(newUri = "")
 
     if rodash.isNode(oldPoster) then fadeOut(oldPoster, { callback: onImageFadeOut, callbackOptions: { node: oldPoster }})
 
-    fadeIn(newPoster)
+    fadeIn(newPoster, { delay: 0.1 })
     m.poster = newPoster
 end sub

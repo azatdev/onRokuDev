@@ -136,8 +136,8 @@ end sub
 
 
 sub updateHeaderImage(options = {})
-    m.headerImage.data = options
     showHeaderImage()
+    m.headerImage.data = options
 end sub
 
 
@@ -164,19 +164,19 @@ end sub
 
 
 sub showBackground(_options = {})
-    hideHeaderImage()
     fadeIn(m.backgroundContainer)
+    hideHeaderImage()
 end sub
 
 
 sub hideHeaderImage(_options = {})
-    fadeOut(m.headerImage, { callback: clearHeaderImages })
+    fadeOut(m.headerImage, { delay: 0.3, callback: clearHeaderImages })
 end sub
 
 
 sub showHeaderImage(_options = {})
-    hideBackground()
     fadeIn(m.headerImage)
+    hideBackground()
 end sub
 
 
