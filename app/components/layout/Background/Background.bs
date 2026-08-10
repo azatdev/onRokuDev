@@ -87,7 +87,7 @@ sub setBackground(options = {})
         newUri = content.posterImageUri
     end if
 
-    oldNode = not rodash.isNode(newPoster) and replaceCurrent ? m.backgroundContainer.getChild(0) : invalid
+    oldNode = m.backgroundContainer.getChild(m.backgroundContainer.getChildCount() - 1)
 
     if not rodash.isNode(newPoster)
         newPoster = createObject("roSGNode", "BackgroundImage")
@@ -101,7 +101,30 @@ sub setBackground(options = {})
         m.backgroundContainer.appendChild(newPoster)
     end if
 
-    fadeIn(newPoster, { callback: onBackgroundFadeIn, callbackOptions: { node: oldNode }})
+    if not rodash.isNode(newPoster) then return
+
+    morphObject = {}
+    morphOptions = {}
+
+    morphObject[newPoster.id] = {
+        fields: {
+            opacity: 1
+        }
+    }
+
+    if rodash.isNode(oldNode) and not newPoster.isSameNode(oldNode)
+        morphObject[oldNode.id] = {
+            fields: {
+                opacity: 0
+            }
+        }
+
+        if replaceCurrent
+            morphOptions = { callback: onBackgroundFadeIn, callbackOptions: { node: oldNode }}
+        end if
+    end if
+
+    morph(morphObject, morphOptions)
 end sub
 
 
