@@ -1,4 +1,4 @@
-const mixins = require("../../styles/mixins");
+const mixins = require("../mixins");
 const assets = mixins["Assets"];
 const palette = mixins["Palette"];
 

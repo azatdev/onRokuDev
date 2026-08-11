@@ -1,5 +1,5 @@
 import "pkg:/components/_ord/init.bs"
-import "bifTools.bs"
+
 
 sub init()
     exec(sub(_options = {})
@@ -63,6 +63,13 @@ sub init()
         })
     end sub)
 end sub
+
+
+function getBifFrameFromPosition(position = 0)
+    if rodash.isInvalid(position) then return invalid
+    m.video.bifDisplay.getNearestFrame = position
+    return m.video.bifDisplay.NearestFrame
+end function
 
 
 sub onDataSet(options = {})
@@ -197,7 +204,7 @@ end sub
 
 
 sub sendTrickplayInfo(options = {})
-    options.trickplayFrame = getNearestFrameFromPosition(options.trickplayPosition ?? 0)
+    options.trickplayFrame = getBifFrameFromPosition(options.trickplayPosition ?? 0)
     options.duration = m.video.duration
 
     exec("setTrickplayInfo", options, m.trickplay)

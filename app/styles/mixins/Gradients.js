@@ -12,6 +12,13 @@ module.exports = {
             "uri": assets.bottomGradient,
             "width": viewport.width
         },
+        "NavigationGradient": {
+            "blendColor": palette.black,
+            "height": viewport.height,
+            "opacity": 0.7,
+            "uri": assets.sidebarGradient,
+            "width": 111
+        },
         "TopGradient": {
             "blendColor": palette.black,
             "height": 330,

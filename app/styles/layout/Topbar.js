@@ -1,30 +1,11 @@
 const mixins = require("../mixins");
 const assets = mixins["Assets"]
 const dimensions = mixins["Dimensions"]
+const gradients = mixins["Gradients"]
 const palette = mixins["Palette"]
 const viewport = dimensions["viewport"]
 
-const gradientStyles = {
-    "blendColor": palette.black,
-    "height": viewport.height,
-    "opacity": 0.7,
-    "uri": assets.sidebarGradient,
-    "width": 111
-}
-
 module.exports = {
-    "Sidebar": {
-        "opacity": 0,
-        "color": "#5d24691a",
-        "openColor": "#251a38",
-        "height": viewport.height,
-        "ord_flexList":{
-            "translation": [0, 162]
-        },
-        "Poster": {
-            ...gradientStyles
-        }
-    },
     "Topbar": {
         "opacity": 0,
         "translation": [1170, 0],
@@ -57,7 +38,7 @@ module.exports = {
                 "translation": [-999, 0]
             },
             "Poster": {
-                ...gradientStyles,
+                ...gradients.NavigationGradient,
                 "height": 1170,
                 "rotation": -1.5708
             }

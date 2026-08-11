@@ -1,9 +1,14 @@
 module.exports = {
     "STYLES": {
-        ...require("./components"),
+        ...require("./_ord"),
+        ...require("./App"),
+        ...require("./groups"),
+        ...require("./items"),
         ...require("./layout"),
+        ...require("./player"),
         ...require("./screens"),
-        ...require("./views"),
+        ...require("./typography"),
+        ...require("./widgets"),
         ...require("./mixins")
     }
 };
