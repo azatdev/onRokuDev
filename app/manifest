@@ -6,12 +6,12 @@ major_version=0
 minor_version=0
 build_version=0
 
-mm_icon_focus_fhd=pkg:/static/images/ord-icon-fhd.webp
-mm_icon_focus_hd=pkg:/static/images/ord-icon-hd.webp
-mm_icon_focus_sd=pkg:/static/images/ord-icon-sd.webp
+mm_icon_focus_fhd=pkg:/assets/images/ord-icon-fhd.webp
+mm_icon_focus_hd=pkg:/assets/images/ord-icon-hd.webp
+mm_icon_focus_sd=pkg:/assets/images/ord-icon-sd.webp
 
-splash_screen_fhd=pkg:/static/images/transparent-pixel.webp
-splash_screen_hd=pkg:/static/images/transparent-pixel.webp
+splash_screen_fhd=pkg:/assets/images/transparent-pixel.webp
+splash_screen_hd=pkg:/assets/images/transparent-pixel.webp
 
 splash_color=#000000
 splash_min_time=0

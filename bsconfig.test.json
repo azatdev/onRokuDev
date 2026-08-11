@@ -2,9 +2,9 @@
     "extends": "./bsconfig.json",
     "createPackage": true,
     "files": [
+        "assets/**/*",
         "components/**/*",
         "manifest",
-        "static/**/*",
         "source/**/*",
         "!source/main.brs",
         {

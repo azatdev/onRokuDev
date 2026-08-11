@@ -12,7 +12,7 @@ end sub
 
 sub onDataSet(_options = {})
     content = createObject("roSGNode", "ContentModel")
-    content.headerImageUri = "pkg:/static/images/WIP-screen.webp"
+    content.headerImageUri = "pkg:/assets/images/WIP-screen.webp"
     content.complimentaryColor = "#075977"
     content.hydrated = true
     dispatch(events.SET_NEW_BACKGROUND, { content: content, replace: true, section: sections.HERO })
