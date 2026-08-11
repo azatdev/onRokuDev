@@ -1,4 +1,5 @@
 module.exports = {
     ...require("./contentCTAs"),
-    ...require("./heroCTAs")
+    ...require("./heroCTAs"),
+    ...require("./pagination")
 };

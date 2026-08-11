@@ -1,8 +1,10 @@
 module.exports = {
-    ...require("./cta"),
+    ...require("./catalog"),
+    ...require("./content"),
+    ...require("./details"),
+    ...require("./hero"),
     ...require("./landscape"),
     ...require("./portrait"),
     ...require("./tabs"),
-    ...require("./toaster"),
     ...require("./userCarousel")
 };

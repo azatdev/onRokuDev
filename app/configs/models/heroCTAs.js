@@ -1,4 +1,4 @@
-const iconConfig = require("../layout/icons");
+const iconConfig = require("../views/layout/icons");
 const Icons = iconConfig["Icons"]
 
 module.exports = {
