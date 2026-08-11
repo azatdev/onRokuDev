@@ -88,7 +88,7 @@ function notifySocketServer() {
         }, () => {
             socket.end(`${JSON.stringify({
                 type: "styles-update-request",
-                message: "build/styles-update.json"
+                message: "scripts/styles-update.json"
             })}\n`);
         });
 

@@ -4,9 +4,9 @@ transpiled
 .env
 .yarn
 package-lock.json
-build/configs.json
-build/styles.json
-build/query.json
+scripts/configs.json
+scripts/styles.json
+scripts/query.json
 app/components/roku_modules
 app/source/roku_modules
-build/styles-update.json
+scripts/styles-update.json

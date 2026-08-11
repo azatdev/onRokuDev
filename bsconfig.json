@@ -21,13 +21,13 @@
         "ts-node/register"
     ],
     "plugins": [
-        "./build/ejsParser.ts",
+        "./scripts/ejsParser.ts",
         "@rokucommunity/bslint"
     ],
     "rootDir": "app",
     "sourceMap": true,
     "stagingDir": "transpiled/build",
-    "configsPath": "build/configs.json",
-    "queryPath": "build/query.json",
-    "stylesPath": "build/styles.json"
+    "configsPath": "scripts/configs.json",
+    "queryPath": "scripts/query.json",
+    "stylesPath": "scripts/styles.json"
 }

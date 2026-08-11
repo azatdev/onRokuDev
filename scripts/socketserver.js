@@ -47,7 +47,7 @@ function broadcastStylesUpdate(excludeSocket = null) {
     'STYLES_UPDATE',
     "",
     {
-      filePath: 'build/styles-update.json',
+      filePath: 'scripts/styles-update.json',
       messageFormat: 'json-string',
     },
     excludeSocket
@@ -61,7 +61,7 @@ function broadcastConfigsUpdate(excludeSocket = null) {
     'CONFIGS_UPDATE',
     "",
     {
-      filePath: 'build/configs.json',
+      filePath: 'scripts/configs.json',
       messageFormat: 'json-string',
     },
     excludeSocket

@@ -29,7 +29,7 @@ function notifySocketServer() {
         }, () => {
             socket.end(`${JSON.stringify({
                 type: "configs-update-request",
-                message: "build/configs.json"
+                message: "scripts/configs.json"
             })}\n`);
         });
 
