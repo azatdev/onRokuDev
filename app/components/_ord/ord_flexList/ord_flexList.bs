@@ -434,10 +434,8 @@ sub processConfig(config = {})
         vertAlign: config.vertAlign
     })
 
-    setListContent({
-        animationDuration: config.animationDuration,
-        itemComponentName: config.itemComponentName
-    })
+    m.carousel.itemComponentName = config.itemComponentName
+    m.carousel.duration = config.animationDuration ?? 0.3
 
     if config.direction = "vertical"
         top().reverseKey = "up"
@@ -551,13 +549,6 @@ sub resetCarousel()
     m.carousel.animateToItem = 0
     top().focusedContentIndex = 0
     top().focusedTargetsetIndex = 0
-end sub
-
-
-sub setListContent(options = {})
-    m.carousel.content = m.content
-    m.carousel.itemComponentName = options.itemComponentName
-    m.carousel.duration = options.animationDuration ?? 0.3
 end sub
 
 
